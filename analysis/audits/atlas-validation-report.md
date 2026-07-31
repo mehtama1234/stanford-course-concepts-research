@@ -35,6 +35,19 @@ validated 34 html files and 131 evidence anchors
 - Every evidence ID used by the atlas exists as an anchor in the site evidence page.
 - Empty placeholder fields are rejected, except timestamp fields where VTT anchors are unavailable.
 
+## Render And Serving Check
+
+A local HTTP smoke test was run with:
+
+```bash
+python3 -m http.server 8765 --directory site
+curl -fsS http://127.0.0.1:8765/
+curl -fsS http://127.0.0.1:8765/concepts/attention.html
+curl -fsS http://127.0.0.1:8765/evidence.html
+```
+
+The smoke test confirmed that the overview, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. A true browser screenshot inspection was not completed because this environment does not have Playwright or a browser binary installed.
+
 ## Evidence Interpretation
 
 The evidence ledger is not a quotation database. It stores local transcript cues and short paraphrased claims. The first-principles explanations in the atlas are synthesis built from the course corpus plus the mathematical structure of the field.

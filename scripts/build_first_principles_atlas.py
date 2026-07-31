@@ -954,10 +954,12 @@ def deep_treatment(concept: dict[str, Any]) -> dict[str, Any]:
 def evidence_depth(concept: dict[str, Any], row: dict[str, Any]) -> dict[str, str]:
     terms = ", ".join(row["matched_terms"][:4]) or "the lecture title and local transcript cues"
     title = row["expected_title"]
+    definition = concept["plain_language_definition"].rstrip(".").lower()
+    reason = concept["first_principles_reason"].rstrip(".").lower()
     return {
         "lecture_argument": (
             f"This span sits inside {title} and anchors the lecture's treatment of {concept['name']} through the local cues {terms}. "
-            f"The supported argument is that {concept['plain_language_definition'].lower()} is needed because {concept['first_principles_reason'].lower()}"
+            f"The supported argument is that {definition} is needed because {reason}."
         ),
         "example_or_analogy": (
             f"Use the lecture context as a concrete case: the course is not presenting {concept['name']} as vocabulary to memorize, "
