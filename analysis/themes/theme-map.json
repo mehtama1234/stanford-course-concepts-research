@@ -20,7 +20,7 @@
     ],
     "course_coverage": {
       "stanford-cme295-transformers-llms-autumn-2025": 9,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 3,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 5,
       "stanford-cs224r-deep-rl-spring-2025": 2
     },
     "cross_course_argument": "The shared argument is that intelligence first needs a manipulable workspace. CME295 shows this with tokens, positions, attention, and transformer blocks: language becomes pieces that can exchange information. CME296 reuses the same idea for images, where patches and latent coordinates let vision systems compare and edit visual structure. CS224R contributes the agent-state version of the same pressure: actions are only learnable after the world has been represented in a form where consequences can be compared.",

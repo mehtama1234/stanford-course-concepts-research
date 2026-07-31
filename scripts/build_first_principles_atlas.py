@@ -1007,6 +1007,11 @@ def build() -> None:
     concept_overrides = load_overrides("concepts.json")
     evidence_overrides = load_overrides("evidence.json")
     evidence_decisions = load_overrides("evidence-review-decisions.json")
+    supplemental_evidence = load_overrides("supplemental-evidence.json").get("records", [])
+    supplemental_by_concept: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for record in supplemental_evidence:
+        for concept_id in record.get("supports_concepts", []):
+            supplemental_by_concept[concept_id].append(record)
     evidence_records: list[dict[str, Any]] = []
     evidence_review_queue: list[dict[str, Any]] = []
     discarded_evidence: list[dict[str, Any]] = []
@@ -1047,6 +1052,10 @@ def build() -> None:
                 discarded_evidence.append(record | evidence_decisions[evidence_id])
             else:
                 evidence_review_queue.append(record)
+
+        for record in supplemental_by_concept.get(concept["id"], []):
+            evidence_records.append(record)
+            evidence_by_concept[concept["id"]].append(record["id"])
 
         out = {k: v for k, v in concept.items() if k not in {"keywords", "theme", "primitives"}}
         out.update(deep_treatment(concept))

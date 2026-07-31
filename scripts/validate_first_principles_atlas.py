@@ -97,7 +97,10 @@ def main() -> int:
     concept_ids = {c["id"] for c in concepts}
     theme_ids = {t["id"] for t in themes}
     subtheme_ids = {s["id"] for s in subthemes}
-    evidence_ids = {e["id"] for e in evidence}
+    evidence_id_list = [e["id"] for e in evidence]
+    evidence_ids = set(evidence_id_list)
+    if len(evidence_id_list) != len(evidence_ids):
+        errors.append("evidence ledger contains duplicate ids")
     manual_concepts = 0
     manual_evidence = 0
 

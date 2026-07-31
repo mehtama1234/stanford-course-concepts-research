@@ -27,7 +27,8 @@
       "compression"
     ],
     "course_evidence_ids": [
-      "ev-tokenization-01"
+      "ev-tokenization-01",
+      "ev-tokenization-supp-01"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -918,7 +919,8 @@
       "invariance"
     ],
     "course_evidence_ids": [
-      "ev-vision_transformers-02"
+      "ev-vision_transformers-02",
+      "ev-vision_transformers-supp-01"
     ],
     "evidence_status": "transcript-backed"
   },

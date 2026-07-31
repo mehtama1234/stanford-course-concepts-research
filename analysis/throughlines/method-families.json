@@ -31,7 +31,8 @@
       "ev-attention-02",
       "ev-transformer_block-01",
       "ev-transformer_block-06",
-      "ev-vision_transformers-02"
+      "ev-vision_transformers-02",
+      "ev-vision_transformers-supp-01"
     ],
     "evidence_status": "transcript-backed method family"
   },

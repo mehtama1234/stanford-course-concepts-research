@@ -29,6 +29,37 @@
     "keyword_hits": 134
   },
   {
+    "id": "ev-tokenization-supp-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:41:21.510",
+    "timestamp_end": "00:41:30.190",
+    "paraphrased_claim": "Around 00:41:21, the lecture explains that a vision transformer cuts an image into patches and treats those patches as tokens, the visual counterpart of dividing text into model-readable units.",
+    "lecture_argument": "The CME296 architectures lecture uses ViT patchification to generalize tokenization beyond words. The lecturer explains that an image is cut into patches, then those patches are considered tokens in the same spirit as word tokens before transformer-style processing.",
+    "example_or_analogy": "The concrete example is an image treated like a sequence. Instead of starting with words, the system starts with small image squares; each square becomes one unit the model can count, embed, position, and let attention compare.",
+    "mathematical_claim": "The mathematical move is a mapping from a raw image array into a finite list of patch tokens. If each patch is P by P pixels with C color channels, each patch can be flattened or projected into a vector, giving the transformer a sequence of visual units.",
+    "caveat_or_warning": "This span supports tokenization as an input-interface principle across modalities. It does not claim that image patch tokens behave exactly like subword text tokens; patch size, overlap, and visual layout create different trade-offs.",
+    "why_span_matters": "It deepens tokenization evidence because the lecture shows the same primitive outside language: messy continuous input must first become a countable set of units before the transformer can operate on it.",
+    "local_transcript_window": "The lecture explains that the model cuts the image into patches, considers those patches as tokens in the same way token units are used for words, and then processes them with transformer machinery.",
+    "evidence_basis": "manual VTT timestamp span from CME296 Lecture 5",
+    "evidence_scope": "supports tokenization as the general move from raw input into model-readable units; text-specific tokenizer algorithms require the CME295 tokenization evidence",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "patches",
+      "tokens",
+      "words"
+    ],
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
     "id": "ev-embeddings-02",
     "course": "stanford-cme295-transformers-llms-autumn-2025",
     "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
@@ -2582,6 +2613,38 @@
     ],
     "confidence": "strong",
     "keyword_hits": 60
+  },
+  {
+    "id": "ev-vision_transformers-supp-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:35:17.550",
+    "timestamp_end": "00:43:29.510",
+    "paraphrased_claim": "Between about 00:35 and 00:43, the lecture introduces the vision transformer idea, then explains the core mechanism: cut an image into patches and treat the patches as transformer tokens.",
+    "lecture_argument": "The CME296 architectures lecture presents ViT as the transfer of transformer machinery into image understanding. The key move is not to read the whole image as one blob, but to divide it into patches, turn those patches into tokens, and let the transformer process their relationships.",
+    "example_or_analogy": "The lecture's working example is a picture split into many small squares. Each square becomes the visual counterpart of a word token, so the image can enter the same sequence-processing style that made transformers effective for text.",
+    "mathematical_claim": "A vision transformer changes an image tensor into a sequence of patch vectors, adds information about patch position, and applies attention blocks so each patch representation can mix information from other patches.",
+    "caveat_or_warning": "This evidence supports the first-principles ViT interface. It does not settle all architecture choices, such as patch size, hybrid convolutional backbones, attention cost, or whether patch tokens preserve fine local detail.",
+    "why_span_matters": "It replaces weak image-keyword evidence with a real lecture argument: ViTs matter because they make images compatible with transformer computation by turning spatial regions into token-like units.",
+    "local_transcript_window": "The lecture names the vision transformer, says it brought transformer backbones into image understanding, then explains that the model cuts the image into patches and considers those patches as tokens.",
+    "evidence_basis": "manual VTT timestamp span from CME296 Lecture 5",
+    "evidence_scope": "supports the ViT mechanism of patch tokenization and transformer processing for images; detailed implementation variants remain outside this span",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "vision transformer",
+      "patches",
+      "tokens",
+      "image understanding"
+    ],
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
   },
   {
     "id": "ev-scaling_laws-01",

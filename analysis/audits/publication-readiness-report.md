@@ -3,11 +3,13 @@
 This report is an end-to-end audit record. It does not redefine completion as validation success; it separates proven local readiness from unproven publication steps.
 Working-tree cleanliness is intentionally checked outside this generated report because creating the report itself changes the working tree before commit.
 
-## Current Git State
+## Audit-Time Git Checkpoint
+
+This is the latest committed checkpoint at the moment the audit was generated. The final post-commit proof should be taken from live `git status` and `git log` commands after committing the audit output.
 
 ```text
 $ git log -1 --oneline
-d6a6a0b Add first principles site diagrams
+1912a74 Add publication readiness audit
 
 $ git remote -v
 origin	https://github.com/mehtama1234/stanford-course-concepts-research.git (fetch)
@@ -19,7 +21,7 @@ origin	https://github.com/mehtama1234/stanford-course-concepts-research.git (pus
 - Concepts: 28
 - Themes: 6
 - Subthemes: 15
-- Published reviewed evidence records: 94
+- Published reviewed evidence records: 96
 - Evidence records still queued for review: 0
 - Generated evidence records explicitly discarded: 37
 - Mathematical primitives: 10
@@ -29,13 +31,15 @@ origin	https://github.com/mehtama1234/stanford-course-concepts-research.git (pus
 ## Validation Evidence
 
 ```text
-validated 28 concepts, 6 themes, 15 subthemes, 94 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 94 manually deepened evidence records
-validated 34 html files and 94 evidence anchors
-audited 94 published evidence records, 0 queued records, and 37 discarded records; 94 manual, 0 published generated-needs-review, 0 generated strong
+validated 28 concepts, 6 themes, 15 subthemes, 96 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 96 manually deepened evidence records
+validated 34 html files and 96 evidence anchors
+audited 96 published evidence records, 0 queued records, and 37 discarded records; 96 manual, 0 published generated-needs-review, 0 generated strong
+audited editorial quality for 28 concept pages; errors: 0
 + python3 scripts/validate_first_principles_atlas.py
 + python3 scripts/build_site.py
 + python3 scripts/validate_site.py
 + python3 scripts/audit_evidence_fidelity.py
++ python3 scripts/audit_editorial_quality.py
 ```
 
 ## Requirement Audit

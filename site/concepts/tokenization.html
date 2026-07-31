@@ -88,6 +88,24 @@
   <p class="meta">Matched terms: token · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers &amp; Large Language Models.txt</code></p>
 </article>
+
+
+<article class="evidence" id="ev-tokenization-supp-01">
+  <h3><a href="../evidence.html#ev-tokenization-supp-01">ev-tokenization-supp-01</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:41:21.510 · moderate</p>
+  <p>Around 00:41:21, the lecture explains that a vision transformer cuts an image into patches and treats those patches as tokens, the visual counterpart of dividing text into model-readable units.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CME296 architectures lecture uses ViT patchification to generalize tokenization beyond words. The lecturer explains that an image is cut into patches, then those patches are considered tokens in the same spirit as word tokens before transformer-style processing.</dd>
+    <dt>Example Or Analogy</dt><dd>The concrete example is an image treated like a sequence. Instead of starting with words, the system starts with small image squares; each square becomes one unit the model can count, embed, position, and let attention compare.</dd>
+    <dt>Mathematical Claim</dt><dd>The mathematical move is a mapping from a raw image array into a finite list of patch tokens. If each patch is P by P pixels with C color channels, each patch can be flattened or projected into a vector, giving the transformer a sequence of visual units.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports tokenization as an input-interface principle across modalities. It does not claim that image patch tokens behave exactly like subword text tokens; patch size, overlap, and visual layout create different trade-offs.</dd>
+    <dt>Why This Span Matters</dt><dd>It deepens tokenization evidence because the lecture shows the same primitive outside language: messy continuous input must first become a countable set of units before the transformer can operate on it.</dd>
+    <dt>Local Transcript Window</dt><dd>The lecture explains that the model cuts the image into patches, considers those patches as tokens in the same way token units are used for words, and then processes them with transformer machinery.</dd>
+  </dl>
+  <p class="meta">Matched terms: patches, tokens, words · Basis: manual VTT timestamp span from CME296 Lecture 5 · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
+</article>
 </div>
 </section>
 </main>

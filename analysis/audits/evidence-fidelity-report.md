@@ -4,8 +4,8 @@ This audit separates transcript anchoring from editorially reviewed evidence. A 
 
 ## Counts
 
-- Published evidence records: 94
-- Published manual deepened records: 94
+- Published evidence records: 96
+- Published manual deepened records: 96
 - Published generated records: 0
 - Unpublished generated transcript-cue records in review queue: 0
 - Discarded generated transcript-cue records: 37
@@ -16,13 +16,14 @@ This audit separates transcript anchoring from editorially reviewed evidence. A 
 
 ## Confidence Counts
 
-- moderate: 23
+- moderate: 25
 - strong: 60
 - weak: 11
 
 ## Evidence Basis Counts
 
 - local VTT timestamp cue: 94
+- manual VTT timestamp span from CME296 Lecture 5: 2
 
 ## Remaining Review Queue
 

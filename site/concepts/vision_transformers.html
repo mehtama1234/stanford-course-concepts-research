@@ -88,6 +88,24 @@
   <p class="meta">Matched terms: image · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap &amp; Current Trends.txt</code></p>
 </article>
+
+
+<article class="evidence" id="ev-vision_transformers-supp-01">
+  <h3><a href="../evidence.html#ev-vision_transformers-supp-01">ev-vision_transformers-supp-01</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:35:17.550 · moderate</p>
+  <p>Between about 00:35 and 00:43, the lecture introduces the vision transformer idea, then explains the core mechanism: cut an image into patches and treat the patches as transformer tokens.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CME296 architectures lecture presents ViT as the transfer of transformer machinery into image understanding. The key move is not to read the whole image as one blob, but to divide it into patches, turn those patches into tokens, and let the transformer process their relationships.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture&#x27;s working example is a picture split into many small squares. Each square becomes the visual counterpart of a word token, so the image can enter the same sequence-processing style that made transformers effective for text.</dd>
+    <dt>Mathematical Claim</dt><dd>A vision transformer changes an image tensor into a sequence of patch vectors, adds information about patch position, and applies attention blocks so each patch representation can mix information from other patches.</dd>
+    <dt>Caveat Or Warning</dt><dd>This evidence supports the first-principles ViT interface. It does not settle all architecture choices, such as patch size, hybrid convolutional backbones, attention cost, or whether patch tokens preserve fine local detail.</dd>
+    <dt>Why This Span Matters</dt><dd>It replaces weak image-keyword evidence with a real lecture argument: ViTs matter because they make images compatible with transformer computation by turning spatial regions into token-like units.</dd>
+    <dt>Local Transcript Window</dt><dd>The lecture names the vision transformer, says it brought transformer backbones into image understanding, then explains that the model cuts the image into patches and considers those patches as tokens.</dd>
+  </dl>
+  <p class="meta">Matched terms: vision transformer, patches, tokens, image understanding · Basis: manual VTT timestamp span from CME296 Lecture 5 · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
+</article>
 </div>
 </section>
 </main>
