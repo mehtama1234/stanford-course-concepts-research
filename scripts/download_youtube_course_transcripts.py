@@ -88,6 +88,12 @@ def dump_json(cmd: list[str]) -> dict[str, Any]:
     return json.loads(output)
 
 
+def stable_playlist_manifest(data: dict[str, Any]) -> dict[str, Any]:
+    data = dict(data)
+    data.pop("epoch", None)
+    return data
+
+
 def video_url(video_id: str) -> str:
     return f"https://www.youtube.com/watch?v={video_id}"
 
@@ -151,7 +157,9 @@ def write_course_manifest(course: dict[str, Any], paths: dict[str, Path]) -> Non
 
 def capture_playlist_manifest(course: dict[str, Any], paths: dict[str, Path]) -> None:
     if course["kind"] == "playlist":
-        data = dump_json(["yt-dlp", "--flat-playlist", "--dump-single-json", course["playlist_url"]])
+        data = stable_playlist_manifest(
+            dump_json(["yt-dlp", "--flat-playlist", "--dump-single-json", course["playlist_url"]])
+        )
     else:
         data = {
             "_type": "curated_video_list",
