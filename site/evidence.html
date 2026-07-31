@@ -71,11 +71,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:10:39.810 · strong</p>
   <p>around 00:10:39.810, the lecture uses embedding while covering Embeddings. This supports the scoped claim that learned coordinates that let a model compare things by arithmetic.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 2 - Transformer-Based Models &amp; Tricks and anchors the lecture&#x27;s treatment of Embeddings through the local cues embedding. The supported argument is that learned coordinates that let a model compare things by arithmetic is needed because a learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Embeddings as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would treat related symbols as unrelated labels and could not smoothly share what it learns.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Embeddings. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 recap places embeddings immediately after tokenization: once input text is divided into atomic units, the next step is to represent those tokens numerically so the transformer can process them.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture sequence is like preparing notes for a machine reader. Tokenization decides the pieces of paper; embeddings write coordinates on each piece so later layers can compare and transform them.</dd>
+    <dt>Mathematical Claim</dt><dd>An embedding is a learned mapping from a discrete item to a vector. The vector&#x27;s coordinates are adjusted during training so related usage patterns become easier for later layers to exploit.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports token embeddings in the transformer course. It should not be overread as saying every coordinate has a clean human meaning or that vector closeness always matches human semantic similarity.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the first major bridge from language to math: arbitrary text pieces become learned numerical objects that attention and feed-forward layers can manipulate.</dd>
   </dl>
   <p class="meta">Matched terms: embedding · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models &amp; Tricks.txt</code></p>
@@ -279,11 +279,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:05:55.580 · strong</p>
   <p>around 00:05:55.580, the lecture uses transformer while covering Transformer Block. This supports the scoped claim that a repeated update step where tokens read from each other and then rewrite their own state.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 9 - Recap &amp; Current Trends and anchors the lecture&#x27;s treatment of Transformer Block through the local cues transformer. The supported argument is that a repeated update step where tokens read from each other and then rewrite their own state is needed because a complex answer is built by repeatedly mixing information and transforming it. depth lets simple operations compound.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Transformer Block as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system loses the scalable recipe for building many layers of context-dependent computation.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Transformer Block. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 recap organizes the course around how the transformer pieces fit together: text is tokenized, represented as embeddings, and then processed by transformer machinery across the rest of the model.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture treats the architecture like an assembly line. Each stage prepares a better internal object for the next stage, rather than solving language understanding in one step.</dd>
+    <dt>Mathematical Claim</dt><dd>A transformer block composes attention-based mixing with per-position nonlinear updates, residual carrying of previous state, and normalization for stable deep computation.</dd>
+    <dt>Caveat Or Warning</dt><dd>The recap span is architectural and integrative, not a full derivation of every block component. Detailed claims about normalization or residual training dynamics need support from more specific lecture spans.</dd>
+    <dt>Why This Span Matters</dt><dd>It shows why the block belongs in the atlas as a composition primitive: the course&#x27;s pieces only become a modern model when they are stacked into repeated update layers.</dd>
   </dl>
   <p class="meta">Matched terms: transformer · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap &amp; Current Trends.txt</code></p>
@@ -823,11 +823,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:07.797 · strong</p>
   <p>around 00:01:07.797, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5: Off-Policy Actor Critic and anchors the lecture&#x27;s treatment of Policy Gradient through the local cues gradient. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Policy Gradient as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R off-policy actor-critic lecture recaps policy gradients as a loop: run a policy, collect a batch of experience, improve the policy using that data, and repeat so behavior improves with experience.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture frames the update as doing more of the above-average things and less of the below-average things. The baseline acts like the comparison point that decides what counts as better than usual.</dd>
+    <dt>Mathematical Claim</dt><dd>The policy-gradient update increases the probability of sampled actions whose future reward is high relative to a baseline and decreases the relative probability of worse actions. Importance weights appear when data comes from a different policy than the one being updated.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span also warns about the on-policy assumption: the clean policy-gradient estimator expects data from the same policy being updated. Reusing old or off-policy data requires correction and can introduce instability.</dd>
+    <dt>Why This Span Matters</dt><dd>It captures the core mechanism in plain terms: policy gradients convert sampled trajectories and delayed reward into a direction for changing action probabilities.</dd>
   </dl>
   <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
@@ -1527,11 +1527,11 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:00:18.000 · strong</p>
   <p>around 00:00:18.000, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 2 - Score matching and anchors the lecture&#x27;s treatment of Score Matching through the local cues score matching. The supported argument is that learning which direction points toward more data-like samples is needed because in a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Score Matching as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The sampler has no learned local direction for turning noise into structure.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Score Matching. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 score-matching lecture introduces score matching as a new generation paradigm after DDPM diffusion, with the same motivating problem: generate new samples from an unknown and complicated data distribution.</dd>
+    <dt>Example Or Analogy</dt><dd>The useful mental picture is not drawing the whole data distribution. It is learning a local compass that says how a sample should move to become more data-like.</dd>
+    <dt>Mathematical Claim</dt><dd>The score is the gradient of log probability. Score matching trains a model to estimate that direction, often through denoising objectives that become practical regression losses.</dd>
+    <dt>Caveat Or Warning</dt><dd>This opening span establishes the paradigm and its relationship to diffusion, but later parts of the lecture are needed for full derivations and the noisy-distribution relationship.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors score matching to the same first-principles generation problem as diffusion, making clear why the concept belongs next to DDPM rather than only in a probability textbook.</dd>
   </dl>
   <p class="meta">Matched terms: score matching · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt</code></p>
@@ -1719,11 +1719,11 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:05:58.240 · strong</p>
   <p>around 00:05:58.240, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7 - Evaluation and anchors the lecture&#x27;s treatment of Guidance through the local cues prompt. The supported argument is that steering generation toward a prompt, class, reward, or constraint is needed because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Guidance as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 evaluation lecture motivates prompt adherence by showing that an image can be aesthetically poor or can look good while failing to represent the prompt. The prompt is a teddy bear reading a book, and the class distinguishes visual quality from following the requested content.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture&#x27;s image-judging exercise is the analogy: a generated picture is not successful merely because it is plausible. It must satisfy the condition that gave the generation task its purpose.</dd>
+    <dt>Mathematical Claim</dt><dd>Guidance modifies the sampling direction or scoring objective so generated samples are pulled toward a condition such as a prompt, class, layout, or reward. Evaluation then asks whether that condition was actually satisfied.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span is primarily evaluation evidence for prompt adherence, not a derivation of classifier-free guidance. It supports the problem guidance solves: realism and instruction-following are separable.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives a concrete lecture-backed failure case for guided generation: high visual quality can still be wrong if the sample ignores the prompt.</dd>
   </dl>
   <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt</code></p>

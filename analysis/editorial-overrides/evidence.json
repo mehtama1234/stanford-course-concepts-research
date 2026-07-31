@@ -19,5 +19,40 @@
     "mathematical_claim": "Diffusion uses a forward noising process and a learned reverse denoising process. The mathematical lever is to replace direct sampling from a hard data distribution with many local update steps.",
     "caveat_or_warning": "This span introduces the paradigm but does not by itself cover all sampler choices, guidance tricks, or latent-space variants. Later CME296 lectures provide those details.",
     "why_span_matters": "This span matters because it states the generative problem from first principles: the data distribution is complicated and unknown, so the model learns a procedure for producing new samples rather than writing down the distribution directly."
+  },
+  "ev-embeddings-02": {
+    "lecture_argument": "The CME295 recap places embeddings immediately after tokenization: once input text is divided into atomic units, the next step is to represent those tokens numerically so the transformer can process them.",
+    "example_or_analogy": "The lecture sequence is like preparing notes for a machine reader. Tokenization decides the pieces of paper; embeddings write coordinates on each piece so later layers can compare and transform them.",
+    "mathematical_claim": "An embedding is a learned mapping from a discrete item to a vector. The vector's coordinates are adjusted during training so related usage patterns become easier for later layers to exploit.",
+    "caveat_or_warning": "This span supports token embeddings in the transformer course. It should not be overread as saying every coordinate has a clean human meaning or that vector closeness always matches human semantic similarity.",
+    "why_span_matters": "It anchors the first major bridge from language to math: arbitrary text pieces become learned numerical objects that attention and feed-forward layers can manipulate."
+  },
+  "ev-transformer_block-01": {
+    "lecture_argument": "The CME295 recap organizes the course around how the transformer pieces fit together: text is tokenized, represented as embeddings, and then processed by transformer machinery across the rest of the model.",
+    "example_or_analogy": "The lecture treats the architecture like an assembly line. Each stage prepares a better internal object for the next stage, rather than solving language understanding in one step.",
+    "mathematical_claim": "A transformer block composes attention-based mixing with per-position nonlinear updates, residual carrying of previous state, and normalization for stable deep computation.",
+    "caveat_or_warning": "The recap span is architectural and integrative, not a full derivation of every block component. Detailed claims about normalization or residual training dynamics need support from more specific lecture spans.",
+    "why_span_matters": "It shows why the block belongs in the atlas as a composition primitive: the course's pieces only become a modern model when they are stacked into repeated update layers."
+  },
+  "ev-policy_gradient-01": {
+    "lecture_argument": "The CS224R off-policy actor-critic lecture recaps policy gradients as a loop: run a policy, collect a batch of experience, improve the policy using that data, and repeat so behavior improves with experience.",
+    "example_or_analogy": "The lecture frames the update as doing more of the above-average things and less of the below-average things. The baseline acts like the comparison point that decides what counts as better than usual.",
+    "mathematical_claim": "The policy-gradient update increases the probability of sampled actions whose future reward is high relative to a baseline and decreases the relative probability of worse actions. Importance weights appear when data comes from a different policy than the one being updated.",
+    "caveat_or_warning": "The span also warns about the on-policy assumption: the clean policy-gradient estimator expects data from the same policy being updated. Reusing old or off-policy data requires correction and can introduce instability.",
+    "why_span_matters": "It captures the core mechanism in plain terms: policy gradients convert sampled trajectories and delayed reward into a direction for changing action probabilities."
+  },
+  "ev-score_matching-01": {
+    "lecture_argument": "The CME296 score-matching lecture introduces score matching as a new generation paradigm after DDPM diffusion, with the same motivating problem: generate new samples from an unknown and complicated data distribution.",
+    "example_or_analogy": "The useful mental picture is not drawing the whole data distribution. It is learning a local compass that says how a sample should move to become more data-like.",
+    "mathematical_claim": "The score is the gradient of log probability. Score matching trains a model to estimate that direction, often through denoising objectives that become practical regression losses.",
+    "caveat_or_warning": "This opening span establishes the paradigm and its relationship to diffusion, but later parts of the lecture are needed for full derivations and the noisy-distribution relationship.",
+    "why_span_matters": "It anchors score matching to the same first-principles generation problem as diffusion, making clear why the concept belongs next to DDPM rather than only in a probability textbook."
+  },
+  "ev-guidance-01": {
+    "lecture_argument": "The CME296 evaluation lecture motivates prompt adherence by showing that an image can be aesthetically poor or can look good while failing to represent the prompt. The prompt is a teddy bear reading a book, and the class distinguishes visual quality from following the requested content.",
+    "example_or_analogy": "The lecture's image-judging exercise is the analogy: a generated picture is not successful merely because it is plausible. It must satisfy the condition that gave the generation task its purpose.",
+    "mathematical_claim": "Guidance modifies the sampling direction or scoring objective so generated samples are pulled toward a condition such as a prompt, class, layout, or reward. Evaluation then asks whether that condition was actually satisfied.",
+    "caveat_or_warning": "This span is primarily evaluation evidence for prompt adherence, not a derivation of classifier-free guidance. It supports the problem guidance solves: realism and instruction-following are separable.",
+    "why_span_matters": "It gives a concrete lecture-backed failure case for guided generation: high visual quality can still be wrong if the sample ignores the prompt."
   }
 }
