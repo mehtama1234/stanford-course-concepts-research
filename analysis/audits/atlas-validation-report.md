@@ -10,9 +10,9 @@ python3 scripts/validate_all.py
 Latest validation result:
 
 ```text
-validated 28 concepts, 6 themes, 15 subthemes, 70 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 70 manually deepened evidence records
-validated 34 html files and 70 evidence anchors
-audited 70 published evidence records and 61 queued records; 70 manual, 0 published generated-needs-review, 0 generated strong
+validated 28 concepts, 6 themes, 15 subthemes, 94 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 94 manually deepened evidence records
+validated 34 html files and 94 evidence anchors
+audited 94 published evidence records and 37 queued records; 94 manual, 0 published generated-needs-review, 0 generated strong
 ```
 
 ## What Was Checked
@@ -78,8 +78,8 @@ Evidence confidence means:
 
 ## Current Scope
 
-This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus 70 evidence spans across the course corpus.
+This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus 94 evidence spans across the course corpus.
 
 The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea.
 
-This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, manually review the remaining 61 generated transcript-cue evidence records, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with a browser.
+This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, manually review or discard the remaining 37 generated transcript-cue evidence records, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with a browser.

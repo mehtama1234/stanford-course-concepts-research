@@ -1334,6 +1334,64 @@
     "keyword_hits": 72
   },
   {
+    "id": "ev-q_learning-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt",
+    "timestamp_start": "00:05:31.730",
+    "timestamp_end": "00:05:35.490",
+    "paraphrased_claim": "around 00:05:31.730, the lecture uses q-function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "lecture_argument": "The CS224R offline RL lecture says the target was changed to use the Q-function, connecting offline learning back to the action-value object used in Q-learning.",
+    "example_or_analogy": "The Q-function is the learner's action-specific forecast: after seeing a state, it asks what future reward would follow if this action were taken.",
+    "mathematical_claim": "Q-learning uses action-conditioned value targets so an update can compare possible actions rather than only judging the state.",
+    "caveat_or_warning": "This span is a recap in an offline RL lecture. It supports Q-functions as the target object but not all stability fixes for offline extrapolation.",
+    "why_span_matters": "It connects Q-learning to the offline RL problem, where action-value estimates can become dangerous when actions are unsupported by data.",
+    "local_transcript_window": "And so what we did instead is we changed our target to use the Q-function. So we had the target as s t plus 1 a t plus 1.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "q-function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 32
+  },
+  {
+    "id": "ev-q_learning-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:01:17.740",
+    "timestamp_end": "00:01:22.380",
+    "paraphrased_claim": "around 00:01:17.740, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "lecture_argument": "The CS224R reward-learning lecture warns that optimizing a Q-function can lead the learner to query that Q-function on actions it wants to use for policy improvement.",
+    "example_or_analogy": "The learned Q-function becomes a guide for choosing actions, but a guide can be misleading when asked about places it has not really seen.",
+    "mathematical_claim": "A Q-function estimates future return for state-action pairs, and policy improvement can choose actions by maximizing that estimate.",
+    "caveat_or_warning": "The span points toward a core failure mode: if the estimate is wrong for queried actions, optimizing it can amplify the error.",
+    "why_span_matters": "It gives a lecture-backed reason why Q-learning is not just prediction; its estimates actively shape future behavior.",
+    "local_transcript_window": "algorithms in this setting, is that-- if, for example, you're trying to optimize a Q function to then improve your policy, then you might query your Q function on actions",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "q function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 29
+  },
+  {
     "id": "ev-q_learning-05",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
@@ -1363,6 +1421,35 @@
     "keyword_hits": 17
   },
   {
+    "id": "ev-q_learning-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:36:45.910",
+    "timestamp_end": "00:36:47.290",
+    "paraphrased_claim": "around 00:36:45.910, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture defines a quantity that is basically a Q-function, showing that action-value reasoning reappears when generated reasoning steps are optimized.",
+    "example_or_analogy": "A reasoning step can be judged like an action: if the model takes this step in this context, what final outcome does it lead toward?",
+    "mathematical_claim": "A Q-like quantity assigns expected downstream value to a current state and candidate action, even when the action is a token or reasoning move.",
+    "caveat_or_warning": "The span supports the analogy between RL action values and reasoning optimization, but does not prove that token-level Q estimates are easy or reliable.",
+    "why_span_matters": "It connects classic Q-functions to modern reasoning-model training, one of the central cross-course bridges.",
+    "local_transcript_window": "So if you define a quantity that looks like the following, it's basically a Q function. So what is this quantity?",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "q function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 9
+  },
+  {
     "id": "ev-offline_rl-01",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
@@ -1390,6 +1477,64 @@
     ],
     "confidence": "strong",
     "keyword_hits": 29
+  },
+  {
+    "id": "ev-offline_rl-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:00:08.620",
+    "timestamp_end": "00:00:11.280",
+    "paraphrased_claim": "around 00:00:08.620, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "lecture_argument": "The CS224R reward-learning lecture opens by saying the class will finish offline reinforcement learning, giving direct course support that offline RL is a named, central topic.",
+    "example_or_analogy": "The lecture placement matters: offline RL is treated as a distinct problem before reward learning because learning from fixed data changes what can be trusted.",
+    "mathematical_claim": "Offline RL learns from a fixed dataset rather than fresh interaction, so policy improvement must respect the coverage and bias of that dataset.",
+    "caveat_or_warning": "The opening line is agenda evidence, not a full derivation. The stronger conceptual support comes from other spans about coverage and conservative values.",
+    "why_span_matters": "It anchors offline RL as part of the course sequence and supports keeping it as a first-class concept in the atlas.",
+    "local_transcript_window": "Great. So for today, we're planning to finish offline reinforcement learning.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "offline reinforcement"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 13
+  },
+  {
+    "id": "ev-offline_rl-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:07:36.562",
+    "timestamp_end": "00:07:38.490",
+    "paraphrased_claim": "around 00:07:36.562, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture says it will discuss techniques that look like offline reinforcement learning, connecting fixed-data RL ideas to reasoning-model training.",
+    "example_or_analogy": "Reasoning traces can look like offline data: the model has collected or generated examples, and training tries to improve behavior without ordinary online environment interaction.",
+    "mathematical_claim": "Offline-RL-like training updates a policy from existing samples while worrying that the updated policy may move outside the supported data distribution.",
+    "caveat_or_warning": "The lecture says the techniques look like offline RL, so this is analogy evidence rather than a claim that LLM reasoning exactly matches standard offline RL.",
+    "why_span_matters": "It strengthens the atlas's cross-course line from CS224R offline learning to LLM reasoning optimization.",
+    "local_transcript_window": "We'll talk about some techniques that look like offline reinforcement learning, and I'll talk about some techniques",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "offline reinforcement"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
   },
   {
     "id": "ev-offline_rl-05",
@@ -1450,6 +1595,64 @@
     "keyword_hits": 53
   },
   {
+    "id": "ev-model_based_rl-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt",
+    "timestamp_start": "00:00:07.080",
+    "timestamp_end": "00:00:10.560",
+    "paraphrased_claim": "around 00:00:07.080, the lecture uses model-based while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "lecture_argument": "The CS224R multi-task RL lecture begins by saying it will finish model-based reinforcement learning, specifically using a learned model.",
+    "example_or_analogy": "The learned model is the substitute world: instead of only learning from real interaction, the agent can use predicted consequences to plan or generate data.",
+    "mathematical_claim": "Model-based RL learns or uses a transition model that predicts next states or outcomes, then uses that model for planning, control, or data generation.",
+    "caveat_or_warning": "The span is introductory and does not cover model error. A learned model can be useful while still causing compounding planning mistakes.",
+    "why_span_matters": "It gives direct course evidence for the learned-model part of model-based RL.",
+    "local_transcript_window": "Now let's get started. And today we will be finishing up model-based reinforcement learning, specifically a way to use a learned model",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "model-based"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-model_based_rl-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:01:31.080",
+    "timestamp_end": "00:01:33.900",
+    "paraphrased_claim": "around 00:01:31.080, the lecture uses transition while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "lecture_argument": "The CS224R Q-learning review defines the reinforcement-learning setup using states, actions, and a transition dynamics function that moves from one state to another.",
+    "example_or_analogy": "The transition function is the rule for what happens next. If the agent knows or learns that rule, it can reason about consequences before acting.",
+    "mathematical_claim": "A transition model maps a state-action pair to a next-state distribution or prediction; model-based RL uses that object to simulate or plan future trajectories.",
+    "caveat_or_warning": "This tutorial span defines the transition object but does not itself show a full model-based algorithm.",
+    "why_span_matters": "It anchors the mathematical object that model-based RL needs: a representation of how actions change the world.",
+    "local_transcript_window": "that's defined by a set of states and actions, and also a transition dynamics function which allows you to go from a certain state,",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "transition"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
     "id": "ev-model_based_rl-05",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
@@ -1463,6 +1666,35 @@
     "caveat_or_warning": "This span supports the prediction-as-planning intuition. It does not prove that the imagined future is accurate; model error can make planning brittle.",
     "why_span_matters": "It anchors model-based RL in the basic reason planning exists: real trial and error can be replaced partly by prediction.",
     "local_transcript_window": "then the first step is to predict. Or another way to think about predicting a goal is planning. We're trying to think forward.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "planning"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-model_based_rl-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt",
+    "timestamp_start": "00:14:20.130",
+    "timestamp_end": "00:14:23.770",
+    "paraphrased_claim": "around 00:14:20.130, the lecture uses planning while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "lecture_argument": "The CS224R frontiers lecture describes using a model for planning by thinking through what would be a good future outcome.",
+    "example_or_analogy": "Planning is mental rehearsal: before taking an action, the system imagines where different choices could lead.",
+    "mathematical_claim": "Planning with a model evaluates possible future trajectories using predicted outcomes rather than only observed trial-and-error.",
+    "caveat_or_warning": "The span supports the planning role of models, but it also leaves open whether the model's imagined future is accurate enough to trust.",
+    "why_span_matters": "It keeps model-based RL tied to its first-principles purpose: replacing some real experimentation with predicted futures.",
+    "local_transcript_window": "problem because you're only using the model for a form of planning where you're thinking through what is a good outcome in the future",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
     "evidence_review_status": "manual_deepened",
@@ -1508,6 +1740,35 @@
     "keyword_hits": 106
   },
   {
+    "id": "ev-exploration-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt",
+    "timestamp_start": "00:13:11.590",
+    "timestamp_end": "00:13:14.590",
+    "paraphrased_claim": "around 00:13:11.590, the lecture uses explore while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "lecture_argument": "The CS224R meta-RL lecture describes exploring and then wanting a policy able to solve the task, connecting exploration to later adaptation.",
+    "example_or_analogy": "Exploration is the information-gathering phase. The learner first moves around enough to discover what matters, then uses that information to behave better.",
+    "mathematical_claim": "Exploration changes the data distribution by sampling states and actions that reveal useful information for future policy learning.",
+    "caveat_or_warning": "The span supports exploration as a phase in task learning but not a specific exploration algorithm or guarantee.",
+    "why_span_matters": "It shows exploration as a prerequisite for later competence, especially when the policy must adapt to a task.",
+    "local_transcript_window": "And it eventually goes to the goal, right here. And after we explore, we'd like to be able to have a policy that is able to solve",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "explore"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 66
+  },
+  {
     "id": "ev-exploration-03",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
@@ -1535,6 +1796,64 @@
     ],
     "confidence": "moderate",
     "keyword_hits": 10
+  },
+  {
+    "id": "ev-exploration-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt",
+    "timestamp_start": "00:14:10.680",
+    "timestamp_end": "00:14:14.680",
+    "paraphrased_claim": "around 00:14:10.680, the lecture uses exploration while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "lecture_argument": "The CS224R hierarchical RL lecture says high-level policies can provide exploration benefits, connecting hierarchy to the discovery problem.",
+    "example_or_analogy": "A high-level policy can choose useful subgoals, which helps the agent reach parts of the environment that random low-level actions might never find.",
+    "mathematical_claim": "Hierarchical exploration changes the action space by letting higher-level choices guide lower-level behavior over longer time spans.",
+    "caveat_or_warning": "The span supports the benefit of hierarchy for exploration, but not every hierarchical method automatically discovers useful subgoals.",
+    "why_span_matters": "It links exploration to composition: sometimes the way to discover is to act through reusable higher-level behaviors.",
+    "local_transcript_window": "In reinforcement learning, specifically, you can also think about benefits in terms of exploration. And in particular, when this high-level policy",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "exploration"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-exploration-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt",
+    "timestamp_start": "00:07:30.500",
+    "timestamp_end": "00:07:32.980",
+    "paraphrased_claim": "around 00:07:30.500, the lecture uses explore while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "lecture_argument": "The CS224R frontiers lecture points to algorithms that allow machines to explore, potentially optimizing for learning.",
+    "example_or_analogy": "Exploration can be treated as a learning objective: the agent is not only trying to get reward now, but also trying to gather information that makes later learning possible.",
+    "mathematical_claim": "Exploration objectives can reward information gain, uncertainty reduction, or coverage of useful states, not only immediate task reward.",
+    "caveat_or_warning": "The span is high-level and frontier-oriented. It supports the research direction but not one concrete algorithm.",
+    "why_span_matters": "It broadens exploration from random action into deliberate information-seeking, which is central to hard RL problems.",
+    "local_transcript_window": "For example, we could develop algorithms that would allow machines to explore in this way, potentially optimizing for learning, potentially",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "explore"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
   },
   {
     "id": "ev-rl_for_llms-01",
@@ -1566,6 +1885,35 @@
     "keyword_hits": 136
   },
   {
+    "id": "ev-rl_for_llms-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:00:07.020",
+    "timestamp_end": "00:00:12.160",
+    "paraphrased_claim": "around 00:00:07.020, the lecture uses reasoning while covering RL For LLMs. This supports the scoped claim that using outcome feedback to steer a language model's choices.",
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture opens by saying it will cover reasoning and reinforcement learning for LLM reasoning.",
+    "example_or_analogy": "The lecture title itself marks the bridge: reasoning traces can be treated as behavior to improve with RL-style feedback.",
+    "mathematical_claim": "RL for LLMs treats generated text or reasoning steps as actions whose probabilities can be updated using rewards, preferences, or verifier signals.",
+    "caveat_or_warning": "This is opening framing, so it supports the topic connection but not any specific method such as PPO, GRPO, or process supervision.",
+    "why_span_matters": "It anchors the atlas's claim that LLM reasoning belongs in the same conceptual family as sequential decision learning.",
+    "local_transcript_window": "So today we'll not talk about SQL. We'll talk about reasoning and, particularly, reinforcement learning for LLM reasoning.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "reasoning"
+    ],
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 28
+  },
+  {
     "id": "ev-diffusion-01",
     "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
     "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
@@ -1595,6 +1943,64 @@
     "keyword_hits": 138
   },
   {
+    "id": "ev-diffusion-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:01:53.150",
+    "timestamp_end": "00:01:59.270",
+    "paraphrased_claim": "around 00:01:53.150, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "lecture_argument": "The CME296 trending-topics lecture recalls the first lecture as diffusion, where the course learned to generate images using the diffusion paradigm.",
+    "example_or_analogy": "The course recap frames diffusion as the first answer to image generation: instead of drawing an image all at once, use the diffusion procedure as the generation path.",
+    "mathematical_claim": "Diffusion generation constructs samples through a learned reverse process that moves from noise toward image-like data.",
+    "caveat_or_warning": "The span is retrospective and compact. It supports diffusion's role in the course arc, not the detailed DDPM derivation.",
+    "why_span_matters": "It confirms diffusion as the baseline generative paradigm that later lectures extend with score matching, flow matching, latent spaces, and guidance.",
+    "local_transcript_window": "us to just generate images. So the first lecture was about diffusion, just learning how we could do that using the diffusion paradigm.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 83
+  },
+  {
+    "id": "ev-diffusion-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:03:37.280",
+    "timestamp_end": "00:03:42.320",
+    "paraphrased_claim": "around 00:03:37.280, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "lecture_argument": "The CME296 model-training lecture motivates the diffusion transformer architecture as a later architecture built on the diffusion concept.",
+    "example_or_analogy": "The evidence shows diffusion becoming an architectural setting: the generation process is not only an objective, but also shapes the model architecture used to perform it.",
+    "mathematical_claim": "A diffusion transformer uses transformer machinery inside a diffusion-style generation process, combining attention-based representation with iterative denoising or prediction.",
+    "caveat_or_warning": "The span supports the architectural connection, not a full derivation of diffusion transformers or their training recipe.",
+    "why_span_matters": "It links diffusion to the transformer family, which is a core cross-course connection in the atlas.",
+    "local_transcript_window": "So this was motivating us to look at another architecture, which is the diffusion transformer, which was published in 2022, late 2022, which relies on the concept",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 74
+  },
+  {
     "id": "ev-diffusion-05",
     "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
     "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
@@ -1608,6 +2014,35 @@
     "caveat_or_warning": "The span is a recap of the diffusion paradigm, not a full derivation of the DDPM objective or sampler design.",
     "why_span_matters": "It provides cross-lecture evidence that diffusion remains the baseline generation path before latent-space and guidance refinements are added.",
     "local_transcript_window": "images, what were the paradigms that we could use. So the first lecture was focused on the diffusion paradigm with DDPM, where we saw that we were taking clean images,",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
+    "id": "ev-diffusion-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:01:34.050",
+    "timestamp_end": "00:01:38.390",
+    "paraphrased_claim": "around 00:01:34.050, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "lecture_argument": "The CME296 architectures lecture recaps diffusion with DDPM as corrupting a clean image, placing noising and denoising at the start of the architecture discussion.",
+    "example_or_analogy": "The clean image is deliberately damaged, and the model learns the reverse skill: how to move a corrupted sample back toward image structure.",
+    "mathematical_claim": "DDPM diffusion uses a forward corruption process and a learned reverse process, turning hard sample generation into many local denoising steps.",
+    "caveat_or_warning": "This span is a recap, so it supports the core mechanism but not sampler variants or guidance details.",
+    "why_span_matters": "It gives another lecture anchor for the first-principles diffusion idea: generation as reversing controlled corruption.",
+    "local_transcript_window": "So we saw three perspectives. The first one was diffusion with DDPM. So we saw that we were corrupting a clean image.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
     "evidence_review_status": "manual_deepened",
@@ -1651,6 +2086,64 @@
     ],
     "confidence": "strong",
     "keyword_hits": 21
+  },
+  {
+    "id": "ev-score_matching-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:00:35.440",
+    "timestamp_end": "00:00:39.040",
+    "paraphrased_claim": "around 00:00:35.440, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "lecture_argument": "The CME296 flow-matching lecture opens by placing score matching between diffusion and flow matching as one of the generation paradigms already covered.",
+    "example_or_analogy": "The course sequence makes score matching a bridge: diffusion, score matching, and flow matching are different ways to describe how a sample should move toward data.",
+    "mathematical_claim": "Score matching learns a score field, the direction in sample space that points toward higher data density.",
+    "caveat_or_warning": "The span is course-positioning evidence, not a derivation of the score-matching loss.",
+    "why_span_matters": "It anchors score matching as part of the same generative-path family as diffusion and flow matching.",
+    "local_transcript_window": "where we talked about diffusion with DPM and lecture 1 and score matching in lecture 2. So flow matching is yet another generation paradigm.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 7
+  },
+  {
+    "id": "ev-score_matching-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space & Guidance.txt",
+    "timestamp_start": "00:03:01.750",
+    "timestamp_end": "00:03:06.250",
+    "paraphrased_claim": "around 00:03:01.750, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "lecture_argument": "The CME296 latent-space and guidance lecture recalls score matching as a second way of seeing generation and compares it with the diffusion view.",
+    "example_or_analogy": "The lecture treats score matching as another lens on the same generation problem, not as an unrelated mathematical trick.",
+    "mathematical_claim": "Score matching uses the gradient of log probability as a local direction for moving samples toward data-like regions.",
+    "caveat_or_warning": "The evidence is retrospective and brief, so it supports conceptual placement more than detailed derivation.",
+    "why_span_matters": "It strengthens the course-backed relationship between score matching, diffusion, latent spaces, and guidance.",
+    "local_transcript_window": "And we also saw a second paradigm, a second way of seeing things, which was score matching. And we saw that when we looked at these two",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
   },
   {
     "id": "ev-score_matching-04",
@@ -1711,6 +2204,64 @@
     "keyword_hits": 110
   },
   {
+    "id": "ev-flow_matching-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:13:10.110",
+    "timestamp_end": "00:13:15.670",
+    "paraphrased_claim": "around 00:13:10.110, the lecture uses flow matching while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "lecture_argument": "The CME296 trending-topics lecture says flow matching framed the generation problem in a different way after diffusion and score matching.",
+    "example_or_analogy": "Flow matching changes the picture from cleaning noise step by step to learning a route through sample space.",
+    "mathematical_claim": "Flow matching trains a velocity field that transports samples along a path from a simple starting distribution toward the data distribution.",
+    "caveat_or_warning": "The span supports the conceptual reframing but not a detailed solver or loss derivation.",
+    "why_span_matters": "It anchors flow matching as a distinct paper family rather than just a synonym for diffusion.",
+    "local_transcript_window": "with a third way of looking at things, which is the flow matching formulation, which actually framed the problem in a different way.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "flow matching"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 14
+  },
+  {
+    "id": "ev-flow_matching-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:10:01.900",
+    "timestamp_end": "00:10:03.940",
+    "paraphrased_claim": "around 00:10:01.900, the lecture uses vector field while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "lecture_argument": "The CME296 model-training lecture says generation starts with initial noise, obtains a vector field, and then iterates many times.",
+    "example_or_analogy": "The vector field is a repeated steering map: start from noise, ask which direction to move, step, and repeat.",
+    "mathematical_claim": "A learned vector field supplies directions for iterative sample updates; repeated application moves noise toward structured samples.",
+    "caveat_or_warning": "The span supports the iterative vector-field mechanism, but not every training objective or numerical integration choice.",
+    "why_span_matters": "It gives direct evidence for generation as guided movement through a space of possibilities.",
+    "local_transcript_window": "So you always have to have one the initial noise as input to get the let's say vector field, and then iterate on that many times potentially.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "vector field"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 11
+  },
+  {
     "id": "ev-flow_matching-05",
     "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
     "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
@@ -1738,6 +2289,35 @@
     ],
     "confidence": "moderate",
     "keyword_hits": 6
+  },
+  {
+    "id": "ev-flow_matching-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:02:41.110",
+    "timestamp_end": "00:02:43.910",
+    "paraphrased_claim": "around 00:02:41.110, the lecture uses vector field while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "lecture_argument": "The CME296 architectures lecture says the loss can be based on velocity, also called the vector field, and expressed as an L2 regression loss.",
+    "example_or_analogy": "The training target is a direction arrow. The model is punished when its predicted arrow differs from the desired velocity.",
+    "mathematical_claim": "Flow or velocity prediction can be trained with an L2 regression objective comparing predicted and target vector fields.",
+    "caveat_or_warning": "The span supports the plain training-objective idea, not all choices of path construction or solver.",
+    "why_span_matters": "It anchors the mathematical lever behind flow matching in everyday terms: learn the arrows that move samples.",
+    "local_transcript_window": "And here we derive the loss based on the velocity, a.k.a, vector field, which is again, very nice. It can be expressed as an L2 regression loss.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "vector field"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 3
   },
   {
     "id": "ev-guidance-01",
@@ -1796,6 +2376,35 @@
     ],
     "confidence": "moderate",
     "keyword_hits": 8
+  },
+  {
+    "id": "ev-guidance-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:01:10.430",
+    "timestamp_end": "00:01:14.070",
+    "paraphrased_claim": "around 00:01:10.430, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
+    "lecture_argument": "The CME296 trending-topics lecture frames prompt-aligned image generation as a central goal: given an input prompt, generate an image aligned with it.",
+    "example_or_analogy": "The prompt is the user's instruction. A generated image only solves the task if it follows that instruction, not merely if it looks plausible.",
+    "mathematical_claim": "Guided generation conditions the sampling process on an external signal such as text, changing the direction or likelihood of candidate samples.",
+    "caveat_or_warning": "The span motivates prompt alignment broadly, not one specific guidance algorithm or a guarantee that prompt-following improves every sample.",
+    "why_span_matters": "It directly supports the first-principles problem behind guidance: balancing realism with obedience to a requested condition.",
+    "local_transcript_window": "been to learn how to generate images. So, for instance, given an input prompt, how can we generate an image that is quite aligned",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "prompt"
+    ],
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 12
   },
   {
     "id": "ev-guidance-05",
@@ -1885,6 +2494,65 @@
     ],
     "confidence": "strong",
     "keyword_hits": 45
+  },
+  {
+    "id": "ev-latent_space-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:01:57.770",
+    "timestamp_end": "00:02:03.810",
+    "paraphrased_claim": "around 00:01:57.770, the lecture uses latent while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "lecture_argument": "The CME296 model-training lecture describes a noisy latent input passing through downsampling and convolution operations, placing latent representations inside the training architecture.",
+    "example_or_analogy": "The model works on a noisy latent rather than raw pixels, using architecture steps to transform that compact representation.",
+    "mathematical_claim": "A latent variable is a compressed internal representation; training can operate on noisy latent states instead of full-resolution image space.",
+    "caveat_or_warning": "This span supports latent variables in the architecture, not a full autoencoder or VAE derivation.",
+    "why_span_matters": "It shows latent space as part of the actual generation pipeline, not only an abstract compression idea.",
+    "local_transcript_window": "The first one is the downsampling phases, where we put an input, a noisy latent, that we then perform convolution operations and downsampling operations",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "latent"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 22
+  },
+  {
+    "id": "ev-latent_space-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:29:20.990",
+    "timestamp_end": "00:29:26.350",
+    "paraphrased_claim": "around 00:29:20.990, the lecture uses latent, latent space while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "lecture_argument": "The CME296 evaluation lecture recalls methods for representing images in latent space, connecting latent representations to how image models are later assessed.",
+    "example_or_analogy": "The latent space is the model's internal image workbench: evaluation asks whether operations in that space still preserve what people care about in the final image.",
+    "mathematical_claim": "Latent-space methods encode images into a representation where generation, comparison, or editing can be cheaper than operating directly on pixels.",
+    "caveat_or_warning": "The span supports latent representation as course machinery, but evaluation still has to check what the latent representation loses.",
+    "why_span_matters": "It ties latent space to the measurement theme: compression is useful only if the output still preserves meaningful visual content.",
+    "local_transcript_window": "Well, in the class, we've seen that we have methods to represent images in what we call a latent space, or some space.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "latent",
+      "latent space"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 19
   },
   {
     "id": "ev-vision_transformers-02",
@@ -2001,6 +2669,35 @@
     ],
     "confidence": "moderate",
     "keyword_hits": 19
+  },
+  {
+    "id": "ev-generalization-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "00:08:06.720",
+    "timestamp_end": "00:08:10.280",
+    "paraphrased_claim": "around 00:08:06.720, the lecture uses test while covering Generalization. This supports the scoped claim that doing well on new cases, not only remembered examples.",
+    "lecture_argument": "The CME295 training lecture describes the standard split between training, validation, and test sets, then mentions adapting that pattern for another use case.",
+    "example_or_analogy": "The test set is the check after practice. The model trains on one set, tunes against another, and is finally judged on held-out cases.",
+    "mathematical_claim": "Generalization is evaluated by comparing behavior on training data with behavior on validation or test data that was not used for fitting.",
+    "caveat_or_warning": "A test split only proves behavior on sampled held-out cases. It can still miss deployment shifts or benchmark overfitting.",
+    "why_span_matters": "It gives direct LLM-course evidence for the basic measurement machinery behind generalization.",
+    "local_transcript_window": "So you would train on the training set, eval on the validation set, and then test on the test set. If you had another use case, let's suppose sentiment",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
+    "matched_terms": [
+      "test"
+    ],
+    "supports_concepts": [
+      "generalization"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 15
   },
   {
     "id": "ev-generalization-04",

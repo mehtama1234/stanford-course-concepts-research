@@ -74,6 +74,42 @@
 </article>
 
 
+<article class="evidence" id="ev-model_based_rl-02">
+  <h3><a href="../evidence.html#ev-model_based_rl-02">ev-model_based_rl-02</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:07.080 · moderate</p>
+  <p>around 00:00:07.080, the lecture uses model-based while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R multi-task RL lecture begins by saying it will finish model-based reinforcement learning, specifically using a learned model.</dd>
+    <dt>Example Or Analogy</dt><dd>The learned model is the substitute world: instead of only learning from real interaction, the agent can use predicted consequences to plan or generate data.</dd>
+    <dt>Mathematical Claim</dt><dd>Model-based RL learns or uses a transition model that predicts next states or outcomes, then uses that model for planning, control, or data generation.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span is introductory and does not cover model error. A learned model can be useful while still causing compounding planning mistakes.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives direct course evidence for the learned-model part of model-based RL.</dd>
+    <dt>Local Transcript Window</dt><dd>Now let&#x27;s get started. And today we will be finishing up model-based reinforcement learning, specifically a way to use a learned model</dd>
+  </dl>
+  <p class="meta">Matched terms: model-based · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-model_based_rl-03">
+  <h3><a href="../evidence.html#ev-model_based_rl-03">ev-model_based_rl-03</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:31.080 · moderate</p>
+  <p>around 00:01:31.080, the lecture uses transition while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R Q-learning review defines the reinforcement-learning setup using states, actions, and a transition dynamics function that moves from one state to another.</dd>
+    <dt>Example Or Analogy</dt><dd>The transition function is the rule for what happens next. If the agent knows or learns that rule, it can reason about consequences before acting.</dd>
+    <dt>Mathematical Claim</dt><dd>A transition model maps a state-action pair to a next-state distribution or prediction; model-based RL uses that object to simulate or plan future trajectories.</dd>
+    <dt>Caveat Or Warning</dt><dd>This tutorial span defines the transition object but does not itself show a full model-based algorithm.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the mathematical object that model-based RL needs: a representation of how actions change the world.</dd>
+    <dt>Local Transcript Window</dt><dd>that&#x27;s defined by a set of states and actions, and also a transition dynamics function which allows you to go from a certain state,</dd>
+  </dl>
+  <p class="meta">Matched terms: transition · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt</code></p>
+</article>
+
+
 <article class="evidence" id="ev-model_based_rl-05">
   <h3><a href="../evidence.html#ev-model_based_rl-05">ev-model_based_rl-05</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</strong></p>
@@ -89,6 +125,24 @@
   </dl>
   <p class="meta">Matched terms: planning · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-model_based_rl-06">
+  <h3><a href="../evidence.html#ev-model_based_rl-06">ev-model_based_rl-06</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:14:20.130 · weak</p>
+  <p>around 00:14:20.130, the lecture uses planning while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R frontiers lecture describes using a model for planning by thinking through what would be a good future outcome.</dd>
+    <dt>Example Or Analogy</dt><dd>Planning is mental rehearsal: before taking an action, the system imagines where different choices could lead.</dd>
+    <dt>Mathematical Claim</dt><dd>Planning with a model evaluates possible future trajectories using predicted outcomes rather than only observed trial-and-error.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports the planning role of models, but it also leaves open whether the model&#x27;s imagined future is accurate enough to trust.</dd>
+    <dt>Why This Span Matters</dt><dd>It keeps model-based RL tied to its first-principles purpose: replacing some real experimentation with predicted futures.</dd>
+    <dt>Local Transcript Window</dt><dd>problem because you&#x27;re only using the model for a form of planning where you&#x27;re thinking through what is a good outcome in the future</dd>
+  </dl>
+  <p class="meta">Matched terms: planning · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt</code></p>
 </article>
 </div>
 </section>
