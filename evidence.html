@@ -34,6 +34,23 @@
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers &amp; Large Language Models.txt</code></p>
 </article>
 
+<article class="evidence" id="ev-tokenization-supp-01">
+  <h3><a href="evidence.html#ev-tokenization-supp-01">ev-tokenization-supp-01</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:41:21.510 · moderate</p>
+  <p>Around 00:41:21, the lecture explains that a vision transformer cuts an image into patches and treats those patches as tokens, the visual counterpart of dividing text into model-readable units.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CME296 architectures lecture uses ViT patchification to generalize tokenization beyond words. The lecturer explains that an image is cut into patches, then those patches are considered tokens in the same spirit as word tokens before transformer-style processing.</dd>
+    <dt>Example Or Analogy</dt><dd>The concrete example is an image treated like a sequence. Instead of starting with words, the system starts with small image squares; each square becomes one unit the model can count, embed, position, and let attention compare.</dd>
+    <dt>Mathematical Claim</dt><dd>The mathematical move is a mapping from a raw image array into a finite list of patch tokens. If each patch is P by P pixels with C color channels, each patch can be flattened or projected into a vector, giving the transformer a sequence of visual units.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports tokenization as an input-interface principle across modalities. It does not claim that image patch tokens behave exactly like subword text tokens; patch size, overlap, and visual layout create different trade-offs.</dd>
+    <dt>Why This Span Matters</dt><dd>It deepens tokenization evidence because the lecture shows the same primitive outside language: messy continuous input must first become a countable set of units before the transformer can operate on it.</dd>
+    <dt>Local Transcript Window</dt><dd>The lecture explains that the model cuts the image into patches, considers those patches as tokens in the same way token units are used for words, and then processes them with transformer machinery.</dd>
+  </dl>
+  <p class="meta">Matched terms: patches, tokens, words · Basis: manual VTT timestamp span from CME296 Lecture 5 · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
+</article>
+
 <article class="evidence" id="ev-embeddings-02">
   <h3><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a></h3>
   <p><strong>Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</strong></p>
@@ -1528,6 +1545,23 @@
   </dl>
   <p class="meta">Matched terms: image · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap &amp; Current Trends.txt</code></p>
+</article>
+
+<article class="evidence" id="ev-vision_transformers-supp-01">
+  <h3><a href="evidence.html#ev-vision_transformers-supp-01">ev-vision_transformers-supp-01</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:35:17.550 · moderate</p>
+  <p>Between about 00:35 and 00:43, the lecture introduces the vision transformer idea, then explains the core mechanism: cut an image into patches and treat the patches as transformer tokens.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CME296 architectures lecture presents ViT as the transfer of transformer machinery into image understanding. The key move is not to read the whole image as one blob, but to divide it into patches, turn those patches into tokens, and let the transformer process their relationships.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture&#x27;s working example is a picture split into many small squares. Each square becomes the visual counterpart of a word token, so the image can enter the same sequence-processing style that made transformers effective for text.</dd>
+    <dt>Mathematical Claim</dt><dd>A vision transformer changes an image tensor into a sequence of patch vectors, adds information about patch position, and applies attention blocks so each patch representation can mix information from other patches.</dd>
+    <dt>Caveat Or Warning</dt><dd>This evidence supports the first-principles ViT interface. It does not settle all architecture choices, such as patch size, hybrid convolutional backbones, attention cost, or whether patch tokens preserve fine local detail.</dd>
+    <dt>Why This Span Matters</dt><dd>It replaces weak image-keyword evidence with a real lecture argument: ViTs matter because they make images compatible with transformer computation by turning spatial regions into token-like units.</dd>
+    <dt>Local Transcript Window</dt><dd>The lecture names the vision transformer, says it brought transformer backbones into image understanding, then explains that the model cuts the image into patches and considers those patches as tokens.</dd>
+  </dl>
+  <p class="meta">Matched terms: vision transformer, patches, tokens, image understanding · Basis: manual VTT timestamp span from CME296 Lecture 5 · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
 </article>
 
 <article class="evidence" id="ev-scaling_laws-01">
