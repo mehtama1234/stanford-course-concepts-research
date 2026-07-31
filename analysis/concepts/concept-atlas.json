@@ -27,8 +27,7 @@
       "compression"
     ],
     "course_evidence_ids": [
-      "ev-tokenization-01",
-      "ev-tokenization-02"
+      "ev-tokenization-01"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -61,11 +60,7 @@
       "compression"
     ],
     "course_evidence_ids": [
-      "ev-embeddings-01",
       "ev-embeddings-02",
-      "ev-embeddings-03",
-      "ev-embeddings-04",
-      "ev-embeddings-05",
       "ev-embeddings-06"
     ],
     "evidence_status": "transcript-backed"
@@ -134,11 +129,8 @@
     ],
     "course_evidence_ids": [
       "ev-attention-01",
-      "ev-attention-02",
-      "ev-attention-03",
       "ev-attention-04",
-      "ev-attention-05",
-      "ev-attention-06"
+      "ev-attention-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -172,12 +164,7 @@
       "feedback"
     ],
     "course_evidence_ids": [
-      "ev-transformer_block-01",
-      "ev-transformer_block-02",
-      "ev-transformer_block-03",
-      "ev-transformer_block-04",
-      "ev-transformer_block-05",
-      "ev-transformer_block-06"
+      "ev-transformer_block-01"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -313,8 +300,7 @@
       "feedback"
     ],
     "course_evidence_ids": [
-      "ev-agents_and_tools-01",
-      "ev-agents_and_tools-02"
+      "ev-agents_and_tools-01"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -349,10 +335,7 @@
     "course_evidence_ids": [
       "ev-evaluation-01",
       "ev-evaluation-02",
-      "ev-evaluation-03",
-      "ev-evaluation-04",
-      "ev-evaluation-05",
-      "ev-evaluation-06"
+      "ev-evaluation-04"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -386,11 +369,7 @@
     ],
     "course_evidence_ids": [
       "ev-policy-01",
-      "ev-policy-02",
-      "ev-policy-03",
-      "ev-policy-04",
-      "ev-policy-05",
-      "ev-policy-06"
+      "ev-policy-04"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -423,8 +402,7 @@
       "credit"
     ],
     "course_evidence_ids": [
-      "ev-reward-01",
-      "ev-reward-02"
+      "ev-reward-01"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -457,12 +435,7 @@
       "assignment"
     ],
     "course_evidence_ids": [
-      "ev-credit_assignment-01",
-      "ev-credit_assignment-02",
-      "ev-credit_assignment-03",
-      "ev-credit_assignment-04",
-      "ev-credit_assignment-05",
-      "ev-credit_assignment-06"
+      "ev-credit_assignment-04"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -496,11 +469,7 @@
     ],
     "course_evidence_ids": [
       "ev-policy_gradient-01",
-      "ev-policy_gradient-02",
-      "ev-policy_gradient-03",
-      "ev-policy_gradient-04",
-      "ev-policy_gradient-05",
-      "ev-policy_gradient-06"
+      "ev-policy_gradient-02"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -534,11 +503,7 @@
     ],
     "course_evidence_ids": [
       "ev-actor_critic-01",
-      "ev-actor_critic-02",
-      "ev-actor_critic-03",
-      "ev-actor_critic-04",
-      "ev-actor_critic-05",
-      "ev-actor_critic-06"
+      "ev-actor_critic-03"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -572,11 +537,7 @@
     ],
     "course_evidence_ids": [
       "ev-q_learning-01",
-      "ev-q_learning-02",
-      "ev-q_learning-03",
-      "ev-q_learning-04",
-      "ev-q_learning-05",
-      "ev-q_learning-06"
+      "ev-q_learning-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -610,11 +571,7 @@
     ],
     "course_evidence_ids": [
       "ev-offline_rl-01",
-      "ev-offline_rl-02",
-      "ev-offline_rl-03",
-      "ev-offline_rl-04",
-      "ev-offline_rl-05",
-      "ev-offline_rl-06"
+      "ev-offline_rl-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -648,11 +605,7 @@
     ],
     "course_evidence_ids": [
       "ev-model_based_rl-01",
-      "ev-model_based_rl-02",
-      "ev-model_based_rl-03",
-      "ev-model_based_rl-04",
-      "ev-model_based_rl-05",
-      "ev-model_based_rl-06"
+      "ev-model_based_rl-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -686,11 +639,7 @@
     ],
     "course_evidence_ids": [
       "ev-exploration-01",
-      "ev-exploration-02",
-      "ev-exploration-03",
-      "ev-exploration-04",
-      "ev-exploration-05",
-      "ev-exploration-06"
+      "ev-exploration-03"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -724,8 +673,7 @@
       "scale"
     ],
     "course_evidence_ids": [
-      "ev-rl_for_llms-01",
-      "ev-rl_for_llms-02"
+      "ev-rl_for_llms-01"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -759,11 +707,7 @@
     ],
     "course_evidence_ids": [
       "ev-diffusion-01",
-      "ev-diffusion-02",
-      "ev-diffusion-03",
-      "ev-diffusion-04",
-      "ev-diffusion-05",
-      "ev-diffusion-06"
+      "ev-diffusion-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -797,11 +741,7 @@
     ],
     "course_evidence_ids": [
       "ev-score_matching-01",
-      "ev-score_matching-02",
-      "ev-score_matching-03",
-      "ev-score_matching-04",
-      "ev-score_matching-05",
-      "ev-score_matching-06"
+      "ev-score_matching-04"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -835,11 +775,7 @@
     ],
     "course_evidence_ids": [
       "ev-flow_matching-01",
-      "ev-flow_matching-02",
-      "ev-flow_matching-03",
-      "ev-flow_matching-04",
-      "ev-flow_matching-05",
-      "ev-flow_matching-06"
+      "ev-flow_matching-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -874,10 +810,7 @@
     "course_evidence_ids": [
       "ev-guidance-01",
       "ev-guidance-02",
-      "ev-guidance-03",
-      "ev-guidance-04",
-      "ev-guidance-05",
-      "ev-guidance-06"
+      "ev-guidance-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -911,11 +844,7 @@
     ],
     "course_evidence_ids": [
       "ev-latent_space-01",
-      "ev-latent_space-02",
-      "ev-latent_space-03",
-      "ev-latent_space-04",
-      "ev-latent_space-05",
-      "ev-latent_space-06"
+      "ev-latent_space-03"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -948,7 +877,6 @@
       "invariance"
     ],
     "course_evidence_ids": [
-      "ev-vision_transformers-01",
       "ev-vision_transformers-02"
     ],
     "evidence_status": "transcript-backed"
@@ -983,11 +911,7 @@
     ],
     "course_evidence_ids": [
       "ev-scaling_laws-01",
-      "ev-scaling_laws-02",
-      "ev-scaling_laws-03",
-      "ev-scaling_laws-04",
-      "ev-scaling_laws-05",
-      "ev-scaling_laws-06"
+      "ev-scaling_laws-02"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -1021,10 +945,7 @@
     ],
     "course_evidence_ids": [
       "ev-generalization-01",
-      "ev-generalization-02",
-      "ev-generalization-03",
-      "ev-generalization-04",
-      "ev-generalization-05"
+      "ev-generalization-04"
     ],
     "evidence_status": "transcript-backed"
   }

@@ -4,23 +4,24 @@ This audit separates transcript anchoring from editorially reviewed evidence. A 
 
 ## Counts
 
-- Total evidence records: 131
-- Manual deepened records: 52
-- Generated transcript-cue records needing review: 79
-- Template-style example records still present: 79
-- Generated records incorrectly marked strong: 0
-- Records missing useful local transcript windows: 0
+- Published evidence records: 52
+- Published manual deepened records: 52
+- Published generated records: 0
+- Unpublished generated transcript-cue records in review queue: 79
+- Review-queue generated records: 79
+- Template-style example records still published: 0
+- Published generated records incorrectly marked strong: 0
+- Published records missing useful local transcript windows: 0
 
 ## Confidence Counts
 
-- moderate: 66
+- moderate: 7
 - strong: 38
-- weak: 27
+- weak: 7
 
 ## Evidence Basis Counts
 
-- clean transcript keyword cue: 3
-- local VTT timestamp cue: 128
+- local VTT timestamp cue: 52
 
 ## Remaining Review Queue
 

@@ -210,6 +210,8 @@ def main() -> int:
             errors.append(f"evidence {ev['id']} has no evidence_scope")
         if ev.get("evidence_review_status") not in {"manual_deepened", "generated_transcript_cue_needs_review"}:
             errors.append(f"evidence {ev['id']} has invalid evidence_review_status")
+        if ev.get("evidence_review_status") != "manual_deepened":
+            errors.append(f"evidence {ev['id']} is published without manual_deepened review status")
         if ev.get("evidence_review_status") == "generated_transcript_cue_needs_review" and ev.get("confidence") == "strong":
             errors.append(f"evidence {ev['id']} has generated review-needed evidence marked strong")
         if len(str(ev.get("local_transcript_window", "")).split()) < 8:

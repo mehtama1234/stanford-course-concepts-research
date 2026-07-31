@@ -10,9 +10,9 @@ python3 scripts/validate_all.py
 Latest validation result:
 
 ```text
-validated 28 concepts, 6 themes, 15 subthemes, 131 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 52 manually deepened evidence records
-validated 34 html files and 131 evidence anchors
-audited 131 evidence records; 52 manual, 79 generated-needs-review, 0 generated strong
+validated 28 concepts, 6 themes, 15 subthemes, 52 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 52 manually deepened evidence records
+validated 34 html files and 52 evidence anchors
+audited 52 published evidence records and 79 queued records; 52 manual, 0 published generated-needs-review, 0 generated strong
 ```
 
 ## What Was Checked
@@ -33,8 +33,9 @@ audited 131 evidence records; 52 manual, 79 generated-needs-review, 0 generated 
 - Every evidence record has matched transcript terms.
 - Every evidence record includes a lecture argument, example or analogy, mathematical claim, caveat or warning, and why the span matters.
 - Every evidence record includes a local transcript window or an explicit note that only clean transcript keyword cues were available.
-- Every evidence record is labeled as either `manual_deepened` or `generated_transcript_cue_needs_review`.
-- Generated transcript-cue evidence is prevented from claiming `strong` confidence.
+- Every published evidence record is labeled `manual_deepened`.
+- Generated transcript-cue evidence is held in `analysis/evidence/evidence-review-queue.json` instead of being published as transcript evidence.
+- Generated transcript-cue evidence is prevented from claiming `strong` confidence if it is reintroduced into the published ledger.
 - Unsupported `strong` confidence is rejected.
 - The evidence-fidelity audit writes `analysis/audits/evidence-fidelity-report.md` with counts and a remaining review queue.
 - Every method family has evidence through its supporting concepts.

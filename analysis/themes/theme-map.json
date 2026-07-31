@@ -19,9 +19,9 @@
       "vision_transformers"
     ],
     "course_coverage": {
-      "stanford-cme295-transformers-llms-autumn-2025": 10,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
-      "stanford-cs224r-deep-rl-spring-2025": 7
+      "stanford-cme295-transformers-llms-autumn-2025": 7,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 2,
+      "stanford-cs224r-deep-rl-spring-2025": 1
     },
     "cross_course_argument": "The shared argument is that intelligence first needs a manipulable workspace. CME295 shows this with tokens, positions, attention, and transformer blocks: language becomes pieces that can exchange information. CME296 reuses the same idea for images, where patches and latent coordinates let vision systems compare and edit visual structure. CS224R contributes the agent-state version of the same pressure: actions are only learnable after the world has been represented in a form where consequences can be compared.",
     "mathematical_spine": "The mathematical spine is mapping and geometry. Raw objects are mapped into IDs or vectors; vectors can be compared by scores, distances, and directions; layers then update those vectors. The point of the math is not decoration. It gives the learner a place where similarity, order, and context can become operations.",
@@ -45,7 +45,7 @@
     "course_coverage": {
       "stanford-cme295-transformers-llms-autumn-2025": 3,
       "stanford-cme296-diffusion-large-vision-models-spring-2026": 1,
-      "stanford-cs224r-deep-rl-spring-2025": 2
+      "stanford-cs224r-deep-rl-spring-2025": 1
     },
     "cross_course_argument": "The shared argument is that a model does not become useful just by containing parameters. It needs signals after attempts. CME295 emphasizes broad practice and later steering for language models. CS224R makes feedback explicit as rewards, preferences, and policy changes. CME296 shows a related training story in generative models, where prediction errors over noisy or hidden structure teach the model how to improve samples.",
     "mathematical_spine": "The mathematical spine is error turned into update. A loss, reward, or preference comparison is compressed into a number or direction. Gradients or policy updates then change future behavior. The important concept is that feedback must be both informative enough to guide learning and narrow enough to compute.",
@@ -74,7 +74,7 @@
       "exploration"
     ],
     "course_coverage": {
-      "stanford-cs224r-deep-rl-spring-2025": 49,
+      "stanford-cs224r-deep-rl-spring-2025": 15,
       "stanford-cme295-transformers-llms-autumn-2025": 1
     },
     "cross_course_argument": "The shared argument is that choosing changes what evidence comes next. CS224R is the center of this theme: policies, rewards, credit assignment, Q-values, model-based planning, and offline data all exist because action unfolds through time. CME295 connects when reasoning systems and tool-using LLMs become sequential decision makers instead of one-shot predictors.",
@@ -96,7 +96,7 @@
     ],
     "course_coverage": {
       "stanford-cme295-transformers-llms-autumn-2025": 2,
-      "stanford-cs224r-deep-rl-spring-2025": 2
+      "stanford-cs224r-deep-rl-spring-2025": 1
     },
     "cross_course_argument": "The shared argument is that some capability comes from work done after the input arrives. CME295 shows this through reasoning traces, retrieval, tools, and agents. CS224R supplies the decision-loop vocabulary: state, action, observation, update. Together they explain why a modern system can be more than a frozen predictor when it is allowed to search, write intermediate state, and check external evidence.",
     "mathematical_spine": "The mathematical spine is sequential computation over a changing context. Extra tokens, tool calls, and observations become new state. Each step conditions the next step, so the final answer depends on a path rather than a single forward pass.",
@@ -121,7 +121,7 @@
       "latent_space"
     ],
     "course_coverage": {
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 30
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 11
     },
     "cross_course_argument": "The shared argument is that generation is easier when treated as guided movement. CME296 is the center: diffusion, score matching, flow matching, guidance, and latent spaces all build a route from uncertainty toward a structured sample. CME295 connects through transformer-based vision and conditioning, where instructions or text change the path through visual possibilities.",
     "mathematical_spine": "The mathematical spine is a direction field through a space of possible samples. Noise represents many possible worlds. A score, velocity, or guided update tells the sample which way to move. Repeating small moves makes a hard global generation problem manageable.",
@@ -143,9 +143,9 @@
       "generalization"
     ],
     "course_coverage": {
-      "stanford-cme295-transformers-llms-autumn-2025": 5,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
-      "stanford-cs224r-deep-rl-spring-2025": 5
+      "stanford-cme295-transformers-llms-autumn-2025": 3,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 2,
+      "stanford-cs224r-deep-rl-spring-2025": 2
     },
     "cross_course_argument": "The shared argument is that progress claims need disciplined measurement. CME295 raises evaluation and scaling for LLM capability. CS224R shows why offline and sequential settings can fool naive scores. CME296 adds visual-generation evaluation, where realism, alignment, diversity, and artifacts are hard to compress into one number.",
     "mathematical_spine": "The mathematical spine is sampling and compression. A metric samples behavior under chosen conditions and compresses it into a score or curve. Scaling laws then fit relationships between resources and measured loss or capability. The hidden issue is what the measurement leaves out.",

@@ -31,7 +31,7 @@
     <dt>First-Principles Reason</dt><dd>Computation needs finite symbols. Human language is open-ended, so the first constraint is to choose a manageable set of chunks that can cover new text.</dd>
     <dt>Math Underneath</dt><dd>A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-01">ev-tokenization-01</a> <span class="time">00:02:36.320</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li><li><a href="evidence.html#ev-tokenization-02">ev-tokenization-02</a> <span class="time">00:35:56.570</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-01">ev-tokenization-01</a> <span class="time">00:02:36.320</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li></ul>
 </article>
 
 <article class="concept-card" id="embeddings">
@@ -43,7 +43,7 @@
     <dt>First-Principles Reason</dt><dd>A learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.</dd>
     <dt>Math Underneath</dt><dd>An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-01">ev-embeddings-01</a> <span class="time">00:05:16.580</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-03">ev-embeddings-03</a> <span class="time">00:40:26.570</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-06">ev-embeddings-06</a> <span class="time">00:20:34.500</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li></ul>
 </article>
 
 <article class="concept-card" id="positional_encoding">
@@ -67,7 +67,7 @@
     <dt>First-Principles Reason</dt><dd>Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
     <dt>Math Underneath</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-02">ev-attention-02</a> <span class="time">00:32:55.100</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-attention-03">ev-attention-03</a> <span class="time">00:32:12.760</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-04">ev-attention-04</a> <span class="time">01:08:17.450</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-attention-05">ev-attention-05</a> <span class="time">00:38:20.513</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li></ul>
 </article>
 
 <article class="concept-card" id="transformer_block">
@@ -79,7 +79,7 @@
     <dt>First-Principles Reason</dt><dd>A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.</dd>
     <dt>Math Underneath</dt><dd>A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-transformer_block-02">ev-transformer_block-02</a> <span class="time">00:35:05.103</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-transformer_block-03">ev-transformer_block-03</a> <span class="time">00:48:04.220</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li></ul>
 </article>
 
 <article class="concept-card" id="pretraining">
@@ -127,7 +127,7 @@
     <dt>First-Principles Reason</dt><dd>A useful system often needs perception, memory, action, and correction, not only prediction.</dd>
     <dt>Math Underneath</dt><dd>The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li><li><a href="evidence.html#ev-agents_and_tools-02">ev-agents_and_tools-02</a> <span class="time">00:01:19.350</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li></ul>
 </article>
 
 <article class="concept-card" id="evaluation">
@@ -139,7 +139,7 @@
     <dt>First-Principles Reason</dt><dd>Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.</dd>
     <dt>Math Underneath</dt><dd>A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-evaluation-03">ev-evaluation-03</a> <span class="time">00:00:28.100</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-evaluation-04">ev-evaluation-04</a> <span class="time">00:12:04.240</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li></ul>
 </article>
 
 <article class="concept-card" id="policy">
@@ -151,7 +151,7 @@
     <dt>First-Principles Reason</dt><dd>In a changing environment, the learner must connect what it can see now to a choice under uncertainty.</dd>
     <dt>Math Underneath</dt><dd>A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li><li><a href="evidence.html#ev-policy-02">ev-policy-02</a> <span class="time">00:00:10.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy-03">ev-policy-03</a> <span class="time">00:00:14.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li><li><a href="evidence.html#ev-policy-04">ev-policy-04</a> <span class="time">00:00:28.100</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
 </article>
 
 <article class="concept-card" id="reward">
@@ -163,7 +163,7 @@
     <dt>First-Principles Reason</dt><dd>Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.</dd>
     <dt>Math Underneath</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-reward-02">ev-reward-02</a> <span class="time">00:00:05.480</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li></ul>
 </article>
 
 <article class="concept-card" id="credit_assignment">
@@ -175,7 +175,7 @@
     <dt>First-Principles Reason</dt><dd>Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.</dd>
     <dt>Math Underneath</dt><dd>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-01">ev-credit_assignment-01</a> <span class="time">00:46:20.770</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro</li><li><a href="evidence.html#ev-credit_assignment-02">ev-credit_assignment-02</a> <span class="time">00:28:09.790</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li><li><a href="evidence.html#ev-credit_assignment-03">ev-credit_assignment-03</a> <span class="time">00:01:51.720</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-04">ev-credit_assignment-04</a> <span class="time">00:11:05.430</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
 </article>
 
 <article class="concept-card" id="policy_gradient">
@@ -187,7 +187,7 @@
     <dt>First-Principles Reason</dt><dd>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
     <dt>Math Underneath</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy_gradient-02">ev-policy_gradient-02</a> <span class="time">00:06:57.150</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients</li><li><a href="evidence.html#ev-policy_gradient-03">ev-policy_gradient-03</a> <span class="time">00:01:02.160</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy_gradient-02">ev-policy_gradient-02</a> <span class="time">00:06:57.150</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients</li></ul>
 </article>
 
 <article class="concept-card" id="actor_critic">
@@ -199,7 +199,7 @@
     <dt>First-Principles Reason</dt><dd>Decision making improves when action choice and outcome evaluation can help each other.</dd>
     <dt>Math Underneath</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-actor_critic-02">ev-actor_critic-02</a> <span class="time">00:00:33.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-actor_critic-03">ev-actor_critic-03</a> <span class="time">00:01:26.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-actor_critic-03">ev-actor_critic-03</a> <span class="time">00:01:26.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
 </article>
 
 <article class="concept-card" id="q_learning">
@@ -211,7 +211,7 @@
     <dt>First-Principles Reason</dt><dd>A decision can be valued by immediate payoff plus the value of the future it leads to.</dd>
     <dt>Math Underneath</dt><dd>Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-q_learning-01">ev-q_learning-01</a> <span class="time">00:00:30.320</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li><li><a href="evidence.html#ev-q_learning-02">ev-q_learning-02</a> <span class="time">00:00:11.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</li><li><a href="evidence.html#ev-q_learning-03">ev-q_learning-03</a> <span class="time">00:05:31.730</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-q_learning-01">ev-q_learning-01</a> <span class="time">00:00:30.320</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li><li><a href="evidence.html#ev-q_learning-05">ev-q_learning-05</a> <span class="time">00:01:39.540</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li></ul>
 </article>
 
 <article class="concept-card" id="offline_rl">
@@ -223,7 +223,7 @@
     <dt>First-Principles Reason</dt><dd>The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
     <dt>Math Underneath</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-offline_rl-01">ev-offline_rl-01</a> <span class="time">00:07:44.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-offline_rl-02">ev-offline_rl-02</a> <span class="time">00:08:08.890</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li><li><a href="evidence.html#ev-offline_rl-03">ev-offline_rl-03</a> <span class="time">00:00:08.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-offline_rl-01">ev-offline_rl-01</a> <span class="time">00:07:44.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-offline_rl-05">ev-offline_rl-05</a> <span class="time">00:02:40.730</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</li></ul>
 </article>
 
 <article class="concept-card" id="model_based_rl">
@@ -235,7 +235,7 @@
     <dt>First-Principles Reason</dt><dd>If the agent can imagine consequences, it can compare possible futures before acting.</dd>
     <dt>Math Underneath</dt><dd>A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-model_based_rl-01">ev-model_based_rl-01</a> <span class="time">00:04:50.450</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</li><li><a href="evidence.html#ev-model_based_rl-02">ev-model_based_rl-02</a> <span class="time">00:00:07.080</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL</li><li><a href="evidence.html#ev-model_based_rl-03">ev-model_based_rl-03</a> <span class="time">00:01:31.080</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-model_based_rl-01">ev-model_based_rl-01</a> <span class="time">00:04:50.450</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</li><li><a href="evidence.html#ev-model_based_rl-05">ev-model_based_rl-05</a> <span class="time">00:10:35.220</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li></ul>
 </article>
 
 <article class="concept-card" id="exploration">
@@ -247,7 +247,7 @@
     <dt>First-Principles Reason</dt><dd>Information has value. Some actions are useful because they reveal the world, not because they immediately pay off.</dd>
     <dt>Math Underneath</dt><dd>Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-exploration-01">ev-exploration-01</a> <span class="time">00:00:07.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration</li><li><a href="evidence.html#ev-exploration-02">ev-exploration-02</a> <span class="time">00:13:11.590</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li><li><a href="evidence.html#ev-exploration-03">ev-exploration-03</a> <span class="time">00:27:49.940</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-exploration-01">ev-exploration-01</a> <span class="time">00:00:07.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration</li><li><a href="evidence.html#ev-exploration-03">ev-exploration-03</a> <span class="time">00:27:49.940</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
 </article>
 
 <article class="concept-card" id="rl_for_llms">
@@ -259,7 +259,7 @@
     <dt>First-Principles Reason</dt><dd>Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.</dd>
     <dt>Math Underneath</dt><dd>The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <span class="time">00:00:18.960</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li><li><a href="evidence.html#ev-rl_for_llms-02">ev-rl_for_llms-02</a> <span class="time">00:00:07.020</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <span class="time">00:00:18.960</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li></ul>
 </article>
 
 <article class="concept-card" id="diffusion">
@@ -271,7 +271,7 @@
     <dt>First-Principles Reason</dt><dd>A hard generation problem can be broken into many easier cleanup steps.</dd>
     <dt>Math Underneath</dt><dd>A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-01">ev-diffusion-01</a> <span class="time">00:00:26.360</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li><li><a href="evidence.html#ev-diffusion-02">ev-diffusion-02</a> <span class="time">00:00:05.560</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 1 - Diffusion</li><li><a href="evidence.html#ev-diffusion-03">ev-diffusion-03</a> <span class="time">00:01:53.150</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-01">ev-diffusion-01</a> <span class="time">00:00:26.360</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li><li><a href="evidence.html#ev-diffusion-05">ev-diffusion-05</a> <span class="time">00:01:35.550</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li></ul>
 </article>
 
 <article class="concept-card" id="score_matching">
@@ -283,7 +283,7 @@
     <dt>First-Principles Reason</dt><dd>In a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.</dd>
     <dt>Math Underneath</dt><dd>The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-score_matching-01">ev-score_matching-01</a> <span class="time">00:00:18.000</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li><li><a href="evidence.html#ev-score_matching-02">ev-score_matching-02</a> <span class="time">00:00:35.440</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-score_matching-03">ev-score_matching-03</a> <span class="time">00:03:01.750</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-score_matching-01">ev-score_matching-01</a> <span class="time">00:00:18.000</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li><li><a href="evidence.html#ev-score_matching-04">ev-score_matching-04</a> <span class="time">00:09:05.060</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li></ul>
 </article>
 
 <article class="concept-card" id="flow_matching">
@@ -295,7 +295,7 @@
     <dt>First-Principles Reason</dt><dd>Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</dd>
     <dt>Math Underneath</dt><dd>A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-flow_matching-01">ev-flow_matching-01</a> <span class="time">00:00:15.600</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-flow_matching-02">ev-flow_matching-02</a> <span class="time">00:13:10.110</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li><li><a href="evidence.html#ev-flow_matching-03">ev-flow_matching-03</a> <span class="time">01:32:17.230</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-flow_matching-01">ev-flow_matching-01</a> <span class="time">00:00:15.600</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-flow_matching-05">ev-flow_matching-05</a> <span class="time">00:04:56.470</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li></ul>
 </article>
 
 <article class="concept-card" id="guidance">
@@ -307,7 +307,7 @@
     <dt>First-Principles Reason</dt><dd>Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
     <dt>Math Underneath</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-guidance-01">ev-guidance-01</a> <span class="time">00:05:58.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-guidance-02">ev-guidance-02</a> <span class="time">00:00:58.640</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li><li><a href="evidence.html#ev-guidance-03">ev-guidance-03</a> <span class="time">00:51:29.120</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-guidance-01">ev-guidance-01</a> <span class="time">00:05:58.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-guidance-02">ev-guidance-02</a> <span class="time">00:00:58.640</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li><li><a href="evidence.html#ev-guidance-05">ev-guidance-05</a> <span class="time">00:04:43.140</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
 
 <article class="concept-card" id="latent_space">
@@ -319,7 +319,7 @@
     <dt>First-Principles Reason</dt><dd>If the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.</dd>
     <dt>Math Underneath</dt><dd>An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-latent_space-01">ev-latent_space-01</a> <span class="time">00:15:08.170</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li><li><a href="evidence.html#ev-latent_space-02">ev-latent_space-02</a> <span class="time">00:19:55.980</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li><li><a href="evidence.html#ev-latent_space-03">ev-latent_space-03</a> <span class="time">00:03:27.420</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-latent_space-01">ev-latent_space-01</a> <span class="time">00:15:08.170</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li><li><a href="evidence.html#ev-latent_space-03">ev-latent_space-03</a> <span class="time">00:03:27.420</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
 
 <article class="concept-card" id="vision_transformers">
@@ -331,7 +331,7 @@
     <dt>First-Principles Reason</dt><dd>Images are not just local texture. Shape, object identity, and layout require comparing distant parts.</dd>
     <dt>Math Underneath</dt><dd>An image is split into patches, each patch gets a vector, and attention lets patches exchange information.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-vision_transformers-01">ev-vision_transformers-01</a> <span class="time">00:01:51.640</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-vision_transformers-02">ev-vision_transformers-02</a> <span class="time">00:51:26.940</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-vision_transformers-02">ev-vision_transformers-02</a> <span class="time">00:51:26.940</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li></ul>
 </article>
 
 <article class="concept-card" id="scaling_laws">
@@ -343,7 +343,7 @@
     <dt>First-Principles Reason</dt><dd>Capacity, data, and compute are bottlenecks. When one bottleneck is relaxed, another can become the limiter.</dd>
     <dt>Math Underneath</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-scaling_laws-01">ev-scaling_laws-01</a> <span class="time">00:04:50.840</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-scaling_laws-02">ev-scaling_laws-02</a> <span class="time">00:00:28.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li><li><a href="evidence.html#ev-scaling_laws-03">ev-scaling_laws-03</a> <span class="time">00:17:45.860</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-scaling_laws-01">ev-scaling_laws-01</a> <span class="time">00:04:50.840</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-scaling_laws-02">ev-scaling_laws-02</a> <span class="time">00:00:28.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li></ul>
 </article>
 
 <article class="concept-card" id="generalization">
@@ -355,7 +355,7 @@
     <dt>First-Principles Reason</dt><dd>Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.</dd>
     <dt>Math Underneath</dt><dd>Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-generalization-01">ev-generalization-01</a> <span class="time">00:22:49.090</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li><li><a href="evidence.html#ev-generalization-02">ev-generalization-02</a> <span class="time">00:08:06.720</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-generalization-03">ev-generalization-03</a> <span class="time">01:33:34.160</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-generalization-01">ev-generalization-01</a> <span class="time">00:22:49.090</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li><li><a href="evidence.html#ev-generalization-04">ev-generalization-04</a> <span class="time">01:13:19.220</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>
 </section>
 </main>

@@ -1007,6 +1007,7 @@ def build() -> None:
     concept_overrides = load_overrides("concepts.json")
     evidence_overrides = load_overrides("evidence.json")
     evidence_records: list[dict[str, Any]] = []
+    evidence_review_queue: list[dict[str, Any]] = []
     concept_outputs: list[dict[str, Any]] = []
     evidence_by_concept: dict[str, list[str]] = defaultdict(list)
 
@@ -1018,29 +1019,30 @@ def build() -> None:
             confidence = match["confidence"]
             if not override and confidence == "strong":
                 confidence = "moderate"
-            evidence_records.append(
-                {
-                    "id": evidence_id,
-                    "course": match["course"],
-                    "video_title": match["video_title"],
-                    "transcript_path": match["transcript_path"],
-                    "timestamp_start": match["timestamp_start"],
-                    "timestamp_end": match["timestamp_end"],
-                    "paraphrased_claim": evidence_note(concept, match),
-                    **evidence_depth(concept, match),
-                    "local_transcript_window": match["local_transcript_window"],
-                    "evidence_basis": "local VTT timestamp cue" if match["timestamp_start"] else "clean transcript keyword cue",
-                    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
-                    "evidence_review_status": "manual_deepened" if override else "generated_transcript_cue_needs_review",
-                    "matched_terms": match["matched_terms"],
-                    "supports_concepts": [concept["id"]],
-                    "supports_subthemes": [s["id"] for s in SUBTHEMES if concept["id"] in s["concepts"]],
-                    "confidence": confidence,
-                    "keyword_hits": match["keyword_hits"],
-                }
-                | override
-            )
-            evidence_by_concept[concept["id"]].append(evidence_id)
+            record = {
+                "id": evidence_id,
+                "course": match["course"],
+                "video_title": match["video_title"],
+                "transcript_path": match["transcript_path"],
+                "timestamp_start": match["timestamp_start"],
+                "timestamp_end": match["timestamp_end"],
+                "paraphrased_claim": evidence_note(concept, match),
+                **evidence_depth(concept, match),
+                "local_transcript_window": match["local_transcript_window"],
+                "evidence_basis": "local VTT timestamp cue" if match["timestamp_start"] else "clean transcript keyword cue",
+                "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+                "evidence_review_status": "manual_deepened" if override else "generated_transcript_cue_needs_review",
+                "matched_terms": match["matched_terms"],
+                "supports_concepts": [concept["id"]],
+                "supports_subthemes": [s["id"] for s in SUBTHEMES if concept["id"] in s["concepts"]],
+                "confidence": confidence,
+                "keyword_hits": match["keyword_hits"],
+            } | override
+            if override:
+                evidence_records.append(record)
+                evidence_by_concept[concept["id"]].append(evidence_id)
+            else:
+                evidence_review_queue.append(record)
 
         out = {k: v for k, v in concept.items() if k not in {"keywords", "theme", "primitives"}}
         out.update(deep_treatment(concept))
@@ -1112,6 +1114,7 @@ def build() -> None:
     write_json(ROOT / "analysis/themes/theme-map.json", theme_outputs)
     write_json(ROOT / "analysis/themes/subtheme-map.json", subtheme_outputs)
     write_json(ROOT / "analysis/evidence/evidence-ledger.json", evidence_records)
+    write_json(ROOT / "analysis/evidence/evidence-review-queue.json", evidence_review_queue)
     write_json(ROOT / "analysis/throughlines/primitives.json", primitives)
     write_json(ROOT / "analysis/throughlines/method-families.json", build_method_families(evidence_by_concept))
     write_big_picture(theme_outputs, subtheme_outputs, primitives)

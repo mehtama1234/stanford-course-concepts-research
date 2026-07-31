@@ -20,20 +20,6 @@
         "timestamp_start": "00:02:36.320"
       },
       {
-        "concept": "tokenization",
-        "evidence_id": "ev-tokenization-02",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
-        "timestamp_start": "00:35:56.570"
-      },
-      {
-        "concept": "vision_transformers",
-        "evidence_id": "ev-vision_transformers-01",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
-        "timestamp_start": "00:01:51.640"
-      },
-      {
         "concept": "vision_transformers",
         "evidence_id": "ev-vision_transformers-02",
         "course": "stanford-cme295-transformers-llms-autumn-2025",
@@ -51,7 +37,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: The system needs a first set of pieces before it can compare, remember, or predict anything. The deeper reason is: Discrete inputs need a stable interface into numerical computation. The subtheme groups tokenization, vision transformers because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Maps from raw objects into IDs or vectors. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to attention, embeddings, latent space, positional encoding, pretraining. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-tokenization-01, ev-tokenization-02, ev-vision_transformers-01, ev-vision_transformers-02. Those records point to the concrete transcript anchors for tokenization, vision transformers. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-tokenization-01, ev-vision_transformers-02. Those records point to the concrete transcript anchors for tokenization, vision transformers. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -69,17 +55,17 @@
     "examples_from_courses": [
       {
         "concept": "embeddings",
-        "evidence_id": "ev-embeddings-01",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
-        "timestamp_start": "00:05:16.580"
-      },
-      {
-        "concept": "embeddings",
         "evidence_id": "ev-embeddings-02",
         "course": "stanford-cme295-transformers-llms-autumn-2025",
         "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
         "timestamp_start": "00:10:39.810"
+      },
+      {
+        "concept": "embeddings",
+        "evidence_id": "ev-embeddings-06",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+        "timestamp_start": "00:20:34.500"
       },
       {
         "concept": "latent_space",
@@ -90,10 +76,10 @@
       },
       {
         "concept": "latent_space",
-        "evidence_id": "ev-latent_space-02",
+        "evidence_id": "ev-latent_space-03",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
-        "timestamp_start": "00:19:55.980"
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "timestamp_start": "00:03:27.420"
       }
     ],
     "connected_concepts": [
@@ -107,7 +93,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: Related things need to be near enough that arithmetic can share what is learned. The deeper reason is: Similarity becomes useful only after it is represented as distance or direction. The subtheme groups embeddings, latent space because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Vectors, distances, projections, and learned coordinate systems. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to compression, diffusion, embeddings, latent space, representation learning. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-embeddings-01, ev-embeddings-02, ev-latent_space-01, ev-latent_space-02. Those records point to the concrete transcript anchors for embeddings, latent space. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-embeddings-02, ev-embeddings-06, ev-latent_space-01, ev-latent_space-03. Those records point to the concrete transcript anchors for embeddings, latent space. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -132,10 +118,10 @@
       },
       {
         "concept": "attention",
-        "evidence_id": "ev-attention-02",
+        "evidence_id": "ev-attention-04",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
-        "timestamp_start": "00:32:55.100"
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+        "timestamp_start": "01:08:17.450"
       },
       {
         "concept": "positional_encoding",
@@ -162,7 +148,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: The model cannot treat every past detail as equally relevant. The deeper reason is: Context is useful only when it is selected and weighted. The subtheme groups attention, positional encoding because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Similarity scores, normalized weights, and weighted averages. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to attention, credit assignment, retrieval, transformer block, vision transformers. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-attention-01, ev-attention-02, ev-positional_encoding-01, ev-positional_encoding-02. Those records point to the concrete transcript anchors for attention, positional encoding. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-attention-01, ev-attention-04, ev-positional_encoding-01, ev-positional_encoding-02. Those records point to the concrete transcript anchors for attention, positional encoding. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -183,13 +169,6 @@
         "course": "stanford-cme295-transformers-llms-autumn-2025",
         "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
         "timestamp_start": "00:05:55.580"
-      },
-      {
-        "concept": "transformer_block",
-        "evidence_id": "ev-transformer_block-02",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
-        "timestamp_start": "00:35:05.103"
       }
     ],
     "connected_concepts": [
@@ -201,7 +180,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: Hard understanding requires more than one pass over the input. The deeper reason is: Repeated small transformations can build complex internal state. The subtheme groups transformer block because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Layer composition, residual updates, normalization, and nonlinear maps. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to attention, normalization, residual connections, vision transformers. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-transformer_block-01, ev-transformer_block-02. Those records point to the concrete transcript anchors for transformer block. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-transformer_block-01. Those records point to the concrete transcript anchors for transformer block. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -278,25 +257,11 @@
         "timestamp_start": "00:04:57.250"
       },
       {
-        "concept": "reward",
-        "evidence_id": "ev-reward-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
-        "timestamp_start": "00:00:05.480"
-      },
-      {
         "concept": "rl_for_llms",
         "evidence_id": "ev-rl_for_llms-01",
         "course": "stanford-cme295-transformers-llms-autumn-2025",
         "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
         "timestamp_start": "00:00:18.960"
-      },
-      {
-        "concept": "rl_for_llms",
-        "evidence_id": "ev-rl_for_llms-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
-        "timestamp_start": "00:00:07.020"
       }
     ],
     "connected_concepts": [
@@ -312,7 +277,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: People can often say which answer is better even when they cannot write the perfect answer in advance. The deeper reason is: Comparison can be converted into a direction for changing behavior. The subtheme groups fine tuning, reward, rl for llms because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Preference losses, reward models, and policy updates. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to credit assignment, evaluation, fine tuning, policy, policy gradient. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-fine_tuning-01, ev-fine_tuning-02, ev-reward-01, ev-reward-02, ev-rl_for_llms-01. Those records point to the concrete transcript anchors for fine tuning, reward, rl for llms. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-fine_tuning-01, ev-fine_tuning-02, ev-reward-01, ev-rl_for_llms-01. Those records point to the concrete transcript anchors for fine tuning, reward, rl for llms. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -340,24 +305,17 @@
       },
       {
         "concept": "policy",
-        "evidence_id": "ev-policy-02",
+        "evidence_id": "ev-policy-04",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
-        "timestamp_start": "00:00:10.040"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "timestamp_start": "00:00:28.100"
       },
       {
         "concept": "credit_assignment",
-        "evidence_id": "ev-credit_assignment-01",
+        "evidence_id": "ev-credit_assignment-04",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
-        "timestamp_start": "00:46:20.770"
-      },
-      {
-        "concept": "credit_assignment",
-        "evidence_id": "ev-credit_assignment-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
-        "timestamp_start": "00:28:09.790"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "timestamp_start": "00:11:05.430"
       },
       {
         "concept": "q_learning",
@@ -368,10 +326,10 @@
       },
       {
         "concept": "q_learning",
-        "evidence_id": "ev-q_learning-02",
+        "evidence_id": "ev-q_learning-05",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
-        "timestamp_start": "00:00:11.920"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "timestamp_start": "00:01:39.540"
       },
       {
         "concept": "policy_gradient",
@@ -396,10 +354,10 @@
       },
       {
         "concept": "actor_critic",
-        "evidence_id": "ev-actor_critic-02",
+        "evidence_id": "ev-actor_critic-03",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
-        "timestamp_start": "00:00:33.920"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "timestamp_start": "00:01:26.620"
       }
     ],
     "connected_concepts": [
@@ -417,7 +375,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: The feedback arrives after a chain of choices, so the learner must decide which choice mattered. The deeper reason is: Cause and reward are separated by time. The subtheme groups policy, credit assignment, q learning, policy gradient, actor critic because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Returns, value estimates, advantages, and Bellman-style recursion. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to actor critic, attention, credit assignment, offline rl, policy. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-policy-01, ev-policy-02, ev-credit_assignment-01, ev-credit_assignment-02, ev-q_learning-01. Those records point to the concrete transcript anchors for policy, credit assignment, q learning, policy gradient, actor critic. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-policy-01, ev-policy-04, ev-credit_assignment-04, ev-q_learning-01, ev-q_learning-05. Those records point to the concrete transcript anchors for policy, credit assignment, q learning, policy gradient, actor critic. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -441,10 +399,10 @@
       },
       {
         "concept": "offline_rl",
-        "evidence_id": "ev-offline_rl-02",
+        "evidence_id": "ev-offline_rl-05",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
-        "timestamp_start": "00:08:08.890"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "timestamp_start": "00:02:40.730"
       }
     ],
     "connected_concepts": [
@@ -455,7 +413,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: The learner may not be allowed to freely experiment in the real world. The deeper reason is: A dataset only covers part of what could have happened. The subtheme groups offline rl because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Distribution constraints and conservative value estimates. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to evaluation, generalization, q learning. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-offline_rl-01, ev-offline_rl-02. Those records point to the concrete transcript anchors for offline rl. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-offline_rl-01, ev-offline_rl-05. Those records point to the concrete transcript anchors for offline rl. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -480,10 +438,10 @@
       },
       {
         "concept": "model_based_rl",
-        "evidence_id": "ev-model_based_rl-02",
+        "evidence_id": "ev-model_based_rl-05",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
-        "timestamp_start": "00:00:07.080"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+        "timestamp_start": "00:10:35.220"
       },
       {
         "concept": "exploration",
@@ -494,10 +452,10 @@
       },
       {
         "concept": "exploration",
-        "evidence_id": "ev-exploration-02",
+        "evidence_id": "ev-exploration-03",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
-        "timestamp_start": "00:13:11.590"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "timestamp_start": "00:27:49.940"
       }
     ],
     "connected_concepts": [
@@ -510,7 +468,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: Real trial and error is expensive, but imagined trial and error can be cheap. The deeper reason is: A model of consequences turns acting into searching over possible futures. The subtheme groups model based rl, exploration because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Transition models, uncertainty estimates, and planning objectives. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to generalization, model based rl, planning, policy, uncertainty. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-model_based_rl-01, ev-model_based_rl-02, ev-exploration-01, ev-exploration-02. Those records point to the concrete transcript anchors for model based rl, exploration. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-model_based_rl-01, ev-model_based_rl-05, ev-exploration-01, ev-exploration-03. Those records point to the concrete transcript anchors for model based rl, exploration. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -546,13 +504,6 @@
         "course": "stanford-cme295-transformers-llms-autumn-2025",
         "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
         "timestamp_start": "00:00:45.040"
-      },
-      {
-        "concept": "agents_and_tools",
-        "evidence_id": "ev-agents_and_tools-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
-        "timestamp_start": "00:01:19.350"
       }
     ],
     "connected_concepts": [
@@ -566,7 +517,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: A hard task may need intermediate notes, outside facts, or tool results. The deeper reason is: The context can become a temporary workspace that changes as the system works. The subtheme groups reasoning traces, agents and tools because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Sequential decision loops over generated tokens, actions, and observations. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to agents and tools, inference time compute, planning, policy, retrieval. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-reasoning_traces-01, ev-reasoning_traces-02, ev-agents_and_tools-01, ev-agents_and_tools-02. Those records point to the concrete transcript anchors for reasoning traces, agents and tools. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-reasoning_traces-01, ev-reasoning_traces-02, ev-agents_and_tools-01. Those records point to the concrete transcript anchors for reasoning traces, agents and tools. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -591,10 +542,10 @@
       },
       {
         "concept": "diffusion",
-        "evidence_id": "ev-diffusion-02",
+        "evidence_id": "ev-diffusion-05",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
-        "timestamp_start": "00:00:05.560"
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "timestamp_start": "00:01:35.550"
       },
       {
         "concept": "score_matching",
@@ -605,10 +556,10 @@
       },
       {
         "concept": "score_matching",
-        "evidence_id": "ev-score_matching-02",
+        "evidence_id": "ev-score_matching-04",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
-        "timestamp_start": "00:00:35.440"
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "timestamp_start": "00:09:05.060"
       }
     ],
     "connected_concepts": [
@@ -621,7 +572,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: A detailed image is too hard to create in one leap. The deeper reason is: Many small local directions can solve a global generation problem. The subtheme groups diffusion, score matching because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Noise schedules, score fields, and reverse sampling. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to diffusion, flow matching, guidance, latent space, score matching. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-diffusion-01, ev-diffusion-02, ev-score_matching-01, ev-score_matching-02. Those records point to the concrete transcript anchors for diffusion, score matching. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-diffusion-01, ev-diffusion-05, ev-score_matching-01, ev-score_matching-04. Those records point to the concrete transcript anchors for diffusion, score matching. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -645,10 +596,10 @@
       },
       {
         "concept": "flow_matching",
-        "evidence_id": "ev-flow_matching-02",
+        "evidence_id": "ev-flow_matching-05",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
-        "timestamp_start": "00:13:10.110"
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "timestamp_start": "00:04:56.470"
       }
     ],
     "connected_concepts": [
@@ -659,7 +610,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: Generation needs a route from something easy to sample to something realistic. The deeper reason is: A path through space can be easier to learn than a direct jump. The subtheme groups flow matching because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Vector fields and continuous-time transformations. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to diffusion, latent space, score matching. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-flow_matching-01, ev-flow_matching-02. Those records point to the concrete transcript anchors for flow matching. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-flow_matching-01, ev-flow_matching-05. Those records point to the concrete transcript anchors for flow matching. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {
@@ -736,10 +687,10 @@
       },
       {
         "concept": "generalization",
-        "evidence_id": "ev-generalization-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
-        "timestamp_start": "00:08:06.720"
+        "evidence_id": "ev-generalization-04",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+        "timestamp_start": "01:13:19.220"
       }
     ],
     "connected_concepts": [
@@ -753,7 +704,7 @@
     "first_principles_walkthrough": "Start with the everyday problem: A single score can hide what the model cannot do. The deeper reason is: Every measurement compresses behavior and loses detail. The subtheme groups evaluation, generalization because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.",
     "mathematical_object_in_plain_language": "The mathematical lever is Metrics, held-out sets, confidence, and failure slicing. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.",
     "cross_links_and_limits": "This subtheme connects sideways to evaluation, generalization, invariance, offline rl, reward modeling. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.",
-    "lecture_evidence_chain": "The evidence chain begins with ev-evaluation-01, ev-evaluation-02, ev-generalization-01, ev-generalization-02. Those records point to the concrete transcript anchors for evaluation, generalization. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
+    "lecture_evidence_chain": "The evidence chain begins with ev-evaluation-01, ev-evaluation-02, ev-generalization-01, ev-generalization-04. Those records point to the concrete transcript anchors for evaluation, generalization. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.",
     "recognize_in_new_work": "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
   },
   {

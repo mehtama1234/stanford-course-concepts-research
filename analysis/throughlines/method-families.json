@@ -28,10 +28,8 @@
     "lecture_evidence_chain": "The transcript evidence chain is routed through attention, positional encoding, transformer block, vision transformers. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.",
     "course_evidence_ids": [
       "ev-attention-01",
-      "ev-attention-02",
+      "ev-attention-04",
       "ev-transformer_block-01",
-      "ev-transformer_block-02",
-      "ev-vision_transformers-01",
       "ev-vision_transformers-02"
     ],
     "evidence_status": "transcript-backed method family"
@@ -67,8 +65,7 @@
       "ev-pretraining-02",
       "ev-fine_tuning-01",
       "ev-fine_tuning-02",
-      "ev-rl_for_llms-01",
-      "ev-rl_for_llms-02"
+      "ev-rl_for_llms-01"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -101,8 +98,7 @@
     "course_evidence_ids": [
       "ev-reasoning_traces-01",
       "ev-reasoning_traces-02",
-      "ev-agents_and_tools-01",
-      "ev-agents_and_tools-02"
+      "ev-agents_and_tools-01"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -132,9 +128,8 @@
     "lecture_evidence_chain": "The transcript evidence chain is routed through q learning, credit assignment, offline rl. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.",
     "course_evidence_ids": [
       "ev-q_learning-01",
-      "ev-q_learning-02",
-      "ev-credit_assignment-01",
-      "ev-credit_assignment-02"
+      "ev-q_learning-05",
+      "ev-credit_assignment-04"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -169,9 +164,8 @@
       "ev-policy_gradient-01",
       "ev-policy_gradient-02",
       "ev-actor_critic-01",
-      "ev-actor_critic-02",
-      "ev-rl_for_llms-01",
-      "ev-rl_for_llms-02"
+      "ev-actor_critic-03",
+      "ev-rl_for_llms-01"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -204,11 +198,11 @@
     "lecture_evidence_chain": "The transcript evidence chain is routed through offline rl, model based rl, exploration, evaluation. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.",
     "course_evidence_ids": [
       "ev-offline_rl-01",
-      "ev-offline_rl-02",
+      "ev-offline_rl-05",
       "ev-model_based_rl-01",
-      "ev-model_based_rl-02",
+      "ev-model_based_rl-05",
       "ev-exploration-01",
-      "ev-exploration-02"
+      "ev-exploration-03"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -241,9 +235,9 @@
     "lecture_evidence_chain": "The transcript evidence chain is routed through diffusion, score matching, guidance, latent space. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.",
     "course_evidence_ids": [
       "ev-diffusion-01",
-      "ev-diffusion-02",
+      "ev-diffusion-05",
       "ev-score_matching-01",
-      "ev-score_matching-02",
+      "ev-score_matching-04",
       "ev-guidance-01",
       "ev-guidance-02"
     ],
@@ -276,9 +270,9 @@
     "lecture_evidence_chain": "The transcript evidence chain is routed through flow matching, score matching, diffusion, latent space. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.",
     "course_evidence_ids": [
       "ev-flow_matching-01",
-      "ev-flow_matching-02",
+      "ev-flow_matching-05",
       "ev-score_matching-01",
-      "ev-score_matching-02"
+      "ev-score_matching-04"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -314,7 +308,7 @@
       "ev-scaling_laws-01",
       "ev-scaling_laws-02",
       "ev-generalization-01",
-      "ev-generalization-02"
+      "ev-generalization-04"
     ],
     "evidence_status": "transcript-backed method family"
   }
