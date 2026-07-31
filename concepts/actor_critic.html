@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>Actor-critic methods use a policy or actor to choose actions and a value estimator or critic to reduce the noise of policy updates by estimating expected future rewards or advantages.</dd>
     <dt>Caveat Or Warning</dt><dd>The lecture context also warns that off-policy reuse of data needs correction. Actor-critic is practical, but the critic can introduce bias or instability when its estimates are wrong.</dd>
     <dt>Why This Span Matters</dt><dd>It captures why actor-critic exists: raw rewards and full trajectory returns are noisy, so policy improvement benefits from a learned estimate of how good the situation or action is.</dd>
+    <dt>Local Transcript Window</dt><dd>in the data that have a high reward in the future. And then we found that if we subtracted a baseline that&#x27;s the average reward, that encourages us to have the policy</dd>
   </dl>
-  <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
 </article>
 
@@ -76,7 +77,7 @@
 <article class="evidence" id="ev-actor_critic-02">
   <h3><a href="../evidence.html#ev-actor_critic-02">ev-actor_critic-02</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:33.920 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:33.920 · moderate</p>
   <p>around 00:00:33.920, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7: Offline RL and anchors the lecture&#x27;s treatment of Actor-Critic through the local cues value function. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.</dd>
@@ -84,8 +85,9 @@
     <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>less of the stuff that led to bad outcomes. And then we started introducing this notion of a value function, which can then estimate.</dd>
   </dl>
-  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
 </article>
 
@@ -96,13 +98,14 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:26.620 · strong</p>
   <p>around 00:01:26.620, the lecture uses baseline while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 4: Actor-Critic Methods and anchors the lecture&#x27;s treatment of Actor-Critic through the local cues baseline. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Actor-Critic as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R actor-critic lecture recaps the baseline idea: after increasing likelihood for good sampled actions, a baseline such as average reward gives a comparison point for judging what counts as good.</dd>
+    <dt>Example Or Analogy</dt><dd>The baseline is like grading relative to the usual outcome. An action is not reinforced just because it got some reward; it is reinforced when it does better than the comparison point.</dd>
+    <dt>Mathematical Claim</dt><dd>A baseline reduces variance in policy-gradient updates by subtracting a reference value from returns. Actor-critic methods learn a value-like critic to provide a better comparison signal.</dd>
+    <dt>Caveat Or Warning</dt><dd>A baseline can reduce noise, but a bad critic can bias or destabilize learning. The span is a bridge into actor-critic, not a full guarantee.</dd>
+    <dt>Why This Span Matters</dt><dd>It shows why actor-critic exists from first principles: raw returns are too noisy, so the actor needs a learned judge.</dd>
+    <dt>Local Transcript Window</dt><dd>to increase the likelihood of those actions. And then lastly, we introduced a baseline, which we could define to be the average reward, such</dd>
   </dl>
-  <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt</code></p>
 </article>
 
@@ -110,7 +113,7 @@
 <article class="evidence" id="ev-actor_critic-04">
   <h3><a href="../evidence.html#ev-actor_critic-04">ev-actor_critic-04</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:02:47.480 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:02:47.480 · moderate</p>
   <p>around 00:02:47.480, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Tutorial Session: Review of Q-Learning and anchors the lecture&#x27;s treatment of Actor-Critic through the local cues value function. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.</dd>
@@ -118,8 +121,9 @@
     <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>So we&#x27;ll start off by defining V pi of s or a value function that estimates the expected future reward when you start at a state s</dd>
   </dl>
-  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt</code></p>
 </article>
 
@@ -127,7 +131,7 @@
 <article class="evidence" id="ev-actor_critic-05">
   <h3><a href="../evidence.html#ev-actor_critic-05">ev-actor_critic-05</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:33:21.520 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:33:21.520 · moderate</p>
   <p>around 00:33:21.520, the lecture uses advantage while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture&#x27;s treatment of Actor-Critic through the local cues advantage. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.</dd>
@@ -135,8 +139,9 @@
     <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>So the way to do this is the following-- and this ties back to a lot of concepts of value functions and advantage functions that many of you are probably familiar with.</dd>
   </dl>
-  <p class="meta">Matched terms: advantage · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: advantage · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
 </article>
 
@@ -152,8 +157,9 @@
     <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>altogether. And it did this by actually just learning a value function and a Q function using the states and actions in the data.</dd>
   </dl>
-  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt</code></p>
 </article>
 </div>

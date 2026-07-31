@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>A position embedding assigns a vector to each position and adds it to the token embedding, giving the model numerical access to where each token sits.</dd>
     <dt>Caveat Or Warning</dt><dd>The span covers the original dedicated position-embedding idea. Other schemes such as relative position or RoPE alter how order is represented, but the first-principles need remains the same.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the cleanest lecture statement of why position exists: attention&#x27;s parallel communication removes a source of order information that language still needs.</dd>
+    <dt>Local Transcript Window</dt><dd>in this architecture. And this is the position embedding. So if you remember, here we&#x27;re letting tokens interact</dd>
   </dl>
-  <p class="meta">Matched terms: position · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: position · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models &amp; Tricks.txt</code></p>
 </article>
 
@@ -79,13 +80,14 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 01:05:31.720 · strong</p>
   <p>around 01:05:31.720, the lecture uses position while covering Position And Order. This supports the scoped claim that a way to tell the model where each piece sits in a sequence or image.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - Architectures and anchors the lecture&#x27;s treatment of Position And Order through the local cues position. The supported argument is that a way to tell the model where each piece sits in a sequence or image is needed because attention compares items as a set unless order information is added. order must be represented explicitly if order matters.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Position And Order as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may know which pieces exist but lose the arrangement that makes them meaningful.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Position And Order. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 architectures lecture explains the same first-principles position problem for attention-based vision models: direct links between inputs remove the old sequential signal, so the model must be told where each input sits.</dd>
+    <dt>Example Or Analogy</dt><dd>The useful picture is an image or sequence whose pieces are all allowed to talk at once. Without a position signal, the model knows the pieces but loses the layout that makes them meaningful.</dd>
+    <dt>Mathematical Claim</dt><dd>Position information is added as numerical features tied to location. Those features let attention-based layers distinguish identical content appearing in different places.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports the need for position information, not one specific positional scheme. Absolute embeddings, relative schemes, and rotary-style encodings solve the same pressure differently.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives cross-course evidence that position is not a language-only detail; the same mathematical need reappears when transformers are used for images.</dd>
+    <dt>Local Transcript Window</dt><dd>just because you have direct links, which is why you need to specify in which position each input is. You need to have a way to do that.</dd>
   </dl>
-  <p class="meta">Matched terms: position · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: position · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
 </article>
 </div>

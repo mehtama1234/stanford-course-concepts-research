@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>A reasoning trace extends the sampled sequence before the final answer, so later token probabilities condition on intermediate generated steps.</dd>
     <dt>Caveat Or Warning</dt><dd>The span motivates reasoning traces but does not prove the trace is faithful or human-readable. It may be hidden from the user and shaped by training objectives.</dd>
     <dt>Why This Span Matters</dt><dd>It anchors reasoning as test-time or generation-time computation, not just a label for difficult tasks.</dd>
+    <dt>Local Transcript Window</dt><dd>has been trending over the past year or so which is LLM reasoning. And it&#x27;s actually a good segue compared</dd>
   </dl>
-  <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt</code></p>
 </article>
 
@@ -79,13 +80,14 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:07.020 · strong</p>
   <p>around 00:00:07.020, the lecture uses reasoning while covering Reasoning Traces. This supports the scoped claim that using written intermediate work as temporary memory for hard problems.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture&#x27;s treatment of Reasoning Traces through the local cues reasoning. The supported argument is that using written intermediate work as temporary memory for hard problems is needed because a system with limited internal working memory can externalize partial results into tokens and condition on them later.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Reasoning Traces as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Tasks needing arithmetic, planning, proof, or careful decomposition often collapse into plausible but unsupported guesses.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Reasoning Traces. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-LLM-reasoning lecture states that the session will focus on reasoning and reinforcement learning for LLM reasoning, placing multi-step language generation inside an RL framing.</dd>
+    <dt>Example Or Analogy</dt><dd>The course transition is the useful evidence: once outputs are reasoning attempts rather than short answers, the system can be judged by outcomes and trained with feedback over the reasoning process.</dd>
+    <dt>Mathematical Claim</dt><dd>A reasoning trace can be treated as a sequence of generated actions whose probabilities are adjusted using outcome rewards, preferences, or verifier signals.</dd>
+    <dt>Caveat Or Warning</dt><dd>The opening span is agenda-setting evidence. It supports the course bridge between reasoning and RL but not a specific algorithmic recipe by itself.</dd>
+    <dt>Why This Span Matters</dt><dd>It grounds reasoning traces in the RL course rather than only the LLM course, making the cross-course connection explicit.</dd>
+    <dt>Local Transcript Window</dt><dd>So today we&#x27;ll not talk about SQL. We&#x27;ll talk about reasoning and, particularly, reinforcement learning for LLM reasoning.</dd>
   </dl>
-  <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
 </article>
 </div>
