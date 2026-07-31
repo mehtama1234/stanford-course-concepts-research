@@ -9,6 +9,34 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_PATH = ROOT / "raw-material/youtube/transcript-index.json"
+CME295 = "stanford-cme295-transformers-llms-autumn-2025"
+CS224R = "stanford-cs224r-deep-rl-spring-2025"
+CME296 = "stanford-cme296-diffusion-large-vision-models-spring-2026"
+
+ALLOWED_EVIDENCE_COURSES: dict[str, set[str]] = {
+    "tokenization": {CME295, CME296},
+    "positional_encoding": {CME295, CME296},
+    "pretraining": {CME295, CME296},
+    "fine_tuning": {CME295, CS224R},
+    "reasoning_traces": {CME295, CS224R},
+    "agents_and_tools": {CME295, CS224R},
+    "policy": {CS224R},
+    "reward": {CS224R, CME295},
+    "credit_assignment": {CS224R},
+    "policy_gradient": {CS224R},
+    "actor_critic": {CS224R},
+    "q_learning": {CS224R},
+    "offline_rl": {CS224R},
+    "model_based_rl": {CS224R},
+    "exploration": {CS224R},
+    "rl_for_llms": {CS224R, CME295},
+    "diffusion": {CME296},
+    "score_matching": {CME296},
+    "flow_matching": {CME296},
+    "guidance": {CME296},
+    "latent_space": {CME296},
+    "vision_transformers": {CME296, CME295},
+}
 
 
 PRIMITIVES: list[dict[str, Any]] = [
@@ -140,7 +168,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
         "related_concepts": ["retrieval", "credit_assignment", "transformer_block"],
         "primitives": ["assignment", "compression"],
-        "keywords": ["attention", "query", "key", "value", "softmax", "self-attention", "self attention"],
+        "keywords": ["attention", "self-attention", "self attention", "multi-head", "multi head", "attention head"],
     },
     {
         "id": "transformer_block",
@@ -238,7 +266,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "There is no explicit way to discuss or improve the system's behavior over time.",
         "related_concepts": ["reward", "policy_gradient", "q_learning"],
         "primitives": ["search", "uncertainty"],
-        "keywords": ["policy", "policies", "pi", "action", "actions", "trajectory"],
+        "keywords": ["policy", "policies", "policy optimization", "action distribution", "trajectory"],
     },
     {
         "id": "reward",
@@ -266,7 +294,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "The system overreacts to the last action or misses the earlier decision that mattered.",
         "related_concepts": ["attention", "q_learning", "actor_critic"],
         "primitives": ["credit", "assignment"],
-        "keywords": ["credit assignment", "delayed reward", "discount", "gamma", "return", "trajectory"],
+        "keywords": ["credit assignment", "delayed reward", "discount factor", "discounted return", "temporal credit"],
     },
     {
         "id": "policy_gradient",
@@ -350,7 +378,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
         "related_concepts": ["policy", "model_based_rl", "generalization"],
         "primitives": ["search", "uncertainty"],
-        "keywords": ["exploration", "explore", "epsilon", "uncertainty", "intrinsic", "curiosity"],
+        "keywords": ["exploration", "explore", "epsilon greedy", "intrinsic reward", "curiosity"],
     },
     {
         "id": "rl_for_llms",
@@ -392,7 +420,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "The sampler has no learned local direction for turning noise into structure.",
         "related_concepts": ["diffusion", "flow_matching", "guidance"],
         "primitives": ["geometry", "assignment"],
-        "keywords": ["score matching", "score", "gradient of log", "log probability", "denoising score"],
+        "keywords": ["score matching", "gradient of log", "log probability", "denoising score", "score model"],
     },
     {
         "id": "flow_matching",
@@ -406,7 +434,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "The model loses one of the simplest ways to describe generation as guided motion.",
         "related_concepts": ["diffusion", "score_matching", "latent_space"],
         "primitives": ["geometry", "search"],
-        "keywords": ["flow matching", "flow", "vector field", "velocity", "ode", "transport"],
+        "keywords": ["flow matching", "vector field", "velocity field", "ode", "optimal transport"],
     },
     {
         "id": "guidance",
@@ -420,7 +448,7 @@ CONCEPTS: list[dict[str, Any]] = [
         "what_breaks_without_it": "The model may produce realistic but irrelevant outputs.",
         "related_concepts": ["diffusion", "reward_modeling", "agents_and_tools"],
         "primitives": ["feedback", "search"],
-        "keywords": ["guidance", "classifier-free", "classifier free", "conditional", "condition", "prompt"],
+        "keywords": ["guidance", "classifier-free", "classifier free", "conditional generation", "conditioning", "prompt"],
     },
     {
         "id": "latent_space",
@@ -801,9 +829,22 @@ def keyword_hits(text: str, keywords: list[str]) -> int:
     return sum(len(re.findall(r"(?<![a-z0-9-])" + re.escape(k.lower()) + r"(?![a-z0-9-])", lowered)) for k in keywords)
 
 
+def matched_terms(text: str, keywords: list[str]) -> list[str]:
+    lowered = text.lower()
+    terms = [
+        keyword
+        for keyword in keywords
+        if re.search(r"(?<![a-z0-9-])" + re.escape(keyword.lower()) + r"(?![a-z0-9-])", lowered)
+    ]
+    return terms[:8]
+
+
 def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any]]) -> list[dict[str, Any]]:
     scored = []
+    allowed_courses = ALLOWED_EVIDENCE_COURSES.get(concept["id"])
     for row in index:
+        if allowed_courses and row["course_slug"] not in allowed_courses:
+            continue
         clean_path = ROOT / row["clean_txt"]
         text = clean_path.read_text(encoding="utf-8", errors="ignore") if clean_path.exists() else ""
         hits = keyword_hits(text, concept["keywords"])
@@ -829,10 +870,14 @@ def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any
             continue
         vtt_path = ROOT / row["raw_vtt"]
         timestamp_start = timestamp_end = None
+        local_terms: list[str] = []
         for seg in parse_vtt_segments(vtt_path):
             if keyword_hits(seg["text"], concept["keywords"]):
                 timestamp_start, timestamp_end = seg["start"], seg["end"]
+                local_terms = matched_terms(seg["text"], concept["keywords"])
                 break
+        if not local_terms:
+            local_terms = matched_terms(text + " " + row["expected_title"], concept["keywords"])
         evidence.append(
             {
                 "course": row["course_slug"],
@@ -840,6 +885,7 @@ def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any
                 "transcript_path": row["clean_txt"],
                 "timestamp_start": timestamp_start,
                 "timestamp_end": timestamp_end,
+                "matched_terms": local_terms,
                 "keyword_hits": hits,
                 "confidence": "strong" if hits >= 20 else "moderate" if hits >= 5 else "weak",
             }
@@ -849,9 +895,12 @@ def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any
 
 
 def evidence_note(concept: dict[str, Any], row: dict[str, Any]) -> str:
+    terms = ", ".join(row["matched_terms"][:4]) or "title-level course cues"
+    location = f"around {row['timestamp_start']}" if row.get("timestamp_start") else "in this lecture"
     return (
-        f"The transcript gives course-level support for {concept['name']} through discussion cues such as "
-        f"{', '.join(concept['keywords'][:3])}; this record supports the atlas explanation without treating the transcript as a verbatim source."
+        f"{location}, the lecture uses {terms} while covering {concept['name']}. "
+        f"This supports the scoped claim that {concept['plain_language_definition'][0].lower()}"
+        f"{concept['plain_language_definition'][1:]}"
     )
 
 
@@ -874,6 +923,9 @@ def build() -> None:
                     "timestamp_start": match["timestamp_start"],
                     "timestamp_end": match["timestamp_end"],
                     "paraphrased_claim": evidence_note(concept, match),
+                    "evidence_basis": "local VTT timestamp cue" if match["timestamp_start"] else "clean transcript keyword cue",
+                    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+                    "matched_terms": match["matched_terms"],
                     "supports_concepts": [concept["id"]],
                     "supports_subthemes": [s["id"] for s in SUBTHEMES if concept["id"] in s["concepts"]],
                     "confidence": match["confidence"],

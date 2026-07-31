@@ -129,6 +129,14 @@ def main() -> int:
             errors.append(f"evidence {ev['id']} transcript path missing")
         if ev.get("confidence") not in {"strong", "moderate", "weak"}:
             errors.append(f"evidence {ev['id']} has invalid confidence")
+        if not ev.get("matched_terms"):
+            errors.append(f"evidence {ev['id']} has no matched_terms")
+        if "course-level support" in ev.get("paraphrased_claim", ""):
+            errors.append(f"evidence {ev['id']} uses generic evidence wording")
+        if not ev.get("evidence_basis"):
+            errors.append(f"evidence {ev['id']} has no evidence_basis")
+        if not ev.get("evidence_scope"):
+            errors.append(f"evidence {ev['id']} has no evidence_scope")
         for concept_id in ev.get("supports_concepts", []):
             if concept_id not in concept_ids:
                 errors.append(f"evidence {ev['id']} references missing concept {concept_id}")

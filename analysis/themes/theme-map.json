@@ -19,9 +19,9 @@
       "vision_transformers"
     ],
     "course_coverage": {
-      "stanford-cme295-transformers-llms-autumn-2025": 18,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 8,
-      "stanford-cs224r-deep-rl-spring-2025": 10
+      "stanford-cme295-transformers-llms-autumn-2025": 10,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
+      "stanford-cs224r-deep-rl-spring-2025": 7
     }
   },
   {
@@ -39,9 +39,9 @@
       "rl_for_llms"
     ],
     "course_coverage": {
-      "stanford-cme295-transformers-llms-autumn-2025": 6,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 6,
-      "stanford-cs224r-deep-rl-spring-2025": 6
+      "stanford-cme295-transformers-llms-autumn-2025": 3,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 1,
+      "stanford-cs224r-deep-rl-spring-2025": 2
     }
   },
   {
@@ -66,9 +66,8 @@
       "exploration"
     ],
     "course_coverage": {
-      "stanford-cs224r-deep-rl-spring-2025": 16,
-      "stanford-cme295-transformers-llms-autumn-2025": 16,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 13
+      "stanford-cs224r-deep-rl-spring-2025": 9,
+      "stanford-cme295-transformers-llms-autumn-2025": 1
     }
   },
   {
@@ -84,9 +83,8 @@
       "agents_and_tools"
     ],
     "course_coverage": {
-      "stanford-cme295-transformers-llms-autumn-2025": 4,
-      "stanford-cs224r-deep-rl-spring-2025": 5,
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 3
+      "stanford-cme295-transformers-llms-autumn-2025": 2,
+      "stanford-cs224r-deep-rl-spring-2025": 2
     }
   },
   {
@@ -107,9 +105,7 @@
       "latent_space"
     ],
     "course_coverage": {
-      "stanford-cme296-diffusion-large-vision-models-spring-2026": 9,
-      "stanford-cme295-transformers-llms-autumn-2025": 9,
-      "stanford-cs224r-deep-rl-spring-2025": 12
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 5
     }
   },
   {

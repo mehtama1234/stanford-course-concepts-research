@@ -82,13 +82,6 @@
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
         "timestamp_start": "00:15:08.170"
-      },
-      {
-        "concept": "latent_space",
-        "evidence_id": "ev-latent_space-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
-        "timestamp_start": "00:03:03.520"
       }
     ],
     "connected_concepts": [
@@ -123,9 +116,9 @@
       {
         "concept": "attention",
         "evidence_id": "ev-attention-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
-        "timestamp_start": "00:03:33.590"
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "timestamp_start": "00:32:55.100"
       },
       {
         "concept": "positional_encoding",
@@ -305,29 +298,15 @@
         "concept": "policy",
         "evidence_id": "ev-policy-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
-        "timestamp_start": "00:00:28.100"
-      },
-      {
-        "concept": "policy",
-        "evidence_id": "ev-policy-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
-        "timestamp_start": "00:19:05.010"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+        "timestamp_start": "00:00:22.000"
       },
       {
         "concept": "credit_assignment",
         "evidence_id": "ev-credit_assignment-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
-        "timestamp_start": "00:40:42.083"
-      },
-      {
-        "concept": "credit_assignment",
-        "evidence_id": "ev-credit_assignment-02",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
-        "timestamp_start": "00:17:00.230"
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+        "timestamp_start": "00:46:20.770"
       },
       {
         "concept": "q_learning",
@@ -344,25 +323,11 @@
         "timestamp_start": "00:01:07.797"
       },
       {
-        "concept": "policy_gradient",
-        "evidence_id": "ev-policy_gradient-02",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
-        "timestamp_start": "00:07:13.350"
-      },
-      {
         "concept": "actor_critic",
         "evidence_id": "ev-actor_critic-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
         "timestamp_start": "00:00:48.680"
-      },
-      {
-        "concept": "actor_critic",
-        "evidence_id": "ev-actor_critic-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
-        "timestamp_start": "00:05:21.360"
       }
     ],
     "connected_concepts": [
@@ -396,13 +361,6 @@
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
         "timestamp_start": "00:07:44.840"
-      },
-      {
-        "concept": "offline_rl",
-        "evidence_id": "ev-offline_rl-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
-        "timestamp_start": "01:21:57.490"
       }
     ],
     "connected_concepts": [
@@ -432,25 +390,11 @@
         "timestamp_start": "00:04:50.450"
       },
       {
-        "concept": "model_based_rl",
-        "evidence_id": "ev-model_based_rl-02",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
-        "timestamp_start": "01:19:13.250"
-      },
-      {
         "concept": "exploration",
         "evidence_id": "ev-exploration-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
         "timestamp_start": "00:00:07.040"
-      },
-      {
-        "concept": "exploration",
-        "evidence_id": "ev-exploration-02",
-        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
-        "timestamp_start": "00:12:06.480"
       }
     ],
     "connected_concepts": [
@@ -533,25 +477,11 @@
         "timestamp_start": "00:00:26.360"
       },
       {
-        "concept": "diffusion",
-        "evidence_id": "ev-diffusion-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
-        "timestamp_start": "01:02:29.320"
-      },
-      {
         "concept": "score_matching",
         "evidence_id": "ev-score_matching-01",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
         "timestamp_start": "00:00:18.000"
-      },
-      {
-        "concept": "score_matching",
-        "evidence_id": "ev-score_matching-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
-        "timestamp_start": "00:13:23.890"
       }
     ],
     "connected_concepts": [
@@ -580,13 +510,6 @@
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
         "timestamp_start": "00:00:15.600"
-      },
-      {
-        "concept": "flow_matching",
-        "evidence_id": "ev-flow_matching-02",
-        "course": "stanford-cs224r-deep-rl-spring-2025",
-        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
-        "timestamp_start": "00:27:08.790"
       }
     ],
     "connected_concepts": [
@@ -611,15 +534,8 @@
         "concept": "guidance",
         "evidence_id": "ev-guidance-01",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
-        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
-        "timestamp_start": "00:12:11.050"
-      },
-      {
-        "concept": "guidance",
-        "evidence_id": "ev-guidance-02",
-        "course": "stanford-cme295-transformers-llms-autumn-2025",
-        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
-        "timestamp_start": "00:01:20.500"
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+        "timestamp_start": "00:05:58.240"
       }
     ],
     "connected_concepts": [
