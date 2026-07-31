@@ -21,6 +21,12 @@
   <h2>Representation As A Working Space</h2>
   <p>Modern models first turn messy inputs into internal coordinates, then do most of their work by moving, comparing, and editing those coordinates.</p>
   <p><strong>Why it matters:</strong> Without this workspace, text, images, states, and actions remain raw surface forms that cannot share computation.</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>The shared argument is that intelligence first needs a manipulable workspace. CME295 shows this with tokens, positions, attention, and transformer blocks: language becomes pieces that can exchange information. CME296 reuses the same idea for images, where patches and latent coordinates let vision systems compare and edit visual structure. CS224R contributes the agent-state version of the same pressure: actions are only learnable after the world has been represented in a form where consequences can be compared.</dd>
+    <dt>Mathematical Spine</dt><dd>The mathematical spine is mapping and geometry. Raw objects are mapped into IDs or vectors; vectors can be compared by scores, distances, and directions; layers then update those vectors. The point of the math is not decoration. It gives the learner a place where similarity, order, and context can become operations.</dd>
+    <dt>Where The Analogy Breaks</dt><dd>The analogy breaks if all representations are treated as the same kind of thing. A token embedding, an image latent, and an RL state all compress the world, but they preserve different information and create different blind spots. A representation that helps next-token prediction can still be bad for physical control or visual detail.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>This theme is grounded through tokenization, embeddings, positional encoding, attention, transformer block, vision transformers. Its subthemes are text and patch interfaces, learned geometry, selective context, stacked computation. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cme296-diffusion-large-vision-models-spring-2026, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote.</dd>
+  </dl>
   <div class="stack">
 <article class="wide-card" id="text_and_patch_interfaces">
   <h3>Turning Messy Inputs Into Countable Pieces</h3>
@@ -29,6 +35,11 @@
     <dt>Hidden Principle</dt><dd>Discrete inputs need a stable interface into numerical computation.</dd>
     <dt>Mathematical Lever</dt><dd>Maps from raw objects into IDs or vectors.</dd>
     <dt>Why It Matters</dt><dd>The first interface controls the burden placed on every later layer.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: The system needs a first set of pieces before it can compare, remember, or predict anything. The deeper reason is: Discrete inputs need a stable interface into numerical computation. The subtheme groups tokenization, vision transformers because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Maps from raw objects into IDs or vectors. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to attention, embeddings, latent space, positional encoding, pretraining. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-tokenization-01, ev-tokenization-02, ev-vision_transformers-01, ev-vision_transformers-02. Those records point to the concrete transcript anchors for tokenization, vision transformers. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/tokenization.html">Tokenization</a> <a class="chip" href="concepts/vision_transformers.html">Vision Transformers</a></p>
 </article>
@@ -40,6 +51,11 @@
     <dt>Hidden Principle</dt><dd>Similarity becomes useful only after it is represented as distance or direction.</dd>
     <dt>Mathematical Lever</dt><dd>Vectors, distances, projections, and learned coordinate systems.</dd>
     <dt>Why It Matters</dt><dd>It lets one model reuse structure across words, images, states, and actions.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: Related things need to be near enough that arithmetic can share what is learned. The deeper reason is: Similarity becomes useful only after it is represented as distance or direction. The subtheme groups embeddings, latent space because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Vectors, distances, projections, and learned coordinate systems. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to compression, diffusion, embeddings, latent space, representation learning. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-embeddings-01, ev-embeddings-02, ev-latent_space-01, ev-latent_space-02. Those records point to the concrete transcript anchors for embeddings, latent space. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a></p>
 </article>
@@ -51,6 +67,11 @@
     <dt>Hidden Principle</dt><dd>Context is useful only when it is selected and weighted.</dd>
     <dt>Mathematical Lever</dt><dd>Similarity scores, normalized weights, and weighted averages.</dd>
     <dt>Why It Matters</dt><dd>This is the shared mechanism behind long-context language modeling and global image understanding.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: The model cannot treat every past detail as equally relevant. The deeper reason is: Context is useful only when it is selected and weighted. The subtheme groups attention, positional encoding because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Similarity scores, normalized weights, and weighted averages. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to attention, credit assignment, retrieval, transformer block, vision transformers. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-attention-01, ev-attention-02, ev-positional_encoding-01, ev-positional_encoding-02. Those records point to the concrete transcript anchors for attention, positional encoding. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/attention.html">Attention</a> <a class="chip" href="concepts/positional_encoding.html">Position And Order</a></p>
 </article>
@@ -62,6 +83,11 @@
     <dt>Hidden Principle</dt><dd>Repeated small transformations can build complex internal state.</dd>
     <dt>Mathematical Lever</dt><dd>Layer composition, residual updates, normalization, and nonlinear maps.</dd>
     <dt>Why It Matters</dt><dd>It explains why the same block can be scaled into very different modern models.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: Hard understanding requires more than one pass over the input. The deeper reason is: Repeated small transformations can build complex internal state. The subtheme groups transformer block because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Layer composition, residual updates, normalization, and nonlinear maps. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to attention, normalization, residual connections, vision transformers. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-transformer_block-01, ev-transformer_block-02. Those records point to the concrete transcript anchors for transformer block. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/transformer_block.html">Transformer Block</a></p>
 </article>
@@ -73,6 +99,12 @@
   <h2>Learning From Feedback</h2>
   <p>A model improves by turning mistakes, rewards, preferences, or prediction errors into small changes in future behavior.</p>
   <p><strong>Why it matters:</strong> This is the bridge from passive pattern finding to systems that can be steered toward useful outcomes.</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>The shared argument is that a model does not become useful just by containing parameters. It needs signals after attempts. CME295 emphasizes broad practice and later steering for language models. CS224R makes feedback explicit as rewards, preferences, and policy changes. CME296 shows a related training story in generative models, where prediction errors over noisy or hidden structure teach the model how to improve samples.</dd>
+    <dt>Mathematical Spine</dt><dd>The mathematical spine is error turned into update. A loss, reward, or preference comparison is compressed into a number or direction. Gradients or policy updates then change future behavior. The important concept is that feedback must be both informative enough to guide learning and narrow enough to compute.</dd>
+    <dt>Where The Analogy Breaks</dt><dd>Prediction error, human preference, and reward are not interchangeable. Prediction error says what was likely in data; preference says which output a judge liked; reward says what outcome the environment paid for. Confusing those signals is how fluent models become unhelpful or agents learn shortcuts.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>This theme is grounded through pretraining, fine tuning, rl for llms. Its subthemes are prediction as practice, human feedback. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cme296-diffusion-large-vision-models-spring-2026, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote.</dd>
+  </dl>
   <div class="stack">
 <article class="wide-card" id="prediction_as_practice">
   <h3>Learning Structure By Guessing Missing Pieces</h3>
@@ -81,6 +113,11 @@
     <dt>Hidden Principle</dt><dd>A simple prediction game can expose the structure of language, images, and behavior.</dd>
     <dt>Mathematical Lever</dt><dd>Loss functions that measure surprise and gradients that reduce it.</dd>
     <dt>Why It Matters</dt><dd>It creates the broad base that later systems tune and specialize.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: There is much more raw data than carefully labeled instruction. The deeper reason is: A simple prediction game can expose the structure of language, images, and behavior. The subtheme groups pretraining because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Loss functions that measure surprise and gradients that reduce it. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to fine tuning, generalization, scaling laws. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-pretraining-01, ev-pretraining-02. Those records point to the concrete transcript anchors for pretraining. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a></p>
 </article>
@@ -92,6 +129,11 @@
     <dt>Hidden Principle</dt><dd>Comparison can be converted into a direction for changing behavior.</dd>
     <dt>Mathematical Lever</dt><dd>Preference losses, reward models, and policy updates.</dd>
     <dt>Why It Matters</dt><dd>It explains why useful assistants require more than next-token prediction.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: People can often say which answer is better even when they cannot write the perfect answer in advance. The deeper reason is: Comparison can be converted into a direction for changing behavior. The subtheme groups fine tuning, reward, rl for llms because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Preference losses, reward models, and policy updates. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to credit assignment, evaluation, fine tuning, policy, policy gradient. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-fine_tuning-01, ev-fine_tuning-02, ev-reward-01, ev-reward-02, ev-rl_for_llms-01. Those records point to the concrete transcript anchors for fine tuning, reward, rl for llms. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a></p>
 </article>
@@ -103,6 +145,12 @@
   <h2>Action, Time, And Consequence</h2>
   <p>Reinforcement learning studies what happens when choices change the future evidence the learner will see.</p>
   <p><strong>Why it matters:</strong> It explains why agents, robots, games, and reasoning systems need more than ordinary supervised prediction.</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>The shared argument is that choosing changes what evidence comes next. CS224R is the center of this theme: policies, rewards, credit assignment, Q-values, model-based planning, and offline data all exist because action unfolds through time. CME295 connects when reasoning systems and tool-using LLMs become sequential decision makers instead of one-shot predictors.</dd>
+    <dt>Mathematical Spine</dt><dd>The mathematical spine is recursion over time. A present choice is judged by immediate feedback plus expected future feedback. Values, advantages, returns, and transition models are different ways to write down that the consequence of an action can be delayed and indirect.</dd>
+    <dt>Where The Analogy Breaks</dt><dd>Not every sequence is reinforcement learning. A language model generating tokens has a sequence, but RL adds an environment, actions that change future states, and feedback tied to outcomes. The analogy is useful only when the later result can change how earlier choices are evaluated.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>This theme is grounded through policy, reward, credit assignment, policy gradient, actor critic, q learning, offline rl, model based rl, exploration. Its subthemes are delayed feedback, learning from logged worlds, imagined futures. The supporting evidence spans are distributed across cs224r-deep-rl-spring-2025, cme295-transformers-llms-autumn-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote.</dd>
+  </dl>
   <div class="stack">
 <article class="wide-card" id="delayed_feedback">
   <h3>Learning When The Result Comes Later</h3>
@@ -111,6 +159,11 @@
     <dt>Hidden Principle</dt><dd>Cause and reward are separated by time.</dd>
     <dt>Mathematical Lever</dt><dd>Returns, value estimates, advantages, and Bellman-style recursion.</dd>
     <dt>Why It Matters</dt><dd>It is the core difficulty behind games, robotics, agents, and long reasoning chains.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: The feedback arrives after a chain of choices, so the learner must decide which choice mattered. The deeper reason is: Cause and reward are separated by time. The subtheme groups policy, credit assignment, q learning, policy gradient, actor critic because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Returns, value estimates, advantages, and Bellman-style recursion. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to actor critic, attention, credit assignment, offline rl, policy. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-policy-01, ev-policy-02, ev-credit_assignment-01, ev-credit_assignment-02, ev-q_learning-01. Those records point to the concrete transcript anchors for policy, credit assignment, q learning, policy gradient, actor critic. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/policy_gradient.html">Policy Gradient</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a></p>
 </article>
@@ -122,6 +175,11 @@
     <dt>Hidden Principle</dt><dd>A dataset only covers part of what could have happened.</dd>
     <dt>Mathematical Lever</dt><dd>Distribution constraints and conservative value estimates.</dd>
     <dt>Why It Matters</dt><dd>It makes RL relevant when live exploration is risky.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: The learner may not be allowed to freely experiment in the real world. The deeper reason is: A dataset only covers part of what could have happened. The subtheme groups offline rl because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Distribution constraints and conservative value estimates. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to evaluation, generalization, q learning. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-offline_rl-01, ev-offline_rl-02. Those records point to the concrete transcript anchors for offline rl. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/offline_rl.html">Offline Reinforcement Learning</a></p>
 </article>
@@ -133,6 +191,11 @@
     <dt>Hidden Principle</dt><dd>A model of consequences turns acting into searching over possible futures.</dd>
     <dt>Mathematical Lever</dt><dd>Transition models, uncertainty estimates, and planning objectives.</dd>
     <dt>Why It Matters</dt><dd>It connects reinforcement learning with control and robotics.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: Real trial and error is expensive, but imagined trial and error can be cheap. The deeper reason is: A model of consequences turns acting into searching over possible futures. The subtheme groups model based rl, exploration because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Transition models, uncertainty estimates, and planning objectives. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to generalization, model based rl, planning, policy, uncertainty. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-model_based_rl-01, ev-model_based_rl-02, ev-exploration-01, ev-exploration-02. Those records point to the concrete transcript anchors for model based rl, exploration. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/exploration.html">Exploration</a></p>
 </article>
@@ -144,6 +207,12 @@
   <h2>Thinking As Extra Work At Use Time</h2>
   <p>Some systems get better by spending more computation after the prompt arrives: writing intermediate steps, searching, calling tools, or revising.</p>
   <p><strong>Why it matters:</strong> It separates stored knowledge from active problem solving.</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>The shared argument is that some capability comes from work done after the input arrives. CME295 shows this through reasoning traces, retrieval, tools, and agents. CS224R supplies the decision-loop vocabulary: state, action, observation, update. Together they explain why a modern system can be more than a frozen predictor when it is allowed to search, write intermediate state, and check external evidence.</dd>
+    <dt>Mathematical Spine</dt><dd>The mathematical spine is sequential computation over a changing context. Extra tokens, tool calls, and observations become new state. Each step conditions the next step, so the final answer depends on a path rather than a single forward pass.</dd>
+    <dt>Where The Analogy Breaks</dt><dd>More steps do not guarantee better reasoning. Extra computation can compound an early mistake, retrieve irrelevant evidence, or overfit to a brittle procedure. The useful question is whether each added step creates new reliable information or merely adds more text.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>This theme is grounded through reasoning traces, agents and tools. Its subthemes are scratch work and tools. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote.</dd>
+  </dl>
   <div class="stack">
 <article class="wide-card" id="scratch_work_and_tools">
   <h3>Solving By Writing, Searching, And Acting</h3>
@@ -152,6 +221,11 @@
     <dt>Hidden Principle</dt><dd>The context can become a temporary workspace that changes as the system works.</dd>
     <dt>Mathematical Lever</dt><dd>Sequential decision loops over generated tokens, actions, and observations.</dd>
     <dt>Why It Matters</dt><dd>It connects LLM reasoning to agentic systems and RL.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: A hard task may need intermediate notes, outside facts, or tool results. The deeper reason is: The context can become a temporary workspace that changes as the system works. The subtheme groups reasoning traces, agents and tools because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Sequential decision loops over generated tokens, actions, and observations. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to agents and tools, inference time compute, planning, policy, retrieval. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-reasoning_traces-01, ev-reasoning_traces-02, ev-agents_and_tools-01, ev-agents_and_tools-02. Those records point to the concrete transcript anchors for reasoning traces, agents and tools. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/reasoning_traces.html">Reasoning Traces</a> <a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a></p>
 </article>
@@ -163,6 +237,12 @@
   <h2>Generation As Guided Movement</h2>
   <p>Diffusion, flow, and guidance methods turn generation into a path through possible samples rather than a one-shot guess.</p>
   <p><strong>Why it matters:</strong> It gives a practical way to create complex images and videos while still obeying conditions.</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>The shared argument is that generation is easier when treated as guided movement. CME296 is the center: diffusion, score matching, flow matching, guidance, and latent spaces all build a route from uncertainty toward a structured sample. CME295 connects through transformer-based vision and conditioning, where instructions or text change the path through visual possibilities.</dd>
+    <dt>Mathematical Spine</dt><dd>The mathematical spine is a direction field through a space of possible samples. Noise represents many possible worlds. A score, velocity, or guided update tells the sample which way to move. Repeating small moves makes a hard global generation problem manageable.</dd>
+    <dt>Where The Analogy Breaks</dt><dd>A generative path is not proof of understanding the world that produced the data. Many paths can create plausible samples. Guidance can make outputs obey a prompt while also reducing diversity or pushing the sample into artifacts.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>This theme is grounded through diffusion, score matching, flow matching, guidance, latent space. Its subthemes are denoising paths, continuous transport, controlled generation. The supporting evidence spans are distributed across cme296-diffusion-large-vision-models-spring-2026; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote.</dd>
+  </dl>
   <div class="stack">
 <article class="wide-card" id="denoising_paths">
   <h3>Making A Hard Sample By Many Small Corrections</h3>
@@ -171,6 +251,11 @@
     <dt>Hidden Principle</dt><dd>Many small local directions can solve a global generation problem.</dd>
     <dt>Mathematical Lever</dt><dd>Noise schedules, score fields, and reverse sampling.</dd>
     <dt>Why It Matters</dt><dd>It explains the central mechanism behind diffusion image generation.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: A detailed image is too hard to create in one leap. The deeper reason is: Many small local directions can solve a global generation problem. The subtheme groups diffusion, score matching because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Noise schedules, score fields, and reverse sampling. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to diffusion, flow matching, guidance, latent space, score matching. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-diffusion-01, ev-diffusion-02, ev-score_matching-01, ev-score_matching-02. Those records point to the concrete transcript anchors for diffusion, score matching. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/score_matching.html">Score Matching</a></p>
 </article>
@@ -182,6 +267,11 @@
     <dt>Hidden Principle</dt><dd>A path through space can be easier to learn than a direct jump.</dd>
     <dt>Mathematical Lever</dt><dd>Vector fields and continuous-time transformations.</dd>
     <dt>Why It Matters</dt><dd>It reveals the shared geometry behind diffusion and newer flow methods.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: Generation needs a route from something easy to sample to something realistic. The deeper reason is: A path through space can be easier to learn than a direct jump. The subtheme groups flow matching because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Vector fields and continuous-time transformations. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to diffusion, latent space, score matching. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-flow_matching-01, ev-flow_matching-02. Those records point to the concrete transcript anchors for flow matching. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/flow_matching.html">Flow Matching</a></p>
 </article>
@@ -193,6 +283,11 @@
     <dt>Hidden Principle</dt><dd>Generation must be constrained without freezing all creative variation.</dd>
     <dt>Mathematical Lever</dt><dd>Conditioned scores, guidance weights, and modified sampling directions.</dd>
     <dt>Why It Matters</dt><dd>It is what makes image and video generation steerable.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: A model can make something plausible but not the thing requested. The deeper reason is: Generation must be constrained without freezing all creative variation. The subtheme groups guidance because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Conditioned scores, guidance weights, and modified sampling directions. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to agents and tools, diffusion, reward modeling. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-guidance-01, ev-guidance-02. Those records point to the concrete transcript anchors for guidance. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/guidance.html">Guidance</a></p>
 </article>
@@ -204,6 +299,12 @@
   <h2>Measurement, Scale, And Generalization</h2>
   <p>Scores, scaling curves, and test sets are claims about behavior under chosen conditions, not full descriptions of intelligence.</p>
   <p><strong>Why it matters:</strong> It keeps model development honest about what has actually been demonstrated.</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>The shared argument is that progress claims need disciplined measurement. CME295 raises evaluation and scaling for LLM capability. CS224R shows why offline and sequential settings can fool naive scores. CME296 adds visual-generation evaluation, where realism, alignment, diversity, and artifacts are hard to compress into one number.</dd>
+    <dt>Mathematical Spine</dt><dd>The mathematical spine is sampling and compression. A metric samples behavior under chosen conditions and compresses it into a score or curve. Scaling laws then fit relationships between resources and measured loss or capability. The hidden issue is what the measurement leaves out.</dd>
+    <dt>Where The Analogy Breaks</dt><dd>A higher score is not always a better system. The score may be narrow, stale, or easy to game. Scaling trends also describe observed ranges; they do not remove the need to inspect failure cases, distribution shifts, and human consequences.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>This theme is grounded through evaluation, scaling laws, generalization. Its subthemes are scores are samples, what changes with size. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cme296-diffusion-large-vision-models-spring-2026, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote.</dd>
+  </dl>
   <div class="stack">
 <article class="wide-card" id="scores_are_samples">
   <h3>Remembering That Scores Are Partial Views</h3>
@@ -212,6 +313,11 @@
     <dt>Hidden Principle</dt><dd>Every measurement compresses behavior and loses detail.</dd>
     <dt>Mathematical Lever</dt><dd>Metrics, held-out sets, confidence, and failure slicing.</dd>
     <dt>Why It Matters</dt><dd>It prevents benchmark success from being confused with broad reliability.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: A single score can hide what the model cannot do. The deeper reason is: Every measurement compresses behavior and loses detail. The subtheme groups evaluation, generalization because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Metrics, held-out sets, confidence, and failure slicing. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to evaluation, generalization, invariance, offline rl, reward modeling. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-evaluation-01, ev-evaluation-02, ev-generalization-01, ev-generalization-02. Those records point to the concrete transcript anchors for evaluation, generalization. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
 </article>
@@ -223,6 +329,11 @@
     <dt>Hidden Principle</dt><dd>Capability depends on bottlenecks among data, compute, architecture, and training objective.</dd>
     <dt>Mathematical Lever</dt><dd>Curves relating resources to loss or observed capability.</dd>
     <dt>Why It Matters</dt><dd>It turns scale from superstition into a planning question with limits.</dd>
+    <dt>First-Principles Walkthrough</dt><dd>Start with the everyday problem: Building larger systems is costly, so developers need clues about what scale will buy. The deeper reason is: Capability depends on bottlenecks among data, compute, architecture, and training objective. The subtheme groups scaling laws because each concept is a concrete answer to that same pressure. A reader should first ask what constraint the system faces, then ask what object the method introduces so the constraint can be handled by computation.</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>The mathematical lever is Curves relating resources to loss or observed capability. In plain terms, this is the handle that turns the messy situation into something that can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition.</dd>
+    <dt>Cross-Links And Limits</dt><dd>This subtheme connects sideways to emergence, evaluation, pretraining. The connection is useful because the same primitive can reappear under different names. The limit is that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters.</dd>
+    <dt>Lecture Evidence Chain</dt><dd>The evidence chain begins with ev-scaling_laws-01, ev-scaling_laws-02. Those records point to the concrete transcript anchors for scaling laws. The subtheme statement is therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review.</dd>
+    <dt>Recognize In New Work</dt><dd>In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe.</dd>
   </dl>
   <p class="chips"><a class="chip" href="concepts/scaling_laws.html">Scaling Laws</a></p>
 </article>
