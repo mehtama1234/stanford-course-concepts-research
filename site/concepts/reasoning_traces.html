@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Reasoning Traces, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Reasoning Traces, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: a model asked a multi-step math question may fail if it jumps straight to the answer. If it writes intermediate work first, later tokens can read those earlier steps and correct course. CME295 frames reasoning models as different from vanilla LLMs: instead of prompt directly to response, the model outputs a reasoning chain, often hidden from the user, and then a response. The trace is temporary working memory written into the sequence.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Reasoning Traces is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The reasoning lecture emphasizes continuity with preference tuning and training. Reasoning is not introduced as magic; it builds on the same model-training pipeline from pretraining, fine-tuning, and preference methods. The practical claim is that letting the model reason before responding can improve performance on reasoning tasks such as math and coding.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Reasoning Traces as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that a reasoning trace is guaranteed truthful explanation. It is better understood as generated scratch work that may help the model compute. The trace can be hidden, compressed, trained, rewarded, or wrong.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Reasoning Traces: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize reasoning traces whenever extra generated tokens are used as intermediate computation before a final answer. The method may call them chain-of-thought, scratchpads, rationales, process supervision, deliberation, test-time compute, or hidden reasoning. The shared primitive is composition over time: use the output stream as working memory.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near inference time compute, rl for llms, agents and tools. Across the three courses, the shared pattern is search, composition: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><span class="chip muted-chip">inference time compute</span> <a class="chip" href="rl_for_llms.html">rl for llms</a> <a class="chip" href="agents_and_tools.html">agents and tools</a></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:00:18.960 · strong</p>
   <p>around 00:00:18.960, the lecture uses reasoning while covering Reasoning Traces. This supports the scoped claim that using written intermediate work as temporary memory for hard problems.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 6 - LLM Reasoning and anchors the lecture&#x27;s treatment of Reasoning Traces through the local cues reasoning. The supported argument is that using written intermediate work as temporary memory for hard problems is needed because a system with limited internal working memory can externalize partial results into tokens and condition on them later.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Reasoning Traces as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Tasks needing arithmetic, planning, proof, or careful decomposition often collapse into plausible but unsupported guesses.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Reasoning Traces. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 reasoning lecture distinguishes vanilla LLM response generation from reasoning models that produce a reasoning chain and then a response.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture contrasts direct answering with a two-part output: hidden reasoning chain plus final response. That is the model using generated text as temporary work before answering.</dd>
+    <dt>Mathematical Claim</dt><dd>A reasoning trace extends the sampled sequence before the final answer, so later token probabilities condition on intermediate generated steps.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span motivates reasoning traces but does not prove the trace is faithful or human-readable. It may be hidden from the user and shaped by training objectives.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors reasoning as test-time or generation-time computation, not just a label for difficult tasks.</dd>
   </dl>
   <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt</code></p>

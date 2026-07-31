@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Pretraining, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Pretraining, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: before becoming a helpful assistant, a language model spends massive compute learning to autocomplete text and code. CME295 says pretraining teaches the model the structure of language and code at large scale, but the result is still only a next-token predictor. That distinction is the point: pretraining creates broad competence by repeated prediction, while later tuning changes how that competence is used.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Pretraining is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The tuning lecture emphasizes pretraining as the compute-heavy first stage. It happens on a lot of data, requires parallel training systems, and produces a model that knows patterns in text and code but is not yet helpful. This frames pretraining as broad practice, not final behavior.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Pretraining as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that pretraining alone creates an assistant. The lecture explicitly separates knowing how to autocomplete from behaving helpfully. Without later fine-tuning or preference tuning, the model may be knowledgeable and fluent but not aligned to the user&#x27;s task.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Pretraining: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize pretraining when a large model learns from abundant raw data through a general prediction or reconstruction task before downstream adaptation. The method may be next-token prediction, masked prediction, denoising, contrastive pretraining, or self-supervised learning. The shared primitive is practice from cheap feedback.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near fine tuning, scaling laws, generalization. Across the three courses, the shared pattern is feedback, scale: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="fine_tuning.html">fine tuning</a> <a class="chip" href="scaling_laws.html">scaling laws</a> <a class="chip" href="generalization.html">generalization</a></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:02:20.620 · strong</p>
   <p>around 00:02:20.620, the lecture uses next token while covering Pretraining. This supports the scoped claim that large-scale practice before the model is asked to be useful in a specific way.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - LLM tuning and anchors the lecture&#x27;s treatment of Pretraining through the local cues next token. The supported argument is that large-scale practice before the model is asked to be useful in a specific way is needed because a learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Pretraining as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Pretraining. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 tuning lecture recaps pretraining as the compute-heavy first stage that teaches the model language and code structure from a lot of data, while leaving it as a next-token predictor.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture frames the pretrained model as a great autocompleter. It has broad pattern knowledge, but that does not yet make it a helpful assistant.</dd>
+    <dt>Mathematical Claim</dt><dd>Pretraining uses a prediction loss, often next-token prediction for LLMs, to adjust model weights so the true continuation becomes more probable.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span explicitly warns against treating pretraining as the whole product: after this stage, the model still needs fine-tuning or alignment to behave usefully.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the difference between learning broad structure and learning desired behavior, which is central to the whole LLM training pipeline.</dd>
   </dl>
   <p class="meta">Matched terms: next token · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt</code></p>

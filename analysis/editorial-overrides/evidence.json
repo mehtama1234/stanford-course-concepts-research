@@ -89,5 +89,54 @@
     "mathematical_claim": "An encoder maps an image from pixel space into a smaller latent representation, and a decoder maps that representation back. The reconstruction objective checks whether the compressed representation kept enough information.",
     "caveat_or_warning": "The span introduces autoencoders as a first attempt. A lower-dimensional representation can lose information, and reconstruction quality does not guarantee that every semantic factor is cleanly separated.",
     "why_span_matters": "It anchors latent space as a first-principles compression idea: move generation out of expensive pixel space into a smaller representation that still preserves useful perceptual content."
+  },
+  "ev-tokenization-01": {
+    "lecture_argument": "The CME295 recap describes tokenization as dividing input text into atomic units before those units can be represented and processed by transformer models.",
+    "example_or_analogy": "The lecture's subword-tokenizer discussion gives the useful analogy: instead of treating every full word as unrelated, reusable roots and pieces can be shared across words.",
+    "mathematical_claim": "Tokenization is a mapping from a raw string to a sequence of discrete units. The downstream model can then map those units to embeddings and process a finite sequence.",
+    "caveat_or_warning": "The span supports the importance of tokenization in language models, but token boundaries remain partly arbitrary and can create awkward splits for rare words, names, numbers, or code.",
+    "why_span_matters": "It anchors the first interface problem in the LLM pipeline: before attention or training can happen, text must become countable model input."
+  },
+  "ev-positional_encoding-01": {
+    "lecture_argument": "The CME295 transformer tricks lecture explains that direct token-to-token attention loses the sequential processing signal that RNNs had, so the model must inject position information.",
+    "example_or_analogy": "The lecture contrasts transformers with RNNs: RNNs naturally process one token after another, while transformers let tokens interact directly, so order has to be added back explicitly.",
+    "mathematical_claim": "A position embedding assigns a vector to each position and adds it to the token embedding, giving the model numerical access to where each token sits.",
+    "caveat_or_warning": "The span covers the original dedicated position-embedding idea. Other schemes such as relative position or RoPE alter how order is represented, but the first-principles need remains the same.",
+    "why_span_matters": "It gives the cleanest lecture statement of why position exists: attention's parallel communication removes a source of order information that language still needs."
+  },
+  "ev-pretraining-01": {
+    "lecture_argument": "The CME295 tuning lecture recaps pretraining as the compute-heavy first stage that teaches the model language and code structure from a lot of data, while leaving it as a next-token predictor.",
+    "example_or_analogy": "The lecture frames the pretrained model as a great autocompleter. It has broad pattern knowledge, but that does not yet make it a helpful assistant.",
+    "mathematical_claim": "Pretraining uses a prediction loss, often next-token prediction for LLMs, to adjust model weights so the true continuation becomes more probable.",
+    "caveat_or_warning": "The span explicitly warns against treating pretraining as the whole product: after this stage, the model still needs fine-tuning or alignment to behave usefully.",
+    "why_span_matters": "It anchors the difference between learning broad structure and learning desired behavior, which is central to the whole LLM training pipeline."
+  },
+  "ev-fine_tuning-01": {
+    "lecture_argument": "The CS224R RL-for-LLMs lecture asks how pretrained language models become useful chatbots, setting up preference optimization as the bridge from text prediction to assistant behavior.",
+    "example_or_analogy": "The lecture's chatbot framing is concrete: a huge pretrained model can predict text, but chat behavior requires additional training pressure toward the interaction pattern people want.",
+    "mathematical_claim": "Fine-tuning and preference optimization change the model's output probabilities using higher-quality demonstrations, comparisons, or preference losses.",
+    "caveat_or_warning": "The span is broad setup for preference optimization, not a full derivation. It supports the staged adaptation problem rather than every specific tuning algorithm.",
+    "why_span_matters": "It grounds fine-tuning in the real deployment question: how to turn a pretrained predictor into a model that behaves like a useful assistant."
+  },
+  "ev-reasoning_traces-01": {
+    "lecture_argument": "The CME295 reasoning lecture distinguishes vanilla LLM response generation from reasoning models that produce a reasoning chain and then a response.",
+    "example_or_analogy": "The lecture contrasts direct answering with a two-part output: hidden reasoning chain plus final response. That is the model using generated text as temporary work before answering.",
+    "mathematical_claim": "A reasoning trace extends the sampled sequence before the final answer, so later token probabilities condition on intermediate generated steps.",
+    "caveat_or_warning": "The span motivates reasoning traces but does not prove the trace is faithful or human-readable. It may be hidden from the user and shaped by training objectives.",
+    "why_span_matters": "It anchors reasoning as test-time or generation-time computation, not just a label for difficult tasks."
+  },
+  "ev-agents_and_tools-01": {
+    "lecture_argument": "The CME295 agentic LLM lecture states the shift from an LLM on its own to an LLM interacting with outside systems through RAG, tool calling, and agents.",
+    "example_or_analogy": "RAG is the concrete example: the model can fetch information from an external knowledge base instead of relying only on what is stored in its parameters.",
+    "mathematical_claim": "The agent loop can be framed as state, action, observation, and context update: choose a retrieval or tool action, observe the result, and condition the next step on that observation.",
+    "caveat_or_warning": "This span supports the system-interaction framing but not the reliability of every agent design. Retrieval quality, tool errors, and bad intermediate decisions can still break the system.",
+    "why_span_matters": "It anchors the move from standalone prediction to closed-loop systems, which is essential for modern agentic LLM workflows."
+  },
+  "ev-evaluation-01": {
+    "lecture_argument": "The CME295 evaluation lecture opens by saying that without measuring LLM performance, we do not know what to improve, then frames the class around quantifying behavior across different cases.",
+    "example_or_analogy": "The lecture follows the agent/RAG lecture, so evaluation becomes the check on whether all those added capabilities actually work rather than merely sound plausible.",
+    "mathematical_claim": "An evaluation maps model behavior on selected cases into metrics, judgments, or scores. The score is useful because it creates feedback, but partial because it compresses many behaviors into a smaller report.",
+    "caveat_or_warning": "The span supports evaluation as necessary measurement, not the claim that any one benchmark is sufficient. Metrics can miss failure modes outside their sampled cases.",
+    "why_span_matters": "It anchors evaluation as a first-principles necessity: if behavior cannot be measured, improvement is mostly guesswork."
   }
 }
