@@ -10,8 +10,9 @@ python3 scripts/validate_all.py
 Latest validation result:
 
 ```text
-validated 28 concepts, 6 themes, 15 subthemes, 131 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 28 manually deepened evidence records
+validated 28 concepts, 6 themes, 15 subthemes, 131 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 52 manually deepened evidence records
 validated 34 html files and 131 evidence anchors
+audited 131 evidence records; 52 manual, 79 generated-needs-review, 0 generated strong
 ```
 
 ## What Was Checked
@@ -31,8 +32,11 @@ validated 34 html files and 131 evidence anchors
 - Every evidence record points to an existing transcript file.
 - Every evidence record has matched transcript terms.
 - Every evidence record includes a lecture argument, example or analogy, mathematical claim, caveat or warning, and why the span matters.
-- Generic evidence wording is rejected.
+- Every evidence record includes a local transcript window or an explicit note that only clean transcript keyword cues were available.
+- Every evidence record is labeled as either `manual_deepened` or `generated_transcript_cue_needs_review`.
+- Generated transcript-cue evidence is prevented from claiming `strong` confidence.
 - Unsupported `strong` confidence is rejected.
+- The evidence-fidelity audit writes `analysis/audits/evidence-fidelity-report.md` with counts and a remaining review queue.
 - Every method family has evidence through its supporting concepts.
 - Every primitive includes a first-principles treatment: everyday setup, formal object, useful equation, symbol explanation, course appearances, and misuse failure.
 - Every primitive has at least 90 words across the deeper treatment fields.
@@ -62,14 +66,14 @@ The evidence ledger is not a quotation database. It stores local transcript cues
 
 Evidence confidence means:
 
-- `strong`: repeated transcript cues or title-level course alignment.
+- `strong`: manually reviewed evidence with repeated transcript cues or title-level course alignment.
 - `moderate`: enough transcript support to justify inclusion, but not the main lecture emphasis.
 - `weak`: a real transcript cue exists, but the claim should be treated as shallow support and reviewed before publication.
 
 ## Current Scope
 
-This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus one primary evidence span for each concept.
+This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus 52 evidence spans across the course corpus.
 
 The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea.
 
-This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, perform a slower manual page-by-page editorial read, replace more synthesized evidence chains with hand-selected transcript argument spans, and complete true browser screenshot inspection or deployment checks in an environment with a browser.
+This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, manually review the remaining 79 generated transcript-cue evidence records, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with a browser.

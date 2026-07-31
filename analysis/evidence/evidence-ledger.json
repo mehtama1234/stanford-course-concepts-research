@@ -12,8 +12,10 @@
     "mathematical_claim": "Tokenization is a mapping from a raw string to a sequence of discrete units. The downstream model can then map those units to embeddings and process a finite sequence.",
     "caveat_or_warning": "The span supports the importance of tokenization in language models, but token boundaries remain partly arbitrary and can create awkward splits for rare words, names, numbers, or code.",
     "why_span_matters": "It anchors the first interface problem in the LLM pipeline: before attention or training can happen, text must become countable model input.",
+    "local_transcript_window": "take into consideration the encoded embedding of the CLS token. So I guess in real life, BERT is used to encode documents",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "token"
     ],
@@ -39,8 +41,10 @@
     "mathematical_claim": "A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would have no consistent input units, and every later layer would receive a different kind of object each time.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Tokenization. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "to generate images that contain that specific person or that specific object, while having a rare token as input. So what you are teaching your model",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "token"
     ],
@@ -50,7 +54,7 @@
     "supports_subthemes": [
       "text_and_patch_interfaces"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 33
   },
   {
@@ -66,8 +70,10 @@
     "mathematical_claim": "An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would treat related symbols as unrelated labels and could not smoothly share what it learns.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Embeddings. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "of a unified way of looking at both these perspectives, and we moved from a discrete representation to a continuous one, and we obtained this SDE, which",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "representation"
     ],
@@ -77,7 +83,7 @@
     "supports_subthemes": [
       "learned_geometry"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 125
   },
   {
@@ -93,8 +99,10 @@
     "mathematical_claim": "An embedding is a learned mapping from a discrete item to a vector. The vector's coordinates are adjusted during training so related usage patterns become easier for later layers to exploit.",
     "caveat_or_warning": "This span supports token embeddings in the transformer course. It should not be overread as saying every coordinate has a clean human meaning or that vector closeness always matches human semantic similarity.",
     "why_span_matters": "It anchors the first major bridge from language to math: arbitrary text pieces become learned numerical objects that attention and feed-forward layers can manipulate.",
+    "local_transcript_window": "in this architecture. And this is the position embedding. So if you remember, here we're letting tokens interact",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "embedding"
     ],
@@ -120,8 +128,10 @@
     "mathematical_claim": "An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would treat related symbols as unrelated labels and could not smoothly share what it learns.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Embeddings. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "or it could be some more continuous description of the task, like continuous vector. And then what we could do is we could",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "vector"
     ],
@@ -131,7 +141,7 @@
     "supports_subthemes": [
       "learned_geometry"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 42
   },
   {
@@ -147,8 +157,10 @@
     "mathematical_claim": "An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would treat related symbols as unrelated labels and could not smoothly share what it learns.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Embeddings. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "especially when it came to representing those tokens. And speaking of representation, once we were able to divide the input text into atomic units, a.k.a.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "representation"
     ],
@@ -158,7 +170,7 @@
     "supports_subthemes": [
       "learned_geometry"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 36
   },
   {
@@ -174,8 +186,10 @@
     "mathematical_claim": "An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would treat related symbols as unrelated labels and could not smoothly share what it learns.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Embeddings. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "BERT has is this nice property that it's encoded embeddings are very meaningful and expressive of the inputs. And so we saw the example of classification,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "embeddings"
     ],
@@ -185,7 +199,7 @@
     "supports_subthemes": [
       "learned_geometry"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 30
   },
   {
@@ -196,13 +210,15 @@
     "timestamp_start": "00:20:34.500",
     "timestamp_end": "00:20:37.260",
     "paraphrased_claim": "around 00:20:34.500, the lecture uses embeddings while covering Embeddings. This supports the scoped claim that learned coordinates that let a model compare things by arithmetic.",
-    "lecture_argument": "This span sits inside Lecture 7 - Agentic LLMs and anchors the lecture's treatment of Embeddings through the local cues embeddings. The supported argument is that learned coordinates that let a model compare things by arithmetic is needed because a learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Embeddings as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model would treat related symbols as unrelated labels and could not smoothly share what it learns.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Embeddings. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME295 agentic LLM lecture links retrieval directly to embeddings: when the system needs to retrieve outside information, it computes embeddings for chunks or queries so nearby vectors can be used as lookup candidates.",
+    "example_or_analogy": "Retrieval is the concrete case. The model cannot search a pile of text by raw words alone; it needs numerical coordinates so a query and a useful document chunk can land near each other.",
+    "mathematical_claim": "An embedding maps text or another object into a vector space. Retrieval then compares vectors, often by similarity score, and returns items whose coordinates are close enough to the query.",
+    "caveat_or_warning": "This span supports embeddings as a retrieval interface, not the stronger claim that vector closeness always captures the user's true information need. Bad chunking or misleading similarity can still retrieve the wrong evidence.",
+    "why_span_matters": "It anchors embeddings in a practical agent workflow: learned coordinates become the bridge between a language model and external memory.",
+    "local_transcript_window": "And the idea here is whenever you hear retrieval, you should think about embeddings. And here, what we do is we compute embeddings corresponding",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "embeddings"
     ],
@@ -228,8 +244,10 @@
     "mathematical_claim": "A position embedding assigns a vector to each position and adds it to the token embedding, giving the model numerical access to where each token sits.",
     "caveat_or_warning": "The span covers the original dedicated position-embedding idea. Other schemes such as relative position or RoPE alter how order is represented, but the first-principles need remains the same.",
     "why_span_matters": "It gives the cleanest lecture statement of why position exists: attention's parallel communication removes a source of order information that language still needs.",
+    "local_transcript_window": "in this architecture. And this is the position embedding. So if you remember, here we're letting tokens interact",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "position"
     ],
@@ -250,13 +268,15 @@
     "timestamp_start": "01:05:31.720",
     "timestamp_end": "01:05:37.500",
     "paraphrased_claim": "around 01:05:31.720, the lecture uses position while covering Position And Order. This supports the scoped claim that a way to tell the model where each piece sits in a sequence or image.",
-    "lecture_argument": "This span sits inside Lecture 5 - Architectures and anchors the lecture's treatment of Position And Order through the local cues position. The supported argument is that a way to tell the model where each piece sits in a sequence or image is needed because attention compares items as a set unless order information is added. order must be represented explicitly if order matters.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Position And Order as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may know which pieces exist but lose the arrangement that makes them meaningful.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Position And Order. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 architectures lecture explains the same first-principles position problem for attention-based vision models: direct links between inputs remove the old sequential signal, so the model must be told where each input sits.",
+    "example_or_analogy": "The useful picture is an image or sequence whose pieces are all allowed to talk at once. Without a position signal, the model knows the pieces but loses the layout that makes them meaningful.",
+    "mathematical_claim": "Position information is added as numerical features tied to location. Those features let attention-based layers distinguish identical content appearing in different places.",
+    "caveat_or_warning": "This span supports the need for position information, not one specific positional scheme. Absolute embeddings, relative schemes, and rotary-style encodings solve the same pressure differently.",
+    "why_span_matters": "It gives cross-course evidence that position is not a language-only detail; the same mathematical need reappears when transformers are used for images.",
+    "local_transcript_window": "just because you have direct links, which is why you need to specify in which position each input is. You need to have a way to do that.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "position"
     ],
@@ -282,8 +302,10 @@
     "mathematical_claim": "softmax(QK^T / sqrt(d_k))V means: compare queries Q with keys K, scale the scores so they do not become numerically too sharp, normalize them into weights with softmax, then use those weights to average the values V.",
     "caveat_or_warning": "This span supports the mechanics of self-attention, but it does not prove that attention weights are faithful human explanations. The lecture treats attention as optimized matrix multiplication and information routing, not as a guaranteed interpretability story.",
     "why_span_matters": "This is a high-value evidence span because it contains the central attention formula and the plain operational roles of query, key, and value in one place.",
+    "local_transcript_window": "So if you remember, lecture 1 was all about introducing the concept of self-attention. And if you remember, what self-attention",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "self-attention"
     ],
@@ -309,8 +331,10 @@
     "mathematical_claim": "Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So just wait for that. And then the third one is you do some cross attention operation there, which we're going to see as well, maybe in 40 minutes.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "attention"
     ],
@@ -320,7 +344,7 @@
     "supports_subthemes": [
       "selective_context"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 28
   },
   {
@@ -336,8 +360,10 @@
     "mathematical_claim": "Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "There's is also a paper that before transformers were really popular, used self-attention and also 1D convolutions. You can think of it sort of a transformer.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "self-attention"
     ],
@@ -358,13 +384,15 @@
     "timestamp_start": "01:08:17.450",
     "timestamp_end": "01:08:22.050",
     "paraphrased_claim": "around 01:08:17.450, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.",
-    "lecture_argument": "This span sits inside Lecture 7 - Evaluation and anchors the lecture's treatment of Attention through the local cues attention. The supported argument is that a learned way for each piece to decide which other pieces matter right now is needed because useful context is selective. the system needs a content-based lookup mechanism instead of a fixed rule for what to read.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Attention as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 evaluation lecture describes a decoder that uses text tokens and cross-attention so textual information can interact with encoded images.",
+    "example_or_analogy": "The multimodal case is concrete: the text side asks for information from the image side, and cross-attention is the bridge that lets one representation condition on the other.",
+    "mathematical_claim": "Cross-attention compares queries from one stream with keys and values from another stream, then copies a weighted mixture from the source stream into the target stream.",
+    "caveat_or_warning": "This span supports attention as a cross-modal routing mechanism, not as a guarantee that the generated or evaluated image truly follows the text.",
+    "why_span_matters": "It shows why attention belongs in both transformer and vision-model courses: it is the reusable operation for routing information between parts of a system.",
+    "local_transcript_window": "where you use text tokens as input of your decoder, and then you keep this cross attention mechanism in order to make it interact with encoded images.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "attention"
     ],
@@ -385,13 +413,15 @@
     "timestamp_start": "00:38:20.513",
     "timestamp_end": "00:38:22.680",
     "paraphrased_claim": "around 00:38:20.513, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.",
-    "lecture_argument": "This span sits inside Lecture 15: Hierarchical RL and IL and anchors the lecture's treatment of Attention through the local cues attention. The supported argument is that a learned way for each piece to decide which other pieces matter right now is needed because useful context is selective. the system needs a content-based lookup mechanism instead of a fixed rule for what to read.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Attention as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R hierarchical RL and imitation learning lecture uses a robot instruction example where a language model must attend to an image; if it ignores the visual evidence, it can give the robot the wrong instruction.",
+    "example_or_analogy": "The coffee-fetching robot example makes attention ordinary: the system must look at the relevant visual context before deciding what to tell the robot to do.",
+    "mathematical_claim": "Attention assigns weight to available context so the decision step is conditioned on the evidence that matters now rather than on every input equally.",
+    "caveat_or_warning": "The span uses attention in a broad multimodal sense. It supports the selective-context problem, but not a full derivation of transformer self-attention.",
+    "why_span_matters": "It anchors the shared primitive between LLMs and embodied agents: deciding which past or external information should matter for the present action.",
+    "local_transcript_window": "and you ask the robot to get some coffee for you, if the language model doesn't actually pay attention to that image, it might tell the robot like, oh,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "attention"
     ],
@@ -417,8 +447,10 @@
     "mathematical_claim": "Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And the second is actually getting the robot to pay attention to those different strategies. And that second one actually seemed",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "attention"
     ],
@@ -444,8 +476,10 @@
     "mathematical_claim": "A transformer block composes attention-based mixing with per-position nonlinear updates, residual carrying of previous state, and normalization for stable deep computation.",
     "caveat_or_warning": "The recap span is architectural and integrative, not a full derivation of every block component. Detailed claims about normalization or residual training dynamics need support from more specific lecture spans.",
     "why_span_matters": "It shows why the block belongs in the atlas as a composition primitive: the course's pieces only become a modern model when they are stacked into repeated update layers.",
+    "local_transcript_window": "by going through the architecture that is the foundation of modern day LLMs, which is the transformer. And we saw that there are two notable parts",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "transformer"
     ],
@@ -471,8 +505,10 @@
     "mathematical_claim": "A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system loses the scalable recipe for building many layers of context-dependent computation.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Transformer Block. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "there are papers that were landmark papers that really revolutionize, for instance, transformer revolutionized the NLP field?",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "transformer"
     ],
@@ -482,7 +518,7 @@
     "supports_subthemes": [
       "stacked_computation"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 44
   },
   {
@@ -498,8 +534,10 @@
     "mathematical_claim": "A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system loses the scalable recipe for building many layers of context-dependent computation.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Transformer Block. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "on similar scales across tasks. So per-task normalization can also be quite useful for the learning process.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "normalization"
     ],
@@ -525,8 +563,10 @@
     "mathematical_claim": "A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system loses the scalable recipe for building many layers of context-dependent computation.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Transformer Block. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "No local VTT window was available; this evidence comes from clean transcript keyword cues.",
     "evidence_basis": "clean transcript keyword cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "transformer",
       "block",
@@ -554,8 +594,10 @@
     "mathematical_claim": "A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system loses the scalable recipe for building many layers of context-dependent computation.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Transformer Block. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "then, learn in the real world how to insert the red block into the shape sorting cube. And again here, with experience is",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "block"
     ],
@@ -581,8 +623,10 @@
     "mathematical_claim": "A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system loses the scalable recipe for building many layers of context-dependent computation.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Transformer Block. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "train a sequence model. It could be a transformer, any sort of neural network with memory, a recurrent neural network.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "transformer"
     ],
@@ -608,8 +652,10 @@
     "mathematical_claim": "Pretraining uses a prediction loss, often next-token prediction for LLMs, to adjust model weights so the true continuation becomes more probable.",
     "caveat_or_warning": "The span explicitly warns against treating pretraining as the whole product: after this stage, the model still needs fine-tuning or alignment to behave usefully.",
     "why_span_matters": "It anchors the difference between learning broad structure and learning desired behavior, which is central to the whole LLM training pipeline.",
+    "local_transcript_window": "basically, all the texts that it has been fed. But what this model can do is only predict the next token. So it's a great autocompleter, but it's not a helpful model",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "next token"
     ],
@@ -630,13 +676,15 @@
     "timestamp_start": "00:10:36.420",
     "timestamp_end": "00:10:40.860",
     "paraphrased_claim": "around 00:10:36.420, the lecture uses loss while covering Pretraining. This supports the scoped claim that large-scale practice before the model is asked to be useful in a specific way.",
-    "lecture_argument": "This span sits inside Lecture 6 - Model Training and anchors the lecture's treatment of Pretraining through the local cues loss. The supported argument is that large-scale practice before the model is asked to be useful in a specific way is needed because a learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Pretraining as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Pretraining. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 model-training lecture opens by focusing on the loss used for training, making the same point as LLM pretraining in another domain: learning begins with a measurable prediction or reconstruction objective.",
+    "example_or_analogy": "The training loss is the practice game. Before a model can generate useful images, it needs a rule that says how wrong its current prediction is on training examples.",
+    "mathematical_claim": "A loss function compresses model error into a number that can be differentiated and reduced. In generative vision training, that loss may measure denoising, velocity prediction, reconstruction, or another supervised target.",
+    "caveat_or_warning": "This span supports training-by-loss rather than LLM next-token pretraining specifically. It should be used as cross-course evidence for feedback as practice, not as a claim that all losses teach the same behavior.",
+    "why_span_matters": "It connects the feedback primitive across courses: language and vision models both need a training signal that turns examples into parameter updates.",
+    "local_transcript_window": "So we'll start with the first. Even before starting, actually, we'll be talking about the loss that we will use for our training process.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "loss"
     ],
@@ -662,8 +710,10 @@
     "mathematical_claim": "Fine-tuning and preference optimization change the model's output probabilities using higher-quality demonstrations, comparisons, or preference losses.",
     "caveat_or_warning": "The span is broad setup for preference optimization, not a full derivation. It supports the staged adaptation problem rather than every specific tuning algorithm.",
     "why_span_matters": "It grounds fine-tuning in the real deployment question: how to turn a pretrained predictor into a model that behaves like a useful assistant.",
+    "local_transcript_window": "Today I'm going to cover primarily preference optimization.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "preference"
     ],
@@ -684,13 +734,15 @@
     "timestamp_start": "00:02:35.700",
     "timestamp_end": "00:02:40.420",
     "paraphrased_claim": "around 00:02:35.700, the lecture uses finetuning while covering Fine-Tuning And Preference Learning. This supports the scoped claim that steering a broad model toward behavior people actually want.",
-    "lecture_argument": "This span sits inside Lecture 5 - LLM tuning and anchors the lecture's treatment of Fine-Tuning And Preference Learning through the local cues finetuning. The supported argument is that steering a broad model toward behavior people actually want is needed because raw imitation learns what appears in data. usefulness requires extra feedback about which possible responses people prefer.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Fine-Tuning And Preference Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may be fluent but misaligned with the task, the user, or the deployment setting.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Fine-Tuning And Preference Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME295 tuning lecture identifies supervised fine-tuning as the second step after pretraining, because a raw pretrained model is not yet specialized for the desired behavior.",
+    "example_or_analogy": "The staged pipeline is the example: first learn broad language patterns, then show the model higher-quality task behavior so it acts more like the intended assistant.",
+    "mathematical_claim": "Supervised fine-tuning changes output probabilities by training on demonstrations of desired responses. It narrows a broad predictor toward a target interaction pattern.",
+    "caveat_or_warning": "This span supports SFT as a steering stage, not the full preference-learning or RLHF pipeline. Fine-tuning can also over-specialize or copy demonstration artifacts.",
+    "why_span_matters": "It anchors the key distinction between broad pretraining and later adaptation, which is central to modern LLM construction.",
+    "local_transcript_window": "yet, which is why we have a second step. And we saw here, it's typically called finetuning or SFT for Supervised Fine Tuning.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "finetuning"
     ],
@@ -716,8 +768,10 @@
     "mathematical_claim": "A reasoning trace extends the sampled sequence before the final answer, so later token probabilities condition on intermediate generated steps.",
     "caveat_or_warning": "The span motivates reasoning traces but does not prove the trace is faithful or human-readable. It may be hidden from the user and shaped by training objectives.",
     "why_span_matters": "It anchors reasoning as test-time or generation-time computation, not just a label for difficult tasks.",
+    "local_transcript_window": "has been trending over the past year or so which is LLM reasoning. And it's actually a good segue compared",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "reasoning"
     ],
@@ -738,13 +792,15 @@
     "timestamp_start": "00:00:07.020",
     "timestamp_end": "00:00:12.160",
     "paraphrased_claim": "around 00:00:07.020, the lecture uses reasoning while covering Reasoning Traces. This supports the scoped claim that using written intermediate work as temporary memory for hard problems.",
-    "lecture_argument": "This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture's treatment of Reasoning Traces through the local cues reasoning. The supported argument is that using written intermediate work as temporary memory for hard problems is needed because a system with limited internal working memory can externalize partial results into tokens and condition on them later.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Reasoning Traces as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Tasks needing arithmetic, planning, proof, or careful decomposition often collapse into plausible but unsupported guesses.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Reasoning Traces. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture states that the session will focus on reasoning and reinforcement learning for LLM reasoning, placing multi-step language generation inside an RL framing.",
+    "example_or_analogy": "The course transition is the useful evidence: once outputs are reasoning attempts rather than short answers, the system can be judged by outcomes and trained with feedback over the reasoning process.",
+    "mathematical_claim": "A reasoning trace can be treated as a sequence of generated actions whose probabilities are adjusted using outcome rewards, preferences, or verifier signals.",
+    "caveat_or_warning": "The opening span is agenda-setting evidence. It supports the course bridge between reasoning and RL but not a specific algorithmic recipe by itself.",
+    "why_span_matters": "It grounds reasoning traces in the RL course rather than only the LLM course, making the cross-course connection explicit.",
+    "local_transcript_window": "So today we'll not talk about SQL. We'll talk about reasoning and, particularly, reinforcement learning for LLM reasoning.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "reasoning"
     ],
@@ -770,8 +826,10 @@
     "mathematical_claim": "The agent loop can be framed as state, action, observation, and context update: choose a retrieval or tool action, observe the result, and condition the next step on that observation.",
     "caveat_or_warning": "This span supports the system-interaction framing but not the reliability of every agent design. Retrieval quality, tool errors, and bad intermediate decisions can still break the system.",
     "why_span_matters": "It anchors the move from standalone prediction to closed-loop systems, which is essential for modern agentic LLM workflows.",
+    "local_transcript_window": "of other systems. So today's class, we'll focus on RAG, that you may have heard, tool calling, and agents.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "rag"
     ],
@@ -797,8 +855,10 @@
     "mathematical_claim": "The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model is limited to stale internal knowledge and cannot verify or change the outside world.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Agents, Retrieval, And Tools. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "where imitation learning, typically, we are training an agent to mimic some demonstrations that are provided from an expert.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "agent"
     ],
@@ -808,7 +868,7 @@
     "supports_subthemes": [
       "scratch_work_and_tools"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 20
   },
   {
@@ -824,8 +884,10 @@
     "mathematical_claim": "An evaluation maps model behavior on selected cases into metrics, judgments, or scores. The score is useful because it creates feedback, but partial because it compresses many behaviors into a smaller report.",
     "caveat_or_warning": "The span supports evaluation as necessary measurement, not the claim that any one benchmark is sufficient. Metrics can miss failure modes outside their sampled cases.",
     "why_span_matters": "It anchors evaluation as a first-principles necessity: if behavior cannot be measured, improvement is mostly guesswork.",
+    "local_transcript_window": "Hello, everyone, and welcome to lecture 8 of CME 295. So today's topic will be LLM evaluation. And I think this class is probably",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "evaluation"
     ],
@@ -846,13 +908,15 @@
     "timestamp_start": "00:05:22.240",
     "timestamp_end": "00:05:25.400",
     "paraphrased_claim": "around 00:05:22.240, the lecture uses evaluation while covering Evaluation. This supports the scoped claim that a controlled way to ask what a model can and cannot do.",
-    "lecture_argument": "This span sits inside Lecture 7 - Evaluation and anchors the lecture's treatment of Evaluation through the local cues evaluation. The supported argument is that a controlled way to ask what a model can and cannot do is needed because measurement is sampling. any score reflects the cases, rules, and incentives used to produce it.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Evaluation as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Evaluation. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 evaluation lecture explicitly shifts from generation methods to evaluation, saying the class will focus on how to judge the outputs after covering diffusion, score matching, flow matching, and distillation.",
+    "example_or_analogy": "The course sequence is the example: after learning how to generate images, the next problem is how to know whether the generated images are any good.",
+    "mathematical_claim": "Evaluation maps model behavior to measurements such as realism, prompt adherence, diversity, or task-specific scores. Each metric samples only part of the output behavior.",
+    "caveat_or_warning": "This span motivates evaluation but does not make one metric sufficient. Visual quality, alignment, diversity, and artifacts can disagree.",
+    "why_span_matters": "It anchors evaluation as a necessary second half of generation: building a sampler is incomplete without a way to inspect its failures.",
+    "local_transcript_window": "We saw distribution matching distillation, and here we are. Today, we're going to focus on evaluation, which as I mentioned, is going to be",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "evaluation"
     ],
@@ -878,8 +942,10 @@
     "mathematical_claim": "A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Evaluation. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "The second is challenges in methods. And the third is challenges in deployment and evaluation. I should also mention that this will not be exhaustive.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "evaluation"
     ],
@@ -900,13 +966,15 @@
     "timestamp_start": "00:12:04.240",
     "timestamp_end": "00:12:09.680",
     "paraphrased_claim": "around 00:12:04.240, the lecture uses metrics while covering Evaluation. This supports the scoped claim that a controlled way to ask what a model can and cannot do.",
-    "lecture_argument": "This span sits inside Lecture 6 - LLM Reasoning and anchors the lecture's treatment of Evaluation through the local cues metrics. The supported argument is that a controlled way to ask what a model can and cannot do is needed because measurement is sampling. any score reflects the cases, rules, and incentives used to produce it.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Evaluation as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Evaluation. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME295 reasoning lecture names BLEU and ROUGE as rule-based metrics for translation and summarization, using them as examples of task-specific evaluation signals.",
+    "example_or_analogy": "Translation and summarization make the measurement problem concrete: a system can produce text that looks plausible, but the evaluator needs a rule for comparing it with expected behavior.",
+    "mathematical_claim": "A metric compresses many output properties into a score. BLEU and ROUGE are examples of rules that count overlap-like evidence rather than fully judging meaning.",
+    "caveat_or_warning": "The span also exposes the limitation: rule-based text metrics can miss semantic quality, factual correctness, or reasoning validity.",
+    "why_span_matters": "It gives a concrete lecture-backed example of why evaluation is both useful and incomplete.",
+    "local_transcript_window": "if you worked in the translation world, you would use rule-based metrics like BLEU or for summarization, ROUGE to evaluate your output.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "metrics"
     ],
@@ -932,8 +1000,10 @@
     "mathematical_claim": "A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Evaluation. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So we can-- first, let's think about what we'll call deployed policy evaluation. So how good is the policy that we learned,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "evaluation"
     ],
@@ -959,8 +1029,10 @@
     "mathematical_claim": "A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Evaluation. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "it more something that a human would like or that some metric that we're defining would be more aligned with that.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "metric"
     ],
@@ -986,8 +1058,10 @@
     "mathematical_claim": "A policy maps a state, goal, task descriptor, or history to an action or action distribution. Conditioning changes what behavior the same learned rule expresses.",
     "caveat_or_warning": "This span supports policy as a flexible behavior rule, especially in multitask and hierarchical settings. It does not by itself derive policy-gradient or value-based learning.",
     "why_span_matters": "It anchors policy as the object being adapted, conditioned, and composed in RL, not merely a static lookup table.",
+    "local_transcript_window": "and reinforcement learning, where you condition a policy or a Q-function not just on the state but also on some sort of descriptor of the task,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "policy"
     ],
@@ -1013,8 +1087,10 @@
     "mathematical_claim": "A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: There is no explicit way to discuss or improve the system's behavior over time.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "lectures to lead into today. So for policy gradients, we started with our first reinforcement learning algorithm,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "policy"
     ],
@@ -1024,7 +1100,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 189
   },
   {
@@ -1040,8 +1116,10 @@
     "mathematical_claim": "A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: There is no explicit way to discuss or improve the system's behavior over time.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "methods that we've talked about, so far. So we started with talking about policy gradients, where our goal was to collect data from our policy,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "policy"
     ],
@@ -1051,7 +1129,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 170
   },
   {
@@ -1062,13 +1140,15 @@
     "timestamp_start": "00:00:28.100",
     "timestamp_end": "00:00:30.320",
     "paraphrased_claim": "around 00:00:28.100, the lecture uses policy while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.",
-    "lecture_argument": "This span sits inside Lecture 6: Q-Learning and anchors the lecture's treatment of Policy through the local cues policy. The supported argument is that the rule an agent uses to choose what to do next is needed because in a changing environment, the learner must connect what it can see now to a choice under uncertainty.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Policy as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: There is no explicit way to discuss or improve the system's behavior over time.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R Q-learning lecture distinguishes value functions and Q-functions by saying a value function follows a policy from a state, while a Q-function starts with a state-action choice and then follows a policy.",
+    "example_or_analogy": "The policy is the rule for what happens after the current moment. A value estimate asks, 'if I keep following this behavior rule, what future reward should I expect?'",
+    "mathematical_claim": "A policy maps states to actions or action probabilities. Value functions are defined relative to that policy, so the behavior rule determines which future trajectory is being evaluated.",
+    "caveat_or_warning": "This span supports policy as the behavior being followed, not a complete treatment of how policies are learned or represented in every algorithm.",
+    "why_span_matters": "It anchors policy as the object that gives value estimates their meaning in RL.",
+    "local_transcript_window": "And value function will be future expected rewards we start at state and follow with policy. And a Q-function is if we start at a state, take an action,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "policy"
     ],
@@ -1094,8 +1174,10 @@
     "mathematical_claim": "A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: There is no explicit way to discuss or improve the system's behavior over time.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And then developing the algorithms, specifically thinking about learning policies without human intervention, and a formulation",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "policies"
     ],
@@ -1105,7 +1187,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 162
   },
   {
@@ -1121,8 +1203,10 @@
     "mathematical_claim": "A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: There is no explicit way to discuss or improve the system's behavior over time.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "us how good is a particular state and action, and also a policy, which is usually what we're trying to learn.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "policy"
     ],
@@ -1132,7 +1216,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 133
   },
   {
@@ -1148,8 +1232,10 @@
     "mathematical_claim": "Reward or preference learning turns comparisons, ratings, or metrics into a scalar training signal that shifts probability toward preferred responses and away from dispreferred ones.",
     "caveat_or_warning": "This span supports reward as alignment feedback in LLM tuning, not the entire reinforcement-learning theory of reward. It also makes clear that the chosen metric or human preference may only approximate the real desired behavior.",
     "why_span_matters": "It grounds reward in a concrete modern AI problem: fluent prediction is not enough, so a separate signal is needed to shape behavior.",
+    "local_transcript_window": "Cool. So this step is called preference tuning. And we're going to exactly see what that is.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "preference"
     ],
@@ -1175,8 +1261,10 @@
     "mathematical_claim": "Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can collect experience but has no preference over outcomes.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Reward. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "Today I'm going to cover primarily preference optimization.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "preference"
     ],
@@ -1186,7 +1274,7 @@
     "supports_subthemes": [
       "human_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 173
   },
   {
@@ -1202,8 +1290,10 @@
     "mathematical_claim": "Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "this vanilla sum of rewards, but you can actually weight your rewards by what's called a discount factor, where that discount factor actually depends on T. So one of the ways",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "discount factor"
     ],
@@ -1229,8 +1319,10 @@
     "mathematical_claim": "Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "Oftentimes, you'll have a replay buffer for each task. And then update your policy to maximize the discounted return for all tasks that you've collected for.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "discounted return"
     ],
@@ -1256,8 +1348,10 @@
     "mathematical_claim": "Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "where in the trajectory you're from, and things like the discount factor and horizon, which allow you to encourage longer or shorter horizon",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "discount factor"
     ],
@@ -1283,8 +1377,10 @@
     "mathematical_claim": "Discounted return weights future rewards by powers of a discount factor, so an action's value can include consequences that arrive later while still giving nearer rewards more influence.",
     "caveat_or_warning": "The evidence is weaker than a lecture segment explicitly titled credit assignment. It supports one mathematical lever for temporal credit, not the full set of credit-assignment methods.",
     "why_span_matters": "It gives the atlas a transcript-backed bridge from delayed reward to the value estimates used in Q-learning and policy improvement.",
+    "local_transcript_window": "I actually didn't explicitly define this, but if you have a discount factor that is below 1, then it will get higher as you get closer.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "discount factor"
     ],
@@ -1310,8 +1406,10 @@
     "mathematical_claim": "Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "In this particular setting, we are assuming discount factor is 1. So gamma is set to exactly 1.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "discount factor"
     ],
@@ -1337,8 +1435,10 @@
     "mathematical_claim": "Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "No local VTT window was available; this evidence comes from clean transcript keyword cues.",
     "evidence_basis": "clean transcript keyword cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "discount factor"
     ],
@@ -1364,8 +1464,10 @@
     "mathematical_claim": "The policy-gradient update increases the probability of sampled actions whose future reward is high relative to a baseline and decreases the relative probability of worse actions. Importance weights appear when data comes from a different policy than the one being updated.",
     "caveat_or_warning": "The span also warns about the on-policy assumption: the clean policy-gradient estimator expects data from the same policy being updated. Reusing old or off-policy data requires correction and can introduce instability.",
     "why_span_matters": "It captures the core mechanism in plain terms: policy gradients convert sampled trajectories and delayed reward into a direction for changing action probabilities.",
+    "local_transcript_window": "that the data be sampled from the exact policy that you're going to be taking a gradient step on. And we talked about how we can use importance weights this term",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "gradient"
     ],
@@ -1386,13 +1488,15 @@
     "timestamp_start": "00:06:57.150",
     "timestamp_end": "00:06:59.450",
     "paraphrased_claim": "around 00:06:57.150, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.",
-    "lecture_argument": "This span sits inside Lecture 3: Policy Gradients and anchors the lecture's treatment of Policy Gradient through the local cues gradient. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Policy Gradient as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R policy-gradient lecture asks how to optimize the RL objective and answers by connecting policy learning to gradient descent, the standard way neural networks are trained.",
+    "example_or_analogy": "The policy is adjusted like any other trainable network, but the signal comes from sampled behavior rather than a labeled target action for every state.",
+    "mathematical_claim": "Policy-gradient methods estimate a gradient of expected return with respect to policy parameters, then move the parameters in the direction that should increase future return.",
+    "caveat_or_warning": "The span motivates gradient-based optimization, but policy-gradient estimates can be noisy because they depend on sampled trajectories and delayed rewards.",
+    "why_span_matters": "It anchors the mathematical move behind policy gradients: turn trial outcomes into a direction for changing a behavior rule.",
+    "local_transcript_window": "Now, how do we actually optimize this? So we want to use gradient descent because we typically train neural networks with gradient descent.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "gradient"
     ],
@@ -1418,8 +1522,10 @@
     "mathematical_claim": "The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "over actions given states. And so this is looking like the gradient of the log probability of the actions under the policy.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "gradient"
     ],
@@ -1429,7 +1535,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 55
   },
   {
@@ -1445,8 +1551,10 @@
     "mathematical_claim": "The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "You can't use offline data and so forth. And this include algorithms REINFORCE or the vanilla policy gradient method.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "reinforce"
     ],
@@ -1456,7 +1564,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 49
   },
   {
@@ -1472,8 +1580,10 @@
     "mathematical_claim": "The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And we saw a couple algorithms, like PPO and SAC, that use this actor critic approach. We also talked about a few different ways for fitting value",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "actor"
     ],
@@ -1483,7 +1593,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 47
   },
   {
@@ -1499,8 +1609,10 @@
     "mathematical_claim": "The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So the way to do this is the following-- and this ties back to a lot of concepts of value functions and advantage functions that many of you are probably familiar with.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "advantage"
     ],
@@ -1510,7 +1622,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 35
   },
   {
@@ -1526,8 +1638,10 @@
     "mathematical_claim": "Actor-critic methods use a policy or actor to choose actions and a value estimator or critic to reduce the noise of policy updates by estimating expected future rewards or advantages.",
     "caveat_or_warning": "The lecture context also warns that off-policy reuse of data needs correction. Actor-critic is practical, but the critic can introduce bias or instability when its estimates are wrong.",
     "why_span_matters": "It captures why actor-critic exists: raw rewards and full trajectory returns are noisy, so policy improvement benefits from a learned estimate of how good the situation or action is.",
+    "local_transcript_window": "in the data that have a high reward in the future. And then we found that if we subtracted a baseline that's the average reward, that encourages us to have the policy",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "baseline"
     ],
@@ -1553,8 +1667,10 @@
     "mathematical_claim": "The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "less of the stuff that led to bad outcomes. And then we started introducing this notion of a value function, which can then estimate.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "value function"
     ],
@@ -1564,7 +1680,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 90
   },
   {
@@ -1575,13 +1691,15 @@
     "timestamp_start": "00:01:26.620",
     "timestamp_end": "00:01:30.660",
     "paraphrased_claim": "around 00:01:26.620, the lecture uses baseline while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.",
-    "lecture_argument": "This span sits inside Lecture 4: Actor-Critic Methods and anchors the lecture's treatment of Actor-Critic through the local cues baseline. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Actor-Critic as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R actor-critic lecture recaps the baseline idea: after increasing likelihood for good sampled actions, a baseline such as average reward gives a comparison point for judging what counts as good.",
+    "example_or_analogy": "The baseline is like grading relative to the usual outcome. An action is not reinforced just because it got some reward; it is reinforced when it does better than the comparison point.",
+    "mathematical_claim": "A baseline reduces variance in policy-gradient updates by subtracting a reference value from returns. Actor-critic methods learn a value-like critic to provide a better comparison signal.",
+    "caveat_or_warning": "A baseline can reduce noise, but a bad critic can bias or destabilize learning. The span is a bridge into actor-critic, not a full guarantee.",
+    "why_span_matters": "It shows why actor-critic exists from first principles: raw returns are too noisy, so the actor needs a learned judge.",
+    "local_transcript_window": "to increase the likelihood of those actions. And then lastly, we introduced a baseline, which we could define to be the average reward, such",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "baseline"
     ],
@@ -1607,8 +1725,10 @@
     "mathematical_claim": "The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So we'll start off by defining V pi of s or a value function that estimates the expected future reward when you start at a state s",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "value function"
     ],
@@ -1618,7 +1738,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 37
   },
   {
@@ -1634,8 +1754,10 @@
     "mathematical_claim": "The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So the way to do this is the following-- and this ties back to a lot of concepts of value functions and advantage functions that many of you are probably familiar with.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "advantage"
     ],
@@ -1645,7 +1767,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 34
   },
   {
@@ -1661,8 +1783,10 @@
     "mathematical_claim": "The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "altogether. And it did this by actually just learning a value function and a Q function using the states and actions in the data.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "value function"
     ],
@@ -1688,8 +1812,10 @@
     "mathematical_claim": "Q(s,a) is the estimated future return after taking action a in state s. The Bellman idea says this estimate should be consistent with immediate reward plus the estimated future value reached after the action.",
     "caveat_or_warning": "The lecture emphasizes stability because the target for learning can depend on the learner's current Q estimate. In offline settings, the next lecture's coverage warning matters: unsupported actions can get falsely high Q-values.",
     "why_span_matters": "This span anchors Q-learning as more than a named algorithm. It shows why the method exists: delayed consequences need to be folded back into a number that can guide present action.",
+    "local_transcript_window": "we start at state and follow with policy. And a Q-function is if we start at a state, take an action, and then follow it.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "q-function"
     ],
@@ -1715,8 +1841,10 @@
     "mathematical_claim": "Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today's action value equals immediate reward plus the best estimated future value.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent cannot compare actions by their long-term consequences.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Q-Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And I hope you guys are in the right place for the Q-Learning lecture. So just as a general overview, what we're going to cover,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "q-learning"
     ],
@@ -1726,7 +1854,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 53
   },
   {
@@ -1742,8 +1870,10 @@
     "mathematical_claim": "Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today's action value equals immediate reward plus the best estimated future value.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent cannot compare actions by their long-term consequences.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Q-Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And so what we did instead is we changed our target to use the Q-function. So we had the target as s t plus 1 a t plus 1.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "q-function"
     ],
@@ -1753,7 +1883,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 32
   },
   {
@@ -1769,8 +1899,10 @@
     "mathematical_claim": "Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today's action value equals immediate reward plus the best estimated future value.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent cannot compare actions by their long-term consequences.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Q-Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "algorithms in this setting, is that-- if, for example, you're trying to optimize a Q function to then improve your policy, then you might query your Q function on actions",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "q function"
     ],
@@ -1780,7 +1912,7 @@
     "supports_subthemes": [
       "delayed_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 29
   },
   {
@@ -1791,13 +1923,15 @@
     "timestamp_start": "00:01:39.540",
     "timestamp_end": "00:01:41.520",
     "paraphrased_claim": "around 00:01:39.540, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
-    "lecture_argument": "This span sits inside Lecture 5: Off-Policy Actor Critic and anchors the lecture's treatment of Q-Learning through the local cues q function. The supported argument is that learning a table or function that estimates how good each action is from each situation is needed because a decision can be valued by immediate payoff plus the value of the future it leads to.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Q-Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today's action value equals immediate reward plus the best estimated future value.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent cannot compare actions by their long-term consequences.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Q-Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R off-policy actor-critic lecture compares Q-functions with value functions, emphasizing that a Q-function evaluates a state-action choice and then the future that follows.",
+    "example_or_analogy": "A value function asks how good a situation is under a behavior rule; a Q-function asks how good it is to take this particular action first.",
+    "mathematical_claim": "Q(s,a) estimates expected future reward after taking action a in state s and following a policy thereafter. That action-conditioned estimate can be used to choose or improve actions.",
+    "caveat_or_warning": "This span supports the Q-function object, not every detail of Q-learning stability. Bootstrapping and unsupported actions still need separate caution.",
+    "why_span_matters": "It anchors the key mathematical object that makes value-based RL action-selective rather than only state-evaluative.",
+    "local_transcript_window": "and following pi thereafter. And we talked about a Q function, which is very similar to a value function,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "q function"
     ],
@@ -1823,8 +1957,10 @@
     "mathematical_claim": "Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today's action value equals immediate reward plus the best estimated future value.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent cannot compare actions by their long-term consequences.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Q-Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So if you define a quantity that looks like the following, it's basically a Q function. So what is this quantity?",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "q function"
     ],
@@ -1850,8 +1986,10 @@
     "mathematical_claim": "Offline RL must manage distribution shift between the behavior that produced the dataset and the policy being learned. Conservative or constrained methods reduce trust in unsupported actions.",
     "caveat_or_warning": "The span supports the central challenge, but individual offline RL algorithms require separate details. Dataset coverage is necessary context, not a complete method.",
     "why_span_matters": "It anchors why offline RL exists as a distinct problem: removing online data collection changes which value estimates can be trusted.",
+    "local_transcript_window": "And specifically, we're going to be talking about offline reinforcement learning. And in offline reinforcement learning,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "offline reinforcement"
     ],
@@ -1877,8 +2015,10 @@
     "mathematical_claim": "The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "a prompt or an index, the task descriptor might actually be a dataset itself, like a set of trials that you're going to be adapting to",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "dataset"
     ],
@@ -1904,8 +2044,10 @@
     "mathematical_claim": "The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "Great. So for today, we're planning to finish offline reinforcement learning.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "offline reinforcement"
     ],
@@ -1931,8 +2073,10 @@
     "mathematical_claim": "The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "We'll talk about some techniques that look like offline reinforcement learning, and I'll talk about some techniques",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "offline reinforcement"
     ],
@@ -1953,13 +2097,15 @@
     "timestamp_start": "00:02:40.730",
     "timestamp_end": "00:02:45.190",
     "paraphrased_claim": "around 00:02:40.730, the lecture uses offline rl while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
-    "lecture_argument": "This span sits inside Lecture 11: Model-Based RL and anchors the lecture's treatment of Offline Reinforcement Learning through the local cues offline rl. The supported argument is that learning from logged experience without freely trying new actions during training is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R model-based RL lecture contrasts online methods with offline RL methods, saying offline RL builds on many ideas from online RL while removing fresh interaction.",
+    "example_or_analogy": "Offline RL is like learning from an old driving log rather than driving the car yourself. The old log is useful, but it limits which situations the learner has actually seen.",
+    "mathematical_claim": "Offline RL learns from a fixed dataset, so the learned policy must manage the mismatch between logged behavior and actions it might choose later.",
+    "caveat_or_warning": "The span is a recap and bridge, not a full offline RL derivation. The important warning is that online assumptions do not automatically survive when new data collection is removed.",
+    "why_span_matters": "It places offline RL in the broader RL course arc and shows why it is not just ordinary RL with a different data loader.",
+    "local_transcript_window": "And then separate from these classes of online methods, we also have offline RL methods that we started talking about. And these built upon a lot of the ideas we saw in online RL.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "offline rl"
     ],
@@ -1985,8 +2131,10 @@
     "mathematical_claim": "The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "like double Q-learning which I'll show in the next slide, as well as things like offline RL, which we'll talk about later, where essentially you can increase",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "offline rl"
     ],
@@ -2012,8 +2160,10 @@
     "mathematical_claim": "A dynamics model estimates how the state changes after an action. Planning uses that model to search over possible action sequences before choosing what to do.",
     "caveat_or_warning": "The lecture also flags challenges and trade-offs. A learned model can be wrong, and planning through a wrong model can compound errors.",
     "why_span_matters": "It anchors model-based RL as the first-principles move from direct trial-and-error to prediction-assisted action selection.",
+    "local_transcript_window": "So what we're going to talk about today is we're going to talk about model-based reinforcement learning.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "model-based"
     ],
@@ -2039,8 +2189,10 @@
     "mathematical_claim": "A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent must learn mainly by direct experience and may waste attempts.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Model-Based Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "Now let's get started. And today we will be finishing up model-based reinforcement learning, specifically a way to use a learned model",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "model-based"
     ],
@@ -2066,8 +2218,10 @@
     "mathematical_claim": "A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent must learn mainly by direct experience and may waste attempts.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Model-Based Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "that's defined by a set of states and actions, and also a transition dynamics function which allows you to go from a certain state,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "transition"
     ],
@@ -2093,8 +2247,10 @@
     "mathematical_claim": "A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent must learn mainly by direct experience and may waste attempts.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Model-Based Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "and that includes things like imitation learning, model-free and model-based reinforcement learning, offline and online reinforcement learning, multi-task",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "model-based"
     ],
@@ -2115,13 +2271,15 @@
     "timestamp_start": "00:10:35.220",
     "timestamp_end": "00:10:39.440",
     "paraphrased_claim": "around 00:10:35.220, the lecture uses planning while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
-    "lecture_argument": "This span sits inside Lecture 15: Hierarchical RL and IL and anchors the lecture's treatment of Model-Based Reinforcement Learning through the local cues planning. The supported argument is that learning or using a simulator of what might happen next is needed because if the agent can imagine consequences, it can compare possible futures before acting.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Model-Based Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent must learn mainly by direct experience and may waste attempts.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Model-Based Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R hierarchical RL lecture connects prediction with planning: predicting a goal can be understood as thinking forward before acting.",
+    "example_or_analogy": "Planning is the everyday case of imagined futures. Before acting, the agent asks what route or outcome would likely follow from possible choices.",
+    "mathematical_claim": "Model-based RL uses a learned or provided transition model to predict future states, then searches over possible action sequences before selecting an action.",
+    "caveat_or_warning": "This span supports the prediction-as-planning intuition. It does not prove that the imagined future is accurate; model error can make planning brittle.",
+    "why_span_matters": "It anchors model-based RL in the basic reason planning exists: real trial and error can be replaced partly by prediction.",
+    "local_transcript_window": "then the first step is to predict. Or another way to think about predicting a goal is planning. We're trying to think forward.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "planning"
     ],
@@ -2147,8 +2305,10 @@
     "mathematical_claim": "A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent must learn mainly by direct experience and may waste attempts.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Model-Based Reinforcement Learning. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "problem because you're only using the model for a form of planning where you're thinking through what is a good outcome in the future",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "planning"
     ],
@@ -2174,8 +2334,10 @@
     "mathematical_claim": "Exploration methods add mechanisms such as randomness, optimism, intrinsic reward, or uncertainty bonuses so the learner samples informative actions instead of only exploiting current estimates.",
     "caveat_or_warning": "This span motivates the exploration problem; specific algorithms and guarantees require later lecture material. Random action alone is not the full answer.",
     "why_span_matters": "It anchors exploration in a concrete failure mode: some tasks cannot be learned if the agent only repeats what currently appears best.",
+    "local_transcript_window": "Let's get started. Today we're going to be talking about exploration. We're going to be starting by talking about exploration",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "exploration"
     ],
@@ -2201,8 +2363,10 @@
     "mathematical_claim": "Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Exploration. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And it eventually goes to the goal, right here. And after we explore, we'd like to be able to have a policy that is able to solve",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "explore"
     ],
@@ -2212,7 +2376,7 @@
     "supports_subthemes": [
       "imagined_futures"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 66
   },
   {
@@ -2223,13 +2387,15 @@
     "timestamp_start": "00:27:49.940",
     "timestamp_end": "00:27:53.100",
     "paraphrased_claim": "around 00:27:49.940, the lecture uses exploration while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
-    "lecture_argument": "This span sits inside Lecture 6: Q-Learning and anchors the lecture's treatment of Exploration through the local cues exploration. The supported argument is that trying actions to learn what would otherwise remain unknown is needed because information has value. some actions are useful because they reveal the world, not because they immediately pay off.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Exploration as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Exploration. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R Q-learning lecture notes that with sufficient exploration, the algorithm can converge, tying learning success to whether the agent actually visits enough of the relevant state-action space.",
+    "example_or_analogy": "The learner cannot know which actions are good if it never tries them. Exploration is the sampling work needed before value estimates can be trusted.",
+    "mathematical_claim": "Convergence claims for value-based learning depend on adequate coverage of states and actions. Exploration supplies the data needed for the updates to reflect the real environment.",
+    "caveat_or_warning": "This span states a condition, not a practical exploration strategy. In hard environments, naive random exploration may still fail to find useful rewards.",
+    "why_span_matters": "It anchors exploration as a mathematical requirement for learning, not merely a curiosity-driven behavior.",
+    "local_transcript_window": "and maximum state. And if you have sufficient exploration, then this algorithm will converge.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "exploration"
     ],
@@ -2255,8 +2421,10 @@
     "mathematical_claim": "Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Exploration. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "In reinforcement learning, specifically, you can also think about benefits in terms of exploration. And in particular, when this high-level policy",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "exploration"
     ],
@@ -2282,8 +2450,10 @@
     "mathematical_claim": "Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Exploration. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "For example, we could develop algorithms that would allow machines to explore in this way, potentially optimizing for learning, potentially",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "explore"
     ],
@@ -2309,8 +2479,10 @@
     "mathematical_claim": "Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Exploration. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "trying to navigate to the basketball court. As it tries to explore and attempt this task, it might make a wrong turn, and rather,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "explore"
     ],
@@ -2336,8 +2508,10 @@
     "mathematical_claim": "RL for LLMs treats generated tokens or reasoning traces as sequential actions whose probabilities can be shifted using outcome rewards, preferences, or verifier feedback.",
     "caveat_or_warning": "This opening span motivates the connection but does not by itself prove which RL algorithm is best. Later reasoning and CS224R lectures are needed for algorithmic details such as PPO, GRPO, or process rewards.",
     "why_span_matters": "It anchors the cross-course bridge: reasoning models are not separate from tuning and RL; they reuse feedback mechanisms to shape multi-step generation.",
+    "local_transcript_window": "has been trending over the past year or so which is LLM reasoning. And it's actually a good segue compared",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "reasoning"
     ],
@@ -2363,8 +2537,10 @@
     "mathematical_claim": "The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: A model may imitate text but fail to optimize for useful task outcomes.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind RL For LLMs. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So today we'll not talk about SQL. We'll talk about reasoning and, particularly, reinforcement learning for LLM reasoning.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "reasoning"
     ],
@@ -2374,7 +2550,7 @@
     "supports_subthemes": [
       "human_feedback"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 28
   },
   {
@@ -2390,8 +2566,10 @@
     "mathematical_claim": "Diffusion uses a forward noising process and a learned reverse denoising process. The mathematical lever is to replace direct sampling from a hard data distribution with many local update steps.",
     "caveat_or_warning": "This span introduces the paradigm but does not by itself cover all sampler choices, guidance tricks, or latent-space variants. Later CME296 lectures provide those details.",
     "why_span_matters": "This span matters because it states the generative problem from first principles: the data distribution is complicated and unknown, so the model learns a procedure for producing new samples rather than writing down the distribution directly.",
+    "local_transcript_window": "So if you remember last week, we saw a first generation paradigm which was diffusion with DDPM. So today we're going to see a new way of doing this",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "diffusion"
     ],
@@ -2417,8 +2595,10 @@
     "mathematical_claim": "A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation must rely on harder one-shot mappings or unstable adversarial training.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Diffusion. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "Hello, everyone, and welcome to CME 296, Diffusion and Large Vision Models.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "diffusion"
     ],
@@ -2428,7 +2608,7 @@
     "supports_subthemes": [
       "denoising_paths"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 103
   },
   {
@@ -2444,8 +2624,10 @@
     "mathematical_claim": "A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation must rely on harder one-shot mappings or unstable adversarial training.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Diffusion. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "us to just generate images. So the first lecture was about diffusion, just learning how we could do that using the diffusion paradigm.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "diffusion"
     ],
@@ -2455,7 +2637,7 @@
     "supports_subthemes": [
       "denoising_paths"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 83
   },
   {
@@ -2471,8 +2653,10 @@
     "mathematical_claim": "A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation must rely on harder one-shot mappings or unstable adversarial training.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Diffusion. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So this was motivating us to look at another architecture, which is the diffusion transformer, which was published in 2022, late 2022, which relies on the concept",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "diffusion"
     ],
@@ -2482,7 +2666,7 @@
     "supports_subthemes": [
       "denoising_paths"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 74
   },
   {
@@ -2493,13 +2677,15 @@
     "timestamp_start": "00:01:35.550",
     "timestamp_end": "00:01:39.830",
     "paraphrased_claim": "around 00:01:35.550, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
-    "lecture_argument": "This span sits inside Lecture 4 - Latent Space & Guidance and anchors the lecture's treatment of Diffusion through the local cues diffusion. The supported argument is that generating by starting from noise and repeatedly making it more like data is needed because a hard generation problem can be broken into many easier cleanup steps.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Diffusion as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation must rely on harder one-shot mappings or unstable adversarial training.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Diffusion. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 latent-space and guidance lecture recaps DDPM diffusion as taking clean images and using that paradigm as the first major route for image generation.",
+    "example_or_analogy": "The lecture's clean-image setup gives the core picture: start from real data, understand how it is corrupted, then learn the reverse path for generation.",
+    "mathematical_claim": "Diffusion replaces direct sampling with a forward noising process and a learned reverse denoising process over many small steps.",
+    "caveat_or_warning": "The span is a recap of the diffusion paradigm, not a full derivation of the DDPM objective or sampler design.",
+    "why_span_matters": "It provides cross-lecture evidence that diffusion remains the baseline generation path before latent-space and guidance refinements are added.",
+    "local_transcript_window": "images, what were the paradigms that we could use. So the first lecture was focused on the diffusion paradigm with DDPM, where we saw that we were taking clean images,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "diffusion"
     ],
@@ -2525,8 +2711,10 @@
     "mathematical_claim": "A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation must rely on harder one-shot mappings or unstable adversarial training.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Diffusion. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So we saw three perspectives. The first one was diffusion with DDPM. So we saw that we were corrupting a clean image.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "diffusion"
     ],
@@ -2536,7 +2724,7 @@
     "supports_subthemes": [
       "denoising_paths"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 44
   },
   {
@@ -2552,8 +2740,10 @@
     "mathematical_claim": "The score is the gradient of log probability. Score matching trains a model to estimate that direction, often through denoising objectives that become practical regression losses.",
     "caveat_or_warning": "This opening span establishes the paradigm and its relationship to diffusion, but later parts of the lecture are needed for full derivations and the noisy-distribution relationship.",
     "why_span_matters": "It anchors score matching to the same first-principles generation problem as diffusion, making clear why the concept belongs next to DDPM rather than only in a probability textbook.",
+    "local_transcript_window": "be talking about a new generation paradigm, which is going to be score matching. So if you remember last week, we saw a first generation paradigm",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "score matching"
     ],
@@ -2579,8 +2769,10 @@
     "mathematical_claim": "The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The sampler has no learned local direction for turning noise into structure.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Score Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "where we talked about diffusion with DPM and lecture 1 and score matching in lecture 2. So flow matching is yet another generation paradigm.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "score matching"
     ],
@@ -2606,8 +2798,10 @@
     "mathematical_claim": "The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The sampler has no learned local direction for turning noise into structure.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Score Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And we also saw a second paradigm, a second way of seeing things, which was score matching. And we saw that when we looked at these two",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "score matching"
     ],
@@ -2628,13 +2822,15 @@
     "timestamp_start": "00:09:05.060",
     "timestamp_end": "00:09:08.780",
     "paraphrased_claim": "around 00:09:05.060, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
-    "lecture_argument": "This span sits inside Lecture 8 - Trending Topics and anchors the lecture's treatment of Score Matching through the local cues score matching. The supported argument is that learning which direction points toward more data-like samples is needed because in a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Score Matching as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The sampler has no learned local direction for turning noise into structure.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Score Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 trending-topics lecture recalls the denoising score-matching loss as the mechanism that allowed the course to estimate score information from data.",
+    "example_or_analogy": "The denoising loss is the practical training game: corrupt data, ask the model for the direction back toward data, and use that supervised signal to learn a local compass.",
+    "mathematical_claim": "Score matching estimates the gradient of log density. Denoising score matching turns that abstract direction into a trainable loss using noisy samples.",
+    "caveat_or_warning": "The span is retrospective and compact. It supports the role of the denoising score-matching loss but not every derivation detail.",
+    "why_span_matters": "It anchors score matching to the concrete training objective that makes the score idea usable in generative modeling.",
+    "local_transcript_window": "but also as a function of data distribution is. And we ended up with the de-noising score matching loss, which allowed us to estimate",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "score matching"
     ],
@@ -2660,8 +2856,10 @@
     "mathematical_claim": "The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The sampler has no learned local direction for turning noise into structure.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Score Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "which are the most commonly used today, which are diffusion, score matching, and flow matching. Then we will look at how we can condition our model to generate",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "score matching"
     ],
@@ -2687,8 +2885,10 @@
     "mathematical_claim": "The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The sampler has no learned local direction for turning noise into structure.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Score Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So what we want, if you remember, diffusion, score matching, flow matching, they had a few things as inputs.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "score matching"
     ],
@@ -2714,8 +2914,10 @@
     "mathematical_claim": "Flow matching learns a velocity or vector field that defines motion through sample space. Following that field transports simple samples toward data-like samples.",
     "caveat_or_warning": "The opening span establishes the conceptual relationship, not the full derivation. Detailed claims about specific interpolation paths, ODE solvers, or training losses need the later lecture sections.",
     "why_span_matters": "It shows why flow matching belongs beside diffusion and score matching: all three are answers to the same generation problem, but flow matching makes the path-through-space idea explicit.",
+    "local_transcript_window": "So today is a very special day because we're going to talk about flow matching, which is a generation paradigm that is quite trendy these days.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "flow matching"
     ],
@@ -2741,8 +2943,10 @@
     "mathematical_claim": "A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "with a third way of looking at things, which is the flow matching formulation, which actually framed the problem in a different way.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "flow matching"
     ],
@@ -2768,8 +2972,10 @@
     "mathematical_claim": "A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "of an SDE in a nicer world? It would be an ODE. So the ODE does have this term on the left",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "ode"
     ],
@@ -2795,8 +3001,10 @@
     "mathematical_claim": "A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So you always have to have one the initial noise as input to get the let's say vector field, and then iterate on that many times potentially.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "vector field"
     ],
@@ -2817,13 +3025,15 @@
     "timestamp_start": "00:04:56.470",
     "timestamp_end": "00:04:58.630",
     "paraphrased_claim": "around 00:04:56.470, the lecture uses vector field while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
-    "lecture_argument": "This span sits inside Lecture 4 - Latent Space & Guidance and anchors the lecture's treatment of Flow Matching through the local cues vector field. The supported argument is that learning a smooth path that carries simple samples into data-like samples is needed because instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Flow Matching as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 latent-space and guidance lecture recaps flow matching by saying the model predicts a vector field, also described as velocity, denoted by a learned function.",
+    "example_or_analogy": "The vector field is a map of arrows. At each location in sample space, the model predicts which way the sample should move next.",
+    "mathematical_claim": "Flow matching trains a model to predict a velocity field that transports samples through a continuous path from a simple distribution toward data.",
+    "caveat_or_warning": "This span supports the vector-field object but not every choice of interpolation path or solver.",
+    "why_span_matters": "It anchors the mathematical object that distinguishes flow matching from a vague idea of generation as movement.",
+    "local_transcript_window": "And all of what we had to do was to just predict the vector field, a.k.a. The velocity, which was noted u of theta.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "vector field"
     ],
@@ -2849,8 +3059,10 @@
     "mathematical_claim": "A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And here we derive the loss based on the velocity, a.k.a, vector field, which is again, very nice. It can be expressed as an L2 regression loss.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "vector field"
     ],
@@ -2876,8 +3088,10 @@
     "mathematical_claim": "Guidance modifies the sampling direction or scoring objective so generated samples are pulled toward a condition such as a prompt, class, layout, or reward. Evaluation then asks whether that condition was actually satisfied.",
     "caveat_or_warning": "This span is primarily evaluation evidence for prompt adherence, not a derivation of classifier-free guidance. It supports the problem guidance solves: realism and instruction-following are separable.",
     "why_span_matters": "It gives a concrete lecture-backed failure case for guided generation: high visual quality can still be wrong if the sample ignores the prompt.",
+    "local_transcript_window": "And I would like to ask you, based on an input prompt that I'm going to read, which hopefully, is familiar by now, whether you think that image is a good image",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "prompt"
     ],
@@ -2898,13 +3112,15 @@
     "timestamp_start": "00:00:58.640",
     "timestamp_end": "00:01:05.950",
     "paraphrased_claim": "around 00:00:58.640, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
-    "lecture_argument": "This span sits inside Lecture 4 - Latent Space & Guidance and anchors the lecture's treatment of Guidance through the local cues prompt. The supported argument is that steering generation toward a prompt, class, reward, or constraint is needed because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Guidance as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 latent-space and guidance lecture introduces conditional generation as generating images from a condition such as a user prompt, input text, or input image.",
+    "example_or_analogy": "The prompt is the concrete steering signal. The model is not merely asked to make any plausible image; it is asked to make an image that fits the provided condition.",
+    "mathematical_claim": "Guidance changes the sampling process by conditioning the direction or score on extra information, such as text or another image.",
+    "caveat_or_warning": "The span motivates conditional generation broadly. Specific guidance mechanisms, including classifier-free guidance, require later evidence.",
+    "why_span_matters": "It anchors guidance in the real user-facing problem: generation must be steerable, not merely realistic.",
+    "local_transcript_window": "how we can generate images with a condition which can be a user prompt, like input text, or an input image. And so in that sense, the title of today's lecture",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "prompt"
     ],
@@ -2930,8 +3146,10 @@
     "mathematical_claim": "Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "It's not a square anymore. And then, your prompt can be much, much more complicated, such as the one on the slides.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "prompt"
     ],
@@ -2941,7 +3159,7 @@
     "supports_subthemes": [
       "controlled_generation"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 20
   },
   {
@@ -2957,8 +3175,10 @@
     "mathematical_claim": "Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "been to learn how to generate images. So, for instance, given an input prompt, how can we generate an image that is quite aligned",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "prompt"
     ],
@@ -2979,13 +3199,15 @@
     "timestamp_start": "00:04:43.140",
     "timestamp_end": "00:04:48.060",
     "paraphrased_claim": "around 00:04:43.140, the lecture uses guidance, classifier free while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
-    "lecture_argument": "This span sits inside Lecture 5 - Architectures and anchors the lecture's treatment of Guidance through the local cues guidance, classifier free. The supported argument is that steering generation toward a prompt, class, reward, or constraint is needed because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Guidance as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 architectures lecture recalls classifier-free guidance as a method that emphasizes the prompt during generation.",
+    "example_or_analogy": "Classifier-free guidance is like turning up the influence of the instruction while sampling, so the generated image is pulled harder toward the requested text.",
+    "mathematical_claim": "Classifier-free guidance combines conditional and less-conditional model predictions to alter the sampling direction toward the prompt condition.",
+    "caveat_or_warning": "The span supports the high-level mechanism and role of classifier-free guidance, not a full derivation or a guarantee of better images at every guidance weight.",
+    "why_span_matters": "It gives direct lecture evidence for guidance as a sampling-time control mechanism rather than only a dataset-label idea.",
+    "local_transcript_window": "process with the condition, we also had a method called classifier free guidance that allowed us to generate images by emphasizing more on the prompts.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "guidance",
       "classifier free"
@@ -3012,8 +3234,10 @@
     "mathematical_claim": "Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So here you have a typical setup where you have let's say a prompt where you specify what you want to generate.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "prompt"
     ],
@@ -3039,8 +3263,10 @@
     "mathematical_claim": "An encoder maps an image from pixel space into a smaller latent representation, and a decoder maps that representation back. The reconstruction objective checks whether the compressed representation kept enough information.",
     "caveat_or_warning": "The span introduces autoencoders as a first attempt. A lower-dimensional representation can lose information, and reconstruction quality does not guarantee that every semantic factor is cleanly separated.",
     "why_span_matters": "It anchors latent space as a first-principles compression idea: move generation out of expensive pixel space into a smaller representation that still preserves useful perceptual content.",
+    "local_transcript_window": "and we put it into some model. Let's call it an encoder that encodes the image and produces an output that is of lower",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "encoder"
     ],
@@ -3066,8 +3292,10 @@
     "mathematical_claim": "An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation and planning may become too expensive at raw resolution.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Latent Space. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And this was the focus of lecture 4, which was titled latent space and guidance. And what we saw there was, well, in order",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "latent",
       "latent space"
@@ -3078,7 +3306,7 @@
     "supports_subthemes": [
       "learned_geometry"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 71
   },
   {
@@ -3089,13 +3317,15 @@
     "timestamp_start": "00:03:27.420",
     "timestamp_end": "00:03:30.540",
     "paraphrased_claim": "around 00:03:27.420, the lecture uses latent, latent space while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
-    "lecture_argument": "This span sits inside Lecture 5 - Architectures and anchors the lecture's treatment of Latent Space through the local cues latent, latent space. The supported argument is that a compressed internal space where generation or prediction can happen more cheaply is needed because if the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Latent Space as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation and planning may become too expensive at raw resolution.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Latent Space. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 architectures lecture says image dimensionality is too high and introduces latent space as the place where images are represented for the model.",
+    "example_or_analogy": "The model works with a compressed workbench. Instead of editing every pixel directly, it works in a smaller space that should still preserve the important visual content.",
+    "mathematical_claim": "A latent representation maps a high-dimensional image into a lower-dimensional or more structured coordinate space where generation and editing are cheaper.",
+    "caveat_or_warning": "Latent compression can lose details. This span supports the motivation for latent space, not a guarantee that every semantic factor is cleanly represented.",
+    "why_span_matters": "It anchors the reason latent space exists in vision models: raw image space is too large for efficient generation.",
+    "local_transcript_window": "too high in dimensionality. So there was a space called latent space, in which we want our images to be represented.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "latent",
       "latent space"
@@ -3122,8 +3352,10 @@
     "mathematical_claim": "An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation and planning may become too expensive at raw resolution.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Latent Space. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "The first one is the downsampling phases, where we put an input, a noisy latent, that we then perform convolution operations and downsampling operations",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "latent"
     ],
@@ -3133,7 +3365,7 @@
     "supports_subthemes": [
       "learned_geometry"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 22
   },
   {
@@ -3149,8 +3381,10 @@
     "mathematical_claim": "An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation and planning may become too expensive at raw resolution.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Latent Space. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "Well, in the class, we've seen that we have methods to represent images in what we call a latent space, or some space.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "latent",
       "latent space"
@@ -3177,8 +3411,10 @@
     "mathematical_claim": "An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation and planning may become too expensive at raw resolution.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Latent Space. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "No local VTT window was available; this evidence comes from clean transcript keyword cues.",
     "evidence_basis": "clean transcript keyword cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "latent",
       "latent space",
@@ -3208,8 +3444,10 @@
     "mathematical_claim": "An image is split into patches, each patch gets a vector, and attention lets patches exchange information.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may depend too heavily on local filters and struggle with global image relationships.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Vision Transformers. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And then towards the end, you have almost denoised your whole image, but in the middle, you're figuring out where to go and how you want",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "image"
     ],
@@ -3219,7 +3457,7 @@
     "supports_subthemes": [
       "text_and_patch_interfaces"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 127
   },
   {
@@ -3235,8 +3473,10 @@
     "mathematical_claim": "A vision transformer splits an image into patches, embeds each patch as a vector, adds position information, and applies transformer attention blocks to mix information across patches.",
     "caveat_or_warning": "Direct transcript support for a full ViT derivation is weaker than for language attention or diffusion. This evidence should be treated as architectural synthesis from course context, not as a lecture-by-lecture derivation.",
     "why_span_matters": "It keeps the atlas honest about the language-to-vision bridge: the transformer primitive transfers, but vision-specific details need their own evidence.",
+    "local_transcript_window": "to work on non-text input. And for instance, here we can think of image understanding input.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "image"
     ],
@@ -3262,8 +3502,10 @@
     "mathematical_claim": "Scaling analysis relates resources such as active parameters, total parameters, data, compute, and inference cost to loss or capability. Sparse activation changes the resource equation by separating total capacity from per-token compute.",
     "caveat_or_warning": "The span supports scaling trade-offs, not a full empirical scaling-law derivation. It is architectural evidence about why scale must be discussed with cost.",
     "why_span_matters": "It anchors scale as an engineering constraint: bigger models matter only together with the cost of training and using them.",
+    "local_transcript_window": "that if you have an input, what you want is to not necessarily activate all the parameters. And so you are in a setting where you have multiple experts,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "parameters"
     ],
@@ -3284,13 +3526,15 @@
     "timestamp_start": "00:00:28.920",
     "timestamp_end": "00:00:31.380",
     "paraphrased_claim": "around 00:00:28.920, the lecture uses compute while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.",
-    "lecture_argument": "This span sits inside Lecture 9: RL for LLMs and anchors the lecture's treatment of Scaling Laws through the local cues compute. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Scaling Laws as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CS224R RL-for-LLMs lecture points to the trend of using larger models and far more compute, placing RL-for-LLMs inside the broader scaling story.",
+    "example_or_analogy": "The trend is the concrete observation: modern progress often comes from increasing both model size and compute, so any method must be understood partly through its resource cost.",
+    "mathematical_claim": "Scaling analysis studies how resources such as compute, model size, data, and inference work relate to measured loss or capability.",
+    "caveat_or_warning": "The span supports the existence of a scaling trend, not a fitted scaling law. More compute can expose new capability, but it can also amplify cost and failure modes.",
+    "why_span_matters": "It anchors scaling as a live concern in the RL-for-LLMs course material, not only the transformer course.",
+    "local_transcript_window": "larger and larger models, and we've been putting far more compute into them. This is like an ever very consistent trend.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "compute"
     ],
@@ -3316,8 +3560,10 @@
     "mathematical_claim": "A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "by either taking the max value or just the average value. So there is no learnable parameters there. And speaking of learnable parameters,",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "parameters"
     ],
@@ -3327,7 +3573,7 @@
     "supports_subthemes": [
       "what_changes_with_size"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 26
   },
   {
@@ -3343,8 +3589,10 @@
     "mathematical_claim": "A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "And then the second thing that we will see is this emergence of multi-modal LLMs that also understand images that can also",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "emergence"
     ],
@@ -3354,7 +3602,7 @@
     "supports_subthemes": [
       "what_changes_with_size"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 23
   },
   {
@@ -3370,8 +3618,10 @@
     "mathematical_claim": "A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "including data from policies before we took a gradient step on our policy parameters. And this included algorithms like PPO",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "parameters"
     ],
@@ -3381,7 +3631,7 @@
     "supports_subthemes": [
       "what_changes_with_size"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 20
   },
   {
@@ -3397,8 +3647,10 @@
     "mathematical_claim": "A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "compared to the other ones. So from this small scale exercise, what I wanted to point out was that when",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "scale"
     ],
@@ -3408,7 +3660,7 @@
     "supports_subthemes": [
       "what_changes_with_size"
     ],
-    "confidence": "strong",
+    "confidence": "moderate",
     "keyword_hits": 20
   },
   {
@@ -3424,8 +3676,10 @@
     "mathematical_claim": "Generalization is the gap between fitting the training signal and performing correctly on new cases. Held-out problems, new prompts, or shifted environments test whether the learned pattern is reusable.",
     "caveat_or_warning": "The span is indirect evidence for generalization. It motivates the issue through reasoning tasks but does not provide a full generalization theory.",
     "why_span_matters": "It anchors generalization in the practical question behind reasoning models: did training teach reusable problem solving or only imitation of seen solution strings?",
+    "local_transcript_window": "That was one of the best math models back at that time. And what I'm plotting here is I'm plotting the average test error of these model after fine tuning with these SFT and RFP",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "test"
     ],
@@ -3451,8 +3705,10 @@
     "mathematical_claim": "Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Benchmarks and demos stop predicting real deployment behavior.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Generalization. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "So you would train on the training set, eval on the validation set, and then test on the test set. If you had another use case, let's suppose sentiment",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "test"
     ],
@@ -3478,8 +3734,10 @@
     "mathematical_claim": "Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Benchmarks and demos stop predicting real deployment behavior.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Generalization. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "you teach a model that doesn't follow what you said at test time. So that is inherently--",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "test"
     ],
@@ -3500,13 +3758,15 @@
     "timestamp_start": "01:13:19.220",
     "timestamp_end": "01:13:20.900",
     "paraphrased_claim": "around 01:13:19.220, the lecture uses overfitting while covering Generalization. This supports the scoped claim that doing well on new cases, not only remembered examples.",
-    "lecture_argument": "This span sits inside Lecture 6 - Model Training and anchors the lecture's treatment of Generalization through the local cues overfitting. The supported argument is that doing well on new cases, not only remembered examples is needed because past data is only a sample of future situations. learning must capture stable structure rather than accidental details.",
-    "example_or_analogy": "Use the lecture context as a concrete case: the course is not presenting Generalization as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.",
-    "mathematical_claim": "Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.",
-    "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Benchmarks and demos stop predicting real deployment behavior.",
-    "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Generalization. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "lecture_argument": "The CME296 model-training lecture mentions preventing overfitting during training, directly tying model training choices to whether behavior transfers beyond the examples being fit.",
+    "example_or_analogy": "Overfitting is the classroom case of memorizing practice questions. The model can look good during training while failing when the surface details change.",
+    "mathematical_claim": "Generalization is measured by the gap between training behavior and behavior on new data. Anti-overfitting techniques try to keep the learned rule from depending on accidental training details.",
+    "caveat_or_warning": "The transcript window is brief, so it supports the presence of the overfitting concern rather than a detailed regularization theory.",
+    "why_span_matters": "It anchors generalization in the vision-model training course as a practical training failure, not just an abstract evaluation term.",
+    "local_transcript_window": "and so yeah. So you prevent overfitting. So when you do that training, what you're able to do",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "manual_deepened",
     "matched_terms": [
       "overfitting"
     ],
@@ -3532,8 +3792,10 @@
     "mathematical_claim": "Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.",
     "caveat_or_warning": "The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Benchmarks and demos stop predicting real deployment behavior.",
     "why_span_matters": "It gives the atlas a transcript anchor for the mechanism behind Generalization. That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis.",
+    "local_transcript_window": "have seen as inputs, and so here, it's trying to have some generalization capabilities for your model.",
     "evidence_basis": "local VTT timestamp cue",
     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "evidence_review_status": "generated_transcript_cue_needs_review",
     "matched_terms": [
       "generalization"
     ],

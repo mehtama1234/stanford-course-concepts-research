@@ -194,5 +194,173 @@
     "mathematical_claim": "Generalization is the gap between fitting the training signal and performing correctly on new cases. Held-out problems, new prompts, or shifted environments test whether the learned pattern is reusable.",
     "caveat_or_warning": "The span is indirect evidence for generalization. It motivates the issue through reasoning tasks but does not provide a full generalization theory.",
     "why_span_matters": "It anchors generalization in the practical question behind reasoning models: did training teach reusable problem solving or only imitation of seen solution strings?"
+  },
+  "ev-embeddings-06": {
+    "lecture_argument": "The CME295 agentic LLM lecture links retrieval directly to embeddings: when the system needs to retrieve outside information, it computes embeddings for chunks or queries so nearby vectors can be used as lookup candidates.",
+    "example_or_analogy": "Retrieval is the concrete case. The model cannot search a pile of text by raw words alone; it needs numerical coordinates so a query and a useful document chunk can land near each other.",
+    "mathematical_claim": "An embedding maps text or another object into a vector space. Retrieval then compares vectors, often by similarity score, and returns items whose coordinates are close enough to the query.",
+    "caveat_or_warning": "This span supports embeddings as a retrieval interface, not the stronger claim that vector closeness always captures the user's true information need. Bad chunking or misleading similarity can still retrieve the wrong evidence.",
+    "why_span_matters": "It anchors embeddings in a practical agent workflow: learned coordinates become the bridge between a language model and external memory."
+  },
+  "ev-positional_encoding-02": {
+    "lecture_argument": "The CME296 architectures lecture explains the same first-principles position problem for attention-based vision models: direct links between inputs remove the old sequential signal, so the model must be told where each input sits.",
+    "example_or_analogy": "The useful picture is an image or sequence whose pieces are all allowed to talk at once. Without a position signal, the model knows the pieces but loses the layout that makes them meaningful.",
+    "mathematical_claim": "Position information is added as numerical features tied to location. Those features let attention-based layers distinguish identical content appearing in different places.",
+    "caveat_or_warning": "This span supports the need for position information, not one specific positional scheme. Absolute embeddings, relative schemes, and rotary-style encodings solve the same pressure differently.",
+    "why_span_matters": "It gives cross-course evidence that position is not a language-only detail; the same mathematical need reappears when transformers are used for images."
+  },
+  "ev-attention-04": {
+    "lecture_argument": "The CME296 evaluation lecture describes a decoder that uses text tokens and cross-attention so textual information can interact with encoded images.",
+    "example_or_analogy": "The multimodal case is concrete: the text side asks for information from the image side, and cross-attention is the bridge that lets one representation condition on the other.",
+    "mathematical_claim": "Cross-attention compares queries from one stream with keys and values from another stream, then copies a weighted mixture from the source stream into the target stream.",
+    "caveat_or_warning": "This span supports attention as a cross-modal routing mechanism, not as a guarantee that the generated or evaluated image truly follows the text.",
+    "why_span_matters": "It shows why attention belongs in both transformer and vision-model courses: it is the reusable operation for routing information between parts of a system."
+  },
+  "ev-attention-05": {
+    "lecture_argument": "The CS224R hierarchical RL and imitation learning lecture uses a robot instruction example where a language model must attend to an image; if it ignores the visual evidence, it can give the robot the wrong instruction.",
+    "example_or_analogy": "The coffee-fetching robot example makes attention ordinary: the system must look at the relevant visual context before deciding what to tell the robot to do.",
+    "mathematical_claim": "Attention assigns weight to available context so the decision step is conditioned on the evidence that matters now rather than on every input equally.",
+    "caveat_or_warning": "The span uses attention in a broad multimodal sense. It supports the selective-context problem, but not a full derivation of transformer self-attention.",
+    "why_span_matters": "It anchors the shared primitive between LLMs and embodied agents: deciding which past or external information should matter for the present action."
+  },
+  "ev-pretraining-02": {
+    "lecture_argument": "The CME296 model-training lecture opens by focusing on the loss used for training, making the same point as LLM pretraining in another domain: learning begins with a measurable prediction or reconstruction objective.",
+    "example_or_analogy": "The training loss is the practice game. Before a model can generate useful images, it needs a rule that says how wrong its current prediction is on training examples.",
+    "mathematical_claim": "A loss function compresses model error into a number that can be differentiated and reduced. In generative vision training, that loss may measure denoising, velocity prediction, reconstruction, or another supervised target.",
+    "caveat_or_warning": "This span supports training-by-loss rather than LLM next-token pretraining specifically. It should be used as cross-course evidence for feedback as practice, not as a claim that all losses teach the same behavior.",
+    "why_span_matters": "It connects the feedback primitive across courses: language and vision models both need a training signal that turns examples into parameter updates."
+  },
+  "ev-fine_tuning-02": {
+    "lecture_argument": "The CME295 tuning lecture identifies supervised fine-tuning as the second step after pretraining, because a raw pretrained model is not yet specialized for the desired behavior.",
+    "example_or_analogy": "The staged pipeline is the example: first learn broad language patterns, then show the model higher-quality task behavior so it acts more like the intended assistant.",
+    "mathematical_claim": "Supervised fine-tuning changes output probabilities by training on demonstrations of desired responses. It narrows a broad predictor toward a target interaction pattern.",
+    "caveat_or_warning": "This span supports SFT as a steering stage, not the full preference-learning or RLHF pipeline. Fine-tuning can also over-specialize or copy demonstration artifacts.",
+    "why_span_matters": "It anchors the key distinction between broad pretraining and later adaptation, which is central to modern LLM construction."
+  },
+  "ev-reasoning_traces-02": {
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture states that the session will focus on reasoning and reinforcement learning for LLM reasoning, placing multi-step language generation inside an RL framing.",
+    "example_or_analogy": "The course transition is the useful evidence: once outputs are reasoning attempts rather than short answers, the system can be judged by outcomes and trained with feedback over the reasoning process.",
+    "mathematical_claim": "A reasoning trace can be treated as a sequence of generated actions whose probabilities are adjusted using outcome rewards, preferences, or verifier signals.",
+    "caveat_or_warning": "The opening span is agenda-setting evidence. It supports the course bridge between reasoning and RL but not a specific algorithmic recipe by itself.",
+    "why_span_matters": "It grounds reasoning traces in the RL course rather than only the LLM course, making the cross-course connection explicit."
+  },
+  "ev-evaluation-02": {
+    "lecture_argument": "The CME296 evaluation lecture explicitly shifts from generation methods to evaluation, saying the class will focus on how to judge the outputs after covering diffusion, score matching, flow matching, and distillation.",
+    "example_or_analogy": "The course sequence is the example: after learning how to generate images, the next problem is how to know whether the generated images are any good.",
+    "mathematical_claim": "Evaluation maps model behavior to measurements such as realism, prompt adherence, diversity, or task-specific scores. Each metric samples only part of the output behavior.",
+    "caveat_or_warning": "This span motivates evaluation but does not make one metric sufficient. Visual quality, alignment, diversity, and artifacts can disagree.",
+    "why_span_matters": "It anchors evaluation as a necessary second half of generation: building a sampler is incomplete without a way to inspect its failures."
+  },
+  "ev-evaluation-04": {
+    "lecture_argument": "The CME295 reasoning lecture names BLEU and ROUGE as rule-based metrics for translation and summarization, using them as examples of task-specific evaluation signals.",
+    "example_or_analogy": "Translation and summarization make the measurement problem concrete: a system can produce text that looks plausible, but the evaluator needs a rule for comparing it with expected behavior.",
+    "mathematical_claim": "A metric compresses many output properties into a score. BLEU and ROUGE are examples of rules that count overlap-like evidence rather than fully judging meaning.",
+    "caveat_or_warning": "The span also exposes the limitation: rule-based text metrics can miss semantic quality, factual correctness, or reasoning validity.",
+    "why_span_matters": "It gives a concrete lecture-backed example of why evaluation is both useful and incomplete."
+  },
+  "ev-policy-04": {
+    "lecture_argument": "The CS224R Q-learning lecture distinguishes value functions and Q-functions by saying a value function follows a policy from a state, while a Q-function starts with a state-action choice and then follows a policy.",
+    "example_or_analogy": "The policy is the rule for what happens after the current moment. A value estimate asks, 'if I keep following this behavior rule, what future reward should I expect?'",
+    "mathematical_claim": "A policy maps states to actions or action probabilities. Value functions are defined relative to that policy, so the behavior rule determines which future trajectory is being evaluated.",
+    "caveat_or_warning": "This span supports policy as the behavior being followed, not a complete treatment of how policies are learned or represented in every algorithm.",
+    "why_span_matters": "It anchors policy as the object that gives value estimates their meaning in RL."
+  },
+  "ev-policy_gradient-02": {
+    "lecture_argument": "The CS224R policy-gradient lecture asks how to optimize the RL objective and answers by connecting policy learning to gradient descent, the standard way neural networks are trained.",
+    "example_or_analogy": "The policy is adjusted like any other trainable network, but the signal comes from sampled behavior rather than a labeled target action for every state.",
+    "mathematical_claim": "Policy-gradient methods estimate a gradient of expected return with respect to policy parameters, then move the parameters in the direction that should increase future return.",
+    "caveat_or_warning": "The span motivates gradient-based optimization, but policy-gradient estimates can be noisy because they depend on sampled trajectories and delayed rewards.",
+    "why_span_matters": "It anchors the mathematical move behind policy gradients: turn trial outcomes into a direction for changing a behavior rule."
+  },
+  "ev-actor_critic-03": {
+    "lecture_argument": "The CS224R actor-critic lecture recaps the baseline idea: after increasing likelihood for good sampled actions, a baseline such as average reward gives a comparison point for judging what counts as good.",
+    "example_or_analogy": "The baseline is like grading relative to the usual outcome. An action is not reinforced just because it got some reward; it is reinforced when it does better than the comparison point.",
+    "mathematical_claim": "A baseline reduces variance in policy-gradient updates by subtracting a reference value from returns. Actor-critic methods learn a value-like critic to provide a better comparison signal.",
+    "caveat_or_warning": "A baseline can reduce noise, but a bad critic can bias or destabilize learning. The span is a bridge into actor-critic, not a full guarantee.",
+    "why_span_matters": "It shows why actor-critic exists from first principles: raw returns are too noisy, so the actor needs a learned judge."
+  },
+  "ev-q_learning-05": {
+    "lecture_argument": "The CS224R off-policy actor-critic lecture compares Q-functions with value functions, emphasizing that a Q-function evaluates a state-action choice and then the future that follows.",
+    "example_or_analogy": "A value function asks how good a situation is under a behavior rule; a Q-function asks how good it is to take this particular action first.",
+    "mathematical_claim": "Q(s,a) estimates expected future reward after taking action a in state s and following a policy thereafter. That action-conditioned estimate can be used to choose or improve actions.",
+    "caveat_or_warning": "This span supports the Q-function object, not every detail of Q-learning stability. Bootstrapping and unsupported actions still need separate caution.",
+    "why_span_matters": "It anchors the key mathematical object that makes value-based RL action-selective rather than only state-evaluative."
+  },
+  "ev-offline_rl-05": {
+    "lecture_argument": "The CS224R model-based RL lecture contrasts online methods with offline RL methods, saying offline RL builds on many ideas from online RL while removing fresh interaction.",
+    "example_or_analogy": "Offline RL is like learning from an old driving log rather than driving the car yourself. The old log is useful, but it limits which situations the learner has actually seen.",
+    "mathematical_claim": "Offline RL learns from a fixed dataset, so the learned policy must manage the mismatch between logged behavior and actions it might choose later.",
+    "caveat_or_warning": "The span is a recap and bridge, not a full offline RL derivation. The important warning is that online assumptions do not automatically survive when new data collection is removed.",
+    "why_span_matters": "It places offline RL in the broader RL course arc and shows why it is not just ordinary RL with a different data loader."
+  },
+  "ev-model_based_rl-05": {
+    "lecture_argument": "The CS224R hierarchical RL lecture connects prediction with planning: predicting a goal can be understood as thinking forward before acting.",
+    "example_or_analogy": "Planning is the everyday case of imagined futures. Before acting, the agent asks what route or outcome would likely follow from possible choices.",
+    "mathematical_claim": "Model-based RL uses a learned or provided transition model to predict future states, then searches over possible action sequences before selecting an action.",
+    "caveat_or_warning": "This span supports the prediction-as-planning intuition. It does not prove that the imagined future is accurate; model error can make planning brittle.",
+    "why_span_matters": "It anchors model-based RL in the basic reason planning exists: real trial and error can be replaced partly by prediction."
+  },
+  "ev-exploration-03": {
+    "lecture_argument": "The CS224R Q-learning lecture notes that with sufficient exploration, the algorithm can converge, tying learning success to whether the agent actually visits enough of the relevant state-action space.",
+    "example_or_analogy": "The learner cannot know which actions are good if it never tries them. Exploration is the sampling work needed before value estimates can be trusted.",
+    "mathematical_claim": "Convergence claims for value-based learning depend on adequate coverage of states and actions. Exploration supplies the data needed for the updates to reflect the real environment.",
+    "caveat_or_warning": "This span states a condition, not a practical exploration strategy. In hard environments, naive random exploration may still fail to find useful rewards.",
+    "why_span_matters": "It anchors exploration as a mathematical requirement for learning, not merely a curiosity-driven behavior."
+  },
+  "ev-diffusion-05": {
+    "lecture_argument": "The CME296 latent-space and guidance lecture recaps DDPM diffusion as taking clean images and using that paradigm as the first major route for image generation.",
+    "example_or_analogy": "The lecture's clean-image setup gives the core picture: start from real data, understand how it is corrupted, then learn the reverse path for generation.",
+    "mathematical_claim": "Diffusion replaces direct sampling with a forward noising process and a learned reverse denoising process over many small steps.",
+    "caveat_or_warning": "The span is a recap of the diffusion paradigm, not a full derivation of the DDPM objective or sampler design.",
+    "why_span_matters": "It provides cross-lecture evidence that diffusion remains the baseline generation path before latent-space and guidance refinements are added."
+  },
+  "ev-score_matching-04": {
+    "lecture_argument": "The CME296 trending-topics lecture recalls the denoising score-matching loss as the mechanism that allowed the course to estimate score information from data.",
+    "example_or_analogy": "The denoising loss is the practical training game: corrupt data, ask the model for the direction back toward data, and use that supervised signal to learn a local compass.",
+    "mathematical_claim": "Score matching estimates the gradient of log density. Denoising score matching turns that abstract direction into a trainable loss using noisy samples.",
+    "caveat_or_warning": "The span is retrospective and compact. It supports the role of the denoising score-matching loss but not every derivation detail.",
+    "why_span_matters": "It anchors score matching to the concrete training objective that makes the score idea usable in generative modeling."
+  },
+  "ev-flow_matching-05": {
+    "lecture_argument": "The CME296 latent-space and guidance lecture recaps flow matching by saying the model predicts a vector field, also described as velocity, denoted by a learned function.",
+    "example_or_analogy": "The vector field is a map of arrows. At each location in sample space, the model predicts which way the sample should move next.",
+    "mathematical_claim": "Flow matching trains a model to predict a velocity field that transports samples through a continuous path from a simple distribution toward data.",
+    "caveat_or_warning": "This span supports the vector-field object but not every choice of interpolation path or solver.",
+    "why_span_matters": "It anchors the mathematical object that distinguishes flow matching from a vague idea of generation as movement."
+  },
+  "ev-guidance-02": {
+    "lecture_argument": "The CME296 latent-space and guidance lecture introduces conditional generation as generating images from a condition such as a user prompt, input text, or input image.",
+    "example_or_analogy": "The prompt is the concrete steering signal. The model is not merely asked to make any plausible image; it is asked to make an image that fits the provided condition.",
+    "mathematical_claim": "Guidance changes the sampling process by conditioning the direction or score on extra information, such as text or another image.",
+    "caveat_or_warning": "The span motivates conditional generation broadly. Specific guidance mechanisms, including classifier-free guidance, require later evidence.",
+    "why_span_matters": "It anchors guidance in the real user-facing problem: generation must be steerable, not merely realistic."
+  },
+  "ev-guidance-05": {
+    "lecture_argument": "The CME296 architectures lecture recalls classifier-free guidance as a method that emphasizes the prompt during generation.",
+    "example_or_analogy": "Classifier-free guidance is like turning up the influence of the instruction while sampling, so the generated image is pulled harder toward the requested text.",
+    "mathematical_claim": "Classifier-free guidance combines conditional and less-conditional model predictions to alter the sampling direction toward the prompt condition.",
+    "caveat_or_warning": "The span supports the high-level mechanism and role of classifier-free guidance, not a full derivation or a guarantee of better images at every guidance weight.",
+    "why_span_matters": "It gives direct lecture evidence for guidance as a sampling-time control mechanism rather than only a dataset-label idea."
+  },
+  "ev-latent_space-03": {
+    "lecture_argument": "The CME296 architectures lecture says image dimensionality is too high and introduces latent space as the place where images are represented for the model.",
+    "example_or_analogy": "The model works with a compressed workbench. Instead of editing every pixel directly, it works in a smaller space that should still preserve the important visual content.",
+    "mathematical_claim": "A latent representation maps a high-dimensional image into a lower-dimensional or more structured coordinate space where generation and editing are cheaper.",
+    "caveat_or_warning": "Latent compression can lose details. This span supports the motivation for latent space, not a guarantee that every semantic factor is cleanly represented.",
+    "why_span_matters": "It anchors the reason latent space exists in vision models: raw image space is too large for efficient generation."
+  },
+  "ev-scaling_laws-02": {
+    "lecture_argument": "The CS224R RL-for-LLMs lecture points to the trend of using larger models and far more compute, placing RL-for-LLMs inside the broader scaling story.",
+    "example_or_analogy": "The trend is the concrete observation: modern progress often comes from increasing both model size and compute, so any method must be understood partly through its resource cost.",
+    "mathematical_claim": "Scaling analysis studies how resources such as compute, model size, data, and inference work relate to measured loss or capability.",
+    "caveat_or_warning": "The span supports the existence of a scaling trend, not a fitted scaling law. More compute can expose new capability, but it can also amplify cost and failure modes.",
+    "why_span_matters": "It anchors scaling as a live concern in the RL-for-LLMs course material, not only the transformer course."
+  },
+  "ev-generalization-04": {
+    "lecture_argument": "The CME296 model-training lecture mentions preventing overfitting during training, directly tying model training choices to whether behavior transfers beyond the examples being fit.",
+    "example_or_analogy": "Overfitting is the classroom case of memorizing practice questions. The model can look good during training while failing when the surface details change.",
+    "mathematical_claim": "Generalization is measured by the gap between training behavior and behavior on new data. Anti-overfitting techniques try to keep the learned rule from depending on accidental training details.",
+    "caveat_or_warning": "The transcript window is brief, so it supports the presence of the overfitting concern rather than a detailed regularization theory.",
+    "why_span_matters": "It anchors generalization in the vision-model training course as a practical training failure, not just an abstract evaluation term."
   }
 }

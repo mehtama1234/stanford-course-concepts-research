@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>Guidance modifies the sampling direction or scoring objective so generated samples are pulled toward a condition such as a prompt, class, layout, or reward. Evaluation then asks whether that condition was actually satisfied.</dd>
     <dt>Caveat Or Warning</dt><dd>This span is primarily evaluation evidence for prompt adherence, not a derivation of classifier-free guidance. It supports the problem guidance solves: realism and instruction-following are separable.</dd>
     <dt>Why This Span Matters</dt><dd>It gives a concrete lecture-backed failure case for guided generation: high visual quality can still be wrong if the sample ignores the prompt.</dd>
+    <dt>Local Transcript Window</dt><dd>And I would like to ask you, based on an input prompt that I&#x27;m going to read, which hopefully, is familiar by now, whether you think that image is a good image</dd>
   </dl>
-  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt</code></p>
 </article>
 
@@ -79,13 +80,14 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:00:58.640 · moderate</p>
   <p>around 00:00:58.640, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 4 - Latent Space &amp; Guidance and anchors the lecture&#x27;s treatment of Guidance through the local cues prompt. The supported argument is that steering generation toward a prompt, class, reward, or constraint is needed because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Guidance as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 latent-space and guidance lecture introduces conditional generation as generating images from a condition such as a user prompt, input text, or input image.</dd>
+    <dt>Example Or Analogy</dt><dd>The prompt is the concrete steering signal. The model is not merely asked to make any plausible image; it is asked to make an image that fits the provided condition.</dd>
+    <dt>Mathematical Claim</dt><dd>Guidance changes the sampling process by conditioning the direction or score on extra information, such as text or another image.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span motivates conditional generation broadly. Specific guidance mechanisms, including classifier-free guidance, require later evidence.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors guidance in the real user-facing problem: generation must be steerable, not merely realistic.</dd>
+    <dt>Local Transcript Window</dt><dd>how we can generate images with a condition which can be a user prompt, like input text, or an input image. And so in that sense, the title of today&#x27;s lecture</dd>
   </dl>
-  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space &amp; Guidance.txt</code></p>
 </article>
 
@@ -93,7 +95,7 @@
 <article class="evidence" id="ev-guidance-03">
   <h3><a href="../evidence.html#ev-guidance-03">ev-guidance-03</a></h3>
   <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</strong></p>
-  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:51:29.120 · strong</p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:51:29.120 · moderate</p>
   <p>around 00:51:29.120, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 6 - Model Training and anchors the lecture&#x27;s treatment of Guidance through the local cues prompt. The supported argument is that steering generation toward a prompt, class, reward, or constraint is needed because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
@@ -101,8 +103,9 @@
     <dt>Mathematical Claim</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>It&#x27;s not a square anymore. And then, your prompt can be much, much more complicated, such as the one on the slides.</dd>
   </dl>
-  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt</code></p>
 </article>
 
@@ -118,8 +121,9 @@
     <dt>Mathematical Claim</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>been to learn how to generate images. So, for instance, given an input prompt, how can we generate an image that is quite aligned</dd>
   </dl>
-  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt</code></p>
 </article>
 
@@ -130,13 +134,14 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:04:43.140 · moderate</p>
   <p>around 00:04:43.140, the lecture uses guidance, classifier free while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - Architectures and anchors the lecture&#x27;s treatment of Guidance through the local cues guidance, classifier free. The supported argument is that steering generation toward a prompt, class, reward, or constraint is needed because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Guidance as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 architectures lecture recalls classifier-free guidance as a method that emphasizes the prompt during generation.</dd>
+    <dt>Example Or Analogy</dt><dd>Classifier-free guidance is like turning up the influence of the instruction while sampling, so the generated image is pulled harder toward the requested text.</dd>
+    <dt>Mathematical Claim</dt><dd>Classifier-free guidance combines conditional and less-conditional model predictions to alter the sampling direction toward the prompt condition.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports the high-level mechanism and role of classifier-free guidance, not a full derivation or a guarantee of better images at every guidance weight.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives direct lecture evidence for guidance as a sampling-time control mechanism rather than only a dataset-label idea.</dd>
+    <dt>Local Transcript Window</dt><dd>process with the condition, we also had a method called classifier free guidance that allowed us to generate images by emphasizing more on the prompts.</dd>
   </dl>
-  <p class="meta">Matched terms: guidance, classifier free · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: guidance, classifier free · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
 </article>
 
@@ -152,8 +157,9 @@
     <dt>Mathematical Claim</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may produce realistic but irrelevant outputs.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Guidance. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>So here you have a typical setup where you have let&#x27;s say a prompt where you specify what you want to generate.</dd>
   </dl>
-  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: prompt · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt</code></p>
 </article>
 </div>

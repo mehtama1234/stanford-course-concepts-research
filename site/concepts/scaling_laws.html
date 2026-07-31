@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>Scaling analysis relates resources such as active parameters, total parameters, data, compute, and inference cost to loss or capability. Sparse activation changes the resource equation by separating total capacity from per-token compute.</dd>
     <dt>Caveat Or Warning</dt><dd>The span supports scaling trade-offs, not a full empirical scaling-law derivation. It is architectural evidence about why scale must be discussed with cost.</dd>
     <dt>Why This Span Matters</dt><dd>It anchors scale as an engineering constraint: bigger models matter only together with the cost of training and using them.</dd>
+    <dt>Local Transcript Window</dt><dd>that if you have an input, what you want is to not necessarily activate all the parameters. And so you are in a setting where you have multiple experts,</dd>
   </dl>
-  <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt</code></p>
 </article>
 
@@ -79,13 +80,14 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:28.920 · strong</p>
   <p>around 00:00:28.920, the lecture uses compute while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 9: RL for LLMs and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues compute. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Scaling Laws as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-LLMs lecture points to the trend of using larger models and far more compute, placing RL-for-LLMs inside the broader scaling story.</dd>
+    <dt>Example Or Analogy</dt><dd>The trend is the concrete observation: modern progress often comes from increasing both model size and compute, so any method must be understood partly through its resource cost.</dd>
+    <dt>Mathematical Claim</dt><dd>Scaling analysis studies how resources such as compute, model size, data, and inference work relate to measured loss or capability.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports the existence of a scaling trend, not a fitted scaling law. More compute can expose new capability, but it can also amplify cost and failure modes.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors scaling as a live concern in the RL-for-LLMs course material, not only the transformer course.</dd>
+    <dt>Local Transcript Window</dt><dd>larger and larger models, and we&#x27;ve been putting far more compute into them. This is like an ever very consistent trend.</dd>
   </dl>
-  <p class="meta">Matched terms: compute · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: compute · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt</code></p>
 </article>
 
@@ -93,7 +95,7 @@
 <article class="evidence" id="ev-scaling_laws-03">
   <h3><a href="../evidence.html#ev-scaling_laws-03">ev-scaling_laws-03</a></h3>
   <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
-  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:17:45.860 · strong</p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:17:45.860 · moderate</p>
   <p>around 00:17:45.860, the lecture uses parameters while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - Architectures and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues parameters. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
@@ -101,8 +103,9 @@
     <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>by either taking the max value or just the average value. So there is no learnable parameters there. And speaking of learnable parameters,</dd>
   </dl>
-  <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
 </article>
 
@@ -110,7 +113,7 @@
 <article class="evidence" id="ev-scaling_laws-04">
   <h3><a href="../evidence.html#ev-scaling_laws-04">ev-scaling_laws-04</a></h3>
   <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 1 - Diffusion</strong></p>
-  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:16:17.080 · strong</p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:16:17.080 · moderate</p>
   <p>around 00:16:17.080, the lecture uses emergence while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 1 - Diffusion and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues emergence. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
@@ -118,8 +121,9 @@
     <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>And then the second thing that we will see is this emergence of multi-modal LLMs that also understand images that can also</dd>
   </dl>
-  <p class="meta">Matched terms: emergence · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: emergence · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt</code></p>
 </article>
 
@@ -127,7 +131,7 @@
 <article class="evidence" id="ev-scaling_laws-05">
   <h3><a href="../evidence.html#ev-scaling_laws-05">ev-scaling_laws-05</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:29.430 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:29.430 · moderate</p>
   <p>around 00:01:29.430, the lecture uses parameters while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 11: Model-Based RL and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues parameters. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
@@ -135,8 +139,9 @@
     <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>including data from policies before we took a gradient step on our policy parameters. And this included algorithms like PPO</dd>
   </dl>
-  <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt</code></p>
 </article>
 
@@ -144,7 +149,7 @@
 <article class="evidence" id="ev-scaling_laws-06">
   <h3><a href="../evidence.html#ev-scaling_laws-06">ev-scaling_laws-06</a></h3>
   <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</strong></p>
-  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:08:11.640 · strong</p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:08:11.640 · moderate</p>
   <p>around 00:08:11.640, the lecture uses scale while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7 - Evaluation and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues scale. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
@@ -152,8 +157,9 @@
     <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>compared to the other ones. So from this small scale exercise, what I wanted to point out was that when</dd>
   </dl>
-  <p class="meta">Matched terms: scale · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: scale · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt</code></p>
 </article>
 </div>

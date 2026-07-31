@@ -207,8 +207,9 @@ def evidence_row(ev: dict[str, Any], link_prefix: str = "") -> str:
     <dt>Mathematical Claim</dt><dd>{esc(ev.get('mathematical_claim', ''))}</dd>
     <dt>Caveat Or Warning</dt><dd>{esc(ev.get('caveat_or_warning', ''))}</dd>
     <dt>Why This Span Matters</dt><dd>{esc(ev.get('why_span_matters', ''))}</dd>
+    <dt>Local Transcript Window</dt><dd>{esc(ev.get('local_transcript_window', ''))}</dd>
   </dl>
-  <p class="meta">Matched terms: {esc(terms)} · Basis: {esc(ev['evidence_basis'])}</p>
+  <p class="meta">Matched terms: {esc(terms)} · Basis: {esc(ev['evidence_basis'])} · Review: {esc(ev.get('evidence_review_status', 'unknown'))}</p>
   <p><code>{esc(ev['transcript_path'])}</code></p>
 </article>
 """

@@ -832,6 +832,21 @@ def parse_vtt_segments(path: Path) -> list[dict[str, str]]:
     return segments
 
 
+def local_transcript_window(path: Path, keywords: list[str]) -> str:
+    segments = parse_vtt_segments(path)
+    if not segments:
+        return ""
+    for i, segment in enumerate(segments):
+        if keyword_hits(segment["text"], keywords):
+            nearby = segments[max(0, i - 1) : min(len(segments), i + 2)]
+            text = " ".join(part["text"] for part in nearby)
+            words = text.split()
+            if len(words) > 70:
+                text = " ".join(words[:70]) + " ..."
+            return text
+    return ""
+
+
 def keyword_hits(text: str, keywords: list[str]) -> int:
     lowered = text.lower()
     return sum(len(re.findall(r"(?<![a-z0-9-])" + re.escape(k.lower()) + r"(?![a-z0-9-])", lowered)) for k in keywords)
@@ -895,6 +910,8 @@ def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any
                 "transcript_path": row["clean_txt"],
                 "timestamp_start": timestamp_start,
                 "timestamp_end": timestamp_end,
+                "local_transcript_window": local_transcript_window(vtt_path, concept["keywords"])
+                or "No local VTT window was available; this evidence comes from clean transcript keyword cues.",
                 "matched_terms": local_terms,
                 "keyword_hits": hits,
                 "confidence": "strong" if hits >= 20 else "moderate" if hits >= 5 else "weak",
@@ -997,6 +1014,10 @@ def build() -> None:
         matches = best_evidence_for_concept(concept, index)
         for i, match in enumerate(matches, 1):
             evidence_id = f"ev-{concept['id']}-{i:02d}"
+            override = evidence_overrides.get(evidence_id, {})
+            confidence = match["confidence"]
+            if not override and confidence == "strong":
+                confidence = "moderate"
             evidence_records.append(
                 {
                     "id": evidence_id,
@@ -1007,15 +1028,17 @@ def build() -> None:
                     "timestamp_end": match["timestamp_end"],
                     "paraphrased_claim": evidence_note(concept, match),
                     **evidence_depth(concept, match),
+                    "local_transcript_window": match["local_transcript_window"],
                     "evidence_basis": "local VTT timestamp cue" if match["timestamp_start"] else "clean transcript keyword cue",
                     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+                    "evidence_review_status": "manual_deepened" if override else "generated_transcript_cue_needs_review",
                     "matched_terms": match["matched_terms"],
                     "supports_concepts": [concept["id"]],
                     "supports_subthemes": [s["id"] for s in SUBTHEMES if concept["id"] in s["concepts"]],
-                    "confidence": match["confidence"],
+                    "confidence": confidence,
                     "keyword_hits": match["keyword_hits"],
                 }
-                | evidence_overrides.get(evidence_id, {})
+                | override
             )
             evidence_by_concept[concept["id"]].append(evidence_id)
 

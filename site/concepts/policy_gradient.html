@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>The policy-gradient update increases the probability of sampled actions whose future reward is high relative to a baseline and decreases the relative probability of worse actions. Importance weights appear when data comes from a different policy than the one being updated.</dd>
     <dt>Caveat Or Warning</dt><dd>The span also warns about the on-policy assumption: the clean policy-gradient estimator expects data from the same policy being updated. Reusing old or off-policy data requires correction and can introduce instability.</dd>
     <dt>Why This Span Matters</dt><dd>It captures the core mechanism in plain terms: policy gradients convert sampled trajectories and delayed reward into a direction for changing action probabilities.</dd>
+    <dt>Local Transcript Window</dt><dd>that the data be sampled from the exact policy that you&#x27;re going to be taking a gradient step on. And we talked about how we can use importance weights this term</dd>
   </dl>
-  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
 </article>
 
@@ -79,13 +80,14 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:06:57.150 · strong</p>
   <p>around 00:06:57.150, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 3: Policy Gradients and anchors the lecture&#x27;s treatment of Policy Gradient through the local cues gradient. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Policy Gradient as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R policy-gradient lecture asks how to optimize the RL objective and answers by connecting policy learning to gradient descent, the standard way neural networks are trained.</dd>
+    <dt>Example Or Analogy</dt><dd>The policy is adjusted like any other trainable network, but the signal comes from sampled behavior rather than a labeled target action for every state.</dd>
+    <dt>Mathematical Claim</dt><dd>Policy-gradient methods estimate a gradient of expected return with respect to policy parameters, then move the parameters in the direction that should increase future return.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span motivates gradient-based optimization, but policy-gradient estimates can be noisy because they depend on sampled trajectories and delayed rewards.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the mathematical move behind policy gradients: turn trial outcomes into a direction for changing a behavior rule.</dd>
+    <dt>Local Transcript Window</dt><dd>Now, how do we actually optimize this? So we want to use gradient descent because we typically train neural networks with gradient descent.</dd>
   </dl>
-  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt</code></p>
 </article>
 
@@ -93,7 +95,7 @@
 <article class="evidence" id="ev-policy_gradient-03">
   <h3><a href="../evidence.html#ev-policy_gradient-03">ev-policy_gradient-03</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:02.160 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:02.160 · moderate</p>
   <p>around 00:01:02.160, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 4: Actor-Critic Methods and anchors the lecture&#x27;s treatment of Policy Gradient through the local cues gradient. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
@@ -101,8 +103,9 @@
     <dt>Mathematical Claim</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>over actions given states. And so this is looking like the gradient of the log probability of the actions under the policy.</dd>
   </dl>
-  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt</code></p>
 </article>
 
@@ -110,7 +113,7 @@
 <article class="evidence" id="ev-policy_gradient-04">
   <h3><a href="../evidence.html#ev-policy_gradient-04">ev-policy_gradient-04</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:15.430 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:15.430 · moderate</p>
   <p>around 00:01:15.430, the lecture uses reinforce while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 11: Model-Based RL and anchors the lecture&#x27;s treatment of Policy Gradient through the local cues reinforce. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
@@ -118,8 +121,9 @@
     <dt>Mathematical Claim</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>You can&#x27;t use offline data and so forth. And this include algorithms REINFORCE or the vanilla policy gradient method.</dd>
   </dl>
-  <p class="meta">Matched terms: reinforce · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: reinforce · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt</code></p>
 </article>
 
@@ -127,7 +131,7 @@
 <article class="evidence" id="ev-policy_gradient-05">
   <h3><a href="../evidence.html#ev-policy_gradient-05">ev-policy_gradient-05</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:59.790 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:59.790 · moderate</p>
   <p>around 00:00:59.790, the lecture uses actor while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7: Offline RL and anchors the lecture&#x27;s treatment of Policy Gradient through the local cues actor. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
@@ -135,8 +139,9 @@
     <dt>Mathematical Claim</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>And we saw a couple algorithms, like PPO and SAC, that use this actor critic approach. We also talked about a few different ways for fitting value</dd>
   </dl>
-  <p class="meta">Matched terms: actor · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: actor · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
 </article>
 
@@ -144,7 +149,7 @@
 <article class="evidence" id="ev-policy_gradient-06">
   <h3><a href="../evidence.html#ev-policy_gradient-06">ev-policy_gradient-06</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
-  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:33:21.520 · strong</p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:33:21.520 · moderate</p>
   <p>around 00:33:21.520, the lecture uses advantage while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture&#x27;s treatment of Policy Gradient through the local cues advantage. The supported argument is that changing an action rule toward sampled choices that worked better is needed because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
@@ -152,8 +157,9 @@
     <dt>Mathematical Claim</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Learning is limited to settings where every action value can be directly estimated.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy Gradient. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>So the way to do this is the following-- and this ties back to a lot of concepts of value functions and advantage functions that many of you are probably familiar with.</dd>
   </dl>
-  <p class="meta">Matched terms: advantage · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: advantage · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
 </article>
 </div>

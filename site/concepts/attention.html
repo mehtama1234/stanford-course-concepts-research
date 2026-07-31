@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>softmax(QK^T / sqrt(d_k))V means: compare queries Q with keys K, scale the scores so they do not become numerically too sharp, normalize them into weights with softmax, then use those weights to average the values V.</dd>
     <dt>Caveat Or Warning</dt><dd>This span supports the mechanics of self-attention, but it does not prove that attention weights are faithful human explanations. The lecture treats attention as optimized matrix multiplication and information routing, not as a guaranteed interpretability story.</dd>
     <dt>Why This Span Matters</dt><dd>This is a high-value evidence span because it contains the central attention formula and the plain operational roles of query, key, and value in one place.</dd>
+    <dt>Local Transcript Window</dt><dd>So if you remember, lecture 1 was all about introducing the concept of self-attention. And if you remember, what self-attention</dd>
   </dl>
-  <p class="meta">Matched terms: self-attention · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: self-attention · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models &amp; Tricks.txt</code></p>
 </article>
 
@@ -76,7 +77,7 @@
 <article class="evidence" id="ev-attention-02">
   <h3><a href="../evidence.html#ev-attention-02">ev-attention-02</a></h3>
   <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
-  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:32:55.100 · strong</p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:32:55.100 · moderate</p>
   <p>around 00:32:55.100, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
   <dl>
     <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - Architectures and anchors the lecture&#x27;s treatment of Attention through the local cues attention. The supported argument is that a learned way for each piece to decide which other pieces matter right now is needed because useful context is selective. the system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
@@ -84,8 +85,9 @@
     <dt>Mathematical Claim</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>So just wait for that. And then the third one is you do some cross attention operation there, which we&#x27;re going to see as well, maybe in 40 minutes.</dd>
   </dl>
-  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
 </article>
 
@@ -101,8 +103,9 @@
     <dt>Mathematical Claim</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>There&#x27;s is also a paper that before transformers were really popular, used self-attention and also 1D convolutions. You can think of it sort of a transformer.</dd>
   </dl>
-  <p class="meta">Matched terms: self-attention · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: self-attention · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt</code></p>
 </article>
 
@@ -113,13 +116,14 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 01:08:17.450 · weak</p>
   <p>around 01:08:17.450, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7 - Evaluation and anchors the lecture&#x27;s treatment of Attention through the local cues attention. The supported argument is that a learned way for each piece to decide which other pieces matter right now is needed because useful context is selective. the system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Attention as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 evaluation lecture describes a decoder that uses text tokens and cross-attention so textual information can interact with encoded images.</dd>
+    <dt>Example Or Analogy</dt><dd>The multimodal case is concrete: the text side asks for information from the image side, and cross-attention is the bridge that lets one representation condition on the other.</dd>
+    <dt>Mathematical Claim</dt><dd>Cross-attention compares queries from one stream with keys and values from another stream, then copies a weighted mixture from the source stream into the target stream.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports attention as a cross-modal routing mechanism, not as a guarantee that the generated or evaluated image truly follows the text.</dd>
+    <dt>Why This Span Matters</dt><dd>It shows why attention belongs in both transformer and vision-model courses: it is the reusable operation for routing information between parts of a system.</dd>
+    <dt>Local Transcript Window</dt><dd>where you use text tokens as input of your decoder, and then you keep this cross attention mechanism in order to make it interact with encoded images.</dd>
   </dl>
-  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt</code></p>
 </article>
 
@@ -130,13 +134,14 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:38:20.513 · weak</p>
   <p>around 00:38:20.513, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 15: Hierarchical RL and IL and anchors the lecture&#x27;s treatment of Attention through the local cues attention. The supported argument is that a learned way for each piece to decide which other pieces matter right now is needed because useful context is selective. the system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Attention as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R hierarchical RL and imitation learning lecture uses a robot instruction example where a language model must attend to an image; if it ignores the visual evidence, it can give the robot the wrong instruction.</dd>
+    <dt>Example Or Analogy</dt><dd>The coffee-fetching robot example makes attention ordinary: the system must look at the relevant visual context before deciding what to tell the robot to do.</dd>
+    <dt>Mathematical Claim</dt><dd>Attention assigns weight to available context so the decision step is conditioned on the evidence that matters now rather than on every input equally.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span uses attention in a broad multimodal sense. It supports the selective-context problem, but not a full derivation of transformer self-attention.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the shared primitive between LLMs and embodied agents: deciding which past or external information should matter for the present action.</dd>
+    <dt>Local Transcript Window</dt><dd>and you ask the robot to get some coffee for you, if the language model doesn&#x27;t actually pay attention to that image, it might tell the robot like, oh,</dd>
   </dl>
-  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt</code></p>
 </article>
 
@@ -152,8 +157,9 @@
     <dt>Mathematical Claim</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
     <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.</dd>
     <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Attention. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Local Transcript Window</dt><dd>And the second is actually getting the robot to pay attention to those different strategies. And that second one actually seemed</dd>
   </dl>
-  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue · Review: generated_transcript_cue_needs_review</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt</code></p>
 </article>
 </div>

@@ -208,6 +208,12 @@ def main() -> int:
             errors.append(f"evidence {ev['id']} has no evidence_basis")
         if not ev.get("evidence_scope"):
             errors.append(f"evidence {ev['id']} has no evidence_scope")
+        if ev.get("evidence_review_status") not in {"manual_deepened", "generated_transcript_cue_needs_review"}:
+            errors.append(f"evidence {ev['id']} has invalid evidence_review_status")
+        if ev.get("evidence_review_status") == "generated_transcript_cue_needs_review" and ev.get("confidence") == "strong":
+            errors.append(f"evidence {ev['id']} has generated review-needed evidence marked strong")
+        if len(str(ev.get("local_transcript_window", "")).split()) < 8:
+            errors.append(f"evidence {ev['id']} has no useful local_transcript_window")
         for field in ["lecture_argument", "example_or_analogy", "mathematical_claim", "caveat_or_warning", "why_span_matters"]:
             if len(str(ev.get(field, "")).split()) < 12:
                 errors.append(f"evidence {ev['id']} has shallow {field}")

@@ -67,8 +67,9 @@
     <dt>Mathematical Claim</dt><dd>Pretraining uses a prediction loss, often next-token prediction for LLMs, to adjust model weights so the true continuation becomes more probable.</dd>
     <dt>Caveat Or Warning</dt><dd>The span explicitly warns against treating pretraining as the whole product: after this stage, the model still needs fine-tuning or alignment to behave usefully.</dd>
     <dt>Why This Span Matters</dt><dd>It anchors the difference between learning broad structure and learning desired behavior, which is central to the whole LLM training pipeline.</dd>
+    <dt>Local Transcript Window</dt><dd>basically, all the texts that it has been fed. But what this model can do is only predict the next token. So it&#x27;s a great autocompleter, but it&#x27;s not a helpful model</dd>
   </dl>
-  <p class="meta">Matched terms: next token · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: next token · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt</code></p>
 </article>
 
@@ -79,13 +80,14 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:10:36.420 · strong</p>
   <p>around 00:10:36.420, the lecture uses loss while covering Pretraining. This supports the scoped claim that large-scale practice before the model is asked to be useful in a specific way.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 6 - Model Training and anchors the lecture&#x27;s treatment of Pretraining through the local cues loss. The supported argument is that large-scale practice before the model is asked to be useful in a specific way is needed because a learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Pretraining as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Pretraining. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 model-training lecture opens by focusing on the loss used for training, making the same point as LLM pretraining in another domain: learning begins with a measurable prediction or reconstruction objective.</dd>
+    <dt>Example Or Analogy</dt><dd>The training loss is the practice game. Before a model can generate useful images, it needs a rule that says how wrong its current prediction is on training examples.</dd>
+    <dt>Mathematical Claim</dt><dd>A loss function compresses model error into a number that can be differentiated and reduced. In generative vision training, that loss may measure denoising, velocity prediction, reconstruction, or another supervised target.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports training-by-loss rather than LLM next-token pretraining specifically. It should be used as cross-course evidence for feedback as practice, not as a claim that all losses teach the same behavior.</dd>
+    <dt>Why This Span Matters</dt><dd>It connects the feedback primitive across courses: language and vision models both need a training signal that turns examples into parameter updates.</dd>
+    <dt>Local Transcript Window</dt><dd>So we&#x27;ll start with the first. Even before starting, actually, we&#x27;ll be talking about the loss that we will use for our training process.</dd>
   </dl>
-  <p class="meta">Matched terms: loss · Basis: local VTT timestamp cue</p>
+  <p class="meta">Matched terms: loss · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt</code></p>
 </article>
 </div>
