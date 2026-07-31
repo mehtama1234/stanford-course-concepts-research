@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diffusion · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../themes.html">Themes</a>
+<a class="" href="../families.html">Method Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">generative paths</p>
+  <h1>Diffusion</h1>
+  <p>Generating by starting from noise and repeatedly making it more like data.</p>
+</section>
+<section class="treatment">
+  <h2>What real-world problem is this about?</h2>
+  <p>The problem is that realistic images or videos are too complex to create in one jump from a prompt.</p>
+  <h2>Why does this problem exist?</h2>
+  <p>A hard generation problem can be broken into many easier cleanup steps.</p>
+  <h2>What is the mathematical idea underneath?</h2>
+  <p>A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.</p>
+  <h2>Why is this concept important?</h2>
+  <p>It is a major recipe for high-quality image, video, and multimodal generation.</p>
+  <h2>What breaks without it?</h2>
+  <p>Generation must rely on harder one-shot mappings or unstable adversarial training.</p>
+  <h2>Connected Concepts</h2>
+  <p class="chips"><a class="chip" href="score_matching.html">score matching</a> <a class="chip" href="guidance.html">guidance</a> <a class="chip" href="latent_space.html">latent space</a></p>
+</section>
+<section>
+  <h2>Transcript Evidence</h2>
+  <div class="evidence-stack">
+<article class="evidence" id="ev-diffusion-01">
+  <h3><a href="../evidence.html#ev-diffusion-01">ev-diffusion-01</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:00:26.360 · strong</p>
+  <p>around 00:00:26.360, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.</p>
+  <p class="meta">Matched terms: diffusion · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt</code></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>

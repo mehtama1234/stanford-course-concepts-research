@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Actor-Critic · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../themes.html">Themes</a>
+<a class="" href="../families.html">Method Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">action and consequence</p>
+  <h1>Actor-Critic</h1>
+  <p>A learner split into a chooser and a judge.</p>
+</section>
+<section class="treatment">
+  <h2>What real-world problem is this about?</h2>
+  <p>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</p>
+  <h2>Why does this problem exist?</h2>
+  <p>Decision making improves when action choice and outcome evaluation can help each other.</p>
+  <h2>What is the mathematical idea underneath?</h2>
+  <p>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</p>
+  <h2>Why is this concept important?</h2>
+  <p>It reduces noise in learning and underlies many practical RL methods.</p>
+  <h2>What breaks without it?</h2>
+  <p>Policy updates can be too unstable or data-hungry for complex environments.</p>
+  <h2>Connected Concepts</h2>
+  <p class="chips"><a class="chip" href="policy_gradient.html">policy gradient</a> <span class="chip muted-chip">value functions</span> <a class="chip" href="rl_for_llms.html">rl for llms</a></p>
+</section>
+<section>
+  <h2>Transcript Evidence</h2>
+  <div class="evidence-stack">
+<article class="evidence" id="ev-actor_critic-01">
+  <h3><a href="../evidence.html#ev-actor_critic-01">ev-actor_critic-01</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:48.680 · strong</p>
+  <p>around 00:00:48.680, the lecture uses baseline while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
+  <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>

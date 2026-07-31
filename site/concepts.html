@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Concepts · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="active" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <h1>Concept Atlas</h1>
+  <p>Each concept starts from the real-world problem, then explains the deeper constraint, the mathematical lever, why it matters, what breaks without it, and where the transcript evidence comes from.</p>
+</section>
+<section class="grid">
+<article class="concept-card" id="tokenization">
+  <div class="eyebrow">representation workspace</div>
+  <h3><a href="concepts/tokenization.html">Tokenization</a></h3>
+  <p class="definition">Turning text into reusable pieces a model can count.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that a model cannot read raw text as meaning; it first needs stable pieces that can be given numbers.</dd>
+    <dt>First-Principles Reason</dt><dd>Computation needs finite symbols. Human language is open-ended, so the first constraint is to choose a manageable set of chunks that can cover new text.</dd>
+    <dt>Math Underneath</dt><dd>A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-01">ev-tokenization-01</a> <span class="time">00:02:36.320</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li><li><a href="evidence.html#ev-tokenization-02">ev-tokenization-02</a> <span class="time">00:35:56.570</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li></ul>
+</article>
+
+<article class="concept-card" id="embeddings">
+  <div class="eyebrow">representation workspace</div>
+  <h3><a href="concepts/embeddings.html">Embeddings</a></h3>
+  <p class="definition">Learned coordinates that let a model compare things by arithmetic.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that IDs like 17 or 9421 do not say what a word, patch, state, or action means.</dd>
+    <dt>First-Principles Reason</dt><dd>A learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.</dd>
+    <dt>Math Underneath</dt><dd>An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-01">ev-embeddings-01</a> <span class="time">00:05:16.580</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-03">ev-embeddings-03</a> <span class="time">00:40:26.570</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration</li></ul>
+</article>
+
+<article class="concept-card" id="positional_encoding">
+  <div class="eyebrow">representation workspace</div>
+  <h3><a href="concepts/positional_encoding.html">Position And Order</a></h3>
+  <p class="definition">A way to tell the model where each piece sits in a sequence or image.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that the same words or image patches mean different things depending on where they appear.</dd>
+    <dt>First-Principles Reason</dt><dd>Attention compares items as a set unless order information is added. Order must be represented explicitly if order matters.</dd>
+    <dt>Math Underneath</dt><dd>Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-positional_encoding-01">ev-positional_encoding-01</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-positional_encoding-02">ev-positional_encoding-02</a> <span class="time">01:05:31.720</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
+</article>
+
+<article class="concept-card" id="attention">
+  <div class="eyebrow">representation workspace</div>
+  <h3><a href="concepts/attention.html">Attention</a></h3>
+  <p class="definition">A learned way for each piece to decide which other pieces matter right now.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that the input is too large to treat every earlier word, patch, or memory as equally important.</dd>
+    <dt>First-Principles Reason</dt><dd>Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
+    <dt>Math Underneath</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-02">ev-attention-02</a> <span class="time">00:32:55.100</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-attention-03">ev-attention-03</a> <span class="time">00:32:12.760</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li></ul>
+</article>
+
+<article class="concept-card" id="transformer_block">
+  <div class="eyebrow">representation workspace</div>
+  <h3><a href="concepts/transformer_block.html">Transformer Block</a></h3>
+  <p class="definition">A repeated update step where tokens read from each other and then rewrite their own state.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that one lookup is not enough; understanding needs many rounds of communication and local computation.</dd>
+    <dt>First-Principles Reason</dt><dd>A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.</dd>
+    <dt>Math Underneath</dt><dd>A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-transformer_block-02">ev-transformer_block-02</a> <span class="time">00:35:05.103</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-transformer_block-03">ev-transformer_block-03</a> <span class="time">00:48:04.220</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL</li></ul>
+</article>
+
+<article class="concept-card" id="pretraining">
+  <div class="eyebrow">learning from feedback</div>
+  <h3><a href="concepts/pretraining.html">Pretraining</a></h3>
+  <p class="definition">Large-scale practice before the model is asked to be useful in a specific way.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.</dd>
+    <dt>First-Principles Reason</dt><dd>A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</dd>
+    <dt>Math Underneath</dt><dd>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-pretraining-01">ev-pretraining-01</a> <span class="time">00:02:20.620</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-pretraining-02">ev-pretraining-02</a> <span class="time">00:10:36.420</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
+</article>
+
+<article class="concept-card" id="fine_tuning">
+  <div class="eyebrow">learning from feedback</div>
+  <h3><a href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a></h3>
+  <p class="definition">Steering a broad model toward behavior people actually want.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.</dd>
+    <dt>First-Principles Reason</dt><dd>Raw imitation learns what appears in data. Usefulness requires extra feedback about which possible responses people prefer.</dd>
+    <dt>Math Underneath</dt><dd>Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-fine_tuning-01">ev-fine_tuning-01</a> <span class="time">00:00:05.480</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li><li><a href="evidence.html#ev-fine_tuning-02">ev-fine_tuning-02</a> <span class="time">00:02:35.700</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li></ul>
+</article>
+
+<article class="concept-card" id="reasoning_traces">
+  <div class="eyebrow">inference time work</div>
+  <h3><a href="concepts/reasoning_traces.html">Reasoning Traces</a></h3>
+  <p class="definition">Using written intermediate work as temporary memory for hard problems.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that some answers require several dependent steps, and the first likely sentence may skip a necessary intermediate fact.</dd>
+    <dt>First-Principles Reason</dt><dd>A system with limited internal working memory can externalize partial results into tokens and condition on them later.</dd>
+    <dt>Math Underneath</dt><dd>The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-reasoning_traces-01">ev-reasoning_traces-01</a> <span class="time">00:00:18.960</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li><li><a href="evidence.html#ev-reasoning_traces-02">ev-reasoning_traces-02</a> <span class="time">00:00:07.020</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li></ul>
+</article>
+
+<article class="concept-card" id="agents_and_tools">
+  <div class="eyebrow">inference time work</div>
+  <h3><a href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a></h3>
+  <p class="definition">Putting a model in a loop where it can look things up, call tools, and react to results.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.</dd>
+    <dt>First-Principles Reason</dt><dd>A useful system often needs perception, memory, action, and correction, not only prediction.</dd>
+    <dt>Math Underneath</dt><dd>The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li><li><a href="evidence.html#ev-agents_and_tools-02">ev-agents_and_tools-02</a> <span class="time">00:01:19.350</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots</li></ul>
+</article>
+
+<article class="concept-card" id="evaluation">
+  <div class="eyebrow">measurement limits</div>
+  <h3><a href="concepts/evaluation.html">Evaluation</a></h3>
+  <p class="definition">A controlled way to ask what a model can and cannot do.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that a model can look impressive on examples while failing in places the test did not cover.</dd>
+    <dt>First-Principles Reason</dt><dd>Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.</dd>
+    <dt>Math Underneath</dt><dd>A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-evaluation-03">ev-evaluation-03</a> <span class="time">00:00:28.100</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers</li></ul>
+</article>
+
+<article class="concept-card" id="policy">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/policy.html">Policy</a></h3>
+  <p class="definition">The rule an agent uses to choose what to do next.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that the output is an action, and that action changes what happens afterward.</dd>
+    <dt>First-Principles Reason</dt><dd>In a changing environment, the learner must connect what it can see now to a choice under uncertainty.</dd>
+    <dt>Math Underneath</dt><dd>A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li></ul>
+</article>
+
+<article class="concept-card" id="reward">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/reward.html">Reward</a></h3>
+  <p class="definition">A signal that says which outcomes should become more likely.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that an agent needs to know not just what happened, but whether it was better or worse.</dd>
+    <dt>First-Principles Reason</dt><dd>Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.</dd>
+    <dt>Math Underneath</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-reward-02">ev-reward-02</a> <span class="time">00:00:05.480</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li></ul>
+</article>
+
+<article class="concept-card" id="credit_assignment">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/credit_assignment.html">Credit Assignment</a></h3>
+  <p class="definition">Figuring out which earlier choices caused a later success or failure.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that the important mistake may happen long before the bad outcome appears.</dd>
+    <dt>First-Principles Reason</dt><dd>Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.</dd>
+    <dt>Math Underneath</dt><dd>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-01">ev-credit_assignment-01</a> <span class="time">00:46:20.770</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro</li></ul>
+</article>
+
+<article class="concept-card" id="policy_gradient">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/policy_gradient.html">Policy Gradient</a></h3>
+  <p class="definition">Changing an action rule toward sampled choices that worked better.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that the correct action is not provided; the agent only sees outcomes after trying things.</dd>
+    <dt>First-Principles Reason</dt><dd>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
+    <dt>Math Underneath</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li></ul>
+</article>
+
+<article class="concept-card" id="actor_critic">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/actor_critic.html">Actor-Critic</a></h3>
+  <p class="definition">A learner split into a chooser and a judge.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</dd>
+    <dt>First-Principles Reason</dt><dd>Decision making improves when action choice and outcome evaluation can help each other.</dd>
+    <dt>Math Underneath</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li></ul>
+</article>
+
+<article class="concept-card" id="q_learning">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/q_learning.html">Q-Learning</a></h3>
+  <p class="definition">Learning a table or function that estimates how good each action is from each situation.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that an agent must choose now while caring about later consequences.</dd>
+    <dt>First-Principles Reason</dt><dd>A decision can be valued by immediate payoff plus the value of the future it leads to.</dd>
+    <dt>Math Underneath</dt><dd>Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-q_learning-01">ev-q_learning-01</a> <span class="time">00:00:30.320</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
+</article>
+
+<article class="concept-card" id="offline_rl">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/offline_rl.html">Offline Reinforcement Learning</a></h3>
+  <p class="definition">Learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.</dd>
+    <dt>First-Principles Reason</dt><dd>The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Math Underneath</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-offline_rl-01">ev-offline_rl-01</a> <span class="time">00:07:44.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li></ul>
+</article>
+
+<article class="concept-card" id="model_based_rl">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a></h3>
+  <p class="definition">Learning or using a simulator of what might happen next.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that real-world trial and error can be slow, costly, or risky.</dd>
+    <dt>First-Principles Reason</dt><dd>If the agent can imagine consequences, it can compare possible futures before acting.</dd>
+    <dt>Math Underneath</dt><dd>A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-model_based_rl-01">ev-model_based_rl-01</a> <span class="time">00:04:50.450</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</li></ul>
+</article>
+
+<article class="concept-card" id="exploration">
+  <div class="eyebrow">action and consequence</div>
+  <h3><a href="concepts/exploration.html">Exploration</a></h3>
+  <p class="definition">Trying actions to learn what would otherwise remain unknown.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that doing the currently best-known thing can prevent the agent from discovering something better.</dd>
+    <dt>First-Principles Reason</dt><dd>Information has value. Some actions are useful because they reveal the world, not because they immediately pay off.</dd>
+    <dt>Math Underneath</dt><dd>Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-exploration-01">ev-exploration-01</a> <span class="time">00:00:07.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration</li></ul>
+</article>
+
+<article class="concept-card" id="rl_for_llms">
+  <div class="eyebrow">learning from feedback</div>
+  <h3><a href="concepts/rl_for_llms.html">RL For LLMs</a></h3>
+  <p class="definition">Using outcome feedback to steer a language model&#x27;s choices.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.</dd>
+    <dt>First-Principles Reason</dt><dd>Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.</dd>
+    <dt>Math Underneath</dt><dd>The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <span class="time">00:00:18.960</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li><li><a href="evidence.html#ev-rl_for_llms-02">ev-rl_for_llms-02</a> <span class="time">00:00:07.020</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li></ul>
+</article>
+
+<article class="concept-card" id="diffusion">
+  <div class="eyebrow">generative paths</div>
+  <h3><a href="concepts/diffusion.html">Diffusion</a></h3>
+  <p class="definition">Generating by starting from noise and repeatedly making it more like data.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that realistic images or videos are too complex to create in one jump from a prompt.</dd>
+    <dt>First-Principles Reason</dt><dd>A hard generation problem can be broken into many easier cleanup steps.</dd>
+    <dt>Math Underneath</dt><dd>A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-01">ev-diffusion-01</a> <span class="time">00:00:26.360</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li></ul>
+</article>
+
+<article class="concept-card" id="score_matching">
+  <div class="eyebrow">generative paths</div>
+  <h3><a href="concepts/score_matching.html">Score Matching</a></h3>
+  <p class="definition">Learning which direction points toward more data-like samples.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that the model needs a local compass for improving a noisy sample.</dd>
+    <dt>First-Principles Reason</dt><dd>In a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.</dd>
+    <dt>Math Underneath</dt><dd>The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-score_matching-01">ev-score_matching-01</a> <span class="time">00:00:18.000</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li></ul>
+</article>
+
+<article class="concept-card" id="flow_matching">
+  <div class="eyebrow">generative paths</div>
+  <h3><a href="concepts/flow_matching.html">Flow Matching</a></h3>
+  <p class="definition">Learning a smooth path that carries simple samples into data-like samples.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.</dd>
+    <dt>First-Principles Reason</dt><dd>Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</dd>
+    <dt>Math Underneath</dt><dd>A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-flow_matching-01">ev-flow_matching-01</a> <span class="time">00:00:15.600</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li></ul>
+</article>
+
+<article class="concept-card" id="guidance">
+  <div class="eyebrow">generative paths</div>
+  <h3><a href="concepts/guidance.html">Guidance</a></h3>
+  <p class="definition">Steering generation toward a prompt, class, reward, or constraint.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that pure generation may create plausible samples that do not match what the user asked for.</dd>
+    <dt>First-Principles Reason</dt><dd>Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
+    <dt>Math Underneath</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-guidance-01">ev-guidance-01</a> <span class="time">00:05:58.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li></ul>
+</article>
+
+<article class="concept-card" id="latent_space">
+  <div class="eyebrow">generative paths</div>
+  <h3><a href="concepts/latent_space.html">Latent Space</a></h3>
+  <p class="definition">A compressed internal space where generation or prediction can happen more cheaply.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that pixels and long sequences are expensive and full of surface detail.</dd>
+    <dt>First-Principles Reason</dt><dd>If the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.</dd>
+    <dt>Math Underneath</dt><dd>An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-latent_space-01">ev-latent_space-01</a> <span class="time">00:15:08.170</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li></ul>
+</article>
+
+<article class="concept-card" id="vision_transformers">
+  <div class="eyebrow">representation workspace</div>
+  <h3><a href="concepts/vision_transformers.html">Vision Transformers</a></h3>
+  <p class="definition">Treating pieces of an image like items that can read from one another.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that an image has many regions, and the important relation may be far apart in the picture.</dd>
+    <dt>First-Principles Reason</dt><dd>Images are not just local texture. Shape, object identity, and layout require comparing distant parts.</dd>
+    <dt>Math Underneath</dt><dd>An image is split into patches, each patch gets a vector, and attention lets patches exchange information.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-vision_transformers-01">ev-vision_transformers-01</a> <span class="time">00:01:51.640</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-vision_transformers-02">ev-vision_transformers-02</a> <span class="time">00:51:26.940</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li></ul>
+</article>
+
+<article class="concept-card" id="scaling_laws">
+  <div class="eyebrow">measurement limits</div>
+  <h3><a href="concepts/scaling_laws.html">Scaling Laws</a></h3>
+  <p class="definition">Regular patterns in what improves when models, data, and compute grow.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that building large models is expensive, so teams need a way to predict whether more scale is worth it.</dd>
+    <dt>First-Principles Reason</dt><dd>Capacity, data, and compute are bottlenecks. When one bottleneck is relaxed, another can become the limiter.</dd>
+    <dt>Math Underneath</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-scaling_laws-01">ev-scaling_laws-01</a> <span class="time">00:04:50.840</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-scaling_laws-02">ev-scaling_laws-02</a> <span class="time">00:00:28.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li><li><a href="evidence.html#ev-scaling_laws-03">ev-scaling_laws-03</a> <span class="time">00:17:45.860</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
+</article>
+
+<article class="concept-card" id="generalization">
+  <div class="eyebrow">measurement limits</div>
+  <h3><a href="concepts/generalization.html">Generalization</a></h3>
+  <p class="definition">Doing well on new cases, not only remembered examples.</p>
+  <dl>
+    <dt>Everyday Problem</dt><dd>The problem is that a model can learn shortcuts that work in training but fail in the real world.</dd>
+    <dt>First-Principles Reason</dt><dd>Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.</dd>
+    <dt>Math Underneath</dt><dd>Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.</dd>
+  </dl>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-generalization-01">ev-generalization-01</a> <span class="time">00:22:49.090</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li><li><a href="evidence.html#ev-generalization-02">ev-generalization-02</a> <span class="time">00:08:06.720</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-generalization-03">ev-generalization-03</a> <span class="time">01:33:34.160</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li></ul>
+</article>
+</section>
+</main>
+</body>
+</html>

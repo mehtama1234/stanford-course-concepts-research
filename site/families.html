@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Method Families · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="active" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main><section class="page-head"><h1>Method Families</h1><p>These are paper and method families framed by the problem they solve, not by name-dropping.</p></section>
+<article class="wide-card" id="transformer_family">
+  <h2>Transformer Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can every part of an input read the parts that matter without a hand-written rule for where to look?</dd>
+    <dt>Core Move</dt><dd>Use attention as a reusable lookup operation, then stack that operation many times.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family treats language and images as collections of pieces that repeatedly exchange information.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-attention-01">ev-attention-01</a> <a class="chip" href="evidence.html#ev-attention-02">ev-attention-02</a> <a class="chip" href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <a class="chip" href="evidence.html#ev-transformer_block-02">ev-transformer_block-02</a> <a class="chip" href="evidence.html#ev-vision_transformers-01">ev-vision_transformers-01</a> <a class="chip" href="evidence.html#ev-vision_transformers-02">ev-vision_transformers-02</a></p>
+</article>
+
+<article class="wide-card" id="pretrain_then_adapt_family">
+  <h2>Pretrain-Then-Adapt Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can a system learn broad structure from abundant data and then become useful for narrower human tasks?</dd>
+    <dt>Core Move</dt><dd>First learn from a cheap prediction game, then steer the model with examples, preferences, or rewards.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family separates broad practice from later behavioral shaping.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-pretraining-01">ev-pretraining-01</a> <a class="chip" href="evidence.html#ev-pretraining-02">ev-pretraining-02</a> <a class="chip" href="evidence.html#ev-fine_tuning-01">ev-fine_tuning-01</a> <a class="chip" href="evidence.html#ev-fine_tuning-02">ev-fine_tuning-02</a> <a class="chip" href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <a class="chip" href="evidence.html#ev-rl_for_llms-02">ev-rl_for_llms-02</a></p>
+</article>
+
+<article class="wide-card" id="agentic_llm_family">
+  <h2>Agentic LLM And Retrieval Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can a model solve tasks that need fresh information, external tools, or multiple attempts?</dd>
+    <dt>Core Move</dt><dd>Wrap prediction in a loop of action, observation, and context update.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family turns a language model from a one-shot answerer into a step-by-step worker.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-reasoning_traces-01">ev-reasoning_traces-01</a> <a class="chip" href="evidence.html#ev-reasoning_traces-02">ev-reasoning_traces-02</a> <a class="chip" href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <a class="chip" href="evidence.html#ev-agents_and_tools-02">ev-agents_and_tools-02</a></p>
+</article>
+
+<article class="wide-card" id="value_based_rl_family">
+  <h2>Value-Based RL Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can an agent choose now when the value of the choice depends on what happens later?</dd>
+    <dt>Core Move</dt><dd>Estimate the long-term value of actions and choose actions using that estimate.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family makes delayed consequences comparable by assigning numbers to state-action choices.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-q_learning-01">ev-q_learning-01</a> <a class="chip" href="evidence.html#ev-credit_assignment-01">ev-credit_assignment-01</a></p>
+</article>
+
+<article class="wide-card" id="policy_optimization_family">
+  <h2>Policy Optimization Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can a learner improve a behavior rule when it only observes sampled attempts?</dd>
+    <dt>Core Move</dt><dd>Increase the chance of actions that led to better outcomes and reduce the chance of worse ones.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family directly changes the chooser rather than only estimating a table of action values.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <a class="chip" href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <a class="chip" href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <a class="chip" href="evidence.html#ev-rl_for_llms-02">ev-rl_for_llms-02</a></p>
+</article>
+
+<article class="wide-card" id="safe_or_data_limited_rl_family">
+  <h2>Safe Or Data-Limited RL Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can an agent learn when new experiments are expensive, unsafe, or unavailable?</dd>
+    <dt>Core Move</dt><dd>Use logged data, conservative estimates, or imagined rollouts while accounting for uncertainty.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family is about learning under limited access to the real world.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-offline_rl-01">ev-offline_rl-01</a> <a class="chip" href="evidence.html#ev-model_based_rl-01">ev-model_based_rl-01</a> <a class="chip" href="evidence.html#ev-exploration-01">ev-exploration-01</a></p>
+</article>
+
+<article class="wide-card" id="denoising_diffusion_family">
+  <h2>Denoising Diffusion Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can a model create a complex sample without producing every detail correctly in one step?</dd>
+    <dt>Core Move</dt><dd>Start with noise and learn many small corrections toward data.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family makes generation a controlled cleanup process.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-diffusion-01">ev-diffusion-01</a> <a class="chip" href="evidence.html#ev-score_matching-01">ev-score_matching-01</a> <a class="chip" href="evidence.html#ev-guidance-01">ev-guidance-01</a></p>
+</article>
+
+<article class="wide-card" id="flow_and_transport_family">
+  <h2>Flow And Transport Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can simple samples be moved smoothly into realistic samples?</dd>
+    <dt>Core Move</dt><dd>Learn a field of directions and speeds that carries points through a path.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family views generation as learned motion through a space of possibilities.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-flow_matching-01">ev-flow_matching-01</a> <a class="chip" href="evidence.html#ev-score_matching-01">ev-score_matching-01</a></p>
+</article>
+
+<article class="wide-card" id="measurement_and_scaling_family">
+  <h2>Measurement And Scaling Family</h2>
+  <dl>
+    <dt>First-Principles Problem</dt><dd>How can builders know whether a model is improving and what more resources will buy?</dd>
+    <dt>Core Move</dt><dd>Use tests, curves, and failure slices while remembering that every measurement is partial.</dd>
+    <dt>Plain-Language Family Summary</dt><dd>This family is about turning claims of progress into inspectable evidence.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <a class="chip" href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <a class="chip" href="evidence.html#ev-scaling_laws-01">ev-scaling_laws-01</a> <a class="chip" href="evidence.html#ev-scaling_laws-02">ev-scaling_laws-02</a> <a class="chip" href="evidence.html#ev-generalization-01">ev-generalization-01</a> <a class="chip" href="evidence.html#ev-generalization-02">ev-generalization-02</a></p>
+</article>
+</main>
+</body>
+</html>

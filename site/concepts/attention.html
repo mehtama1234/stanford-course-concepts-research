@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attention · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../themes.html">Themes</a>
+<a class="" href="../families.html">Method Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">representation workspace</p>
+  <h1>Attention</h1>
+  <p>A learned way for each piece to decide which other pieces matter right now.</p>
+</section>
+<section class="treatment">
+  <h2>What real-world problem is this about?</h2>
+  <p>The problem is that the input is too large to treat every earlier word, patch, or memory as equally important.</p>
+  <h2>Why does this problem exist?</h2>
+  <p>Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.</p>
+  <h2>What is the mathematical idea underneath?</h2>
+  <p>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</p>
+  <h2>Why is this concept important?</h2>
+  <p>It gives transformers their main communication channel and lets the same model use different context for different tokens.</p>
+  <h2>What breaks without it?</h2>
+  <p>Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.</p>
+  <h2>Connected Concepts</h2>
+  <p class="chips"><span class="chip muted-chip">retrieval</span> <a class="chip" href="credit_assignment.html">credit assignment</a> <a class="chip" href="transformer_block.html">transformer block</a></p>
+</section>
+<section>
+  <h2>Transcript Evidence</h2>
+  <div class="evidence-stack">
+<article class="evidence" id="ev-attention-01">
+  <h3><a href="../evidence.html#ev-attention-01">ev-attention-01</a></h3>
+  <p><strong>Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</strong></p>
+  <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:01:32.760 · strong</p>
+  <p>around 00:01:32.760, the lecture uses self-attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="meta">Matched terms: self-attention · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models &amp; Tricks.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-attention-02">
+  <h3><a href="../evidence.html#ev-attention-02">ev-attention-02</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:32:55.100 · strong</p>
+  <p>around 00:32:55.100, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-attention-03">
+  <h3><a href="../evidence.html#ev-attention-03">ev-attention-03</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:32:12.760 · weak</p>
+  <p>around 00:32:12.760, the lecture uses self-attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="meta">Matched terms: self-attention · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-attention-04">
+  <h3><a href="../evidence.html#ev-attention-04">ev-attention-04</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 01:08:17.450 · weak</p>
+  <p>around 01:08:17.450, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-attention-05">
+  <h3><a href="../evidence.html#ev-attention-05">ev-attention-05</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:38:20.513 · weak</p>
+  <p>around 00:38:20.513, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-attention-06">
+  <h3><a href="../evidence.html#ev-attention-06">ev-attention-06</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:54:12.730 · weak</p>
+  <p>around 00:54:12.730, the lecture uses attention while covering Attention. This supports the scoped claim that a learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="meta">Matched terms: attention · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt</code></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>

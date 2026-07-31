@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pretraining · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../themes.html">Themes</a>
+<a class="" href="../families.html">Method Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">learning from feedback</p>
+  <h1>Pretraining</h1>
+  <p>Large-scale practice before the model is asked to be useful in a specific way.</p>
+</section>
+<section class="treatment">
+  <h2>What real-world problem is this about?</h2>
+  <p>The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.</p>
+  <h2>Why does this problem exist?</h2>
+  <p>A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</p>
+  <h2>What is the mathematical idea underneath?</h2>
+  <p>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</p>
+  <h2>Why is this concept important?</h2>
+  <p>It creates broad reusable knowledge that later tuning can steer.</p>
+  <h2>What breaks without it?</h2>
+  <p>Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.</p>
+  <h2>Connected Concepts</h2>
+  <p class="chips"><a class="chip" href="fine_tuning.html">fine tuning</a> <a class="chip" href="scaling_laws.html">scaling laws</a> <a class="chip" href="generalization.html">generalization</a></p>
+</section>
+<section>
+  <h2>Transcript Evidence</h2>
+  <div class="evidence-stack">
+<article class="evidence" id="ev-pretraining-01">
+  <h3><a href="../evidence.html#ev-pretraining-01">ev-pretraining-01</a></h3>
+  <p><strong>Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</strong></p>
+  <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:02:20.620 · strong</p>
+  <p>around 00:02:20.620, the lecture uses next token while covering Pretraining. This supports the scoped claim that large-scale practice before the model is asked to be useful in a specific way.</p>
+  <p class="meta">Matched terms: next token · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-pretraining-02">
+  <h3><a href="../evidence.html#ev-pretraining-02">ev-pretraining-02</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:10:36.420 · strong</p>
+  <p>around 00:10:36.420, the lecture uses loss while covering Pretraining. This supports the scoped claim that large-scale practice before the model is asked to be useful in a specific way.</p>
+  <p class="meta">Matched terms: loss · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt</code></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>

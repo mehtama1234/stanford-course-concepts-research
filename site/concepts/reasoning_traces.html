@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reasoning Traces · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../themes.html">Themes</a>
+<a class="" href="../families.html">Method Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">inference time work</p>
+  <h1>Reasoning Traces</h1>
+  <p>Using written intermediate work as temporary memory for hard problems.</p>
+</section>
+<section class="treatment">
+  <h2>What real-world problem is this about?</h2>
+  <p>The problem is that some answers require several dependent steps, and the first likely sentence may skip a necessary intermediate fact.</p>
+  <h2>Why does this problem exist?</h2>
+  <p>A system with limited internal working memory can externalize partial results into tokens and condition on them later.</p>
+  <h2>What is the mathematical idea underneath?</h2>
+  <p>The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.</p>
+  <h2>Why is this concept important?</h2>
+  <p>It turns generation into a multi-step computation instead of a single response reflex.</p>
+  <h2>What breaks without it?</h2>
+  <p>Tasks needing arithmetic, planning, proof, or careful decomposition often collapse into plausible but unsupported guesses.</p>
+  <h2>Connected Concepts</h2>
+  <p class="chips"><span class="chip muted-chip">inference time compute</span> <a class="chip" href="rl_for_llms.html">rl for llms</a> <a class="chip" href="agents_and_tools.html">agents and tools</a></p>
+</section>
+<section>
+  <h2>Transcript Evidence</h2>
+  <div class="evidence-stack">
+<article class="evidence" id="ev-reasoning_traces-01">
+  <h3><a href="../evidence.html#ev-reasoning_traces-01">ev-reasoning_traces-01</a></h3>
+  <p><strong>Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</strong></p>
+  <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:00:18.960 · strong</p>
+  <p>around 00:00:18.960, the lecture uses reasoning while covering Reasoning Traces. This supports the scoped claim that using written intermediate work as temporary memory for hard problems.</p>
+  <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-reasoning_traces-02">
+  <h3><a href="../evidence.html#ev-reasoning_traces-02">ev-reasoning_traces-02</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:07.020 · strong</p>
+  <p>around 00:00:07.020, the lecture uses reasoning while covering Reasoning Traces. This supports the scoped claim that using written intermediate work as temporary memory for hard problems.</p>
+  <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>
