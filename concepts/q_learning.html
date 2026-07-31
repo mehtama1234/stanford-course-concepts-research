@@ -22,6 +22,22 @@
   <h1>Q-Learning</h1>
   <p>Learning a table or function that estimates how good each action is from each situation.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that an agent must choose now while caring about later consequences.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>A decision can be valued by immediate payoff plus the value of the future it leads to.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Q-Learning: Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The agent cannot compare actions by their long-term consequences.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that an agent must choose now while caring about later consequences.</p>

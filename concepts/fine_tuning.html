@@ -22,6 +22,22 @@
   <h1>Fine-Tuning And Preference Learning</h1>
   <p>Steering a broad model toward behavior people actually want.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Raw imitation learns what appears in data. Usefulness requires extra feedback about which possible responses people prefer.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Fine-Tuning And Preference Learning: Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The model may be fluent but misaligned with the task, the user, or the deployment setting.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.</p>

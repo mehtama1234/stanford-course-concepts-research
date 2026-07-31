@@ -22,6 +22,22 @@
   <h1>Reasoning Traces</h1>
   <p>Using written intermediate work as temporary memory for hard problems.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that some answers require several dependent steps, and the first likely sentence may skip a necessary intermediate fact.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>A system with limited internal working memory can externalize partial results into tokens and condition on them later.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Reasoning Traces: The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>Tasks needing arithmetic, planning, proof, or careful decomposition often collapse into plausible but unsupported guesses.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that some answers require several dependent steps, and the first likely sentence may skip a necessary intermediate fact.</p>

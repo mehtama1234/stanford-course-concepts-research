@@ -22,6 +22,22 @@
   <h1>Flow Matching</h1>
   <p>Learning a smooth path that carries simple samples into data-like samples.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Flow Matching: A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The model loses one of the simplest ways to describe generation as guided motion.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.</p>

@@ -22,6 +22,22 @@
   <h1>Transformer Block</h1>
   <p>A repeated update step where tokens read from each other and then rewrite their own state.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that one lookup is not enough; understanding needs many rounds of communication and local computation.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Transformer Block: A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The system loses the scalable recipe for building many layers of context-dependent computation.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that one lookup is not enough; understanding needs many rounds of communication and local computation.</p>

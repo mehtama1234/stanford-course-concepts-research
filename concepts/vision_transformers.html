@@ -22,6 +22,22 @@
   <h1>Vision Transformers</h1>
   <p>Treating pieces of an image like items that can read from one another.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that an image has many regions, and the important relation may be far apart in the picture.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Images are not just local texture. Shape, object identity, and layout require comparing distant parts.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Vision Transformers: An image is split into patches, each patch gets a vector, and attention lets patches exchange information. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The model may depend too heavily on local filters and struggle with global image relationships.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that an image has many regions, and the important relation may be far apart in the picture.</p>

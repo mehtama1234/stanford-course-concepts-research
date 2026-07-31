@@ -22,6 +22,22 @@
   <h1>Guidance</h1>
   <p>Steering generation toward a prompt, class, reward, or constraint.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that pure generation may create plausible samples that do not match what the user asked for.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Guidance: Guidance modifies the update direction during sampling so the path favors samples consistent with the condition. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The model may produce realistic but irrelevant outputs.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that pure generation may create plausible samples that do not match what the user asked for.</p>

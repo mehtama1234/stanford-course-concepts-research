@@ -19,6 +19,22 @@
   <main><section class="page-head"><h1>Method Families</h1><p>These are paper and method families framed by the problem they solve, not by name-dropping.</p></section>
 <article class="wide-card" id="transformer_family">
   <h2>Transformer Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can every part of an input read the parts that matter without a hand-written rule for where to look?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Use attention as a reusable lookup operation, then stack that operation many times.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>assignment, composition, geometry</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through attention, positional encoding, transformer block, vision transformers. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can every part of an input read the parts that matter without a hand-written rule for where to look?</dd>
     <dt>Core Move</dt><dd>Use attention as a reusable lookup operation, then stack that operation many times.</dd>
@@ -34,6 +50,22 @@
 
 <article class="wide-card" id="pretrain_then_adapt_family">
   <h2>Pretrain-Then-Adapt Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can a system learn broad structure from abundant data and then become useful for narrower human tasks?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>First learn from a cheap prediction game, then steer the model with examples, preferences, or rewards.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>feedback, scale</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through pretraining, fine tuning, rl for llms, evaluation. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can a system learn broad structure from abundant data and then become useful for narrower human tasks?</dd>
     <dt>Core Move</dt><dd>First learn from a cheap prediction game, then steer the model with examples, preferences, or rewards.</dd>
@@ -49,6 +81,22 @@
 
 <article class="wide-card" id="agentic_llm_family">
   <h2>Agentic LLM And Retrieval Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can a model solve tasks that need fresh information, external tools, or multiple attempts?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Wrap prediction in a loop of action, observation, and context update.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>search, feedback, composition</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through reasoning traces, agents and tools, policy, evaluation. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can a model solve tasks that need fresh information, external tools, or multiple attempts?</dd>
     <dt>Core Move</dt><dd>Wrap prediction in a loop of action, observation, and context update.</dd>
@@ -64,6 +112,22 @@
 
 <article class="wide-card" id="value_based_rl_family">
   <h2>Value-Based RL Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can an agent choose now when the value of the choice depends on what happens later?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Estimate the long-term value of actions and choose actions using that estimate.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>credit, search</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through q learning, credit assignment, offline rl. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can an agent choose now when the value of the choice depends on what happens later?</dd>
     <dt>Core Move</dt><dd>Estimate the long-term value of actions and choose actions using that estimate.</dd>
@@ -79,6 +143,22 @@
 
 <article class="wide-card" id="policy_optimization_family">
   <h2>Policy Optimization Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can a learner improve a behavior rule when it only observes sampled attempts?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Increase the chance of actions that led to better outcomes and reduce the chance of worse ones.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>feedback, credit</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through policy, reward, policy gradient, actor critic, rl for llms. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can a learner improve a behavior rule when it only observes sampled attempts?</dd>
     <dt>Core Move</dt><dd>Increase the chance of actions that led to better outcomes and reduce the chance of worse ones.</dd>
@@ -94,6 +174,22 @@
 
 <article class="wide-card" id="safe_or_data_limited_rl_family">
   <h2>Safe Or Data-Limited RL Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can an agent learn when new experiments are expensive, unsafe, or unavailable?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Use logged data, conservative estimates, or imagined rollouts while accounting for uncertainty.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>uncertainty, feedback, search</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through offline rl, model based rl, exploration, evaluation. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can an agent learn when new experiments are expensive, unsafe, or unavailable?</dd>
     <dt>Core Move</dt><dd>Use logged data, conservative estimates, or imagined rollouts while accounting for uncertainty.</dd>
@@ -109,6 +205,22 @@
 
 <article class="wide-card" id="denoising_diffusion_family">
   <h2>Denoising Diffusion Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can a model create a complex sample without producing every detail correctly in one step?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Start with noise and learn many small corrections toward data.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>uncertainty, search, geometry</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through diffusion, score matching, guidance, latent space. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can a model create a complex sample without producing every detail correctly in one step?</dd>
     <dt>Core Move</dt><dd>Start with noise and learn many small corrections toward data.</dd>
@@ -124,6 +236,22 @@
 
 <article class="wide-card" id="flow_and_transport_family">
   <h2>Flow And Transport Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can simple samples be moved smoothly into realistic samples?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Learn a field of directions and speeds that carries points through a path.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>geometry, search</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through flow matching, score matching, diffusion, latent space. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can simple samples be moved smoothly into realistic samples?</dd>
     <dt>Core Move</dt><dd>Learn a field of directions and speeds that carries points through a path.</dd>
@@ -139,6 +267,22 @@
 
 <article class="wide-card" id="measurement_and_scaling_family">
   <h2>Measurement And Scaling Family</h2>
+  <figure class="learning-diagram family-flow">
+  <figcaption>Paper-Family Reading Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Pressure</span>
+  <p>How can builders know whether a model is improving and what more resources will buy?</p>
+</div><div class="flow-step">
+  <span>Core Move</span>
+  <p>Use tests, curves, and failure slices while remembering that every measurement is partial.</p>
+</div><div class="flow-step">
+  <span>Primitive</span>
+  <p>scale, uncertainty, invariance</p>
+</div><div class="flow-step">
+  <span>Evidence</span>
+  <p>The transcript evidence chain is routed through evaluation, scaling laws, generalization. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.</p>
+</div></div>
+</figure>
   <dl>
     <dt>First-Principles Problem</dt><dd>How can builders know whether a model is improving and what more resources will buy?</dd>
     <dt>Core Move</dt><dd>Use tests, curves, and failure slices while remembering that every measurement is partial.</dd>
