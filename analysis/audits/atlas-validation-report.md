@@ -24,6 +24,10 @@ validated 34 html files and 131 evidence anchors
 - Every theme has at least one subtheme.
 - Every subtheme points to an existing parent theme.
 - Every subtheme points to existing concepts.
+- Every theme includes a cross-course argument, mathematical spine, analogy limits, and lecture-evidence chain.
+- Every theme has at least 160 words across the deeper theme treatment fields.
+- Every subtheme includes a first-principles walkthrough, plain-language mathematical object, cross-links and limits, lecture-evidence chain, and recognition guide.
+- Every subtheme has at least 125 words across the deeper subtheme treatment fields.
 - Every evidence record points to an existing transcript file.
 - Every evidence record has matched transcript terms.
 - Every evidence record includes a lecture argument, example or analogy, mathematical claim, caveat or warning, and why the span matters.
@@ -66,6 +70,6 @@ Evidence confidence means:
 
 This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus one primary evidence span for each concept.
 
-The primitive and method-family layers now have deeper first-principles fields and validation gates. The method-family pages are family-specific rather than generic boilerplate, and the primitive pages explain the reusable mathematical handle behind each recurring idea.
+The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea.
 
-This is not the final publication-grade state. The remaining quality frontier is the theme/subtheme layer and rendered learning experience: deepen cross-course theme arguments, add longer lecture-evidence chains for subthemes, add diagrams or interactive explainers where they clarify the math, and complete true browser screenshot inspection or deployment checks in an environment with a browser.
+This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, perform a slower manual page-by-page editorial read, replace more synthesized evidence chains with hand-selected transcript argument spans, and complete true browser screenshot inspection or deployment checks in an environment with a browser.

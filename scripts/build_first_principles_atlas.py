@@ -1038,14 +1038,14 @@ def build() -> None:
     for theme in THEMES:
         subthemes = [s["id"] for s in SUBTHEMES if s["parent_theme"] == theme["id"]]
         concepts = [c["id"] for c in CONCEPTS if c["theme"] == theme["id"]]
-        theme_outputs.append(
-            {
-                **theme,
-                "subthemes": subthemes,
-                "core_concepts": concepts,
-                "course_coverage": dict(coverage_by_theme[theme["id"]]),
-            }
-        )
+        output = {
+            **theme,
+            "subthemes": subthemes,
+            "core_concepts": concepts,
+            "course_coverage": dict(coverage_by_theme[theme["id"]]),
+        }
+        output.update(theme_treatment(output))
+        theme_outputs.append(output)
 
     subtheme_outputs = []
     for subtheme in SUBTHEMES:
@@ -1062,20 +1062,20 @@ def build() -> None:
                         "timestamp_start": ev["timestamp_start"],
                     }
                 )
-        subtheme_outputs.append(
-            {
-                **subtheme,
-                "examples_from_courses": examples,
-                "connected_concepts": sorted(
-                    {
-                        related
-                        for concept in CONCEPTS
-                        if concept["id"] in subtheme["concepts"]
-                        for related in concept["related_concepts"]
-                    }
-                ),
-            }
-        )
+        output = {
+            **subtheme,
+            "examples_from_courses": examples,
+            "connected_concepts": sorted(
+                {
+                    related
+                    for concept in CONCEPTS
+                    if concept["id"] in subtheme["concepts"]
+                    for related in concept["related_concepts"]
+                }
+            ),
+        }
+        output.update(subtheme_treatment(output))
+        subtheme_outputs.append(output)
 
     primitives = []
     for primitive in PRIMITIVES:
@@ -1097,6 +1097,142 @@ def build() -> None:
 def write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def theme_treatment(theme: dict[str, Any]) -> dict[str, str]:
+    concept_names = ", ".join(concept_id.replace("_", " ") for concept_id in theme["core_concepts"])
+    subtheme_names = ", ".join(subtheme_id.replace("_", " ") for subtheme_id in theme["subthemes"])
+    coverage = ", ".join(course.replace("stanford-", "") for course in theme["course_coverage"]) or "the course corpus"
+    treatments = {
+        "representation_workspace": {
+            "cross_course_argument": (
+                "The shared argument is that intelligence first needs a manipulable workspace. CME295 shows this with tokens, positions, attention, and transformer "
+                "blocks: language becomes pieces that can exchange information. CME296 reuses the same idea for images, where patches and latent coordinates let "
+                "vision systems compare and edit visual structure. CS224R contributes the agent-state version of the same pressure: actions are only learnable after "
+                "the world has been represented in a form where consequences can be compared."
+            ),
+            "mathematical_spine": (
+                "The mathematical spine is mapping and geometry. Raw objects are mapped into IDs or vectors; vectors can be compared by scores, distances, and "
+                "directions; layers then update those vectors. The point of the math is not decoration. It gives the learner a place where similarity, order, and "
+                "context can become operations."
+            ),
+            "where_analogy_breaks": (
+                "The analogy breaks if all representations are treated as the same kind of thing. A token embedding, an image latent, and an RL state all compress "
+                "the world, but they preserve different information and create different blind spots. A representation that helps next-token prediction can still be "
+                "bad for physical control or visual detail."
+            ),
+        },
+        "learning_from_feedback": {
+            "cross_course_argument": (
+                "The shared argument is that a model does not become useful just by containing parameters. It needs signals after attempts. CME295 emphasizes broad "
+                "practice and later steering for language models. CS224R makes feedback explicit as rewards, preferences, and policy changes. CME296 shows a related "
+                "training story in generative models, where prediction errors over noisy or hidden structure teach the model how to improve samples."
+            ),
+            "mathematical_spine": (
+                "The mathematical spine is error turned into update. A loss, reward, or preference comparison is compressed into a number or direction. Gradients or "
+                "policy updates then change future behavior. The important concept is that feedback must be both informative enough to guide learning and narrow "
+                "enough to compute."
+            ),
+            "where_analogy_breaks": (
+                "Prediction error, human preference, and reward are not interchangeable. Prediction error says what was likely in data; preference says which output "
+                "a judge liked; reward says what outcome the environment paid for. Confusing those signals is how fluent models become unhelpful or agents learn shortcuts."
+            ),
+        },
+        "action_and_consequence": {
+            "cross_course_argument": (
+                "The shared argument is that choosing changes what evidence comes next. CS224R is the center of this theme: policies, rewards, credit assignment, "
+                "Q-values, model-based planning, and offline data all exist because action unfolds through time. CME295 connects when reasoning systems and tool-using "
+                "LLMs become sequential decision makers instead of one-shot predictors."
+            ),
+            "mathematical_spine": (
+                "The mathematical spine is recursion over time. A present choice is judged by immediate feedback plus expected future feedback. Values, advantages, "
+                "returns, and transition models are different ways to write down that the consequence of an action can be delayed and indirect."
+            ),
+            "where_analogy_breaks": (
+                "Not every sequence is reinforcement learning. A language model generating tokens has a sequence, but RL adds an environment, actions that change "
+                "future states, and feedback tied to outcomes. The analogy is useful only when the later result can change how earlier choices are evaluated."
+            ),
+        },
+        "inference_time_work": {
+            "cross_course_argument": (
+                "The shared argument is that some capability comes from work done after the input arrives. CME295 shows this through reasoning traces, retrieval, "
+                "tools, and agents. CS224R supplies the decision-loop vocabulary: state, action, observation, update. Together they explain why a modern system can "
+                "be more than a frozen predictor when it is allowed to search, write intermediate state, and check external evidence."
+            ),
+            "mathematical_spine": (
+                "The mathematical spine is sequential computation over a changing context. Extra tokens, tool calls, and observations become new state. Each step "
+                "conditions the next step, so the final answer depends on a path rather than a single forward pass."
+            ),
+            "where_analogy_breaks": (
+                "More steps do not guarantee better reasoning. Extra computation can compound an early mistake, retrieve irrelevant evidence, or overfit to a brittle "
+                "procedure. The useful question is whether each added step creates new reliable information or merely adds more text."
+            ),
+        },
+        "generative_paths": {
+            "cross_course_argument": (
+                "The shared argument is that generation is easier when treated as guided movement. CME296 is the center: diffusion, score matching, flow matching, "
+                "guidance, and latent spaces all build a route from uncertainty toward a structured sample. CME295 connects through transformer-based vision and "
+                "conditioning, where instructions or text change the path through visual possibilities."
+            ),
+            "mathematical_spine": (
+                "The mathematical spine is a direction field through a space of possible samples. Noise represents many possible worlds. A score, velocity, or guided "
+                "update tells the sample which way to move. Repeating small moves makes a hard global generation problem manageable."
+            ),
+            "where_analogy_breaks": (
+                "A generative path is not proof of understanding the world that produced the data. Many paths can create plausible samples. Guidance can make outputs "
+                "obey a prompt while also reducing diversity or pushing the sample into artifacts."
+            ),
+        },
+        "measurement_limits": {
+            "cross_course_argument": (
+                "The shared argument is that progress claims need disciplined measurement. CME295 raises evaluation and scaling for LLM capability. CS224R shows why "
+                "offline and sequential settings can fool naive scores. CME296 adds visual-generation evaluation, where realism, alignment, diversity, and artifacts "
+                "are hard to compress into one number."
+            ),
+            "mathematical_spine": (
+                "The mathematical spine is sampling and compression. A metric samples behavior under chosen conditions and compresses it into a score or curve. "
+                "Scaling laws then fit relationships between resources and measured loss or capability. The hidden issue is what the measurement leaves out."
+            ),
+            "where_analogy_breaks": (
+                "A higher score is not always a better system. The score may be narrow, stale, or easy to game. Scaling trends also describe observed ranges; they "
+                "do not remove the need to inspect failure cases, distribution shifts, and human consequences."
+            ),
+        },
+    }[theme["id"]]
+    treatments["lecture_evidence_chain"] = (
+        f"This theme is grounded through {concept_names}. Its subthemes are {subtheme_names}. The supporting evidence spans are distributed across {coverage}; "
+        "the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
+    )
+    return treatments
+
+
+def subtheme_treatment(subtheme: dict[str, Any]) -> dict[str, str]:
+    concept_names = ", ".join(concept_id.replace("_", " ") for concept_id in subtheme["concepts"])
+    connected = ", ".join(concept.replace("_", " ") for concept in subtheme["connected_concepts"][:5])
+    evidence_ids = ", ".join(example["evidence_id"] for example in subtheme["examples_from_courses"][:5])
+    return {
+        "first_principles_walkthrough": (
+            f"Start with the everyday problem: {subtheme['everyday_problem']} The deeper reason is: {subtheme['hidden_principle']} "
+            f"The subtheme groups {concept_names} because each concept is a concrete answer to that same pressure. A reader should first ask what constraint "
+            "the system faces, then ask what object the method introduces so the constraint can be handled by computation."
+        ),
+        "mathematical_object_in_plain_language": (
+            f"The mathematical lever is {subtheme['mathematical_lever']} In plain terms, this is the handle that turns the messy situation into something that "
+            "can be counted, compared, moved, updated, or tested. The math matters because it makes the idea repeatable instead of relying on intuition."
+        ),
+        "cross_links_and_limits": (
+            f"This subtheme connects sideways to {connected}. The connection is useful because the same primitive can reappear under different names. The limit is "
+            "that sharing a primitive does not mean the methods solve the same task or fail the same way; the object being changed still matters."
+        ),
+        "lecture_evidence_chain": (
+            f"The evidence chain begins with {evidence_ids}. Those records point to the concrete transcript anchors for {concept_names}. The subtheme statement is "
+            "therefore evidence-led synthesis: it combines supported concept spans, while broader cross-course language should remain open to manual review."
+        ),
+        "recognize_in_new_work": (
+            "In a new paper or lecture, recognize this subtheme by the shape of the problem before the terminology. Look for the moment where the author must "
+            "choose what information to keep, what signal to trust, what future to imagine, what path to follow, or what measurement to believe."
+        ),
+    }
 
 
 def build_method_families(evidence_by_concept: dict[str, list[str]]) -> list[dict[str, Any]]:
@@ -1393,9 +1529,26 @@ def write_big_picture(themes: list[dict[str, Any]], subthemes: list[dict[str, An
     for sub in subthemes:
         sub_by_theme[sub["parent_theme"]].append(sub)
     for theme in themes:
-        lines.extend([f"### {theme['name']}", "", theme["big_picture"], "", f"Why it matters: {theme['why_this_theme_matters']}", ""])
+        lines.extend(
+            [
+                f"### {theme['name']}",
+                "",
+                theme["big_picture"],
+                "",
+                f"Why it matters: {theme['why_this_theme_matters']}",
+                "",
+                f"Cross-course argument: {theme['cross_course_argument']}",
+                "",
+                f"Mathematical spine: {theme['mathematical_spine']}",
+                "",
+                f"Where the analogy breaks: {theme['where_analogy_breaks']}",
+                "",
+                f"Evidence chain: {theme['lecture_evidence_chain']}",
+                "",
+            ]
+        )
         for sub in sub_by_theme[theme["id"]]:
-            lines.append(f"- {sub['name']}: {sub['everyday_problem']}")
+            lines.append(f"- {sub['name']}: {sub['first_principles_walkthrough']}")
         lines.append("")
     (ROOT / "analysis/throughlines/big-picture-map.md").write_text("\n".join(lines), encoding="utf-8")
 

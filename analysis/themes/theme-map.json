@@ -22,7 +22,11 @@
       "stanford-cme295-transformers-llms-autumn-2025": 10,
       "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
       "stanford-cs224r-deep-rl-spring-2025": 7
-    }
+    },
+    "cross_course_argument": "The shared argument is that intelligence first needs a manipulable workspace. CME295 shows this with tokens, positions, attention, and transformer blocks: language becomes pieces that can exchange information. CME296 reuses the same idea for images, where patches and latent coordinates let vision systems compare and edit visual structure. CS224R contributes the agent-state version of the same pressure: actions are only learnable after the world has been represented in a form where consequences can be compared.",
+    "mathematical_spine": "The mathematical spine is mapping and geometry. Raw objects are mapped into IDs or vectors; vectors can be compared by scores, distances, and directions; layers then update those vectors. The point of the math is not decoration. It gives the learner a place where similarity, order, and context can become operations.",
+    "where_analogy_breaks": "The analogy breaks if all representations are treated as the same kind of thing. A token embedding, an image latent, and an RL state all compress the world, but they preserve different information and create different blind spots. A representation that helps next-token prediction can still be bad for physical control or visual detail.",
+    "lecture_evidence_chain": "This theme is grounded through tokenization, embeddings, positional encoding, attention, transformer block, vision transformers. Its subthemes are text and patch interfaces, learned geometry, selective context, stacked computation. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cme296-diffusion-large-vision-models-spring-2026, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
   },
   {
     "id": "learning_from_feedback",
@@ -42,7 +46,11 @@
       "stanford-cme295-transformers-llms-autumn-2025": 3,
       "stanford-cme296-diffusion-large-vision-models-spring-2026": 1,
       "stanford-cs224r-deep-rl-spring-2025": 2
-    }
+    },
+    "cross_course_argument": "The shared argument is that a model does not become useful just by containing parameters. It needs signals after attempts. CME295 emphasizes broad practice and later steering for language models. CS224R makes feedback explicit as rewards, preferences, and policy changes. CME296 shows a related training story in generative models, where prediction errors over noisy or hidden structure teach the model how to improve samples.",
+    "mathematical_spine": "The mathematical spine is error turned into update. A loss, reward, or preference comparison is compressed into a number or direction. Gradients or policy updates then change future behavior. The important concept is that feedback must be both informative enough to guide learning and narrow enough to compute.",
+    "where_analogy_breaks": "Prediction error, human preference, and reward are not interchangeable. Prediction error says what was likely in data; preference says which output a judge liked; reward says what outcome the environment paid for. Confusing those signals is how fluent models become unhelpful or agents learn shortcuts.",
+    "lecture_evidence_chain": "This theme is grounded through pretraining, fine tuning, rl for llms. Its subthemes are prediction as practice, human feedback. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cme296-diffusion-large-vision-models-spring-2026, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
   },
   {
     "id": "action_and_consequence",
@@ -68,7 +76,11 @@
     "course_coverage": {
       "stanford-cs224r-deep-rl-spring-2025": 49,
       "stanford-cme295-transformers-llms-autumn-2025": 1
-    }
+    },
+    "cross_course_argument": "The shared argument is that choosing changes what evidence comes next. CS224R is the center of this theme: policies, rewards, credit assignment, Q-values, model-based planning, and offline data all exist because action unfolds through time. CME295 connects when reasoning systems and tool-using LLMs become sequential decision makers instead of one-shot predictors.",
+    "mathematical_spine": "The mathematical spine is recursion over time. A present choice is judged by immediate feedback plus expected future feedback. Values, advantages, returns, and transition models are different ways to write down that the consequence of an action can be delayed and indirect.",
+    "where_analogy_breaks": "Not every sequence is reinforcement learning. A language model generating tokens has a sequence, but RL adds an environment, actions that change future states, and feedback tied to outcomes. The analogy is useful only when the later result can change how earlier choices are evaluated.",
+    "lecture_evidence_chain": "This theme is grounded through policy, reward, credit assignment, policy gradient, actor critic, q learning, offline rl, model based rl, exploration. Its subthemes are delayed feedback, learning from logged worlds, imagined futures. The supporting evidence spans are distributed across cs224r-deep-rl-spring-2025, cme295-transformers-llms-autumn-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
   },
   {
     "id": "inference_time_work",
@@ -85,7 +97,11 @@
     "course_coverage": {
       "stanford-cme295-transformers-llms-autumn-2025": 2,
       "stanford-cs224r-deep-rl-spring-2025": 2
-    }
+    },
+    "cross_course_argument": "The shared argument is that some capability comes from work done after the input arrives. CME295 shows this through reasoning traces, retrieval, tools, and agents. CS224R supplies the decision-loop vocabulary: state, action, observation, update. Together they explain why a modern system can be more than a frozen predictor when it is allowed to search, write intermediate state, and check external evidence.",
+    "mathematical_spine": "The mathematical spine is sequential computation over a changing context. Extra tokens, tool calls, and observations become new state. Each step conditions the next step, so the final answer depends on a path rather than a single forward pass.",
+    "where_analogy_breaks": "More steps do not guarantee better reasoning. Extra computation can compound an early mistake, retrieve irrelevant evidence, or overfit to a brittle procedure. The useful question is whether each added step creates new reliable information or merely adds more text.",
+    "lecture_evidence_chain": "This theme is grounded through reasoning traces, agents and tools. Its subthemes are scratch work and tools. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
   },
   {
     "id": "generative_paths",
@@ -106,7 +122,11 @@
     ],
     "course_coverage": {
       "stanford-cme296-diffusion-large-vision-models-spring-2026": 30
-    }
+    },
+    "cross_course_argument": "The shared argument is that generation is easier when treated as guided movement. CME296 is the center: diffusion, score matching, flow matching, guidance, and latent spaces all build a route from uncertainty toward a structured sample. CME295 connects through transformer-based vision and conditioning, where instructions or text change the path through visual possibilities.",
+    "mathematical_spine": "The mathematical spine is a direction field through a space of possible samples. Noise represents many possible worlds. A score, velocity, or guided update tells the sample which way to move. Repeating small moves makes a hard global generation problem manageable.",
+    "where_analogy_breaks": "A generative path is not proof of understanding the world that produced the data. Many paths can create plausible samples. Guidance can make outputs obey a prompt while also reducing diversity or pushing the sample into artifacts.",
+    "lecture_evidence_chain": "This theme is grounded through diffusion, score matching, flow matching, guidance, latent space. Its subthemes are denoising paths, continuous transport, controlled generation. The supporting evidence spans are distributed across cme296-diffusion-large-vision-models-spring-2026; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
   },
   {
     "id": "measurement_limits",
@@ -126,6 +146,10 @@
       "stanford-cme295-transformers-llms-autumn-2025": 5,
       "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
       "stanford-cs224r-deep-rl-spring-2025": 5
-    }
+    },
+    "cross_course_argument": "The shared argument is that progress claims need disciplined measurement. CME295 raises evaluation and scaling for LLM capability. CS224R shows why offline and sequential settings can fool naive scores. CME296 adds visual-generation evaluation, where realism, alignment, diversity, and artifacts are hard to compress into one number.",
+    "mathematical_spine": "The mathematical spine is sampling and compression. A metric samples behavior under chosen conditions and compresses it into a score or curve. Scaling laws then fit relationships between resources and measured loss or capability. The hidden issue is what the measurement leaves out.",
+    "where_analogy_breaks": "A higher score is not always a better system. The score may be narrow, stale, or easy to game. Scaling trends also describe observed ranges; they do not remove the need to inspect failure cases, distribution shifts, and human consequences.",
+    "lecture_evidence_chain": "This theme is grounded through evaluation, scaling laws, generalization. Its subthemes are scores are samples, what changes with size. The supporting evidence spans are distributed across cme295-transformers-llms-autumn-2025, cme296-diffusion-large-vision-models-spring-2026, cs224r-deep-rl-spring-2025; the theme-level prose is synthesis over those anchored concepts, so it should be read as a cross-course argument rather than a single lecture quote."
   }
 ]

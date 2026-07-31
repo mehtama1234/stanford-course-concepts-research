@@ -236,6 +236,11 @@ def build_themes(themes: list[dict[str, Any]], subthemes: list[dict[str, Any]], 
     <dt>Hidden Principle</dt><dd>{esc(sub['hidden_principle'])}</dd>
     <dt>Mathematical Lever</dt><dd>{esc(sub['mathematical_lever'])}</dd>
     <dt>Why It Matters</dt><dd>{esc(sub['why_it_matters'])}</dd>
+    <dt>First-Principles Walkthrough</dt><dd>{esc(sub['first_principles_walkthrough'])}</dd>
+    <dt>Mathematical Object In Plain Language</dt><dd>{esc(sub['mathematical_object_in_plain_language'])}</dd>
+    <dt>Cross-Links And Limits</dt><dd>{esc(sub['cross_links_and_limits'])}</dd>
+    <dt>Lecture Evidence Chain</dt><dd>{esc(sub['lecture_evidence_chain'])}</dd>
+    <dt>Recognize In New Work</dt><dd>{esc(sub['recognize_in_new_work'])}</dd>
   </dl>
   <p class="chips">{concept_links}</p>
 </article>
@@ -247,6 +252,12 @@ def build_themes(themes: list[dict[str, Any]], subthemes: list[dict[str, Any]], 
   <h2>{esc(theme['name'])}</h2>
   <p>{esc(theme['big_picture'])}</p>
   <p><strong>Why it matters:</strong> {esc(theme['why_this_theme_matters'])}</p>
+  <dl>
+    <dt>Cross-Course Argument</dt><dd>{esc(theme['cross_course_argument'])}</dd>
+    <dt>Mathematical Spine</dt><dd>{esc(theme['mathematical_spine'])}</dd>
+    <dt>Where The Analogy Breaks</dt><dd>{esc(theme['where_analogy_breaks'])}</dd>
+    <dt>Lecture Evidence Chain</dt><dd>{esc(theme['lecture_evidence_chain'])}</dd>
+  </dl>
   <div class="stack">{''.join(sub_html)}</div>
 </section>
 """

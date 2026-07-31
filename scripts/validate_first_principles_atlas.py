@@ -144,6 +144,25 @@ def main() -> int:
         for concept_id in theme.get("core_concepts", []):
             if concept_id not in concept_ids:
                 errors.append(f"theme {theme['id']} references missing concept {concept_id}")
+        for field in [
+            "cross_course_argument",
+            "mathematical_spine",
+            "where_analogy_breaks",
+            "lecture_evidence_chain",
+        ]:
+            if not theme.get(field):
+                errors.append(f"theme {theme['id']} missing {field}")
+        theme_words = sum(
+            len(str(theme.get(field, "")).split())
+            for field in [
+                "cross_course_argument",
+                "mathematical_spine",
+                "where_analogy_breaks",
+                "lecture_evidence_chain",
+            ]
+        )
+        if theme_words < 160:
+            errors.append(f"theme {theme['id']} treatment is shallow: {theme_words} words")
 
     for subtheme in subthemes:
         if subtheme.get("parent_theme") not in theme_ids:
@@ -153,6 +172,27 @@ def main() -> int:
         for concept_id in subtheme.get("concepts", []):
             if concept_id not in concept_ids:
                 errors.append(f"subtheme {subtheme['id']} references missing concept {concept_id}")
+        for field in [
+            "first_principles_walkthrough",
+            "mathematical_object_in_plain_language",
+            "cross_links_and_limits",
+            "lecture_evidence_chain",
+            "recognize_in_new_work",
+        ]:
+            if not subtheme.get(field):
+                errors.append(f"subtheme {subtheme['id']} missing {field}")
+        subtheme_words = sum(
+            len(str(subtheme.get(field, "")).split())
+            for field in [
+                "first_principles_walkthrough",
+                "mathematical_object_in_plain_language",
+                "cross_links_and_limits",
+                "lecture_evidence_chain",
+                "recognize_in_new_work",
+            ]
+        )
+        if subtheme_words < 125:
+            errors.append(f"subtheme {subtheme['id']} treatment is shallow: {subtheme_words} words")
 
     for ev in evidence:
         transcript_path = ROOT / ev["transcript_path"]
