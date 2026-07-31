@@ -22,6 +22,22 @@
   <h1>Tokenization</h1>
   <p>Turning text into reusable pieces a model can count.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that a model cannot read raw text as meaning; it first needs stable pieces that can be given numbers.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Computation needs finite symbols. Human language is open-ended, so the first constraint is to choose a manageable set of chunks that can cover new text.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Tokenization: A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The model would have no consistent input units, and every later layer would receive a different kind of object each time.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that a model cannot read raw text as meaning; it first needs stable pieces that can be given numbers.</p>

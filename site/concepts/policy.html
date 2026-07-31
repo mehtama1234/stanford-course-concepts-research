@@ -22,6 +22,22 @@
   <h1>Policy</h1>
   <p>The rule an agent uses to choose what to do next.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that the output is an action, and that action changes what happens afterward.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>In a changing environment, the learner must connect what it can see now to a choice under uncertainty.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Policy: A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>There is no explicit way to discuss or improve the system&#x27;s behavior over time.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that the output is an action, and that action changes what happens afterward.</p>

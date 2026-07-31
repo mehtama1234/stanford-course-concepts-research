@@ -22,6 +22,22 @@
   <h1>Generalization</h1>
   <p>Doing well on new cases, not only remembered examples.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that a model can learn shortcuts that work in training but fail in the real world.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Generalization: Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>Benchmarks and demos stop predicting real deployment behavior.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that a model can learn shortcuts that work in training but fail in the real world.</p>

@@ -45,6 +45,10 @@ audited 94 published evidence records, 0 queued records, and 37 discarded record
 - Every method family includes a family walkthrough, representative methods, analogy limits, transcript-evidence chain, and paper-family reading guide.
 - Every method family has at least 120 words across the deeper treatment fields.
 - The generated static site has every required page.
+- Every concept page includes a first-principles map diagram with problem, constraint, math handle, and failure mode.
+- The themes page includes a cross-course map diagram for every theme.
+- The method-families page includes a paper-family reading-path diagram for every family.
+- The primitives page includes an equation-breakdown diagram for every primitive.
 - Every generated local site link resolves.
 - Every evidence ID used by the atlas exists as an anchor in the site evidence page.
 - Empty placeholder fields are rejected, except timestamp fields where VTT anchors are unavailable.
@@ -63,7 +67,7 @@ curl -fsS http://127.0.0.1:8876/concepts/attention.html
 curl -fsS http://127.0.0.1:8876/evidence.html
 ```
 
-The smoke test confirmed that the overview, themes, method families, primitives, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. It also checked that generated review-queue evidence is not published on `evidence.html`.
+The smoke test confirmed that the overview, themes, method families, primitives, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. A second HTTP smoke check confirmed that concept, theme, family, and primitive diagram surfaces are served. It also checked that generated review-queue evidence is not published on `evidence.html`.
 
 An attempted Playwright screenshot pass failed before rendering because Chromium could not load the system library `libnspr4.so`. Running `npx -y playwright install-deps chromium` also failed because sudo requires an interactive terminal. Screenshot inspection therefore remains unproven in this environment.
 
@@ -81,6 +85,6 @@ Evidence confidence means:
 
 This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus 94 evidence spans across the course corpus.
 
-The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea.
+The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea. The reader-facing site now includes generated learning diagrams for concept pages, themes, method families, and primitives.
 
-This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and final publication checks: add diagrams or interactive explainers where they clarify the math, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with the required Chromium system libraries.
+This is not the final publication-grade state. The remaining quality frontier is final publication inspection: perform a slower page-by-page editorial read, complete true browser screenshot inspection in an environment with the required Chromium system libraries, and run deployment/push checks if publishing is requested.

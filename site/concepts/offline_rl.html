@@ -22,6 +22,22 @@
   <h1>Offline Reinforcement Learning</h1>
   <p>Learning from logged experience without freely trying new actions during training.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Offline Reinforcement Learning: The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The agent can exploit errors in its own value estimates for actions the dataset barely contains.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.</p>

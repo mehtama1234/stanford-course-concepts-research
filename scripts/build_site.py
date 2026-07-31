@@ -59,11 +59,79 @@ def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
 
 def write(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    content = "\n".join(line.rstrip() for line in content.splitlines()) + "\n"
     path.write_text(content, encoding="utf-8")
 
 
 def evidence_lookup(evidence: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return {record["id"]: record for record in evidence}
+
+
+def flow_diagram(title: str, steps: list[tuple[str, str]], class_name: str = "concept-flow") -> str:
+    cards = []
+    for label, text in steps:
+        cards.append(
+            f"""<div class="flow-step">
+  <span>{esc(label)}</span>
+  <p>{esc(text)}</p>
+</div>"""
+        )
+    return f"""<figure class="learning-diagram {esc(class_name)}">
+  <figcaption>{esc(title)}</figcaption>
+  <div class="flow-steps">{''.join(cards)}</div>
+</figure>"""
+
+
+def concept_diagram(concept: dict[str, Any]) -> str:
+    return flow_diagram(
+        "First-Principles Map",
+        [
+            ("Problem", concept["everyday_problem"]),
+            ("Constraint", concept["first_principles_reason"]),
+            ("Math Handle", concept["mathematical_object"]),
+            ("Failure Mode", concept["what_breaks_without_it"]),
+        ],
+    )
+
+
+def theme_diagram(theme: dict[str, Any], subtheme_names: list[str]) -> str:
+    return flow_diagram(
+        "Cross-Course Map",
+        [
+            ("CME295", "Language-model machinery: context, prediction, tuning, reasoning, tools, and evaluation."),
+            ("CS224R", "Decision machinery: actions, rewards, delayed consequence, policies, planning, and deployment."),
+            ("CME296", "Vision-generation machinery: denoising, flow, guidance, latent spaces, training, and visual evaluation."),
+            ("Shared Spine", f"{theme['name']} connects through {', '.join(subtheme_names)}."),
+        ],
+        "theme-flow",
+    )
+
+
+def family_diagram(family: dict[str, Any]) -> str:
+    primitives = ", ".join(family["mathematical_primitive"])
+    return flow_diagram(
+        "Paper-Family Reading Path",
+        [
+            ("Pressure", family["first_principles_problem"]),
+            ("Core Move", family["core_move"]),
+            ("Primitive", primitives),
+            ("Evidence", family["lecture_evidence_chain"]),
+        ],
+        "family-flow",
+    )
+
+
+def primitive_diagram(primitive: dict[str, Any]) -> str:
+    return flow_diagram(
+        "Equation Breakdown",
+        [
+            ("Why Needed", primitive["why_it_exists"]),
+            ("Formal Handle", primitive["formal_object"]),
+            ("Relation", primitive["useful_equation"]),
+            ("Misuse", primitive["misuse_failure"]),
+        ],
+        "primitive-flow",
+    )
 
 
 def concept_card(concept: dict[str, Any], evidence_by_id: dict[str, dict[str, Any]]) -> str:
@@ -152,6 +220,7 @@ def build_concepts(concepts: list[dict[str, Any]], evidence: list[dict[str, Any]
   <h1>{esc(concept['name'])}</h1>
   <p>{esc(concept['plain_language_definition'])}</p>
 </section>
+{concept_diagram(concept)}
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>{esc(concept['everyday_problem'])}</p>
@@ -253,6 +322,7 @@ def build_themes(themes: list[dict[str, Any]], subthemes: list[dict[str, Any]], 
   <h2>{esc(theme['name'])}</h2>
   <p>{esc(theme['big_picture'])}</p>
   <p><strong>Why it matters:</strong> {esc(theme['why_this_theme_matters'])}</p>
+  {theme_diagram(theme, [sub['name'] for sub in subs_by_theme[theme['id']]])}
   <dl>
     <dt>Cross-Course Argument</dt><dd>{esc(theme['cross_course_argument'])}</dd>
     <dt>Mathematical Spine</dt><dd>{esc(theme['mathematical_spine'])}</dd>
@@ -276,6 +346,7 @@ def build_families(families: list[dict[str, Any]], evidence: list[dict[str, Any]
             f"""
 <article class="wide-card" id="{esc(family['id'])}">
   <h2>{esc(family['name'])}</h2>
+  {family_diagram(family)}
   <dl>
     <dt>First-Principles Problem</dt><dd>{esc(family['first_principles_problem'])}</dd>
     <dt>Core Move</dt><dd>{esc(family['core_move'])}</dd>
@@ -304,6 +375,7 @@ def build_primitives(primitives: list[dict[str, Any]]) -> None:
   <h2>{esc(primitive['name'])}</h2>
   <p>{esc(primitive['plain_language'])}</p>
   <p><strong>Why it exists:</strong> {esc(primitive['why_it_exists'])}</p>
+  {primitive_diagram(primitive)}
   <dl>
     <dt>Everyday Setup</dt><dd>{esc(primitive['everyday_setup'])}</dd>
     <dt>Formal Object</dt><dd>{esc(primitive['formal_object'])}</dd>
@@ -373,11 +445,21 @@ code { white-space: normal; overflow-wrap: anywhere; color: #374151; }
 .page-head { max-width: 820px; padding: 26px 0 18px; }
 .page-head h1 { font-size: clamp(34px, 5vw, 58px); }
 .treatment { max-width: 860px; }
+.learning-diagram { margin: 18px 0 30px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.learning-diagram figcaption { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--accent-dark); font-weight: 800; }
+.flow-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+.flow-step { position: relative; min-height: 160px; padding: 16px; border-right: 1px solid var(--line); background: linear-gradient(180deg, #ffffff, #f8fbfa); }
+.flow-step:last-child { border-right: 0; }
+.flow-step span { display: inline-flex; align-items: center; min-height: 28px; margin-bottom: 10px; padding: 4px 8px; border-radius: 6px; background: var(--soft); color: var(--accent-dark); font-size: 13px; font-weight: 800; }
+.flow-step p { margin: 0; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
 @media (max-width: 820px) {
   .topbar { align-items: flex-start; flex-direction: column; padding: 12px 18px; }
   main { padding: 18px; }
   .hero, .three, .grid { grid-template-columns: 1fr; }
   .hero { min-height: 0; padding-top: 32px; }
+  .flow-steps { grid-template-columns: 1fr; }
+  .flow-step { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .flow-step:last-child { border-bottom: 0; }
 }
 """
     write(SITE / "assets/styles.css", css)

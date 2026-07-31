@@ -14,6 +14,9 @@ SITE = ROOT / "site"
 def main() -> int:
     errors: list[str] = []
     concepts = json.loads((ROOT / "analysis/concepts/concept-atlas.json").read_text(encoding="utf-8"))
+    themes = json.loads((ROOT / "analysis/themes/theme-map.json").read_text(encoding="utf-8"))
+    primitives = json.loads((ROOT / "analysis/throughlines/primitives.json").read_text(encoding="utf-8"))
+    families = json.loads((ROOT / "analysis/throughlines/method-families.json").read_text(encoding="utf-8"))
     evidence = json.loads((ROOT / "analysis/evidence/evidence-ledger.json").read_text(encoding="utf-8"))
     required = [
         SITE / "index.html",
@@ -34,6 +37,25 @@ def main() -> int:
     for ev in evidence:
         if f'id="{ev["id"]}"' not in evidence_html:
             errors.append(f"evidence anchor missing from evidence.html: {ev['id']}")
+
+    for concept in concepts:
+        path = SITE / "concepts" / f"{concept['id']}.html"
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        if 'class="learning-diagram concept-flow"' not in text:
+            errors.append(f"concept page missing concept diagram: {path.relative_to(ROOT)}")
+        for label in ["Problem", "Constraint", "Math Handle", "Failure Mode"]:
+            if f"<span>{label}</span>" not in text:
+                errors.append(f"concept page missing diagram label {label}: {path.relative_to(ROOT)}")
+
+    themes_html = (SITE / "themes.html").read_text(encoding="utf-8") if (SITE / "themes.html").exists() else ""
+    if themes_html.count('class="learning-diagram theme-flow"') < len(themes):
+        errors.append("themes.html missing theme diagrams")
+    families_html = (SITE / "families.html").read_text(encoding="utf-8") if (SITE / "families.html").exists() else ""
+    if families_html.count('class="learning-diagram family-flow"') < len(families):
+        errors.append("families.html missing family diagrams")
+    primitives_html = (SITE / "primitives.html").read_text(encoding="utf-8") if (SITE / "primitives.html").exists() else ""
+    if primitives_html.count('class="learning-diagram primitive-flow"') < len(primitives):
+        errors.append("primitives.html missing primitive diagrams")
 
     for path in html_files:
         text = path.read_text(encoding="utf-8")

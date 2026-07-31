@@ -22,6 +22,22 @@
   <h1>Agents, Retrieval, And Tools</h1>
   <p>Putting a model in a loop where it can look things up, call tools, and react to results.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>A useful system often needs perception, memory, action, and correction, not only prediction.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Agents, Retrieval, And Tools: The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>The model is limited to stale internal knowledge and cannot verify or change the outside world.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.</p>

@@ -21,6 +21,22 @@
   <h2>Compression</h2>
   <p>Keep the parts that matter for the next decision and let go of the rest.</p>
   <p><strong>Why it exists:</strong> Inputs, memories, images, and action histories are too large to carry forward unchanged.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Inputs, memories, images, and action histories are too large to carry forward unchanged.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For compression, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>compressed = keep(signal) - discard(noise)</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When compression is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Compression starts from an ordinary constraint: Inputs, memories, images, and action histories are too large to carry forward unchanged. In the course atlas it appears in tokenization, embeddings, attention, latent space, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For compression, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -36,6 +52,22 @@
   <h2>Assignment</h2>
   <p>Decide which piece of evidence should be connected to which cause, label, action, or memory.</p>
   <p><strong>Why it exists:</strong> Many causes can produce the same observation, so learning has to sort responsibility.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Many causes can produce the same observation, so learning has to sort responsibility.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For assignment, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>responsibility = match(current_need, possible_source)</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When assignment is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Assignment starts from an ordinary constraint: Many causes can produce the same observation, so learning has to sort responsibility. In the course atlas it appears in attention, fine tuning, credit assignment, score matching, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For assignment, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -51,6 +83,22 @@
   <h2>Credit</h2>
   <p>Decide which earlier choice deserves blame or praise for something that happened later.</p>
   <p><strong>Why it exists:</strong> Consequences arrive after chains of actions, not immediately after the action that mattered.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Consequences arrive after chains of actions, not immediately after the action that mattered.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For credit, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>value_now = reward_now + discounted_future_value</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When credit is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Credit starts from an ordinary constraint: Consequences arrive after chains of actions, not immediately after the action that mattered. In the course atlas it appears in reward, credit assignment, policy gradient, actor critic, q learning, rl for llms, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For credit, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -66,6 +114,22 @@
   <h2>Geometry</h2>
   <p>Arrange things so nearby points mean similar things and directions mean useful changes.</p>
   <p><strong>Why it exists:</strong> A machine needs a numerical space where comparison and movement can be computed.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>A machine needs a numerical space where comparison and movement can be computed.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For geometry, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>meaningful_change = direction * step_size</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When geometry is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Geometry starts from an ordinary constraint: A machine needs a numerical space where comparison and movement can be computed. In the course atlas it appears in embeddings, positional encoding, score matching, flow matching, latent space, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For geometry, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -81,6 +145,22 @@
   <h2>Search</h2>
   <p>Try to move through possible answers, actions, or images toward ones that satisfy a goal.</p>
   <p><strong>Why it exists:</strong> Hard problems rarely reveal the right answer in one step.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Hard problems rarely reveal the right answer in one step.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For search, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>next_try = current_try + guided_change</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When search is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Search starts from an ordinary constraint: Hard problems rarely reveal the right answer in one step. In the course atlas it appears in reasoning traces, agents and tools, policy, q learning, model based rl, exploration, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For search, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -96,6 +176,22 @@
   <h2>Uncertainty</h2>
   <p>Keep track of many possible futures or explanations instead of pretending there is only one.</p>
   <p><strong>Why it exists:</strong> Observations are incomplete, and the same present can lead to many futures.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Observations are incomplete, and the same present can lead to many futures.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For uncertainty, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>belief = many_possible_worlds with different weights</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When uncertainty is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Uncertainty starts from an ordinary constraint: Observations are incomplete, and the same present can lead to many futures. In the course atlas it appears in evaluation, policy, offline rl, model based rl, exploration, diffusion, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For uncertainty, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -111,6 +207,22 @@
   <h2>Feedback</h2>
   <p>Use a signal after an attempt to change what the system does next time.</p>
   <p><strong>Why it exists:</strong> A learner cannot improve unless something tells it how its guesses or actions worked out.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>A learner cannot improve unless something tells it how its guesses or actions worked out.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For feedback, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>new_behavior = old_behavior + learning_rate * correction</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When feedback is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Feedback starts from an ordinary constraint: A learner cannot improve unless something tells it how its guesses or actions worked out. In the course atlas it appears in transformer block, pretraining, fine tuning, agents and tools, evaluation, reward, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For feedback, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -126,6 +238,22 @@
   <h2>Scale</h2>
   <p>Ask what changes when data, model size, compute, or test-time work becomes much larger.</p>
   <p><strong>Why it exists:</strong> Some behavior is invisible at small size because the system has too little capacity or practice.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Some behavior is invisible at small size because the system has too little capacity or practice.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For scale, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>capability = f(data, compute, parameters, inference_work)</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When scale is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Scale starts from an ordinary constraint: Some behavior is invisible at small size because the system has too little capacity or practice. In the course atlas it appears in pretraining, rl for llms, scaling laws, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For scale, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -141,6 +269,22 @@
   <h2>Invariance</h2>
   <p>Preserve the meaning while surface details such as position, wording, or style change.</p>
   <p><strong>Why it exists:</strong> The same idea can appear in many forms, and a useful model should not relearn it from scratch every time.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>The same idea can appear in many forms, and a useful model should not relearn it from scratch every time.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For invariance, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>same_meaning(input) despite changed_surface(input)</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When invariance is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Invariance starts from an ordinary constraint: The same idea can appear in many forms, and a useful model should not relearn it from scratch every time. In the course atlas it appears in positional encoding, vision transformers, generalization, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For invariance, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>
@@ -156,6 +300,22 @@
   <h2>Composition</h2>
   <p>Build complex behavior by connecting reusable smaller operations.</p>
   <p><strong>Why it exists:</strong> Large tasks are too varied to solve as one giant special case.</p>
+  <figure class="learning-diagram primitive-flow">
+  <figcaption>Equation Breakdown</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Why Needed</span>
+  <p>Large tasks are too varied to solve as one giant special case.</p>
+</div><div class="flow-step">
+  <span>Formal Handle</span>
+  <p>The formal object is the reusable handle that lets a model act on this pressure. For composition, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</p>
+</div><div class="flow-step">
+  <span>Relation</span>
+  <p>complex_behavior = simple_step_1 then simple_step_2 then simple_step_3</p>
+</div><div class="flow-step">
+  <span>Misuse</span>
+  <p>When composition is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure.</p>
+</div></div>
+</figure>
   <dl>
     <dt>Everyday Setup</dt><dd>Composition starts from an ordinary constraint: Large tasks are too varied to solve as one giant special case. In the course atlas it appears in transformer block, reasoning traces, agents and tools, vision transformers, where the same pressure shows up with different surface names.</dd>
     <dt>Formal Object</dt><dd>The formal object is the reusable handle that lets a model act on this pressure. For composition, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.</dd>

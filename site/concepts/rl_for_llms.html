@@ -22,6 +22,22 @@
   <h1>RL For LLMs</h1>
   <p>Using outcome feedback to steer a language model&#x27;s choices.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning RL For LLMs: The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>A model may imitate text but fail to optimize for useful task outcomes.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.</p>

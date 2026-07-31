@@ -45,9 +45,19 @@ code { white-space: normal; overflow-wrap: anywhere; color: #374151; }
 .page-head { max-width: 820px; padding: 26px 0 18px; }
 .page-head h1 { font-size: clamp(34px, 5vw, 58px); }
 .treatment { max-width: 860px; }
+.learning-diagram { margin: 18px 0 30px; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
+.learning-diagram figcaption { padding: 12px 16px; border-bottom: 1px solid var(--line); color: var(--accent-dark); font-weight: 800; }
+.flow-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+.flow-step { position: relative; min-height: 160px; padding: 16px; border-right: 1px solid var(--line); background: linear-gradient(180deg, #ffffff, #f8fbfa); }
+.flow-step:last-child { border-right: 0; }
+.flow-step span { display: inline-flex; align-items: center; min-height: 28px; margin-bottom: 10px; padding: 4px 8px; border-radius: 6px; background: var(--soft); color: var(--accent-dark); font-size: 13px; font-weight: 800; }
+.flow-step p { margin: 0; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
 @media (max-width: 820px) {
   .topbar { align-items: flex-start; flex-direction: column; padding: 12px 18px; }
   main { padding: 18px; }
   .hero, .three, .grid { grid-template-columns: 1fr; }
   .hero { min-height: 0; padding-top: 32px; }
+  .flow-steps { grid-template-columns: 1fr; }
+  .flow-step { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .flow-step:last-child { border-bottom: 0; }
 }

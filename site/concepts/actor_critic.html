@@ -22,6 +22,22 @@
   <h1>Actor-Critic</h1>
   <p>A learner split into a chooser and a judge.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>Decision making improves when action choice and outcome evaluation can help each other.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Actor-Critic: The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>Policy updates can be too unstable or data-hungry for complex environments.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</p>

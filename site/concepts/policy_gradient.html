@@ -22,6 +22,22 @@
   <h1>Policy Gradient</h1>
   <p>Changing an action rule toward sampled choices that worked better.</p>
 </section>
+<figure class="learning-diagram concept-flow">
+  <figcaption>First-Principles Map</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The problem is that the correct action is not provided; the agent only sees outcomes after trying things.</p>
+</div><div class="flow-step">
+  <span>Constraint</span>
+  <p>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</p>
+</div><div class="flow-step">
+  <span>Math Handle</span>
+  <p>The useful object is the thing the model can change or compare while learning Policy Gradient: The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones. Think of it as the handle the algorithm can grab.</p>
+</div><div class="flow-step">
+  <span>Failure Mode</span>
+  <p>Learning is limited to settings where every action value can be directly estimated.</p>
+</div></div>
+</figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
   <p>The problem is that the correct action is not provided; the agent only sees outcomes after trying things.</p>
