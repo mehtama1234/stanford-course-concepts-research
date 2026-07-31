@@ -695,11 +695,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:04:57.250 · strong</p>
   <p>around 00:04:57.250, the lecture uses preference while covering Reward. This supports the scoped claim that a signal that says which outcomes should become more likely.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - LLM tuning and anchors the lecture&#x27;s treatment of Reward through the local cues preference. The supported argument is that a signal that says which outcomes should become more likely is needed because learning from action needs a direction of improvement. reward supplies that direction, even when the right action was not labeled in advance.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Reward as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can collect experience but has no preference over outcomes.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Reward. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 tuning lecture explains preference tuning as a third stage after pretraining and supervised fine-tuning: the model already knows language and the task style, but now must be aligned with what humans like or with a chosen metric.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture uses the assistant behavior case: a model may answer the task but still have the wrong tone, friendliness, or safety. Preference tuning supplies feedback about those behavioral qualities.</dd>
+    <dt>Mathematical Claim</dt><dd>Reward or preference learning turns comparisons, ratings, or metrics into a scalar training signal that shifts probability toward preferred responses and away from dispreferred ones.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports reward as alignment feedback in LLM tuning, not the entire reinforcement-learning theory of reward. It also makes clear that the chosen metric or human preference may only approximate the real desired behavior.</dd>
+    <dt>Why This Span Matters</dt><dd>It grounds reward in a concrete modern AI problem: fluent prediction is not enough, so a separate signal is needed to shape behavior.</dd>
   </dl>
   <p class="meta">Matched terms: preference · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt</code></p>
@@ -919,11 +919,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:48.680 · strong</p>
   <p>around 00:00:48.680, the lecture uses baseline while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5: Off-Policy Actor Critic and anchors the lecture&#x27;s treatment of Actor-Critic through the local cues baseline. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Actor-Critic as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R off-policy actor-critic lecture recaps the path from policy gradients to baselines and value functions, then uses that setup to motivate actor-critic methods.</dd>
+    <dt>Example Or Analogy</dt><dd>The baseline is the comparison point for judging whether an action was above or below average. The critic generalizes that judging role by learning value estimates, while the actor remains the behavior being updated.</dd>
+    <dt>Mathematical Claim</dt><dd>Actor-critic methods use a policy or actor to choose actions and a value estimator or critic to reduce the noise of policy updates by estimating expected future rewards or advantages.</dd>
+    <dt>Caveat Or Warning</dt><dd>The lecture context also warns that off-policy reuse of data needs correction. Actor-critic is practical, but the critic can introduce bias or instability when its estimates are wrong.</dd>
+    <dt>Why This Span Matters</dt><dd>It captures why actor-critic exists: raw rewards and full trajectory returns are noisy, so policy improvement benefits from a learned estimate of how good the situation or action is.</dd>
   </dl>
   <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
@@ -1399,11 +1399,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:00:18.960 · strong</p>
   <p>around 00:00:18.960, the lecture uses reasoning while covering RL For LLMs. This supports the scoped claim that using outcome feedback to steer a language model&#x27;s choices.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 6 - LLM Reasoning and anchors the lecture&#x27;s treatment of RL For LLMs through the local cues reasoning. The supported argument is that using outcome feedback to steer a language model&#x27;s choices is needed because language generation is a sequence of actions. feedback on the whole response has to influence many token choices.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting RL For LLMs as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: A model may imitate text but fail to optimize for useful task outcomes.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind RL For LLMs. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 reasoning lecture explicitly connects LLM reasoning to the previous preference-tuning lecture, saying that many methods from tuning become foundations for reasoning.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture pipeline is the useful example: pretraining gives a model language and code structure, fine-tuning makes it follow a use case, and preference or RL-style tuning can then shape reasoning behavior.</dd>
+    <dt>Mathematical Claim</dt><dd>RL for LLMs treats generated tokens or reasoning traces as sequential actions whose probabilities can be shifted using outcome rewards, preferences, or verifier feedback.</dd>
+    <dt>Caveat Or Warning</dt><dd>This opening span motivates the connection but does not by itself prove which RL algorithm is best. Later reasoning and CS224R lectures are needed for algorithmic details such as PPO, GRPO, or process rewards.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the cross-course bridge: reasoning models are not separate from tuning and RL; they reuse feedback mechanisms to shape multi-step generation.</dd>
   </dl>
   <p class="meta">Matched terms: reasoning · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt</code></p>
@@ -1623,11 +1623,11 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:00:15.600 · strong</p>
   <p>around 00:00:15.600, the lecture uses flow matching while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 3 - Flow matching and anchors the lecture&#x27;s treatment of Flow Matching through the local cues flow matching. The supported argument is that learning a smooth path that carries simple samples into data-like samples is needed because instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Flow Matching as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 flow-matching lecture introduces flow matching as a trendy generation paradigm after diffusion and score matching, then frames the lecture around its mindset and relationship to those earlier paradigms.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture recap starts from clean images gradually corrupted by Gaussian noise, then moves toward a different view: instead of only reversing noise, learn how samples should flow from a simple distribution toward the data.</dd>
+    <dt>Mathematical Claim</dt><dd>Flow matching learns a velocity or vector field that defines motion through sample space. Following that field transports simple samples toward data-like samples.</dd>
+    <dt>Caveat Or Warning</dt><dd>The opening span establishes the conceptual relationship, not the full derivation. Detailed claims about specific interpolation paths, ODE solvers, or training losses need the later lecture sections.</dd>
+    <dt>Why This Span Matters</dt><dd>It shows why flow matching belongs beside diffusion and score matching: all three are answers to the same generation problem, but flow matching makes the path-through-space idea explicit.</dd>
   </dl>
   <p class="meta">Matched terms: flow matching · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt</code></p>
@@ -1815,11 +1815,11 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:15:08.170 · strong</p>
   <p>around 00:15:08.170, the lecture uses encoder while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 4 - Latent Space &amp; Guidance and anchors the lecture&#x27;s treatment of Latent Space through the local cues encoder. The supported argument is that a compressed internal space where generation or prediction can happen more cheaply is needed because if the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Latent Space as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Generation and planning may become too expensive at raw resolution.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Latent Space. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 latent-space lecture motivates a lower-dimensional representation by distinguishing pixel-level detail from perceptual similarity, then introduces an encoder-decoder autoencoder setup.</dd>
+    <dt>Example Or Analogy</dt><dd>The teddy-bear image comparison makes the point concrete: two images can differ at the pixel level while looking similar to a human. A latent space should preserve the meaningful structure rather than every raw pixel detail.</dd>
+    <dt>Mathematical Claim</dt><dd>An encoder maps an image from pixel space into a smaller latent representation, and a decoder maps that representation back. The reconstruction objective checks whether the compressed representation kept enough information.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span introduces autoencoders as a first attempt. A lower-dimensional representation can lose information, and reconstruction quality does not guarantee that every semantic factor is cleanly separated.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors latent space as a first-principles compression idea: move generation out of expensive pixel space into a smaller representation that still preserves useful perceptual content.</dd>
   </dl>
   <p class="meta">Matched terms: encoder · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space &amp; Guidance.txt</code></p>
