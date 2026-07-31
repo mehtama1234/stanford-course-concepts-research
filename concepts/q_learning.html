@@ -74,6 +74,42 @@
 </article>
 
 
+<article class="evidence" id="ev-q_learning-03">
+  <h3><a href="../evidence.html#ev-q_learning-03">ev-q_learning-03</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:05:31.730 · strong</p>
+  <p>around 00:05:31.730, the lecture uses q-function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R offline RL lecture says the target was changed to use the Q-function, connecting offline learning back to the action-value object used in Q-learning.</dd>
+    <dt>Example Or Analogy</dt><dd>The Q-function is the learner&#x27;s action-specific forecast: after seeing a state, it asks what future reward would follow if this action were taken.</dd>
+    <dt>Mathematical Claim</dt><dd>Q-learning uses action-conditioned value targets so an update can compare possible actions rather than only judging the state.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span is a recap in an offline RL lecture. It supports Q-functions as the target object but not all stability fixes for offline extrapolation.</dd>
+    <dt>Why This Span Matters</dt><dd>It connects Q-learning to the offline RL problem, where action-value estimates can become dangerous when actions are unsupported by data.</dd>
+    <dt>Local Transcript Window</dt><dd>And so what we did instead is we changed our target to use the Q-function. So we had the target as s t plus 1 a t plus 1.</dd>
+  </dl>
+  <p class="meta">Matched terms: q-function · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-q_learning-04">
+  <h3><a href="../evidence.html#ev-q_learning-04">ev-q_learning-04</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:17.740 · strong</p>
+  <p>around 00:01:17.740, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R reward-learning lecture warns that optimizing a Q-function can lead the learner to query that Q-function on actions it wants to use for policy improvement.</dd>
+    <dt>Example Or Analogy</dt><dd>The learned Q-function becomes a guide for choosing actions, but a guide can be misleading when asked about places it has not really seen.</dd>
+    <dt>Mathematical Claim</dt><dd>A Q-function estimates future return for state-action pairs, and policy improvement can choose actions by maximizing that estimate.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span points toward a core failure mode: if the estimate is wrong for queried actions, optimizing it can amplify the error.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives a lecture-backed reason why Q-learning is not just prediction; its estimates actively shape future behavior.</dd>
+    <dt>Local Transcript Window</dt><dd>algorithms in this setting, is that-- if, for example, you&#x27;re trying to optimize a Q function to then improve your policy, then you might query your Q function on actions</dd>
+  </dl>
+  <p class="meta">Matched terms: q function · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt</code></p>
+</article>
+
+
 <article class="evidence" id="ev-q_learning-05">
   <h3><a href="../evidence.html#ev-q_learning-05">ev-q_learning-05</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</strong></p>
@@ -89,6 +125,24 @@
   </dl>
   <p class="meta">Matched terms: q function · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-q_learning-06">
+  <h3><a href="../evidence.html#ev-q_learning-06">ev-q_learning-06</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:36:45.910 · moderate</p>
+  <p>around 00:36:45.910, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-LLM-reasoning lecture defines a quantity that is basically a Q-function, showing that action-value reasoning reappears when generated reasoning steps are optimized.</dd>
+    <dt>Example Or Analogy</dt><dd>A reasoning step can be judged like an action: if the model takes this step in this context, what final outcome does it lead toward?</dd>
+    <dt>Mathematical Claim</dt><dd>A Q-like quantity assigns expected downstream value to a current state and candidate action, even when the action is a token or reasoning move.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports the analogy between RL action values and reasoning optimization, but does not prove that token-level Q estimates are easy or reliable.</dd>
+    <dt>Why This Span Matters</dt><dd>It connects classic Q-functions to modern reasoning-model training, one of the central cross-course bridges.</dd>
+    <dt>Local Transcript Window</dt><dd>So if you define a quantity that looks like the following, it&#x27;s basically a Q function. So what is this quantity?</dd>
+  </dl>
+  <p class="meta">Matched terms: q function · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
 </article>
 </div>
 </section>
