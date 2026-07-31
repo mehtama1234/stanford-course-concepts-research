@@ -53,13 +53,16 @@ audited 52 published evidence records and 79 queued records; 52 manual, 0 publis
 A local HTTP smoke test was run with:
 
 ```bash
-python3 -m http.server 8765 --directory site
-curl -fsS http://127.0.0.1:8765/
-curl -fsS http://127.0.0.1:8765/concepts/attention.html
-curl -fsS http://127.0.0.1:8765/evidence.html
+python3 -m http.server 8876 --directory site
+curl -fsS http://127.0.0.1:8876/
+curl -fsS http://127.0.0.1:8876/themes.html
+curl -fsS http://127.0.0.1:8876/families.html
+curl -fsS http://127.0.0.1:8876/primitives.html
+curl -fsS http://127.0.0.1:8876/concepts/attention.html
+curl -fsS http://127.0.0.1:8876/evidence.html
 ```
 
-The smoke test confirmed that the overview, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. A true browser screenshot inspection was not completed because this environment does not have Playwright or a browser binary installed.
+The smoke test confirmed that the overview, themes, method families, primitives, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. It also checked that generated review-queue evidence is not published on `evidence.html`. A true browser screenshot inspection was not completed because this environment does not have Playwright or a browser binary installed.
 
 ## Evidence Interpretation
 
