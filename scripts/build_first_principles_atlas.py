@@ -1006,8 +1006,10 @@ def build() -> None:
     index = load_index()
     concept_overrides = load_overrides("concepts.json")
     evidence_overrides = load_overrides("evidence.json")
+    evidence_decisions = load_overrides("evidence-review-decisions.json")
     evidence_records: list[dict[str, Any]] = []
     evidence_review_queue: list[dict[str, Any]] = []
+    discarded_evidence: list[dict[str, Any]] = []
     concept_outputs: list[dict[str, Any]] = []
     evidence_by_concept: dict[str, list[str]] = defaultdict(list)
 
@@ -1041,6 +1043,8 @@ def build() -> None:
             if override:
                 evidence_records.append(record)
                 evidence_by_concept[concept["id"]].append(evidence_id)
+            elif evidence_decisions.get(evidence_id, {}).get("decision") == "discard":
+                discarded_evidence.append(record | evidence_decisions[evidence_id])
             else:
                 evidence_review_queue.append(record)
 
@@ -1115,6 +1119,7 @@ def build() -> None:
     write_json(ROOT / "analysis/themes/subtheme-map.json", subtheme_outputs)
     write_json(ROOT / "analysis/evidence/evidence-ledger.json", evidence_records)
     write_json(ROOT / "analysis/evidence/evidence-review-queue.json", evidence_review_queue)
+    write_json(ROOT / "analysis/evidence/evidence-discarded.json", discarded_evidence)
     write_json(ROOT / "analysis/throughlines/primitives.json", primitives)
     write_json(ROOT / "analysis/throughlines/method-families.json", build_method_families(evidence_by_concept))
     write_big_picture(theme_outputs, subtheme_outputs, primitives)

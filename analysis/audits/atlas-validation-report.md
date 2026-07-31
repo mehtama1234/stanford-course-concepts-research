@@ -12,7 +12,7 @@ Latest validation result:
 ```text
 validated 28 concepts, 6 themes, 15 subthemes, 94 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 94 manually deepened evidence records
 validated 34 html files and 94 evidence anchors
-audited 94 published evidence records and 37 queued records; 94 manual, 0 published generated-needs-review, 0 generated strong
+audited 94 published evidence records, 0 queued records, and 37 discarded records; 94 manual, 0 published generated-needs-review, 0 generated strong
 ```
 
 ## What Was Checked
@@ -38,6 +38,7 @@ audited 94 published evidence records and 37 queued records; 94 manual, 0 publis
 - Generated transcript-cue evidence is prevented from claiming `strong` confidence if it is reintroduced into the published ledger.
 - Unsupported `strong` confidence is rejected.
 - The evidence-fidelity audit writes `analysis/audits/evidence-fidelity-report.md` with counts and a remaining review queue.
+- Weak generated evidence records can be explicitly discarded with reasons through `analysis/editorial-overrides/evidence-review-decisions.json`.
 - Every method family has evidence through its supporting concepts.
 - Every primitive includes a first-principles treatment: everyday setup, formal object, useful equation, symbol explanation, course appearances, and misuse failure.
 - Every primitive has at least 90 words across the deeper treatment fields.
@@ -82,4 +83,4 @@ This is now a local, reader-facing first-principles lab backed by generated rese
 
 The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea.
 
-This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, manually review or discard the remaining 37 generated transcript-cue evidence records, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with a browser.
+This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and final publication checks: add diagrams or interactive explainers where they clarify the math, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with the required Chromium system libraries.
