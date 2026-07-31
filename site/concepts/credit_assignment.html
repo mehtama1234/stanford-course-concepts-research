@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Credit Assignment, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Credit Assignment, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: a robot fails to cook a meal because it forgot to turn on the stove ten steps earlier. The bad final result is visible, but the responsible decision happened long before. CS224R introduces long-horizon tasks such as cooking a meal and hard math problems as core motivations for deep RL. Discounted return and reward representations are the mathematical handles that let later outcomes influence earlier decisions.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Credit Assignment is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>CS224R repeatedly emphasizes that reinforcement learning is hard because reward can be delayed, sparse, or difficult to define. The course introduction discusses long-horizon tasks, robot practice, and reward learning; the Q-learning material then gives return and discount factors as tools for connecting future reward back to earlier state-action choices.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Credit Assignment as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that credit assignment only means giving credit to the last action before reward. That is usually the wrong answer. The important cause may be much earlier, and the learner needs a principled way to spread later feedback backward through the trajectory.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Credit Assignment: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize credit assignment whenever success or failure at the end of a sequence must change earlier choices. Terms such as return, advantage, temporal-difference error, discount factor, process reward, trajectory, or delayed reward usually indicate the same primitive: trace consequences backward through time.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near attention, q learning, actor critic. Across the three courses, the shared pattern is credit, assignment: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="attention.html">attention</a> <a class="chip" href="q_learning.html">q learning</a> <a class="chip" href="actor_critic.html">actor critic</a></p>
@@ -113,11 +113,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:11:05.430 · weak</p>
   <p>around 00:11:05.430, the lecture uses discount factor while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 6: Q-Learning and anchors the lecture&#x27;s treatment of Credit Assignment through the local cues discount factor. The supported argument is that figuring out which earlier choices caused a later success or failure is needed because time hides causes. a learner needs a way to connect delayed feedback back to the decisions that shaped it.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Credit Assignment as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R Q-learning lecture uses discounting and future return to connect later rewards back to earlier state-action choices.</dd>
+    <dt>Example Or Analogy</dt><dd>Discounting is like deciding how much a future consequence should count when judging a present action. It does not solve all credit assignment, but it gives a mathematical path for later outcomes to influence earlier estimates.</dd>
+    <dt>Mathematical Claim</dt><dd>Discounted return weights future rewards by powers of a discount factor, so an action&#x27;s value can include consequences that arrive later while still giving nearer rewards more influence.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence is weaker than a lecture segment explicitly titled credit assignment. It supports one mathematical lever for temporal credit, not the full set of credit-assignment methods.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript-backed bridge from delayed reward to the value estimates used in Q-learning and policy improvement.</dd>
   </dl>
   <p class="meta">Matched terms: discount factor · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt</code></p>

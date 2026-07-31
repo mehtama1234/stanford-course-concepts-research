@@ -138,5 +138,61 @@
     "mathematical_claim": "An evaluation maps model behavior on selected cases into metrics, judgments, or scores. The score is useful because it creates feedback, but partial because it compresses many behaviors into a smaller report.",
     "caveat_or_warning": "The span supports evaluation as necessary measurement, not the claim that any one benchmark is sufficient. Metrics can miss failure modes outside their sampled cases.",
     "why_span_matters": "It anchors evaluation as a first-principles necessity: if behavior cannot be measured, improvement is mostly guesswork."
+  },
+  "ev-policy-01": {
+    "lecture_argument": "The CS224R hierarchical RL lecture frames policy as the behavior object that can be conditioned on task descriptors, goals, or experience and then composed into longer-horizon behavior.",
+    "example_or_analogy": "The lecture's long-horizon setup is the concrete case: a policy may solve a small behavior, but hierarchical RL asks how to string multiple behaviors together for a larger task.",
+    "mathematical_claim": "A policy maps a state, goal, task descriptor, or history to an action or action distribution. Conditioning changes what behavior the same learned rule expresses.",
+    "caveat_or_warning": "This span supports policy as a flexible behavior rule, especially in multitask and hierarchical settings. It does not by itself derive policy-gradient or value-based learning.",
+    "why_span_matters": "It anchors policy as the object being adapted, conditioned, and composed in RL, not merely a static lookup table."
+  },
+  "ev-credit_assignment-04": {
+    "lecture_argument": "The CS224R Q-learning lecture uses discounting and future return to connect later rewards back to earlier state-action choices.",
+    "example_or_analogy": "Discounting is like deciding how much a future consequence should count when judging a present action. It does not solve all credit assignment, but it gives a mathematical path for later outcomes to influence earlier estimates.",
+    "mathematical_claim": "Discounted return weights future rewards by powers of a discount factor, so an action's value can include consequences that arrive later while still giving nearer rewards more influence.",
+    "caveat_or_warning": "The evidence is weaker than a lecture segment explicitly titled credit assignment. It supports one mathematical lever for temporal credit, not the full set of credit-assignment methods.",
+    "why_span_matters": "It gives the atlas a transcript-backed bridge from delayed reward to the value estimates used in Q-learning and policy improvement."
+  },
+  "ev-offline_rl-01": {
+    "lecture_argument": "The CS224R offline RL lecture defines the setting as learning from a dataset given to us rather than collected by the learner's own policy, after warning that Q-function estimates need action coverage.",
+    "example_or_analogy": "The dataset is like a map drawn only from roads someone else drove. If the learned policy tries a road not on the map, the value estimate may be unsupported.",
+    "mathematical_claim": "Offline RL must manage distribution shift between the behavior that produced the dataset and the policy being learned. Conservative or constrained methods reduce trust in unsupported actions.",
+    "caveat_or_warning": "The span supports the central challenge, but individual offline RL algorithms require separate details. Dataset coverage is necessary context, not a complete method.",
+    "why_span_matters": "It anchors why offline RL exists as a distinct problem: removing online data collection changes which value estimates can be trusted."
+  },
+  "ev-model_based_rl-01": {
+    "lecture_argument": "The CS224R model-based RL lecture introduces the class by asking how to learn models, how to use them for planning and data generation, and what trade-offs the approach creates.",
+    "example_or_analogy": "The dexterous robot hand example motivates imagined futures: before spending expensive real-world interaction, the agent can use a learned dynamics model to reason about possible outcomes.",
+    "mathematical_claim": "A dynamics model estimates how the state changes after an action. Planning uses that model to search over possible action sequences before choosing what to do.",
+    "caveat_or_warning": "The lecture also flags challenges and trade-offs. A learned model can be wrong, and planning through a wrong model can compound errors.",
+    "why_span_matters": "It anchors model-based RL as the first-principles move from direct trial-and-error to prediction-assisted action selection."
+  },
+  "ev-exploration-01": {
+    "lecture_argument": "The CS224R exploration lecture motivates exploration by contrasting RL success in Breakout with difficulty in Montezuma's Revenge, where useful reward requires harder discovery.",
+    "example_or_analogy": "The game contrast is the example: one environment gives frequent enough scoring feedback, while the other hides progress behind sequences of discoveries.",
+    "mathematical_claim": "Exploration methods add mechanisms such as randomness, optimism, intrinsic reward, or uncertainty bonuses so the learner samples informative actions instead of only exploiting current estimates.",
+    "caveat_or_warning": "This span motivates the exploration problem; specific algorithms and guarantees require later lecture material. Random action alone is not the full answer.",
+    "why_span_matters": "It anchors exploration in a concrete failure mode: some tasks cannot be learned if the agent only repeats what currently appears best."
+  },
+  "ev-vision_transformers-02": {
+    "lecture_argument": "The CME295 recap connects transformer ideas to broader model trends, including image settings, while CME296 supplies the large-vision context where images are generated and evaluated.",
+    "example_or_analogy": "The useful analogy is to treat image regions as items in a sequence-like workspace: patches become the visual counterpart of tokens, and attention lets distant regions exchange information.",
+    "mathematical_claim": "A vision transformer splits an image into patches, embeds each patch as a vector, adds position information, and applies transformer attention blocks to mix information across patches.",
+    "caveat_or_warning": "Direct transcript support for a full ViT derivation is weaker than for language attention or diffusion. This evidence should be treated as architectural synthesis from course context, not as a lecture-by-lecture derivation.",
+    "why_span_matters": "It keeps the atlas honest about the language-to-vision bridge: the transformer primitive transfers, but vision-specific details need their own evidence."
+  },
+  "ev-scaling_laws-01": {
+    "lecture_argument": "The CME295 LLM training lecture discusses mixture-of-experts as a way to scale LLMs without paying the inference cost of activating every parameter.",
+    "example_or_analogy": "Sparse experts are like a large workshop where only the needed specialists are called for a given input. The total capacity can grow without using the whole workshop every time.",
+    "mathematical_claim": "Scaling analysis relates resources such as active parameters, total parameters, data, compute, and inference cost to loss or capability. Sparse activation changes the resource equation by separating total capacity from per-token compute.",
+    "caveat_or_warning": "The span supports scaling trade-offs, not a full empirical scaling-law derivation. It is architectural evidence about why scale must be discussed with cost.",
+    "why_span_matters": "It anchors scale as an engineering constraint: bigger models matter only together with the cost of training and using them."
+  },
+  "ev-generalization-01": {
+    "lecture_argument": "The CS224R RL-for-reasoning lecture uses math exam problems and reference solutions to discuss training language models by next-token prediction, then asks why that paradigm works for reasoning.",
+    "example_or_analogy": "The math exam example is a test of transfer: the model must produce a solution to a new problem, not merely replay a memorized training answer.",
+    "mathematical_claim": "Generalization is the gap between fitting the training signal and performing correctly on new cases. Held-out problems, new prompts, or shifted environments test whether the learned pattern is reusable.",
+    "caveat_or_warning": "The span is indirect evidence for generalization. It motivates the issue through reasoning tasks but does not provide a full generalization theory.",
+    "why_span_matters": "It anchors generalization in the practical question behind reasoning models: did training teach reusable problem solving or only imitation of seen solution strings?"
   }
 }

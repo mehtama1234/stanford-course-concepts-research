@@ -10,7 +10,7 @@ python3 scripts/validate_all.py
 Latest validation result:
 
 ```text
-validated 28 concepts, 6 themes, 15 subthemes, 131 evidence records, 10 primitives, 9 method families; 20 manually deepened concepts, 20 manually deepened evidence records
+validated 28 concepts, 6 themes, 15 subthemes, 131 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 28 manually deepened evidence records
 validated 34 html files and 131 evidence anchors
 ```
 
@@ -60,6 +60,6 @@ Evidence confidence means:
 
 ## Current Scope
 
-This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened `tokenization`, `embeddings`, `positional_encoding`, `attention`, `transformer_block`, `pretraining`, `fine_tuning`, `reasoning_traces`, `agents_and_tools`, `evaluation`, `policy_gradient`, `q_learning`, `reward`, `actor_critic`, `rl_for_llms`, `diffusion`, `score_matching`, `flow_matching`, `guidance`, and `latent_space`, plus their primary evidence spans.
+This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus one primary evidence span for each concept.
 
-This is not the final publication-grade state. The remaining quality frontier is manual editorial review across the rest of the atlas: replace remaining templated language with hand-written lecture-specific prose, add diagrams or interactive explainers, and expand individual method families into longer paper-family essays.
+This is not the final publication-grade state. The remaining quality frontier is the non-concept layer: deepen theme and subtheme arguments, expand primitives into essay-like mathematical walkthroughs, add diagrams or interactive explainers, and expand individual method families into longer paper-family essays.

@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Scaling Laws, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Scaling Laws, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: a team can double model parameters, double data, or spend more inference compute, but each choice costs money. Scaling laws ask whether larger resources predictably reduce loss or unlock behavior. CME295 discusses mixture-of-experts as a way to scale LLMs without activating every parameter at inference time. CS224R notes the broader trend of putting more compute into larger models when motivating RL for LLMs.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Scaling Laws is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>Across the corpus, scale appears as both opportunity and constraint. CME295 frames architecture choices such as sparse experts around the cost of using all parameters. CS224R frames large-model progress around more compute. CME296 architecture and training lectures connect parameter count, training choices, and generative quality. The shared emphasis is that scale changes engineering trade-offs, not just leaderboard numbers.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Scaling Laws as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that scaling laws say bigger is always better. Scaling is conditional: data quality, compute budget, architecture, inference cost, and evaluation target all matter. A curve can guide planning without proving that every capability will improve smoothly.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Scaling Laws: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize scaling-law reasoning whenever authors relate loss, capability, data size, parameter count, compute, active parameters, or inference-time work. The shared primitive is bottleneck shifting: once one limit is relaxed, another limit may become the thing controlling progress.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near pretraining, emergence, evaluation. Across the three courses, the shared pattern is scale, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="pretraining.html">pretraining</a> <span class="chip muted-chip">emergence</span> <a class="chip" href="evaluation.html">evaluation</a></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:04:50.840 · strong</p>
   <p>around 00:04:50.840, the lecture uses parameters while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 4 - LLM Training and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues parameters. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Scaling Laws as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 LLM training lecture discusses mixture-of-experts as a way to scale LLMs without paying the inference cost of activating every parameter.</dd>
+    <dt>Example Or Analogy</dt><dd>Sparse experts are like a large workshop where only the needed specialists are called for a given input. The total capacity can grow without using the whole workshop every time.</dd>
+    <dt>Mathematical Claim</dt><dd>Scaling analysis relates resources such as active parameters, total parameters, data, compute, and inference cost to loss or capability. Sparse activation changes the resource equation by separating total capacity from per-token compute.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports scaling trade-offs, not a full empirical scaling-law derivation. It is architectural evidence about why scale must be discussed with cost.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors scale as an engineering constraint: bigger models matter only together with the cost of training and using them.</dd>
   </dl>
   <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt</code></p>

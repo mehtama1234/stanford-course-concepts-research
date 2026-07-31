@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Generalization, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Generalization, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: a model trained on reference math solutions may learn to imitate the style of solutions without reliably solving new problems. CS224R&#x27;s RL-for-reasoning lecture uses math exam solutions to discuss conventional next-token training and asks why that works in the first place. Generalization is the question hiding underneath: did the learner capture a reusable problem-solving structure, or only patterns in the training examples?</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Generalization is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The strongest corpus evidence for generalization is distributed rather than concentrated in one lecture. LLM training discusses train/test style measurement, reasoning lectures discuss new math problems, RL lectures discuss transfer and new tasks, and diffusion lectures discuss evaluation and overfitting. The theme is that performance must survive new cases, not only replay familiar data.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Generalization as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that low training loss proves generalization. It proves the model fit the training signal. Generalization requires behavior on held-out or shifted cases, and it can fail when the model learns shortcuts that match the training data but not the real task.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Generalization: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize generalization whenever authors test on held-out data, new tasks, changed environments, new prompts, out-of-distribution cases, or transfer settings. The shared primitive is invariance: learn what should stay true when surface details change.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near evaluation, offline rl, invariance. Across the three courses, the shared pattern is invariance, uncertainty: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="evaluation.html">evaluation</a> <a class="chip" href="offline_rl.html">offline rl</a> <span class="chip muted-chip">invariance</span></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:22:49.090 · moderate</p>
   <p>around 00:22:49.090, the lecture uses test while covering Generalization. This supports the scoped claim that doing well on new cases, not only remembered examples.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture&#x27;s treatment of Generalization through the local cues test. The supported argument is that doing well on new cases, not only remembered examples is needed because past data is only a sample of future situations. learning must capture stable structure rather than accidental details.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Generalization as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Benchmarks and demos stop predicting real deployment behavior.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Generalization. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-reasoning lecture uses math exam problems and reference solutions to discuss training language models by next-token prediction, then asks why that paradigm works for reasoning.</dd>
+    <dt>Example Or Analogy</dt><dd>The math exam example is a test of transfer: the model must produce a solution to a new problem, not merely replay a memorized training answer.</dd>
+    <dt>Mathematical Claim</dt><dd>Generalization is the gap between fitting the training signal and performing correctly on new cases. Held-out problems, new prompts, or shifted environments test whether the learned pattern is reusable.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span is indirect evidence for generalization. It motivates the issue through reasoning tasks but does not provide a full generalization theory.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors generalization in the practical question behind reasoning models: did training teach reusable problem solving or only imitation of seen solution strings?</dd>
   </dl>
   <p class="meta">Matched terms: test · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
