@@ -39,6 +39,7 @@ audited 94 published evidence records, 0 queued records, and 37 discarded record
 - Unsupported `strong` confidence is rejected.
 - The evidence-fidelity audit writes `analysis/audits/evidence-fidelity-report.md` with counts and a remaining review queue.
 - Weak generated evidence records can be explicitly discarded with reasons through `analysis/editorial-overrides/evidence-review-decisions.json`.
+- The publication-readiness audit writes `analysis/audits/publication-readiness-report.md` and separates proven local readiness from unproven screenshot/push/deploy steps.
 - Every method family has evidence through its supporting concepts.
 - Every primitive includes a first-principles treatment: everyday setup, formal object, useful equation, symbol explanation, course appearances, and misuse failure.
 - Every primitive has at least 90 words across the deeper treatment fields.
