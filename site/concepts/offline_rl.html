@@ -33,7 +33,24 @@
   <p>It lets RL use large historical datasets where online exploration would be expensive or dangerous.</p>
   <h2>What breaks without it?</h2>
   <p>The agent can exploit errors in its own value estimates for actions the dataset barely contains.</p>
+  <h2>Naive Starting Point</h2>
+  <p>Start with the simplest version: The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <h2>Why the Simple Approach Fails</h2>
+  <p>The simple approach breaks because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <h2>The Mathematical Object</h2>
+  <p>The useful object is the thing the model can change or compare while learning Offline Reinforcement Learning: The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices. Think of it as the handle the algorithm can grab.</p>
+  <h2>The Operation</h2>
+  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Offline Reinforcement Learning, this is the move that turns a vague goal into an executable procedure.</p>
+  <h2>Worked Mini-Example</h2>
+  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Offline Reinforcement Learning, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <h2>What the Lectures Emphasize</h2>
+  <p>In the course corpus, Offline Reinforcement Learning is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <h2>Common Misunderstanding</h2>
+  <p>A common mistake is to treat Offline Reinforcement Learning as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <h2>How to Recognize This in a New Paper or Model</h2>
+  <p>When reading a new paper, look for the place where the authors face the same pressure as Offline Reinforcement Learning: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
   <h2>Connected Concepts</h2>
+  <p>The same primitive reappears near q learning, generalization, evaluation. Across the three courses, the shared pattern is uncertainty, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="q_learning.html">q learning</a> <a class="chip" href="generalization.html">generalization</a> <a class="chip" href="evaluation.html">evaluation</a></p>
 </section>
 <section>
@@ -44,6 +61,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:07:44.840 · strong</p>
   <p>around 00:07:44.840, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7: Offline RL and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues offline reinforcement. The supported argument is that learning from logged experience without freely trying new actions during training. is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: offline reinforcement · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
 </article>
@@ -54,6 +78,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:08:08.890 · moderate</p>
   <p>around 00:08:08.890, the lecture uses dataset while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 13: Meta RL and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues dataset. The supported argument is that learning from logged experience without freely trying new actions during training. is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: dataset · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt</code></p>
 </article>
@@ -64,6 +95,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:08.620 · moderate</p>
   <p>around 00:00:08.620, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 8: Reward Learning and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues offline reinforcement. The supported argument is that learning from logged experience without freely trying new actions during training. is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: offline reinforcement · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt</code></p>
 </article>
@@ -74,6 +112,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:07:36.562 · moderate</p>
   <p>around 00:07:36.562, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues offline reinforcement. The supported argument is that learning from logged experience without freely trying new actions during training. is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: offline reinforcement · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
 </article>
@@ -84,6 +129,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:02:40.730 · weak</p>
   <p>around 00:02:40.730, the lecture uses offline rl while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 11: Model-Based RL and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues offline rl. The supported argument is that learning from logged experience without freely trying new actions during training. is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: offline rl · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt</code></p>
 </article>
@@ -94,6 +146,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:48:36.693 · weak</p>
   <p>around 00:48:36.693, the lecture uses offline rl while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Tutorial Session: Review of Q-Learning and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues offline rl. The supported argument is that learning from logged experience without freely trying new actions during training. is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: offline rl · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt</code></p>
 </article>

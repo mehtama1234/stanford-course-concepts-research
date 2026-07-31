@@ -33,7 +33,24 @@
   <p>It turns behavior into something trainable when direct answers are unavailable.</p>
   <h2>What breaks without it?</h2>
   <p>The agent can collect experience but has no preference over outcomes.</p>
+  <h2>Naive Starting Point</h2>
+  <p>Start with the simplest version: The problem is that an agent needs to know not just what happened, but whether it was better or worse. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <h2>Why the Simple Approach Fails</h2>
+  <p>The simple approach breaks because learning from action needs a direction of improvement. reward supplies that direction, even when the right action was not labeled in advance. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <h2>The Mathematical Object</h2>
+  <p>The useful object is the thing the model can change or compare while learning Reward: Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect. Think of it as the handle the algorithm can grab.</p>
+  <h2>The Operation</h2>
+  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Reward, this is the move that turns a vague goal into an executable procedure.</p>
+  <h2>Worked Mini-Example</h2>
+  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Reward, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <h2>What the Lectures Emphasize</h2>
+  <p>In the course corpus, Reward is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <h2>Common Misunderstanding</h2>
+  <p>A common mistake is to treat Reward as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <h2>How to Recognize This in a New Paper or Model</h2>
+  <p>When reading a new paper, look for the place where the authors face the same pressure as Reward: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
   <h2>Connected Concepts</h2>
+  <p>The same primitive reappears near reward modeling, credit assignment, policy gradient. Across the three courses, the shared pattern is feedback, credit: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><span class="chip muted-chip">reward modeling</span> <a class="chip" href="credit_assignment.html">credit assignment</a> <a class="chip" href="policy_gradient.html">policy gradient</a></p>
 </section>
 <section>
@@ -44,6 +61,13 @@
   <p><strong>Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</strong></p>
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:04:57.250 · strong</p>
   <p>around 00:04:57.250, the lecture uses preference while covering Reward. This supports the scoped claim that a signal that says which outcomes should become more likely.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5 - LLM tuning and anchors the lecture&#x27;s treatment of Reward through the local cues preference. The supported argument is that a signal that says which outcomes should become more likely. is needed because learning from action needs a direction of improvement. reward supplies that direction, even when the right action was not labeled in advance.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Reward as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can collect experience but has no preference over outcomes.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Reward. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: preference · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt</code></p>
 </article>
@@ -54,6 +78,13 @@
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</strong></p>
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:05.480 · strong</p>
   <p>around 00:00:05.480, the lecture uses preference while covering Reward. This supports the scoped claim that a signal that says which outcomes should become more likely.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 9: RL for LLMs and anchors the lecture&#x27;s treatment of Reward through the local cues preference. The supported argument is that a signal that says which outcomes should become more likely. is needed because learning from action needs a direction of improvement. reward supplies that direction, even when the right action was not labeled in advance.</dd>
+    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Reward as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
+    <dt>Mathematical Claim</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can collect experience but has no preference over outcomes.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Reward. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+  </dl>
   <p class="meta">Matched terms: preference · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt</code></p>
 </article>

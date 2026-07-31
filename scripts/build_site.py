@@ -163,7 +163,24 @@ def build_concepts(concepts: list[dict[str, Any]], evidence: list[dict[str, Any]
   <p>{esc(concept['why_it_matters'])}</p>
   <h2>What breaks without it?</h2>
   <p>{esc(concept['what_breaks_without_it'])}</p>
+  <h2>Naive Starting Point</h2>
+  <p>{esc(concept['naive_problem'])}</p>
+  <h2>Why the Simple Approach Fails</h2>
+  <p>{esc(concept['failed_simple_approach'])}</p>
+  <h2>The Mathematical Object</h2>
+  <p>{esc(concept['mathematical_object'])}</p>
+  <h2>The Operation</h2>
+  <p>{esc(concept['operation'])}</p>
+  <h2>Worked Mini-Example</h2>
+  <p>{esc(concept['worked_mini_example'])}</p>
+  <h2>What the Lectures Emphasize</h2>
+  <p>{esc(concept['lecture_emphasis'])}</p>
+  <h2>Common Misunderstanding</h2>
+  <p>{esc(concept['common_misunderstanding'])}</p>
+  <h2>How to Recognize This in a New Paper or Model</h2>
+  <p>{esc(concept['recognize_in_new_work'])}</p>
   <h2>Connected Concepts</h2>
+  <p>{esc(concept['cross_course_connections'])}</p>
   <p class="chips">{related}</p>
 </section>
 <section>
@@ -184,6 +201,13 @@ def evidence_row(ev: dict[str, Any], link_prefix: str = "") -> str:
   <p><strong>{esc(ev['video_title'])}</strong></p>
   <p class="meta">{esc(ev['course'])} · {esc(timestamp)} · {esc(ev['confidence'])}</p>
   <p>{esc(ev['paraphrased_claim'])}</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>{esc(ev.get('lecture_argument', ''))}</dd>
+    <dt>Example Or Analogy</dt><dd>{esc(ev.get('example_or_analogy', ''))}</dd>
+    <dt>Mathematical Claim</dt><dd>{esc(ev.get('mathematical_claim', ''))}</dd>
+    <dt>Caveat Or Warning</dt><dd>{esc(ev.get('caveat_or_warning', ''))}</dd>
+    <dt>Why This Span Matters</dt><dd>{esc(ev.get('why_span_matters', ''))}</dd>
+  </dl>
   <p class="meta">Matched terms: {esc(terms)} · Basis: {esc(ev['evidence_basis'])}</p>
   <p><code>{esc(ev['transcript_path'])}</code></p>
 </article>

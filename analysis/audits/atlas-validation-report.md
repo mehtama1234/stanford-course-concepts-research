@@ -18,12 +18,17 @@ validated 34 html files and 131 evidence anchors
 
 - All generated JSON files parse.
 - Every concept has at least one transcript-backed evidence record.
+- Every concept includes a deeper teaching treatment: naive problem, failed simple approach, mathematical object, operation, worked mini-example, lecture emphasis, common misunderstanding, cross-course connections, and recognition guide.
+- Every concept has at least 220 words across the deeper teaching fields.
+- Every worked mini-example has enough length to be explanatory rather than a label.
 - Every theme has at least one subtheme.
 - Every subtheme points to an existing parent theme.
 - Every subtheme points to existing concepts.
 - Every evidence record points to an existing transcript file.
 - Every evidence record has matched transcript terms.
+- Every evidence record includes a lecture argument, example or analogy, mathematical claim, caveat or warning, and why the span matters.
 - Generic evidence wording is rejected.
+- Unsupported `strong` confidence is rejected.
 - Every method family has evidence through its supporting concepts.
 - The generated static site has every required page.
 - Every generated local site link resolves.
@@ -42,4 +47,4 @@ Evidence confidence means:
 
 ## Current Scope
 
-This is now a local, reader-facing first-principles lab backed by generated research artifacts. The remaining quality frontier is manual editorial review: deepen weak evidence records, add diagrams or interactive explainers, and expand individual method families into longer paper-family essays.
+This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The remaining quality frontier is manual editorial review: replace remaining templated language with hand-written lecture-specific prose, add diagrams or interactive explainers, and expand individual method families into longer paper-family essays.

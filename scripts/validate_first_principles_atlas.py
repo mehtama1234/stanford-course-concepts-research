@@ -29,6 +29,15 @@ REQUIRED_CONCEPT_FIELDS = {
     "what_breaks_without_it",
     "related_concepts",
     "course_evidence_ids",
+    "naive_problem",
+    "failed_simple_approach",
+    "mathematical_object",
+    "operation",
+    "worked_mini_example",
+    "lecture_emphasis",
+    "common_misunderstanding",
+    "cross_course_connections",
+    "recognize_in_new_work",
 }
 
 JARGON_START = re.compile(
@@ -103,6 +112,24 @@ def main() -> int:
             errors.append(f"concept {concept['id']} starts everyday_problem with jargon")
         if len(concept.get("mathematical_principle", "").split()) < 12:
             errors.append(f"concept {concept['id']} has shallow mathematical_principle")
+        deep_words = sum(
+            len(str(concept.get(field, "")).split())
+            for field in [
+                "naive_problem",
+                "failed_simple_approach",
+                "mathematical_object",
+                "operation",
+                "worked_mini_example",
+                "lecture_emphasis",
+                "common_misunderstanding",
+                "cross_course_connections",
+                "recognize_in_new_work",
+            ]
+        )
+        if deep_words < 220:
+            errors.append(f"concept {concept['id']} has shallow deep treatment: {deep_words} words")
+        if len(concept.get("worked_mini_example", "").split()) < 35:
+            errors.append(f"concept {concept['id']} missing worked mini-example depth")
 
     for theme in themes:
         if not theme.get("subthemes"):
@@ -137,6 +164,11 @@ def main() -> int:
             errors.append(f"evidence {ev['id']} has no evidence_basis")
         if not ev.get("evidence_scope"):
             errors.append(f"evidence {ev['id']} has no evidence_scope")
+        for field in ["lecture_argument", "example_or_analogy", "mathematical_claim", "caveat_or_warning", "why_span_matters"]:
+            if len(str(ev.get(field, "")).split()) < 12:
+                errors.append(f"evidence {ev['id']} has shallow {field}")
+        if ev.get("confidence") == "strong" and ev.get("keyword_hits", 0) < 20:
+            errors.append(f"evidence {ev['id']} has unsupported strong confidence")
         for concept_id in ev.get("supports_concepts", []):
             if concept_id not in concept_ids:
                 errors.append(f"evidence {ev['id']} references missing concept {concept_id}")

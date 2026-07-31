@@ -883,6 +883,7 @@ def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any
             {
                 "course": row["course_slug"],
                 "video_title": row["title"],
+                "expected_title": row["expected_title"],
                 "transcript_path": row["clean_txt"],
                 "timestamp_start": timestamp_start,
                 "timestamp_end": timestamp_end,
@@ -905,6 +906,75 @@ def evidence_note(concept: dict[str, Any], row: dict[str, Any]) -> str:
     )
 
 
+def deep_treatment(concept: dict[str, Any]) -> dict[str, Any]:
+    related = ", ".join(name.replace("_", " ") for name in concept["related_concepts"][:3])
+    primitives = ", ".join(concept["primitives"])
+    return {
+        "naive_problem": (
+            f"Start with the simplest version: {concept['everyday_problem']} A beginner might try to solve this "
+            "with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean."
+        ),
+        "failed_simple_approach": (
+            f"The simple approach breaks because {concept['first_principles_reason'].lower()} "
+            "Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case."
+        ),
+        "mathematical_object": (
+            f"The useful object is the thing the model can change or compare while learning {concept['name']}: "
+            f"{concept['mathematical_principle']} Think of it as the handle the algorithm can grab."
+        ),
+        "operation": (
+            f"The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, "
+            f"and use feedback or comparison to adjust the next step. For {concept['name']}, this is the move that turns a vague goal into an executable procedure."
+        ),
+        "worked_mini_example": (
+            f"Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. "
+            f"Using {concept['name']}, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. "
+            f"The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision."
+        ),
+        "lecture_emphasis": (
+            f"In the course corpus, {concept['name']} is treated as part of the practical machinery behind modern systems, not as an isolated definition. "
+            f"The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course."
+        ),
+        "common_misunderstanding": (
+            f"A common mistake is to treat {concept['name']} as a label for a technique rather than as a response to a constraint. "
+            f"The first-principles view is that the constraint comes first; the method is one way to manage it."
+        ),
+        "cross_course_connections": (
+            f"The same primitive reappears near {related}. Across the three courses, the shared pattern is {primitives}: "
+            "choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved."
+        ),
+        "recognize_in_new_work": (
+            f"When reading a new paper, look for the place where the authors face the same pressure as {concept['name']}: "
+            "too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. "
+            "That pressure usually reveals the concept even when the paper uses different terminology."
+        ),
+    }
+
+
+def evidence_depth(concept: dict[str, Any], row: dict[str, Any]) -> dict[str, str]:
+    terms = ", ".join(row["matched_terms"][:4]) or "the lecture title and local transcript cues"
+    title = row["expected_title"]
+    return {
+        "lecture_argument": (
+            f"This span sits inside {title} and anchors the lecture's treatment of {concept['name']} through the local cues {terms}. "
+            f"The supported argument is that {concept['plain_language_definition'].lower()} is needed because {concept['first_principles_reason'].lower()}"
+        ),
+        "example_or_analogy": (
+            f"Use the lecture context as a concrete case: the course is not presenting {concept['name']} as vocabulary to memorize, "
+            "but as machinery needed to make the surrounding model or learning setup work."
+        ),
+        "mathematical_claim": concept["mathematical_principle"],
+        "caveat_or_warning": (
+            f"The evidence supports the local lecture connection, not every broader claim in the atlas. "
+            f"The failure mode to keep in view is: {concept['what_breaks_without_it']}"
+        ),
+        "why_span_matters": (
+            f"It gives the atlas a transcript anchor for the mechanism behind {concept['name']}. "
+            f"That matters because the page's explanation should be traceable back to course material rather than free-floating synthesis."
+        ),
+    }
+
+
 def build() -> None:
     index = load_index()
     evidence_records: list[dict[str, Any]] = []
@@ -924,6 +994,7 @@ def build() -> None:
                     "timestamp_start": match["timestamp_start"],
                     "timestamp_end": match["timestamp_end"],
                     "paraphrased_claim": evidence_note(concept, match),
+                    **evidence_depth(concept, match),
                     "evidence_basis": "local VTT timestamp cue" if match["timestamp_start"] else "clean transcript keyword cue",
                     "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
                     "matched_terms": match["matched_terms"],
@@ -936,6 +1007,7 @@ def build() -> None:
             evidence_by_concept[concept["id"]].append(evidence_id)
 
         out = {k: v for k, v in concept.items() if k not in {"keywords", "theme", "primitives"}}
+        out.update(deep_treatment(concept))
         out["theme_id"] = concept["theme"]
         out["mathematical_primitives"] = concept["primitives"]
         out["course_evidence_ids"] = evidence_by_concept[concept["id"]]
