@@ -9,6 +9,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_PATH = ROOT / "raw-material/youtube/transcript-index.json"
+OVERRIDES = ROOT / "analysis/editorial-overrides"
 CME295 = "stanford-cme295-transformers-llms-autumn-2025"
 CS224R = "stanford-cs224r-deep-rl-spring-2025"
 CME296 = "stanford-cme296-diffusion-large-vision-models-spring-2026"
@@ -801,6 +802,13 @@ def load_index() -> list[dict[str, Any]]:
     return json.loads(INDEX_PATH.read_text(encoding="utf-8"))
 
 
+def load_overrides(name: str) -> dict[str, Any]:
+    path = OVERRIDES / name
+    if not path.exists():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 def parse_vtt_segments(path: Path) -> list[dict[str, str]]:
     if not path.exists():
         return []
@@ -979,6 +987,8 @@ def evidence_depth(concept: dict[str, Any], row: dict[str, Any]) -> dict[str, st
 
 def build() -> None:
     index = load_index()
+    concept_overrides = load_overrides("concepts.json")
+    evidence_overrides = load_overrides("evidence.json")
     evidence_records: list[dict[str, Any]] = []
     concept_outputs: list[dict[str, Any]] = []
     evidence_by_concept: dict[str, list[str]] = defaultdict(list)
@@ -1005,11 +1015,13 @@ def build() -> None:
                     "confidence": match["confidence"],
                     "keyword_hits": match["keyword_hits"],
                 }
+                | evidence_overrides.get(evidence_id, {})
             )
             evidence_by_concept[concept["id"]].append(evidence_id)
 
         out = {k: v for k, v in concept.items() if k not in {"keywords", "theme", "primitives"}}
         out.update(deep_treatment(concept))
+        out.update(concept_overrides.get(concept["id"], {}))
         out["theme_id"] = concept["theme"]
         out["mathematical_primitives"] = concept["primitives"]
         out["course_evidence_ids"] = evidence_by_concept[concept["id"]]

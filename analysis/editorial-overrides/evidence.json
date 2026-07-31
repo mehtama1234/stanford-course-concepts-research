@@ -1,0 +1,23 @@
+{
+  "ev-attention-01": {
+    "lecture_argument": "The CME295 lecture recap explains self-attention by naming the mechanics directly: every token can attend to the other tokens in the sequence; queries ask which tokens are similar; keys are used for comparison; values are the information copied forward; and softmax(QK^T / sqrt(d_k))V is the compact formula for this operation.",
+    "example_or_analogy": "The lecture's own setup is a token-to-token lookup. A token behaves like a reader asking, 'which other tokens should I borrow information from right now?' The answer is not a single hard choice; it is a weighted mixture after comparing query and key vectors.",
+    "mathematical_claim": "softmax(QK^T / sqrt(d_k))V means: compare queries Q with keys K, scale the scores so they do not become numerically too sharp, normalize them into weights with softmax, then use those weights to average the values V.",
+    "caveat_or_warning": "This span supports the mechanics of self-attention, but it does not prove that attention weights are faithful human explanations. The lecture treats attention as optimized matrix multiplication and information routing, not as a guaranteed interpretability story.",
+    "why_span_matters": "This is a high-value evidence span because it contains the central attention formula and the plain operational roles of query, key, and value in one place."
+  },
+  "ev-q_learning-01": {
+    "lecture_argument": "The CS224R Q-learning lecture frames the day around value-based RL: how Q-functions relate to policies, how one can do RL without learning an explicit policy, and how Q-learning must be stabilized in practice.",
+    "example_or_analogy": "The lecture sets up Q-values as future rewards for a state and action. That is the concrete object a student should picture: not 'is this action good right now,' but 'if I take this action here, what future reward stream am I signing up for?'",
+    "mathematical_claim": "Q(s,a) is the estimated future return after taking action a in state s. The Bellman idea says this estimate should be consistent with immediate reward plus the estimated future value reached after the action.",
+    "caveat_or_warning": "The lecture emphasizes stability because the target for learning can depend on the learner's current Q estimate. In offline settings, the next lecture's coverage warning matters: unsupported actions can get falsely high Q-values.",
+    "why_span_matters": "This span anchors Q-learning as more than a named algorithm. It shows why the method exists: delayed consequences need to be folded back into a number that can guide present action."
+  },
+  "ev-diffusion-01": {
+    "lecture_argument": "The CME296 score-matching lecture begins by recalling the previous diffusion lecture: the course is trying to generate samples from an unknown, complicated data distribution, first through DDPM-style diffusion and then through score matching as a related generation paradigm.",
+    "example_or_analogy": "The lecture contrasts clean training images with noisy versions. The useful mental picture is a path from clean data to noise that is easy to create, paired with a learned reverse path from noise back toward data-like samples.",
+    "mathematical_claim": "Diffusion uses a forward noising process and a learned reverse denoising process. The mathematical lever is to replace direct sampling from a hard data distribution with many local update steps.",
+    "caveat_or_warning": "This span introduces the paradigm but does not by itself cover all sampler choices, guidance tricks, or latent-space variants. Later CME296 lectures provide those details.",
+    "why_span_matters": "This span matters because it states the generative problem from first principles: the data distribution is complicated and unknown, so the model learns a procedure for producing new samples rather than writing down the distribution directly."
+  }
+}

@@ -98,6 +98,8 @@ def main() -> int:
     theme_ids = {t["id"] for t in themes}
     subtheme_ids = {s["id"] for s in subthemes}
     evidence_ids = {e["id"] for e in evidence}
+    manual_concepts = 0
+    manual_evidence = 0
 
     for i, concept in enumerate(concepts):
         missing = REQUIRED_CONCEPT_FIELDS - set(concept)
@@ -130,6 +132,8 @@ def main() -> int:
             errors.append(f"concept {concept['id']} has shallow deep treatment: {deep_words} words")
         if len(concept.get("worked_mini_example", "").split()) < 35:
             errors.append(f"concept {concept['id']} missing worked mini-example depth")
+        if "suppose a system faces a new case" not in concept.get("worked_mini_example", ""):
+            manual_concepts += 1
 
     for theme in themes:
         if not theme.get("subthemes"):
@@ -169,6 +173,8 @@ def main() -> int:
                 errors.append(f"evidence {ev['id']} has shallow {field}")
         if ev.get("confidence") == "strong" and ev.get("keyword_hits", 0) < 20:
             errors.append(f"evidence {ev['id']} has unsupported strong confidence")
+        if "Use the lecture context as a concrete case" not in ev.get("example_or_analogy", ""):
+            manual_evidence += 1
         for concept_id in ev.get("supports_concepts", []):
             if concept_id not in concept_ids:
                 errors.append(f"evidence {ev['id']} references missing concept {concept_id}")
@@ -199,7 +205,8 @@ def main() -> int:
     print(
         f"validated {len(concepts)} concepts, {len(themes)} themes, "
         f"{len(subthemes)} subthemes, {len(evidence)} evidence records, "
-        f"{len(primitives)} primitives, {len(method_families)} method families"
+        f"{len(primitives)} primitives, {len(method_families)} method families; "
+        f"{manual_concepts} manually deepened concepts, {manual_evidence} manually deepened evidence records"
     )
     return 0
 
