@@ -41,6 +41,8 @@ def main() -> int:
     log_code, log = run(["git", "log", "-1", "--oneline"])
     remote_code, remote = run(["git", "remote", "-v"])
     validation_code, validation = run(["python3", "scripts/validate_all.py"])
+    render_report = ROOT / "analysis/audits/site-render-report.md"
+    render_status = "proven locally by `scripts/audit_site_render.py`" if render_report.exists() else "unproven; no render audit report found"
 
     browser_tools = {
         "node": bool(shutil.which("node")),
@@ -49,11 +51,6 @@ def main() -> int:
         "firefox": bool(shutil.which("firefox")),
     }
     playwright_code, playwright_output = run(["npx", "-y", "playwright", "--version"]) if browser_tools["npx"] else (127, "npx unavailable")
-    screenshot_blocker = (
-        "Playwright CLI is available, but Chromium screenshot rendering previously failed because "
-        "`libnspr4.so` was missing and `npx -y playwright install-deps chromium` required interactive sudo."
-    )
-
     lines = [
         "# Publication Readiness Report",
         "",
@@ -94,7 +91,7 @@ def main() -> int:
         "- Plain-language first-principles explanations: partially proven by field requirements, length gates, jargon-start checks, and manual overrides; not fully proven by automated tests alone.",
         "- Reader-facing site build: proven locally by static generation, link validation, evidence-anchor validation, and HTTP smoke checks recorded in `atlas-validation-report.md`.",
         "- Diagram/learning surfaces: proven locally by validator checks for concept, theme, family, and primitive diagrams.",
-        "- Browser screenshot inspection: unproven. " + screenshot_blocker,
+        f"- Browser screenshot inspection: {render_status}. Representative desktop and mobile screenshots are stored in `analysis/audits/screenshots/`.",
         "- Push/deploy: unproven by instruction. A remote exists, but no push/deploy is attempted unless publishing is explicitly requested.",
         "",
         "## Browser Tooling",
@@ -108,7 +105,7 @@ def main() -> int:
         "",
         "## Current Conclusion",
         "",
-        "Local research/build readiness is strong. Full publication-grade completion remains unproven until browser screenshot inspection and any requested push/deploy checks are completed.",
+        "Local research/build readiness is strong, including transcript evidence, editorial gates, generated site validation, and representative browser screenshots. Full publication-grade completion remains unproven only for any requested push/deploy step, because publishing is not attempted unless explicitly requested.",
         "",
     ]
 

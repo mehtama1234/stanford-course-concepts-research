@@ -20,6 +20,7 @@ def main() -> int:
         run(["python3", "scripts/validate_site.py"])
         run(["python3", "scripts/audit_evidence_fidelity.py"])
         run(["python3", "scripts/audit_editorial_quality.py"])
+        run(["python3", "scripts/audit_site_render.py"])
     except subprocess.CalledProcessError as exc:
         return exc.returncode
     return 0
