@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Flow Matching, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Flow Matching, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: instead of asking a model to clean noise one discrete step at a time, imagine drawing arrows everywhere in space. Each arrow says which direction a point should move next so that a simple starting cloud gradually becomes the data cloud. CME296 Lecture 3 introduces flow matching as another generation paradigm after diffusion and score matching, then asks what mindset separates it and how it relates back to those methods.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Flow Matching is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The flow-matching lecture emphasizes continuity and relationship. It recaps diffusion and score matching, then reframes generation as learning motion through space. The key object is a velocity or vector field rather than only a denoising step. That makes flow matching a bridge between generative modeling and transport: learn the route from an easy distribution to the data distribution.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Flow Matching as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that flow matching is just diffusion with different terminology. The family is related, but the mental object changes: diffusion often foregrounds noise and reverse denoising, while flow matching foregrounds a learned path or velocity field that transports samples.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Flow Matching: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize flow matching when generation is described as moving samples through a continuous path under a learned velocity field. Terms such as rectified flow, ODE sampler, transport, vector field, interpolation path, or continuous normalizing flow usually point to the same primitive: generation as directed motion.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near diffusion, score matching, latent space. Across the three courses, the shared pattern is geometry, search: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="diffusion.html">diffusion</a> <a class="chip" href="score_matching.html">score matching</a> <a class="chip" href="latent_space.html">latent space</a></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:00:15.600 · strong</p>
   <p>around 00:00:15.600, the lecture uses flow matching while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 3 - Flow matching and anchors the lecture&#x27;s treatment of Flow Matching through the local cues flow matching. The supported argument is that learning a smooth path that carries simple samples into data-like samples is needed because instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Flow Matching as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model loses one of the simplest ways to describe generation as guided motion.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Flow Matching. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME296 flow-matching lecture introduces flow matching as a trendy generation paradigm after diffusion and score matching, then frames the lecture around its mindset and relationship to those earlier paradigms.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture recap starts from clean images gradually corrupted by Gaussian noise, then moves toward a different view: instead of only reversing noise, learn how samples should flow from a simple distribution toward the data.</dd>
+    <dt>Mathematical Claim</dt><dd>Flow matching learns a velocity or vector field that defines motion through sample space. Following that field transports simple samples toward data-like samples.</dd>
+    <dt>Caveat Or Warning</dt><dd>The opening span establishes the conceptual relationship, not the full derivation. Detailed claims about specific interpolation paths, ODE solvers, or training losses need the later lecture sections.</dd>
+    <dt>Why This Span Matters</dt><dd>It shows why flow matching belongs beside diffusion and score matching: all three are answers to the same generation problem, but flow matching makes the path-through-space idea explicit.</dd>
   </dl>
   <p class="meta">Matched terms: flow matching · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt</code></p>

@@ -54,5 +54,40 @@
     "mathematical_claim": "Guidance modifies the sampling direction or scoring objective so generated samples are pulled toward a condition such as a prompt, class, layout, or reward. Evaluation then asks whether that condition was actually satisfied.",
     "caveat_or_warning": "This span is primarily evaluation evidence for prompt adherence, not a derivation of classifier-free guidance. It supports the problem guidance solves: realism and instruction-following are separable.",
     "why_span_matters": "It gives a concrete lecture-backed failure case for guided generation: high visual quality can still be wrong if the sample ignores the prompt."
+  },
+  "ev-reward-01": {
+    "lecture_argument": "The CME295 tuning lecture explains preference tuning as a third stage after pretraining and supervised fine-tuning: the model already knows language and the task style, but now must be aligned with what humans like or with a chosen metric.",
+    "example_or_analogy": "The lecture uses the assistant behavior case: a model may answer the task but still have the wrong tone, friendliness, or safety. Preference tuning supplies feedback about those behavioral qualities.",
+    "mathematical_claim": "Reward or preference learning turns comparisons, ratings, or metrics into a scalar training signal that shifts probability toward preferred responses and away from dispreferred ones.",
+    "caveat_or_warning": "This span supports reward as alignment feedback in LLM tuning, not the entire reinforcement-learning theory of reward. It also makes clear that the chosen metric or human preference may only approximate the real desired behavior.",
+    "why_span_matters": "It grounds reward in a concrete modern AI problem: fluent prediction is not enough, so a separate signal is needed to shape behavior."
+  },
+  "ev-actor_critic-01": {
+    "lecture_argument": "The CS224R off-policy actor-critic lecture recaps the path from policy gradients to baselines and value functions, then uses that setup to motivate actor-critic methods.",
+    "example_or_analogy": "The baseline is the comparison point for judging whether an action was above or below average. The critic generalizes that judging role by learning value estimates, while the actor remains the behavior being updated.",
+    "mathematical_claim": "Actor-critic methods use a policy or actor to choose actions and a value estimator or critic to reduce the noise of policy updates by estimating expected future rewards or advantages.",
+    "caveat_or_warning": "The lecture context also warns that off-policy reuse of data needs correction. Actor-critic is practical, but the critic can introduce bias or instability when its estimates are wrong.",
+    "why_span_matters": "It captures why actor-critic exists: raw rewards and full trajectory returns are noisy, so policy improvement benefits from a learned estimate of how good the situation or action is."
+  },
+  "ev-rl_for_llms-01": {
+    "lecture_argument": "The CME295 reasoning lecture explicitly connects LLM reasoning to the previous preference-tuning lecture, saying that many methods from tuning become foundations for reasoning.",
+    "example_or_analogy": "The lecture pipeline is the useful example: pretraining gives a model language and code structure, fine-tuning makes it follow a use case, and preference or RL-style tuning can then shape reasoning behavior.",
+    "mathematical_claim": "RL for LLMs treats generated tokens or reasoning traces as sequential actions whose probabilities can be shifted using outcome rewards, preferences, or verifier feedback.",
+    "caveat_or_warning": "This opening span motivates the connection but does not by itself prove which RL algorithm is best. Later reasoning and CS224R lectures are needed for algorithmic details such as PPO, GRPO, or process rewards.",
+    "why_span_matters": "It anchors the cross-course bridge: reasoning models are not separate from tuning and RL; they reuse feedback mechanisms to shape multi-step generation."
+  },
+  "ev-flow_matching-01": {
+    "lecture_argument": "The CME296 flow-matching lecture introduces flow matching as a trendy generation paradigm after diffusion and score matching, then frames the lecture around its mindset and relationship to those earlier paradigms.",
+    "example_or_analogy": "The lecture recap starts from clean images gradually corrupted by Gaussian noise, then moves toward a different view: instead of only reversing noise, learn how samples should flow from a simple distribution toward the data.",
+    "mathematical_claim": "Flow matching learns a velocity or vector field that defines motion through sample space. Following that field transports simple samples toward data-like samples.",
+    "caveat_or_warning": "The opening span establishes the conceptual relationship, not the full derivation. Detailed claims about specific interpolation paths, ODE solvers, or training losses need the later lecture sections.",
+    "why_span_matters": "It shows why flow matching belongs beside diffusion and score matching: all three are answers to the same generation problem, but flow matching makes the path-through-space idea explicit."
+  },
+  "ev-latent_space-01": {
+    "lecture_argument": "The CME296 latent-space lecture motivates a lower-dimensional representation by distinguishing pixel-level detail from perceptual similarity, then introduces an encoder-decoder autoencoder setup.",
+    "example_or_analogy": "The teddy-bear image comparison makes the point concrete: two images can differ at the pixel level while looking similar to a human. A latent space should preserve the meaningful structure rather than every raw pixel detail.",
+    "mathematical_claim": "An encoder maps an image from pixel space into a smaller latent representation, and a decoder maps that representation back. The reconstruction objective checks whether the compressed representation kept enough information.",
+    "caveat_or_warning": "The span introduces autoencoders as a first attempt. A lower-dimensional representation can lose information, and reconstruction quality does not guarantee that every semantic factor is cleanly separated.",
+    "why_span_matters": "It anchors latent space as a first-principles compression idea: move generation out of expensive pixel space into a smaller representation that still preserves useful perceptual content."
   }
 }

@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Actor-Critic, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Actor-Critic, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: suppose an agent takes an action and receives a noisy final score. The actor is the part that chooses actions. The critic is the part that estimates whether the situation or action was better than expected. In the CS224R recap, policy gradients improve a policy from collected data, baselines encourage more above-average behavior, and value functions estimate future expected rewards. Actor-critic methods combine those roles: the actor changes behavior, while the critic supplies a lower-noise judgment signal.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Actor-Critic is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>CS224R emphasizes actor-critic as a practical response to noisy policy-gradient learning. The course moves from policy-gradient updates, to baselines, to value functions and Q-functions, then into off-policy actor-critic. That sequence matters: the critic is not an ornament. It is introduced because raw trajectory returns are too noisy and because multiple gradient steps or off-policy data require more careful correction.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Actor-Critic as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that the critic is a separate judge with ground truth. It is also learned and can be wrong. If the critic overestimates unsupported actions or gives biased value estimates, the actor can confidently move in the wrong direction.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Actor-Critic: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize actor-critic structure whenever one learned object chooses actions and another estimates value, advantage, reward-to-go, or quality. It may appear in robotics, PPO-style LLM tuning, off-policy RL, or continuous-control methods. The shared primitive is division of labor: separate choosing from judging so feedback is less noisy.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near policy gradient, value functions, rl for llms. Across the three courses, the shared pattern is feedback, credit: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="policy_gradient.html">policy gradient</a> <span class="chip muted-chip">value functions</span> <a class="chip" href="rl_for_llms.html">rl for llms</a></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:48.680 · strong</p>
   <p>around 00:00:48.680, the lecture uses baseline while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 5: Off-Policy Actor Critic and anchors the lecture&#x27;s treatment of Actor-Critic through the local cues baseline. The supported argument is that a learner split into a chooser and a judge is needed because decision making improves when action choice and outcome evaluation can help each other.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Actor-Critic as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Policy updates can be too unstable or data-hungry for complex environments.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Actor-Critic. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R off-policy actor-critic lecture recaps the path from policy gradients to baselines and value functions, then uses that setup to motivate actor-critic methods.</dd>
+    <dt>Example Or Analogy</dt><dd>The baseline is the comparison point for judging whether an action was above or below average. The critic generalizes that judging role by learning value estimates, while the actor remains the behavior being updated.</dd>
+    <dt>Mathematical Claim</dt><dd>Actor-critic methods use a policy or actor to choose actions and a value estimator or critic to reduce the noise of policy updates by estimating expected future rewards or advantages.</dd>
+    <dt>Caveat Or Warning</dt><dd>The lecture context also warns that off-policy reuse of data needs correction. Actor-critic is practical, but the critic can introduce bias or instability when its estimates are wrong.</dd>
+    <dt>Why This Span Matters</dt><dd>It captures why actor-critic exists: raw rewards and full trajectory returns are noisy, so policy improvement benefits from a learned estimate of how good the situation or action is.</dd>
   </dl>
   <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
