@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Agents, Retrieval, And Tools, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Agents, Retrieval, And Tools, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: a model asked for today&#x27;s weather cannot answer reliably from its weights alone. It needs to call a weather API, read the result, and then respond. CME295 Lecture 7 frames agentic LLMs exactly this way: until now the LLM was on its own; now the goal is to let it interact with the outside world and other systems through RAG, tool calling, and agents.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Agents, Retrieval, And Tools is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The agentic LLM lecture emphasizes a shift from standalone prediction to system interaction. It recaps reasoning models, then moves to RAG, tools, and agents as practical techniques for connecting an LLM to external knowledge bases and actions. That makes the agent loop a systems idea built around observation, action, and updated context.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Agents, Retrieval, And Tools as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that an agent is just a bigger prompt. The important change is not wording; it is the loop. The model chooses an action, receives an observation, updates its context, and decides again. That loop creates new failure modes: bad retrieval, tool misuse, stale observations, and compounding errors.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Agents, Retrieval, And Tools: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize agentic structure whenever a model is wrapped in retrieval, tools, environment actions, memory, planning, or observation feedback. The shared primitive is closed-loop search: prediction becomes one part of a larger act-observe-update cycle.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near policy, retrieval, planning. Across the three courses, the shared pattern is search, composition, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="policy.html">policy</a> <span class="chip muted-chip">retrieval</span> <span class="chip muted-chip">planning</span></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:00:45.040 · strong</p>
   <p>around 00:00:45.040, the lecture uses rag while covering Agents, Retrieval, And Tools. This supports the scoped claim that putting a model in a loop where it can look things up, call tools, and react to results.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7 - Agentic LLMs and anchors the lecture&#x27;s treatment of Agents, Retrieval, And Tools through the local cues rag. The supported argument is that putting a model in a loop where it can look things up, call tools, and react to results is needed because a useful system often needs perception, memory, action, and correction, not only prediction.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Agents, Retrieval, And Tools as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model is limited to stale internal knowledge and cannot verify or change the outside world.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Agents, Retrieval, And Tools. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 agentic LLM lecture states the shift from an LLM on its own to an LLM interacting with outside systems through RAG, tool calling, and agents.</dd>
+    <dt>Example Or Analogy</dt><dd>RAG is the concrete example: the model can fetch information from an external knowledge base instead of relying only on what is stored in its parameters.</dd>
+    <dt>Mathematical Claim</dt><dd>The agent loop can be framed as state, action, observation, and context update: choose a retrieval or tool action, observe the result, and condition the next step on that observation.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports the system-interaction framing but not the reliability of every agent design. Retrieval quality, tool errors, and bad intermediate decisions can still break the system.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the move from standalone prediction to closed-loop systems, which is essential for modern agentic LLM workflows.</dd>
   </dl>
   <p class="meta">Matched terms: rag · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt</code></p>

@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Position And Order, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Position And Order, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: &quot;dog bites man&quot; and &quot;man bites dog&quot; contain the same words but mean different things. A transformer attention layer can compare all tokens directly, but that direct comparison loses the built-in order signal that an RNN gets from processing one token after another. The CME295 lecture explains this exact problem: because tokens interact directly rather than sequentially, position information is lost unless the model injects it. Position embeddings add a learned location signal to token embeddings.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Position And Order is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The transformer tricks lecture emphasizes position embeddings as a repair for the transformer&#x27;s strength. Direct token-to-token links make attention parallel and flexible, but they remove the natural before-and-after structure of a sequence. The original transformer solution was a dedicated embedding per position, added to the token embedding.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Position And Order as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that attention automatically knows order because tokens are listed in order in the input file. The architecture only receives numbers. Unless position is encoded in those numbers, the model has much weaker access to sequence order.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Position And Order: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize positional reasoning whenever a model adds, rotates, biases, indexes, or otherwise marks where information came from. The mechanism may be absolute embeddings, relative positions, RoPE, ALiBi, patch positions, time embeddings, or spatial coordinates. The shared primitive is geometry for order: make location available to computation.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near attention, transformer block, vision transformers. Across the three courses, the shared pattern is geometry, invariance: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="attention.html">attention</a> <a class="chip" href="transformer_block.html">transformer block</a> <a class="chip" href="vision_transformers.html">vision transformers</a></p>
@@ -62,11 +62,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:10:39.810 · strong</p>
   <p>around 00:10:39.810, the lecture uses position while covering Position And Order. This supports the scoped claim that a way to tell the model where each piece sits in a sequence or image.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 2 - Transformer-Based Models &amp; Tricks and anchors the lecture&#x27;s treatment of Position And Order through the local cues position. The supported argument is that a way to tell the model where each piece sits in a sequence or image is needed because attention compares items as a set unless order information is added. order must be represented explicitly if order matters.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Position And Order as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may know which pieces exist but lose the arrangement that makes them meaningful.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Position And Order. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 transformer tricks lecture explains that direct token-to-token attention loses the sequential processing signal that RNNs had, so the model must inject position information.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture contrasts transformers with RNNs: RNNs naturally process one token after another, while transformers let tokens interact directly, so order has to be added back explicitly.</dd>
+    <dt>Mathematical Claim</dt><dd>A position embedding assigns a vector to each position and adds it to the token embedding, giving the model numerical access to where each token sits.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span covers the original dedicated position-embedding idea. Other schemes such as relative position or RoPE alter how order is represented, but the first-principles need remains the same.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the cleanest lecture statement of why position exists: attention&#x27;s parallel communication removes a source of order information that language still needs.</dd>
   </dl>
   <p class="meta">Matched terms: position · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models &amp; Tricks.txt</code></p>
