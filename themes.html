@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Themes · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="active" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main><section class="page-head"><h1>Themes And Subthemes</h1><p>The themes group concepts by the deeper problem they solve, not by lecture order.</p></section>
+<section class="theme" id="representation_workspace">
+  <h2>Representation As A Working Space</h2>
+  <p>Modern models first turn messy inputs into internal coordinates, then do most of their work by moving, comparing, and editing those coordinates.</p>
+  <p><strong>Why it matters:</strong> Without this workspace, text, images, states, and actions remain raw surface forms that cannot share computation.</p>
+  <div class="stack">
+<article class="wide-card" id="text_and_patch_interfaces">
+  <h3>Turning Messy Inputs Into Countable Pieces</h3>
+  <p>The system needs a first set of pieces before it can compare, remember, or predict anything.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Discrete inputs need a stable interface into numerical computation.</dd>
+    <dt>Mathematical Lever</dt><dd>Maps from raw objects into IDs or vectors.</dd>
+    <dt>Why It Matters</dt><dd>The first interface controls the burden placed on every later layer.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/tokenization.html">Tokenization</a> <a class="chip" href="concepts/vision_transformers.html">Vision Transformers</a></p>
+</article>
+
+<article class="wide-card" id="learned_geometry">
+  <h3>Making Meaning Into Geometry</h3>
+  <p>Related things need to be near enough that arithmetic can share what is learned.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Similarity becomes useful only after it is represented as distance or direction.</dd>
+    <dt>Mathematical Lever</dt><dd>Vectors, distances, projections, and learned coordinate systems.</dd>
+    <dt>Why It Matters</dt><dd>It lets one model reuse structure across words, images, states, and actions.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a></p>
+</article>
+
+<article class="wide-card" id="selective_context">
+  <h3>Choosing Which Context Matters</h3>
+  <p>The model cannot treat every past detail as equally relevant.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Context is useful only when it is selected and weighted.</dd>
+    <dt>Mathematical Lever</dt><dd>Similarity scores, normalized weights, and weighted averages.</dd>
+    <dt>Why It Matters</dt><dd>This is the shared mechanism behind long-context language modeling and global image understanding.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/attention.html">Attention</a> <a class="chip" href="concepts/positional_encoding.html">Position And Order</a></p>
+</article>
+
+<article class="wide-card" id="stacked_computation">
+  <h3>Building Depth From Repeated Simple Updates</h3>
+  <p>Hard understanding requires more than one pass over the input.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Repeated small transformations can build complex internal state.</dd>
+    <dt>Mathematical Lever</dt><dd>Layer composition, residual updates, normalization, and nonlinear maps.</dd>
+    <dt>Why It Matters</dt><dd>It explains why the same block can be scaled into very different modern models.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/transformer_block.html">Transformer Block</a></p>
+</article>
+</div>
+</section>
+
+
+<section class="theme" id="learning_from_feedback">
+  <h2>Learning From Feedback</h2>
+  <p>A model improves by turning mistakes, rewards, preferences, or prediction errors into small changes in future behavior.</p>
+  <p><strong>Why it matters:</strong> This is the bridge from passive pattern finding to systems that can be steered toward useful outcomes.</p>
+  <div class="stack">
+<article class="wide-card" id="prediction_as_practice">
+  <h3>Learning Structure By Guessing Missing Pieces</h3>
+  <p>There is much more raw data than carefully labeled instruction.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>A simple prediction game can expose the structure of language, images, and behavior.</dd>
+    <dt>Mathematical Lever</dt><dd>Loss functions that measure surprise and gradients that reduce it.</dd>
+    <dt>Why It Matters</dt><dd>It creates the broad base that later systems tune and specialize.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a></p>
+</article>
+
+<article class="wide-card" id="human_feedback">
+  <h3>Turning Preference Into Training Signal</h3>
+  <p>People can often say which answer is better even when they cannot write the perfect answer in advance.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Comparison can be converted into a direction for changing behavior.</dd>
+    <dt>Mathematical Lever</dt><dd>Preference losses, reward models, and policy updates.</dd>
+    <dt>Why It Matters</dt><dd>It explains why useful assistants require more than next-token prediction.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a></p>
+</article>
+</div>
+</section>
+
+
+<section class="theme" id="action_and_consequence">
+  <h2>Action, Time, And Consequence</h2>
+  <p>Reinforcement learning studies what happens when choices change the future evidence the learner will see.</p>
+  <p><strong>Why it matters:</strong> It explains why agents, robots, games, and reasoning systems need more than ordinary supervised prediction.</p>
+  <div class="stack">
+<article class="wide-card" id="delayed_feedback">
+  <h3>Learning When The Result Comes Later</h3>
+  <p>The feedback arrives after a chain of choices, so the learner must decide which choice mattered.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Cause and reward are separated by time.</dd>
+    <dt>Mathematical Lever</dt><dd>Returns, value estimates, advantages, and Bellman-style recursion.</dd>
+    <dt>Why It Matters</dt><dd>It is the core difficulty behind games, robotics, agents, and long reasoning chains.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/policy_gradient.html">Policy Gradient</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a></p>
+</article>
+
+<article class="wide-card" id="learning_from_logged_worlds">
+  <h3>Learning Safely From Old Experience</h3>
+  <p>The learner may not be allowed to freely experiment in the real world.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>A dataset only covers part of what could have happened.</dd>
+    <dt>Mathematical Lever</dt><dd>Distribution constraints and conservative value estimates.</dd>
+    <dt>Why It Matters</dt><dd>It makes RL relevant when live exploration is risky.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/offline_rl.html">Offline Reinforcement Learning</a></p>
+</article>
+
+<article class="wide-card" id="imagined_futures">
+  <h3>Using Prediction To Plan Before Acting</h3>
+  <p>Real trial and error is expensive, but imagined trial and error can be cheap.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>A model of consequences turns acting into searching over possible futures.</dd>
+    <dt>Mathematical Lever</dt><dd>Transition models, uncertainty estimates, and planning objectives.</dd>
+    <dt>Why It Matters</dt><dd>It connects reinforcement learning with control and robotics.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/exploration.html">Exploration</a></p>
+</article>
+</div>
+</section>
+
+
+<section class="theme" id="inference_time_work">
+  <h2>Thinking As Extra Work At Use Time</h2>
+  <p>Some systems get better by spending more computation after the prompt arrives: writing intermediate steps, searching, calling tools, or revising.</p>
+  <p><strong>Why it matters:</strong> It separates stored knowledge from active problem solving.</p>
+  <div class="stack">
+<article class="wide-card" id="scratch_work_and_tools">
+  <h3>Solving By Writing, Searching, And Acting</h3>
+  <p>A hard task may need intermediate notes, outside facts, or tool results.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>The context can become a temporary workspace that changes as the system works.</dd>
+    <dt>Mathematical Lever</dt><dd>Sequential decision loops over generated tokens, actions, and observations.</dd>
+    <dt>Why It Matters</dt><dd>It connects LLM reasoning to agentic systems and RL.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/reasoning_traces.html">Reasoning Traces</a> <a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a></p>
+</article>
+</div>
+</section>
+
+
+<section class="theme" id="generative_paths">
+  <h2>Generation As Guided Movement</h2>
+  <p>Diffusion, flow, and guidance methods turn generation into a path through possible samples rather than a one-shot guess.</p>
+  <p><strong>Why it matters:</strong> It gives a practical way to create complex images and videos while still obeying conditions.</p>
+  <div class="stack">
+<article class="wide-card" id="denoising_paths">
+  <h3>Making A Hard Sample By Many Small Corrections</h3>
+  <p>A detailed image is too hard to create in one leap.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Many small local directions can solve a global generation problem.</dd>
+    <dt>Mathematical Lever</dt><dd>Noise schedules, score fields, and reverse sampling.</dd>
+    <dt>Why It Matters</dt><dd>It explains the central mechanism behind diffusion image generation.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/score_matching.html">Score Matching</a></p>
+</article>
+
+<article class="wide-card" id="continuous_transport">
+  <h3>Moving Samples Along A Learned Route</h3>
+  <p>Generation needs a route from something easy to sample to something realistic.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>A path through space can be easier to learn than a direct jump.</dd>
+    <dt>Mathematical Lever</dt><dd>Vector fields and continuous-time transformations.</dd>
+    <dt>Why It Matters</dt><dd>It reveals the shared geometry behind diffusion and newer flow methods.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/flow_matching.html">Flow Matching</a></p>
+</article>
+
+<article class="wide-card" id="controlled_generation">
+  <h3>Balancing Freedom With Instruction</h3>
+  <p>A model can make something plausible but not the thing requested.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Generation must be constrained without freezing all creative variation.</dd>
+    <dt>Mathematical Lever</dt><dd>Conditioned scores, guidance weights, and modified sampling directions.</dd>
+    <dt>Why It Matters</dt><dd>It is what makes image and video generation steerable.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/guidance.html">Guidance</a></p>
+</article>
+</div>
+</section>
+
+
+<section class="theme" id="measurement_limits">
+  <h2>Measurement, Scale, And Generalization</h2>
+  <p>Scores, scaling curves, and test sets are claims about behavior under chosen conditions, not full descriptions of intelligence.</p>
+  <p><strong>Why it matters:</strong> It keeps model development honest about what has actually been demonstrated.</p>
+  <div class="stack">
+<article class="wide-card" id="scores_are_samples">
+  <h3>Remembering That Scores Are Partial Views</h3>
+  <p>A single score can hide what the model cannot do.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Every measurement compresses behavior and loses detail.</dd>
+    <dt>Mathematical Lever</dt><dd>Metrics, held-out sets, confidence, and failure slicing.</dd>
+    <dt>Why It Matters</dt><dd>It prevents benchmark success from being confused with broad reliability.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+</article>
+
+<article class="wide-card" id="what_changes_with_size">
+  <h3>What Changes When Systems Get Bigger</h3>
+  <p>Building larger systems is costly, so developers need clues about what scale will buy.</p>
+  <dl>
+    <dt>Hidden Principle</dt><dd>Capability depends on bottlenecks among data, compute, architecture, and training objective.</dd>
+    <dt>Mathematical Lever</dt><dd>Curves relating resources to loss or observed capability.</dd>
+    <dt>Why It Matters</dt><dd>It turns scale from superstition into a planning question with limits.</dd>
+  </dl>
+  <p class="chips"><a class="chip" href="concepts/scaling_laws.html">Scaling Laws</a></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>

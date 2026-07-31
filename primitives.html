@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primitives · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="active" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main><section class="page-head"><h1>Mathematical Primitives</h1><p>The same small patterns recur across transformers, RL, diffusion, and vision.</p></section>
+<article class="wide-card" id="compression">
+  <h2>Compression</h2>
+  <p>Keep the parts that matter for the next decision and let go of the rest.</p>
+  <p><strong>Why it exists:</strong> Inputs, memories, images, and action histories are too large to carry forward unchanged.</p>
+  <p class="meta">Concepts: tokenization, embeddings, attention, latent space</p>
+</article>
+
+<article class="wide-card" id="assignment">
+  <h2>Assignment</h2>
+  <p>Decide which piece of evidence should be connected to which cause, label, action, or memory.</p>
+  <p><strong>Why it exists:</strong> Many causes can produce the same observation, so learning has to sort responsibility.</p>
+  <p class="meta">Concepts: attention, fine tuning, credit assignment, score matching</p>
+</article>
+
+<article class="wide-card" id="credit">
+  <h2>Credit</h2>
+  <p>Decide which earlier choice deserves blame or praise for something that happened later.</p>
+  <p><strong>Why it exists:</strong> Consequences arrive after chains of actions, not immediately after the action that mattered.</p>
+  <p class="meta">Concepts: reward, credit assignment, policy gradient, actor critic, q learning, rl for llms</p>
+</article>
+
+<article class="wide-card" id="geometry">
+  <h2>Geometry</h2>
+  <p>Arrange things so nearby points mean similar things and directions mean useful changes.</p>
+  <p><strong>Why it exists:</strong> A machine needs a numerical space where comparison and movement can be computed.</p>
+  <p class="meta">Concepts: embeddings, positional encoding, score matching, flow matching, latent space</p>
+</article>
+
+<article class="wide-card" id="search">
+  <h2>Search</h2>
+  <p>Try to move through possible answers, actions, or images toward ones that satisfy a goal.</p>
+  <p><strong>Why it exists:</strong> Hard problems rarely reveal the right answer in one step.</p>
+  <p class="meta">Concepts: reasoning traces, agents and tools, policy, q learning, model based rl, exploration, diffusion, flow matching, guidance</p>
+</article>
+
+<article class="wide-card" id="uncertainty">
+  <h2>Uncertainty</h2>
+  <p>Keep track of many possible futures or explanations instead of pretending there is only one.</p>
+  <p><strong>Why it exists:</strong> Observations are incomplete, and the same present can lead to many futures.</p>
+  <p class="meta">Concepts: evaluation, policy, offline rl, model based rl, exploration, diffusion, generalization</p>
+</article>
+
+<article class="wide-card" id="feedback">
+  <h2>Feedback</h2>
+  <p>Use a signal after an attempt to change what the system does next time.</p>
+  <p><strong>Why it exists:</strong> A learner cannot improve unless something tells it how its guesses or actions worked out.</p>
+  <p class="meta">Concepts: transformer block, pretraining, fine tuning, agents and tools, evaluation, reward, policy gradient, actor critic, offline rl, rl for llms, guidance, scaling laws</p>
+</article>
+
+<article class="wide-card" id="scale">
+  <h2>Scale</h2>
+  <p>Ask what changes when data, model size, compute, or test-time work becomes much larger.</p>
+  <p><strong>Why it exists:</strong> Some behavior is invisible at small size because the system has too little capacity or practice.</p>
+  <p class="meta">Concepts: pretraining, rl for llms, scaling laws</p>
+</article>
+
+<article class="wide-card" id="invariance">
+  <h2>Invariance</h2>
+  <p>Preserve the meaning while surface details such as position, wording, or style change.</p>
+  <p><strong>Why it exists:</strong> The same idea can appear in many forms, and a useful model should not relearn it from scratch every time.</p>
+  <p class="meta">Concepts: positional encoding, vision transformers, generalization</p>
+</article>
+
+<article class="wide-card" id="composition">
+  <h2>Composition</h2>
+  <p>Build complex behavior by connecting reusable smaller operations.</p>
+  <p><strong>Why it exists:</strong> Large tasks are too varied to solve as one giant special case.</p>
+  <p class="meta">Concepts: transformer block, reasoning traces, agents and tools, vision transformers</p>
+</article>
+</main>
+</body>
+</html>

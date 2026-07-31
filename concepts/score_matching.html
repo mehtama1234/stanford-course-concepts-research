@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Score Matching · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="../index.html">Overview</a>
+<a class="active" href="../concepts.html">Concepts</a>
+<a class="" href="../themes.html">Themes</a>
+<a class="" href="../families.html">Method Families</a>
+<a class="" href="../primitives.html">Primitives</a>
+<a class="" href="../evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">generative paths</p>
+  <h1>Score Matching</h1>
+  <p>Learning which direction points toward more data-like samples.</p>
+</section>
+<section class="treatment">
+  <h2>What real-world problem is this about?</h2>
+  <p>The problem is that the model needs a local compass for improving a noisy sample.</p>
+  <h2>Why does this problem exist?</h2>
+  <p>In a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.</p>
+  <h2>What is the mathematical idea underneath?</h2>
+  <p>The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.</p>
+  <h2>Why is this concept important?</h2>
+  <p>It gives diffusion models the step-by-step direction used for denoising.</p>
+  <h2>What breaks without it?</h2>
+  <p>The sampler has no learned local direction for turning noise into structure.</p>
+  <h2>Connected Concepts</h2>
+  <p class="chips"><a class="chip" href="diffusion.html">diffusion</a> <a class="chip" href="flow_matching.html">flow matching</a> <a class="chip" href="guidance.html">guidance</a></p>
+</section>
+<section>
+  <h2>Transcript Evidence</h2>
+  <div class="evidence-stack">
+<article class="evidence" id="ev-score_matching-01">
+  <h3><a href="../evidence.html#ev-score_matching-01">ev-score_matching-01</a></h3>
+  <p><strong>Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</strong></p>
+  <p class="meta">stanford-cme296-diffusion-large-vision-models-spring-2026 · 00:00:18.000 · strong</p>
+  <p>around 00:00:18.000, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.</p>
+  <p class="meta">Matched terms: score matching · Basis: local VTT timestamp cue</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt</code></p>
+</article>
+</div>
+</section>
+</main>
+</body>
+</html>
