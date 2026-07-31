@@ -185,6 +185,22 @@ def main() -> int:
     for primitive in primitives:
         if not primitive.get("concepts_in_atlas"):
             errors.append(f"primitive {primitive['id']} is unused")
+        for field in [
+            "everyday_setup",
+            "formal_object",
+            "useful_equation",
+            "symbol_explanation",
+            "course_appearances",
+            "misuse_failure",
+        ]:
+            if not primitive.get(field):
+                errors.append(f"primitive {primitive['id']} missing {field}")
+        primitive_words = sum(
+            len(str(primitive.get(field, "")).split())
+            for field in ["everyday_setup", "formal_object", "symbol_explanation", "course_appearances", "misuse_failure"]
+        )
+        if primitive_words < 90:
+            errors.append(f"primitive {primitive['id']} treatment is shallow: {primitive_words} words")
 
     for family in method_families:
         if not family.get("course_evidence_ids"):
@@ -195,6 +211,27 @@ def main() -> int:
         for ev_id in family.get("course_evidence_ids", []):
             if ev_id not in evidence_ids:
                 errors.append(f"method family {family['id']} references missing evidence {ev_id}")
+        for field in [
+            "family_walkthrough",
+            "representative_methods",
+            "where_analogy_breaks",
+            "lecture_evidence_chain",
+            "paper_family_treatment",
+        ]:
+            if not family.get(field):
+                errors.append(f"method family {family['id']} missing {field}")
+        family_words = sum(
+            len(str(family.get(field, "")).split())
+            for field in [
+                "family_walkthrough",
+                "representative_methods",
+                "where_analogy_breaks",
+                "lecture_evidence_chain",
+                "paper_family_treatment",
+            ]
+        )
+        if family_words < 120:
+            errors.append(f"method family {family['id']} treatment is shallow: {family_words} words")
 
     for name, obj in data.items():
         walk_empty(obj, name, errors)

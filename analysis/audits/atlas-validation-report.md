@@ -30,6 +30,10 @@ validated 34 html files and 131 evidence anchors
 - Generic evidence wording is rejected.
 - Unsupported `strong` confidence is rejected.
 - Every method family has evidence through its supporting concepts.
+- Every primitive includes a first-principles treatment: everyday setup, formal object, useful equation, symbol explanation, course appearances, and misuse failure.
+- Every primitive has at least 90 words across the deeper treatment fields.
+- Every method family includes a family walkthrough, representative methods, analogy limits, transcript-evidence chain, and paper-family reading guide.
+- Every method family has at least 120 words across the deeper treatment fields.
 - The generated static site has every required page.
 - Every generated local site link resolves.
 - Every evidence ID used by the atlas exists as an anchor in the site evidence page.
@@ -62,4 +66,6 @@ Evidence confidence means:
 
 This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus one primary evidence span for each concept.
 
-This is not the final publication-grade state. The remaining quality frontier is the non-concept layer: deepen theme and subtheme arguments, expand primitives into essay-like mathematical walkthroughs, add diagrams or interactive explainers, and expand individual method families into longer paper-family essays.
+The primitive and method-family layers now have deeper first-principles fields and validation gates. The method-family pages are family-specific rather than generic boilerplate, and the primitive pages explain the reusable mathematical handle behind each recurring idea.
+
+This is not the final publication-grade state. The remaining quality frontier is the theme/subtheme layer and rendered learning experience: deepen cross-course theme arguments, add longer lecture-evidence chains for subthemes, add diagrams or interactive explainers where they clarify the math, and complete true browser screenshot inspection or deployment checks in an environment with a browser.

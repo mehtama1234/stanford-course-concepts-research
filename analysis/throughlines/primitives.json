@@ -16,7 +16,13 @@
       "embeddings",
       "attention",
       "latent_space"
-    ]
+    ],
+    "everyday_setup": "Compression starts from an ordinary constraint: Inputs, memories, images, and action histories are too large to carry forward unchanged. In the course atlas it appears in tokenization, embeddings, attention, latent space, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For compression, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "compressed = keep(signal) - discard(noise)",
+    "symbol_explanation": "`signal` means useful structure, `noise` means detail that does not help the next task, and `keep`/`discard` describe the representational choice.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When compression is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "assignment",
@@ -34,7 +40,13 @@
       "fine_tuning",
       "credit_assignment",
       "score_matching"
-    ]
+    ],
+    "everyday_setup": "Assignment starts from an ordinary constraint: Many causes can produce the same observation, so learning has to sort responsibility. In the course atlas it appears in attention, fine tuning, credit assignment, score matching, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For assignment, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "responsibility = match(current_need, possible_source)",
+    "symbol_explanation": "`current_need` is the question being asked now, `possible_source` is a memory, token, action, or cause, and `match` is the score that links them.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When assignment is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "credit",
@@ -54,7 +66,13 @@
       "actor_critic",
       "q_learning",
       "rl_for_llms"
-    ]
+    ],
+    "everyday_setup": "Credit starts from an ordinary constraint: Consequences arrive after chains of actions, not immediately after the action that mattered. In the course atlas it appears in reward, credit assignment, policy gradient, actor critic, q learning, rl for llms, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For credit, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "value_now = reward_now + discounted_future_value",
+    "symbol_explanation": "`reward_now` is immediate feedback, `discounted_future_value` is later consequence counted with less weight, and `value_now` is the judgment used for the present choice.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When credit is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "geometry",
@@ -73,7 +91,13 @@
       "score_matching",
       "flow_matching",
       "latent_space"
-    ]
+    ],
+    "everyday_setup": "Geometry starts from an ordinary constraint: A machine needs a numerical space where comparison and movement can be computed. In the course atlas it appears in embeddings, positional encoding, score matching, flow matching, latent space, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For geometry, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "meaningful_change = direction * step_size",
+    "symbol_explanation": "`direction` says where to move in representation space, and `step_size` says how far to move without losing control.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When geometry is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "search",
@@ -96,7 +120,13 @@
       "diffusion",
       "flow_matching",
       "guidance"
-    ]
+    ],
+    "everyday_setup": "Search starts from an ordinary constraint: Hard problems rarely reveal the right answer in one step. In the course atlas it appears in reasoning traces, agents and tools, policy, q learning, model based rl, exploration, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For search, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "next_try = current_try + guided_change",
+    "symbol_explanation": "`current_try` is the current answer, action, or sample; `guided_change` is the learned or planned move that makes the next try better.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When search is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "uncertainty",
@@ -117,7 +147,13 @@
       "exploration",
       "diffusion",
       "generalization"
-    ]
+    ],
+    "everyday_setup": "Uncertainty starts from an ordinary constraint: Observations are incomplete, and the same present can lead to many futures. In the course atlas it appears in evaluation, policy, offline rl, model based rl, exploration, diffusion, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For uncertainty, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "belief = many_possible_worlds with different weights",
+    "symbol_explanation": "`belief` is not one answer; it is a weighted set of possible explanations or futures.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When uncertainty is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "feedback",
@@ -143,7 +179,13 @@
       "rl_for_llms",
       "guidance",
       "scaling_laws"
-    ]
+    ],
+    "everyday_setup": "Feedback starts from an ordinary constraint: A learner cannot improve unless something tells it how its guesses or actions worked out. In the course atlas it appears in transformer block, pretraining, fine tuning, agents and tools, evaluation, reward, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For feedback, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "new_behavior = old_behavior + learning_rate * correction",
+    "symbol_explanation": "`old_behavior` is what the system would have done, `correction` is the error/reward/preference signal, and `learning_rate` controls how strongly to change.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When feedback is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "scale",
@@ -160,7 +202,13 @@
       "pretraining",
       "rl_for_llms",
       "scaling_laws"
-    ]
+    ],
+    "everyday_setup": "Scale starts from an ordinary constraint: Some behavior is invisible at small size because the system has too little capacity or practice. In the course atlas it appears in pretraining, rl for llms, scaling laws, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For scale, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "capability = f(data, compute, parameters, inference_work)",
+    "symbol_explanation": "`data`, `compute`, `parameters`, and `inference_work` are different bottlenecks; the function `f` is a measured relationship, not a guarantee.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When scale is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "invariance",
@@ -177,7 +225,13 @@
       "positional_encoding",
       "vision_transformers",
       "generalization"
-    ]
+    ],
+    "everyday_setup": "Invariance starts from an ordinary constraint: The same idea can appear in many forms, and a useful model should not relearn it from scratch every time. In the course atlas it appears in positional encoding, vision transformers, generalization, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For invariance, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "same_meaning(input) despite changed_surface(input)",
+    "symbol_explanation": "`changed_surface` means altered wording, position, style, or environment; `same_meaning` is the structure the model should preserve.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When invariance is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   },
   {
     "id": "composition",
@@ -195,6 +249,12 @@
       "reasoning_traces",
       "agents_and_tools",
       "vision_transformers"
-    ]
+    ],
+    "everyday_setup": "Composition starts from an ordinary constraint: Large tasks are too varied to solve as one giant special case. In the course atlas it appears in transformer block, reasoning traces, agents and tools, vision transformers, where the same pressure shows up with different surface names.",
+    "formal_object": "The formal object is the reusable handle that lets a model act on this pressure. For composition, that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course.",
+    "useful_equation": "complex_behavior = simple_step_1 then simple_step_2 then simple_step_3",
+    "symbol_explanation": "Each `simple_step` is understandable alone, but the chain can express behavior no single step could handle.",
+    "course_appearances": "In the transformer course, the primitive usually appears as a way to represent, route, or update context. In the RL course, it appears as a way to choose actions under delayed feedback. In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces.",
+    "misuse_failure": "When composition is misused, the system optimizes the wrong handle: it may throw away needed detail, assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
   }
 ]

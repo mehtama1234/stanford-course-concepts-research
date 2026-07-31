@@ -268,6 +268,11 @@ def build_families(families: list[dict[str, Any]], evidence: list[dict[str, Any]
     <dt>First-Principles Problem</dt><dd>{esc(family['first_principles_problem'])}</dd>
     <dt>Core Move</dt><dd>{esc(family['core_move'])}</dd>
     <dt>Plain-Language Family Summary</dt><dd>{esc(family['plain_language_family_summary'])}</dd>
+    <dt>Family Walkthrough</dt><dd>{esc(family['family_walkthrough'])}</dd>
+    <dt>Representative Methods</dt><dd>{esc(family['representative_methods'])}</dd>
+    <dt>Where The Analogy Breaks</dt><dd>{esc(family['where_analogy_breaks'])}</dd>
+    <dt>Lecture Evidence Chain</dt><dd>{esc(family['lecture_evidence_chain'])}</dd>
+    <dt>Paper-Family Treatment</dt><dd>{esc(family['paper_family_treatment'])}</dd>
   </dl>
   <p class="chips">{ev_links}</p>
 </article>
@@ -287,6 +292,14 @@ def build_primitives(primitives: list[dict[str, Any]]) -> None:
   <h2>{esc(primitive['name'])}</h2>
   <p>{esc(primitive['plain_language'])}</p>
   <p><strong>Why it exists:</strong> {esc(primitive['why_it_exists'])}</p>
+  <dl>
+    <dt>Everyday Setup</dt><dd>{esc(primitive['everyday_setup'])}</dd>
+    <dt>Formal Object</dt><dd>{esc(primitive['formal_object'])}</dd>
+    <dt>Useful Equation</dt><dd><code>{esc(primitive['useful_equation'])}</code></dd>
+    <dt>Symbol Explanation</dt><dd>{esc(primitive['symbol_explanation'])}</dd>
+    <dt>Where It Appears</dt><dd>{esc(primitive['course_appearances'])}</dd>
+    <dt>Misuse Failure</dt><dd>{esc(primitive['misuse_failure'])}</dd>
+  </dl>
   <p class="meta">Concepts: {esc(concepts)}</p>
 </article>
 """

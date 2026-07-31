@@ -1080,7 +1080,9 @@ def build() -> None:
     primitives = []
     for primitive in PRIMITIVES:
         primitive = dict(primitive)
-        primitive["concepts_in_atlas"] = [c["id"] for c in CONCEPTS if primitive["id"] in c["primitives"]]
+        concept_ids = [c["id"] for c in CONCEPTS if primitive["id"] in c["primitives"]]
+        primitive["concepts_in_atlas"] = concept_ids
+        primitive.update(primitive_treatment(primitive, concept_ids))
         primitives.append(primitive)
 
     write_json(ROOT / "analysis/concepts/concept-atlas.json", concept_outputs)
@@ -1104,10 +1106,257 @@ def build_method_families(evidence_by_concept: dict[str, list[str]]) -> list[dic
         for concept_id in family["evidence_concepts"]:
             evidence_ids.extend(evidence_by_concept.get(concept_id, [])[:2])
         output = dict(family)
+        output.update(method_family_treatment(family))
         output["course_evidence_ids"] = evidence_ids
         output["evidence_status"] = "transcript-backed method family" if evidence_ids else "needs review"
         outputs.append(output)
     return outputs
+
+
+def primitive_treatment(primitive: dict[str, Any], concept_ids: list[str]) -> dict[str, str]:
+    concept_names = ", ".join(concept_id.replace("_", " ") for concept_id in concept_ids[:6])
+    equation = {
+        "compression": "compressed = keep(signal) - discard(noise)",
+        "assignment": "responsibility = match(current_need, possible_source)",
+        "credit": "value_now = reward_now + discounted_future_value",
+        "geometry": "meaningful_change = direction * step_size",
+        "search": "next_try = current_try + guided_change",
+        "uncertainty": "belief = many_possible_worlds with different weights",
+        "feedback": "new_behavior = old_behavior + learning_rate * correction",
+        "scale": "capability = f(data, compute, parameters, inference_work)",
+        "invariance": "same_meaning(input) despite changed_surface(input)",
+        "composition": "complex_behavior = simple_step_1 then simple_step_2 then simple_step_3",
+    }[primitive["id"]]
+    symbols = {
+        "compression": "`signal` means useful structure, `noise` means detail that does not help the next task, and `keep`/`discard` describe the representational choice.",
+        "assignment": "`current_need` is the question being asked now, `possible_source` is a memory, token, action, or cause, and `match` is the score that links them.",
+        "credit": "`reward_now` is immediate feedback, `discounted_future_value` is later consequence counted with less weight, and `value_now` is the judgment used for the present choice.",
+        "geometry": "`direction` says where to move in representation space, and `step_size` says how far to move without losing control.",
+        "search": "`current_try` is the current answer, action, or sample; `guided_change` is the learned or planned move that makes the next try better.",
+        "uncertainty": "`belief` is not one answer; it is a weighted set of possible explanations or futures.",
+        "feedback": "`old_behavior` is what the system would have done, `correction` is the error/reward/preference signal, and `learning_rate` controls how strongly to change.",
+        "scale": "`data`, `compute`, `parameters`, and `inference_work` are different bottlenecks; the function `f` is a measured relationship, not a guarantee.",
+        "invariance": "`changed_surface` means altered wording, position, style, or environment; `same_meaning` is the structure the model should preserve.",
+        "composition": "Each `simple_step` is understandable alone, but the chain can express behavior no single step could handle.",
+    }[primitive["id"]]
+    return {
+        "everyday_setup": (
+            f"{primitive['name']} starts from an ordinary constraint: {primitive['why_it_exists']} "
+            f"In the course atlas it appears in {concept_names}, where the same pressure shows up with different surface names."
+        ),
+        "formal_object": (
+            f"The formal object is the reusable handle that lets a model act on this pressure. For {primitive['name'].lower()}, "
+            "that handle may be a vector, score, value estimate, probability, update rule, or state representation depending on the course."
+        ),
+        "useful_equation": equation,
+        "symbol_explanation": symbols,
+        "course_appearances": (
+            "In the transformer course, the primitive usually appears as a way to represent, route, or update context. "
+            "In the RL course, it appears as a way to choose actions under delayed feedback. "
+            "In the diffusion and vision course, it appears as a way to move through high-dimensional sample spaces."
+        ),
+        "misuse_failure": (
+            f"When {primitive['name'].lower()} is misused, the system optimizes the wrong handle: it may throw away needed detail, "
+            "assign responsibility to the wrong source, trust unsupported futures, or report a score that hides the actual failure."
+        ),
+    }
+
+
+def method_family_treatment(family: dict[str, Any]) -> dict[str, str]:
+    concepts = ", ".join(concept.replace("_", " ") for concept in family["concepts"])
+    treatments = {
+        "transformer_family": {
+            "family_walkthrough": (
+                "The first problem is communication inside a long input. A word, image patch, or memory slot cannot use every other piece equally, "
+                "and a fixed local window misses distant evidence. The transformer move is to let each piece ask a content-based question, collect the "
+                "answers it needs, then repeat that read-and-rewrite step through stacked blocks. The family therefore joins attention, position, "
+                "transformer blocks, and vision transformers as one recipe for routing information."
+            ),
+            "representative_methods": (
+                "Representative methods include self-attention layers, multi-head attention, positional encodings, residual transformer blocks, and patch-based "
+                "vision transformers. Papers in this family usually change how context is routed, how positions are represented, how the block is stabilized, "
+                "or how the same lookup machinery is moved from language into images or multimodal inputs."
+            ),
+            "where_analogy_breaks": (
+                "The family is not the claim that attention explains everything. Attention chooses what to read; it does not by itself create the training signal, "
+                "the data distribution, the objective, or the external tool loop. Vision transformers also face image-specific pressures, such as patch size and "
+                "spatial invariance, that are not identical to next-token language modeling."
+            ),
+            "paper_family_treatment": (
+                "Read a transformer-family paper by asking: what object is allowed to look at what other object, what positional information survives, what cost "
+                "does the lookup pay as the input grows, and what information is lost when the authors make it cheaper? This turns architecture names into a "
+                "plain mechanism: controlled communication under limited compute."
+            ),
+        },
+        "pretrain_then_adapt_family": {
+            "family_walkthrough": (
+                "The first problem is that useful behavior needs broad experience, but direct human labels for every useful task are too expensive. The family "
+                "splits learning into two stages: broad practice on an abundant signal, then steering with narrower examples, preferences, rewards, or task data. "
+                "Pretraining builds the reusable base; fine tuning and preference learning reshape the base toward what people actually want."
+            ),
+            "representative_methods": (
+                "Representative methods include next-token or masked prediction, supervised fine tuning, preference optimization, reward modeling, RLHF-style "
+                "updates, and evaluation loops. Papers in this family differ mostly in what signal they trust after pretraining and how strongly they let that "
+                "signal overwrite the base model's broad habits."
+            ),
+            "where_analogy_breaks": (
+                "Pretraining and adaptation are not the same kind of learning. Pretraining mostly learns what patterns exist in data; adaptation asks which "
+                "possible behaviors are acceptable, useful, or preferred. A model can become better at following instructions while also losing some coverage, "
+                "becoming overconfident, or learning the quirks of the feedback process."
+            ),
+            "paper_family_treatment": (
+                "Read this paper family by separating source of practice from source of steering. Ask what the base model learns cheaply, what extra signal is "
+                "used later, what behavior the signal cannot measure, and whether the method improves the target behavior or only improves the proxy score."
+            ),
+        },
+        "agentic_llm_family": {
+            "family_walkthrough": (
+                "The first problem is that a static answer is often not enough. Some tasks need current facts, code execution, retrieval, planning, or repeated "
+                "checks after the first attempt. This family wraps a language model in a loop: observe the current state, choose an action, receive a result, "
+                "update the context, and continue. Reasoning traces, tools, retrieval, and policies become parts of one action-observation system."
+            ),
+            "representative_methods": (
+                "Representative methods include chain-of-thought style traces, retrieval-augmented generation, tool calling, browser or code agents, planner-executor "
+                "loops, and policy-trained assistants. Papers in this family usually vary the memory, available actions, stopping rule, supervision signal, or "
+                "guardrails around tool use."
+            ),
+            "where_analogy_breaks": (
+                "An agent loop is not automatically reasoning. A loop can amplify mistakes if the observations are wrong, the tool output is misread, or the "
+                "policy keeps taking actions after enough evidence exists. The RL analogy helps with state-action-feedback structure, but language agents often "
+                "operate with messy text context rather than a clean environment model."
+            ),
+            "paper_family_treatment": (
+                "Read an agentic LLM paper by identifying the state, the action set, the observation, the memory update, and the stopping condition. Then ask what "
+                "is learned versus hand-written, what failure can compound across steps, and whether the evaluation tests the whole loop or only isolated answers."
+            ),
+        },
+        "value_based_rl_family": {
+            "family_walkthrough": (
+                "The first problem is delayed consequence. An action can look good now but lead to a worse situation later, so the learner needs a way to attach "
+                "future results to present choices. Value-based methods learn a table or function that estimates long-term worth. Q-learning, credit assignment, "
+                "and offline RL all revolve around making that future-facing estimate useful enough to guide action."
+            ),
+            "representative_methods": (
+                "Representative methods include Bellman backups, Q-learning, fitted Q iteration, conservative Q methods for logged data, and value estimates used "
+                "inside planning or policy improvement. Papers in this family usually change how the future target is estimated, how uncertainty is handled, or "
+                "how over-optimistic values are controlled."
+            ),
+            "where_analogy_breaks": (
+                "A value is not a reward and not a guarantee. Reward is immediate feedback; value is a prediction about future accumulated feedback. In offline "
+                "settings, a high estimated value can be pure extrapolation if the data never showed that action in that state."
+            ),
+            "paper_family_treatment": (
+                "Read a value-based RL paper by asking what future quantity is being estimated, where the target comes from, how errors feed back into the estimate, "
+                "and what stops the method from believing unsupported high values. The key mathematical question is how the present inherits information from the future."
+            ),
+        },
+        "policy_optimization_family": {
+            "family_walkthrough": (
+                "The first problem is improving a behavior rule from sampled attempts. The learner does not see the perfect action directly; it sees trajectories "
+                "that worked better or worse. Policy optimization changes the probabilities of actions so good sampled behavior becomes more likely. Policy "
+                "gradients, actor-critic methods, reward models, and RL-for-LLMs all turn feedback into pressure on a behavior distribution."
+            ),
+            "representative_methods": (
+                "Representative methods include REINFORCE-style policy gradients, advantage estimation, actor-critic updates, PPO-like constrained updates, reward "
+                "model optimization, and preference-trained language policies. Papers in this family usually differ in how they reduce noisy credit assignment "
+                "and how they keep updates from moving too far."
+            ),
+            "where_analogy_breaks": (
+                "Improving the policy is not the same as improving the world. If the reward is misspecified, the policy can learn shortcuts. If the update is too "
+                "large, the policy can forget useful behavior. For LLMs, the 'action' is a token sequence and the reward often comes from human or model judgment, "
+                "so the feedback is more subjective than in many toy RL environments."
+            ),
+            "paper_family_treatment": (
+                "Read a policy-optimization paper by locating the behavior distribution, the feedback signal, the credit assignment estimate, and the trust region "
+                "or regularizer that limits damage. The durable question is how sampled experience becomes a controlled change in future behavior."
+            ),
+        },
+        "safe_or_data_limited_rl_family": {
+            "family_walkthrough": (
+                "The first problem is that trial and error can be dangerous or impossible. A robot, recommender, or assistant may not get unlimited real-world "
+                "attempts. This family tries to learn from logged behavior, imagined rollouts, or careful exploration while admitting that the learner is uncertain. "
+                "Offline RL, model-based RL, exploration, and evaluation are connected by the cost of being wrong in the real world."
+            ),
+            "representative_methods": (
+                "Representative methods include conservative offline RL, uncertainty-aware value estimates, learned dynamics models, model-predictive planning, "
+                "exploration bonuses, and evaluation protocols that search for distribution shift. Papers in this family usually differ in what kind of uncertainty "
+                "they estimate and how much risk they allow."
+            ),
+            "where_analogy_breaks": (
+                "Logged data is not the same as experience under the learned policy, and a learned model is not the same as the real environment. The method can "
+                "look strong inside the dataset while failing when it chooses actions the dataset barely covered. Safety language can also hide the fact that the "
+                "guarantee only applies under narrow assumptions."
+            ),
+            "paper_family_treatment": (
+                "Read this family by asking what real-world interaction is unavailable, what substitute evidence is used, what uncertainty is represented, and "
+                "what the method refuses to do when evidence is thin. The core principle is restraint under incomplete feedback."
+            ),
+        },
+        "denoising_diffusion_family": {
+            "family_walkthrough": (
+                "The first problem is that a realistic image or sample is too complex to produce perfectly in one jump. Diffusion methods make generation easier "
+                "by reversing a corruption process: start from noise, then learn many small clean-up directions. Score matching, guidance, and latent spaces are "
+                "different handles on this same gradual correction story."
+            ),
+            "representative_methods": (
+                "Representative methods include denoising diffusion probabilistic models, score-based models, classifier or classifier-free guidance, latent diffusion, "
+                "and samplers that trade speed against quality. Papers in this family usually change the noise schedule, denoising target, conditioning signal, "
+                "sampling path, or space where denoising occurs."
+            ),
+            "where_analogy_breaks": (
+                "Denoising is not ordinary image cleanup. The model is not just removing camera noise from a known photo; it is using learned directions to move "
+                "from uncertainty toward a plausible sample. Guidance can steer the path, but too much guidance can reduce diversity or create artifacts."
+            ),
+            "paper_family_treatment": (
+                "Read a diffusion-family paper by asking what corruption process is assumed, what direction the model predicts, what conditioning signal bends "
+                "the path, and what cost is paid in sampling steps. The mathematical primitive is controlled movement from many possible worlds toward one coherent sample."
+            ),
+        },
+        "flow_and_transport_family": {
+            "family_walkthrough": (
+                "The first problem is moving a simple distribution into a complex one without relying on a long discrete cleanup chain. Flow and transport methods "
+                "learn a continuous field of directions: at each point and time, where should the sample move next? Flow matching, score matching, diffusion, and "
+                "latent spaces meet around this view of generation as motion through a shaped space."
+            ),
+            "representative_methods": (
+                "Representative methods include normalizing flows, continuous-time score models, probability-flow ODEs, rectified flows, flow matching, and transport "
+                "maps in latent spaces. Papers in this family usually vary the path, the velocity target, the numerical solver, or the geometry of the space being moved through."
+            ),
+            "where_analogy_breaks": (
+                "A flow path is not automatically the true causal path that made the data. It is a useful transport plan from easy samples to realistic samples. "
+                "Different paths can lead to similar outputs while having different stability, speed, and controllability."
+            ),
+            "paper_family_treatment": (
+                "Read this family by identifying the starting distribution, ending distribution, path parameter, learned velocity or score, and solver. The core "
+                "question is whether generation is easier when expressed as many small movements rather than one direct draw."
+            ),
+        },
+        "measurement_and_scaling_family": {
+            "family_walkthrough": (
+                "The first problem is knowing whether a system is actually better. A single demo can fool us, and a single benchmark can hide failures. This family "
+                "uses tests, scaling curves, held-out cases, and error slices to turn vague progress claims into evidence. Evaluation, scaling laws, and generalization "
+                "all ask what survives outside the exact examples used to build the model."
+            ),
+            "representative_methods": (
+                "Representative methods include benchmark suites, validation and test splits, scaling-law fits, ablation studies, robustness checks, distribution-shift "
+                "tests, and capability evaluations. Papers in this family usually differ in what they measure, what they hold fixed, and whether the reported number "
+                "captures the failure users actually care about."
+            ),
+            "where_analogy_breaks": (
+                "A metric is not the capability itself. It compresses many behaviors into a score, so it can reward shortcuts, hide rare failures, or become stale "
+                "once models train against it. Scaling curves describe observed trends; they do not prove that every future capability will arrive smoothly."
+            ),
+            "paper_family_treatment": (
+                "Read this family by asking what behavior is sampled, what gets collapsed into one score, what failure cases are excluded, and what extrapolation "
+                "the authors make from the curve. The mathematical primitive is measurement under partial observation."
+            ),
+        },
+    }[family["id"]]
+    treatments["lecture_evidence_chain"] = (
+        f"The transcript evidence chain is routed through {concepts}. Each listed concept carries concrete course evidence; this page makes a higher-level "
+        "synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture."
+    )
+    return treatments
 
 
 def write_big_picture(themes: list[dict[str, Any]], subthemes: list[dict[str, Any]], primitives: list[dict[str, Any]]) -> None:
