@@ -82,6 +82,13 @@
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
         "timestamp_start": "00:15:08.170"
+      },
+      {
+        "concept": "latent_space",
+        "evidence_id": "ev-latent_space-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "timestamp_start": "00:19:55.980"
       }
     ],
     "connected_concepts": [
@@ -302,11 +309,25 @@
         "timestamp_start": "00:00:22.000"
       },
       {
+        "concept": "policy",
+        "evidence_id": "ev-policy-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "timestamp_start": "00:00:10.040"
+      },
+      {
         "concept": "credit_assignment",
         "evidence_id": "ev-credit_assignment-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
         "timestamp_start": "00:46:20.770"
+      },
+      {
+        "concept": "credit_assignment",
+        "evidence_id": "ev-credit_assignment-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+        "timestamp_start": "00:28:09.790"
       },
       {
         "concept": "q_learning",
@@ -316,6 +337,13 @@
         "timestamp_start": "00:00:30.320"
       },
       {
+        "concept": "q_learning",
+        "evidence_id": "ev-q_learning-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+        "timestamp_start": "00:00:11.920"
+      },
+      {
         "concept": "policy_gradient",
         "evidence_id": "ev-policy_gradient-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
@@ -323,11 +351,25 @@
         "timestamp_start": "00:01:07.797"
       },
       {
+        "concept": "policy_gradient",
+        "evidence_id": "ev-policy_gradient-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+        "timestamp_start": "00:06:57.150"
+      },
+      {
         "concept": "actor_critic",
         "evidence_id": "ev-actor_critic-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
         "timestamp_start": "00:00:48.680"
+      },
+      {
+        "concept": "actor_critic",
+        "evidence_id": "ev-actor_critic-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "timestamp_start": "00:00:33.920"
       }
     ],
     "connected_concepts": [
@@ -361,6 +403,13 @@
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
         "timestamp_start": "00:07:44.840"
+      },
+      {
+        "concept": "offline_rl",
+        "evidence_id": "ev-offline_rl-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+        "timestamp_start": "00:08:08.890"
       }
     ],
     "connected_concepts": [
@@ -390,11 +439,25 @@
         "timestamp_start": "00:04:50.450"
       },
       {
+        "concept": "model_based_rl",
+        "evidence_id": "ev-model_based_rl-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+        "timestamp_start": "00:00:07.080"
+      },
+      {
         "concept": "exploration",
         "evidence_id": "ev-exploration-01",
         "course": "stanford-cs224r-deep-rl-spring-2025",
         "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
         "timestamp_start": "00:00:07.040"
+      },
+      {
+        "concept": "exploration",
+        "evidence_id": "ev-exploration-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+        "timestamp_start": "00:13:11.590"
       }
     ],
     "connected_concepts": [
@@ -477,11 +540,25 @@
         "timestamp_start": "00:00:26.360"
       },
       {
+        "concept": "diffusion",
+        "evidence_id": "ev-diffusion-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+        "timestamp_start": "00:00:05.560"
+      },
+      {
         "concept": "score_matching",
         "evidence_id": "ev-score_matching-01",
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
         "timestamp_start": "00:00:18.000"
+      },
+      {
+        "concept": "score_matching",
+        "evidence_id": "ev-score_matching-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "timestamp_start": "00:00:35.440"
       }
     ],
     "connected_concepts": [
@@ -510,6 +587,13 @@
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
         "timestamp_start": "00:00:15.600"
+      },
+      {
+        "concept": "flow_matching",
+        "evidence_id": "ev-flow_matching-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "timestamp_start": "00:13:10.110"
       }
     ],
     "connected_concepts": [
@@ -536,6 +620,13 @@
         "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
         "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
         "timestamp_start": "00:05:58.240"
+      },
+      {
+        "concept": "guidance",
+        "evidence_id": "ev-guidance-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "timestamp_start": "00:00:58.640"
       }
     ],
     "connected_concepts": [

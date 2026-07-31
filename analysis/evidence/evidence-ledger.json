@@ -816,6 +816,116 @@
     "keyword_hits": 214
   },
   {
+    "id": "ev-policy-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt",
+    "timestamp_start": "00:00:10.040",
+    "timestamp_end": "00:00:13.480",
+    "paraphrased_claim": "around 00:00:10.040, the lecture uses policy while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "policy"
+    ],
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 189
+  },
+  {
+    "id": "ev-policy-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt",
+    "timestamp_start": "00:00:14.040",
+    "timestamp_end": "00:00:18.400",
+    "paraphrased_claim": "around 00:00:14.040, the lecture uses policy while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "policy"
+    ],
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 170
+  },
+  {
+    "id": "ev-policy-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:00:28.100",
+    "timestamp_end": "00:00:30.320",
+    "paraphrased_claim": "around 00:00:28.100, the lecture uses policy while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "policy"
+    ],
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 168
+  },
+  {
+    "id": "ev-policy-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 16： RL for Robots.txt",
+    "timestamp_start": "00:00:38.640",
+    "timestamp_end": "00:00:40.520",
+    "paraphrased_claim": "around 00:00:38.640, the lecture uses policies while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "policies"
+    ],
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 162
+  },
+  {
+    "id": "ev-policy-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt",
+    "timestamp_start": "00:00:29.240",
+    "timestamp_end": "00:00:31.080",
+    "paraphrased_claim": "around 00:00:29.240, the lecture uses policy while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "policy"
+    ],
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 133
+  },
+  {
     "id": "ev-reward-01",
     "course": "stanford-cme295-transformers-llms-autumn-2025",
     "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
@@ -882,6 +992,116 @@
     "keyword_hits": 3
   },
   {
+    "id": "ev-credit_assignment-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt",
+    "timestamp_start": "00:28:09.790",
+    "timestamp_end": "00:28:13.390",
+    "paraphrased_claim": "around 00:28:09.790, the lecture uses discounted return while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "discounted return"
+    ],
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-credit_assignment-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:01:51.720",
+    "timestamp_end": "00:01:54.680",
+    "paraphrased_claim": "around 00:01:51.720, the lecture uses discount factor while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "discount factor"
+    ],
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-credit_assignment-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:11:05.430",
+    "timestamp_end": "00:11:09.810",
+    "paraphrased_claim": "around 00:11:05.430, the lecture uses discount factor while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "discount factor"
+    ],
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-credit_assignment-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:38:05.020",
+    "timestamp_end": "00:38:07.000",
+    "paraphrased_claim": "around 00:38:05.020, the lecture uses discount factor while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "discount factor"
+    ],
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-credit_assignment-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 2： Imitation Learning.txt",
+    "timestamp_start": null,
+    "timestamp_end": null,
+    "paraphrased_claim": "in this lecture, the lecture uses discount factor while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.",
+    "evidence_basis": "clean transcript keyword cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "discount factor"
+    ],
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
+  },
+  {
     "id": "ev-policy_gradient-01",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
@@ -902,6 +1122,116 @@
     ],
     "confidence": "strong",
     "keyword_hits": 118
+  },
+  {
+    "id": "ev-policy_gradient-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt",
+    "timestamp_start": "00:06:57.150",
+    "timestamp_end": "00:06:59.450",
+    "paraphrased_claim": "around 00:06:57.150, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "gradient"
+    ],
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 126
+  },
+  {
+    "id": "ev-policy_gradient-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt",
+    "timestamp_start": "00:01:02.160",
+    "timestamp_end": "00:01:03.900",
+    "paraphrased_claim": "around 00:01:02.160, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "gradient"
+    ],
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 55
+  },
+  {
+    "id": "ev-policy_gradient-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt",
+    "timestamp_start": "00:01:15.430",
+    "timestamp_end": "00:01:18.750",
+    "paraphrased_claim": "around 00:01:15.430, the lecture uses reinforce while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "reinforce"
+    ],
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 49
+  },
+  {
+    "id": "ev-policy_gradient-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt",
+    "timestamp_start": "00:00:59.790",
+    "timestamp_end": "00:01:04.150",
+    "paraphrased_claim": "around 00:00:59.790, the lecture uses actor while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "actor"
+    ],
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 47
+  },
+  {
+    "id": "ev-policy_gradient-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:33:21.520",
+    "timestamp_end": "00:33:24.000",
+    "paraphrased_claim": "around 00:33:21.520, the lecture uses advantage while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "advantage"
+    ],
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 35
   },
   {
     "id": "ev-actor_critic-01",
@@ -926,6 +1256,116 @@
     "keyword_hits": 74
   },
   {
+    "id": "ev-actor_critic-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt",
+    "timestamp_start": "00:00:33.920",
+    "timestamp_end": "00:00:39.780",
+    "paraphrased_claim": "around 00:00:33.920, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "value function"
+    ],
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 90
+  },
+  {
+    "id": "ev-actor_critic-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt",
+    "timestamp_start": "00:01:26.620",
+    "timestamp_end": "00:01:30.660",
+    "paraphrased_claim": "around 00:01:26.620, the lecture uses baseline while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "baseline"
+    ],
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 60
+  },
+  {
+    "id": "ev-actor_critic-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:02:47.480",
+    "timestamp_end": "00:02:50.320",
+    "paraphrased_claim": "around 00:02:47.480, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "value function"
+    ],
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 37
+  },
+  {
+    "id": "ev-actor_critic-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:33:21.520",
+    "timestamp_end": "00:33:24.000",
+    "paraphrased_claim": "around 00:33:21.520, the lecture uses advantage while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "advantage"
+    ],
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 34
+  },
+  {
+    "id": "ev-actor_critic-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:02:25.640",
+    "timestamp_end": "00:02:32.880",
+    "paraphrased_claim": "around 00:02:25.640, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "value function"
+    ],
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 19
+  },
+  {
     "id": "ev-q_learning-01",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
@@ -946,6 +1386,116 @@
     ],
     "confidence": "strong",
     "keyword_hits": 72
+  },
+  {
+    "id": "ev-q_learning-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:00:11.920",
+    "timestamp_end": "00:00:13.760",
+    "paraphrased_claim": "around 00:00:11.920, the lecture uses q-learning while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "q-learning"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 53
+  },
+  {
+    "id": "ev-q_learning-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt",
+    "timestamp_start": "00:05:31.730",
+    "timestamp_end": "00:05:35.490",
+    "paraphrased_claim": "around 00:05:31.730, the lecture uses q-function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "q-function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 32
+  },
+  {
+    "id": "ev-q_learning-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:01:17.740",
+    "timestamp_end": "00:01:22.380",
+    "paraphrased_claim": "around 00:01:17.740, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "q function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 29
+  },
+  {
+    "id": "ev-q_learning-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt",
+    "timestamp_start": "00:01:39.540",
+    "timestamp_end": "00:01:41.520",
+    "paraphrased_claim": "around 00:01:39.540, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "q function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-q_learning-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:36:45.910",
+    "timestamp_end": "00:36:47.290",
+    "paraphrased_claim": "around 00:36:45.910, the lecture uses q function while covering Q-Learning. This supports the scoped claim that learning a table or function that estimates how good each action is from each situation.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "q function"
+    ],
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 9
   },
   {
     "id": "ev-offline_rl-01",
@@ -970,6 +1520,116 @@
     "keyword_hits": 29
   },
   {
+    "id": "ev-offline_rl-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt",
+    "timestamp_start": "00:08:08.890",
+    "timestamp_end": "00:08:11.970",
+    "paraphrased_claim": "around 00:08:08.890, the lecture uses dataset while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "dataset"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-offline_rl-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:00:08.620",
+    "timestamp_end": "00:00:11.280",
+    "paraphrased_claim": "around 00:00:08.620, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "offline reinforcement"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 13
+  },
+  {
+    "id": "ev-offline_rl-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:07:36.562",
+    "timestamp_end": "00:07:38.490",
+    "paraphrased_claim": "around 00:07:36.562, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "offline reinforcement"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-offline_rl-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt",
+    "timestamp_start": "00:02:40.730",
+    "timestamp_end": "00:02:45.190",
+    "paraphrased_claim": "around 00:02:40.730, the lecture uses offline rl while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "offline rl"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 3
+  },
+  {
+    "id": "ev-offline_rl-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:48:36.693",
+    "timestamp_end": "00:48:38.610",
+    "paraphrased_claim": "around 00:48:36.693, the lecture uses offline rl while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "offline rl"
+    ],
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 3
+  },
+  {
     "id": "ev-model_based_rl-01",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
@@ -992,6 +1652,116 @@
     "keyword_hits": 53
   },
   {
+    "id": "ev-model_based_rl-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt",
+    "timestamp_start": "00:00:07.080",
+    "timestamp_end": "00:00:10.560",
+    "paraphrased_claim": "around 00:00:07.080, the lecture uses model-based while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "model-based"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-model_based_rl-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:01:31.080",
+    "timestamp_end": "00:01:33.900",
+    "paraphrased_claim": "around 00:01:31.080, the lecture uses transition while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "transition"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-model_based_rl-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 1： Class Intro.txt",
+    "timestamp_start": "00:01:22.100",
+    "timestamp_end": "00:01:24.540",
+    "paraphrased_claim": "around 00:01:22.100, the lecture uses model-based while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "model-based"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
+  },
+  {
+    "id": "ev-model_based_rl-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt",
+    "timestamp_start": "00:10:35.220",
+    "timestamp_end": "00:10:39.440",
+    "paraphrased_claim": "around 00:10:35.220, the lecture uses planning while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "planning"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-model_based_rl-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt",
+    "timestamp_start": "00:14:20.130",
+    "timestamp_end": "00:14:23.770",
+    "paraphrased_claim": "around 00:14:20.130, the lecture uses planning while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "planning"
+    ],
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
     "id": "ev-exploration-01",
     "course": "stanford-cs224r-deep-rl-spring-2025",
     "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
@@ -1012,6 +1782,116 @@
     ],
     "confidence": "strong",
     "keyword_hits": 106
+  },
+  {
+    "id": "ev-exploration-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt",
+    "timestamp_start": "00:13:11.590",
+    "timestamp_end": "00:13:14.590",
+    "paraphrased_claim": "around 00:13:11.590, the lecture uses explore while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "explore"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 66
+  },
+  {
+    "id": "ev-exploration-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:27:49.940",
+    "timestamp_end": "00:27:53.100",
+    "paraphrased_claim": "around 00:27:49.940, the lecture uses exploration while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "exploration"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 10
+  },
+  {
+    "id": "ev-exploration-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt",
+    "timestamp_start": "00:14:10.680",
+    "timestamp_end": "00:14:14.680",
+    "paraphrased_claim": "around 00:14:10.680, the lecture uses exploration while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "exploration"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-exploration-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt",
+    "timestamp_start": "00:07:30.500",
+    "timestamp_end": "00:07:32.980",
+    "paraphrased_claim": "around 00:07:30.500, the lecture uses explore while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "explore"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-exploration-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 16： RL for Robots.txt",
+    "timestamp_start": "00:05:38.520",
+    "timestamp_end": "00:05:42.120",
+    "paraphrased_claim": "around 00:05:38.520, the lecture uses explore while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "explore"
+    ],
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
   },
   {
     "id": "ev-rl_for_llms-01",
@@ -1080,6 +1960,116 @@
     "keyword_hits": 138
   },
   {
+    "id": "ev-diffusion-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "00:00:05.560",
+    "timestamp_end": "00:00:10.920",
+    "paraphrased_claim": "around 00:00:05.560, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 103
+  },
+  {
+    "id": "ev-diffusion-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:01:53.150",
+    "timestamp_end": "00:01:59.270",
+    "paraphrased_claim": "around 00:01:53.150, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 83
+  },
+  {
+    "id": "ev-diffusion-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:03:37.280",
+    "timestamp_end": "00:03:42.320",
+    "paraphrased_claim": "around 00:03:37.280, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 74
+  },
+  {
+    "id": "ev-diffusion-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space & Guidance.txt",
+    "timestamp_start": "00:01:35.550",
+    "timestamp_end": "00:01:39.830",
+    "paraphrased_claim": "around 00:01:35.550, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
+    "id": "ev-diffusion-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:01:34.050",
+    "timestamp_end": "00:01:38.390",
+    "paraphrased_claim": "around 00:01:34.050, the lecture uses diffusion while covering Diffusion. This supports the scoped claim that generating by starting from noise and repeatedly making it more like data.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "diffusion"
+    ],
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
     "id": "ev-score_matching-01",
     "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
     "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
@@ -1100,6 +2090,116 @@
     ],
     "confidence": "strong",
     "keyword_hits": 21
+  },
+  {
+    "id": "ev-score_matching-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:00:35.440",
+    "timestamp_end": "00:00:39.040",
+    "paraphrased_claim": "around 00:00:35.440, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 7
+  },
+  {
+    "id": "ev-score_matching-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space & Guidance.txt",
+    "timestamp_start": "00:03:01.750",
+    "timestamp_end": "00:03:06.250",
+    "paraphrased_claim": "around 00:03:01.750, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-score_matching-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:09:05.060",
+    "timestamp_end": "00:09:08.780",
+    "paraphrased_claim": "around 00:09:05.060, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-score_matching-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "00:13:56.420",
+    "timestamp_end": "00:14:02.280",
+    "paraphrased_claim": "around 00:13:56.420, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
+  },
+  {
+    "id": "ev-score_matching-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:06:22.530",
+    "timestamp_end": "00:06:26.690",
+    "paraphrased_claim": "around 00:06:22.530, the lecture uses score matching while covering Score Matching. This supports the scoped claim that learning which direction points toward more data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "score matching"
+    ],
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
   },
   {
     "id": "ev-flow_matching-01",
@@ -1124,6 +2224,116 @@
     "keyword_hits": 110
   },
   {
+    "id": "ev-flow_matching-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:13:10.110",
+    "timestamp_end": "00:13:15.670",
+    "paraphrased_claim": "around 00:13:10.110, the lecture uses flow matching while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "flow matching"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 14
+  },
+  {
+    "id": "ev-flow_matching-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "01:32:17.230",
+    "timestamp_end": "01:32:18.510",
+    "paraphrased_claim": "around 01:32:17.230, the lecture uses ode while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "ode"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 12
+  },
+  {
+    "id": "ev-flow_matching-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:10:01.900",
+    "timestamp_end": "00:10:03.940",
+    "paraphrased_claim": "around 00:10:01.900, the lecture uses vector field while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "vector field"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 11
+  },
+  {
+    "id": "ev-flow_matching-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space & Guidance.txt",
+    "timestamp_start": "00:04:56.470",
+    "timestamp_end": "00:04:58.630",
+    "paraphrased_claim": "around 00:04:56.470, the lecture uses vector field while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "vector field"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-flow_matching-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:02:41.110",
+    "timestamp_end": "00:02:43.910",
+    "paraphrased_claim": "around 00:02:41.110, the lecture uses vector field while covering Flow Matching. This supports the scoped claim that learning a smooth path that carries simple samples into data-like samples.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "vector field"
+    ],
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 3
+  },
+  {
     "id": "ev-guidance-01",
     "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
     "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
@@ -1146,6 +2356,117 @@
     "keyword_hits": 37
   },
   {
+    "id": "ev-guidance-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space & Guidance.txt",
+    "timestamp_start": "00:00:58.640",
+    "timestamp_end": "00:01:05.950",
+    "paraphrased_claim": "around 00:00:58.640, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "prompt"
+    ],
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-guidance-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:51:29.120",
+    "timestamp_end": "00:51:33.640",
+    "paraphrased_claim": "around 00:51:29.120, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "prompt"
+    ],
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-guidance-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:01:10.430",
+    "timestamp_end": "00:01:14.070",
+    "paraphrased_claim": "around 00:01:10.430, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "prompt"
+    ],
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 12
+  },
+  {
+    "id": "ev-guidance-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:04:43.140",
+    "timestamp_end": "00:04:48.060",
+    "paraphrased_claim": "around 00:04:43.140, the lecture uses guidance, classifier free while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "guidance",
+      "classifier free"
+    ],
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-guidance-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "00:12:37.790",
+    "timestamp_end": "00:12:42.230",
+    "paraphrased_claim": "around 00:12:37.790, the lecture uses prompt while covering Guidance. This supports the scoped claim that steering generation toward a prompt, class, reward, or constraint.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "prompt"
+    ],
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
     "id": "ev-latent_space-01",
     "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
     "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
@@ -1166,6 +2487,123 @@
     ],
     "confidence": "strong",
     "keyword_hits": 137
+  },
+  {
+    "id": "ev-latent_space-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:19:55.980",
+    "timestamp_end": "00:19:59.460",
+    "paraphrased_claim": "around 00:19:55.980, the lecture uses latent, latent space while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "latent",
+      "latent space"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 71
+  },
+  {
+    "id": "ev-latent_space-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:03:27.420",
+    "timestamp_end": "00:03:30.540",
+    "paraphrased_claim": "around 00:03:27.420, the lecture uses latent, latent space while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "latent",
+      "latent space"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 45
+  },
+  {
+    "id": "ev-latent_space-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:01:57.770",
+    "timestamp_end": "00:02:03.810",
+    "paraphrased_claim": "around 00:01:57.770, the lecture uses latent while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "latent"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 22
+  },
+  {
+    "id": "ev-latent_space-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:29:20.990",
+    "timestamp_end": "00:29:26.350",
+    "paraphrased_claim": "around 00:29:20.990, the lecture uses latent, latent space while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "evidence_basis": "local VTT timestamp cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "latent",
+      "latent space"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 19
+  },
+  {
+    "id": "ev-latent_space-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": null,
+    "timestamp_end": null,
+    "paraphrased_claim": "in this lecture, the lecture uses latent, latent space, vae, autoencoder while covering Latent Space. This supports the scoped claim that a compressed internal space where generation or prediction can happen more cheaply.",
+    "evidence_basis": "clean transcript keyword cue",
+    "evidence_scope": "supports the listed concept and subtheme; broader first-principles explanation remains synthesis",
+    "matched_terms": [
+      "latent",
+      "latent space",
+      "vae",
+      "autoencoder",
+      "encoder"
+    ],
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
   },
   {
     "id": "ev-vision_transformers-01",

@@ -863,10 +863,11 @@ def best_evidence_for_concept(concept: dict[str, Any], index: list[dict[str, Any
 
     evidence = []
     used_courses: set[str] = set()
+    need_course_diversity = not allowed_courses or len(allowed_courses) > 1
     for score, hits, row in scored:
         if len(evidence) >= 6:
             break
-        if row["course_slug"] in used_courses and len(evidence) < 3:
+        if need_course_diversity and row["course_slug"] in used_courses and len(evidence) < 3:
             continue
         vtt_path = ROOT / row["raw_vtt"]
         timestamp_start = timestamp_end = None

@@ -112,7 +112,9 @@
     ],
     "course_evidence_ids": [
       "ev-q_learning-01",
-      "ev-credit_assignment-01"
+      "ev-q_learning-02",
+      "ev-credit_assignment-01",
+      "ev-credit_assignment-02"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -140,7 +142,9 @@
     ],
     "course_evidence_ids": [
       "ev-policy_gradient-01",
+      "ev-policy_gradient-02",
       "ev-actor_critic-01",
+      "ev-actor_critic-02",
       "ev-rl_for_llms-01",
       "ev-rl_for_llms-02"
     ],
@@ -170,8 +174,11 @@
     ],
     "course_evidence_ids": [
       "ev-offline_rl-01",
+      "ev-offline_rl-02",
       "ev-model_based_rl-01",
-      "ev-exploration-01"
+      "ev-model_based_rl-02",
+      "ev-exploration-01",
+      "ev-exploration-02"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -199,8 +206,11 @@
     ],
     "course_evidence_ids": [
       "ev-diffusion-01",
+      "ev-diffusion-02",
       "ev-score_matching-01",
-      "ev-guidance-01"
+      "ev-score_matching-02",
+      "ev-guidance-01",
+      "ev-guidance-02"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -226,7 +236,9 @@
     ],
     "course_evidence_ids": [
       "ev-flow_matching-01",
-      "ev-score_matching-01"
+      "ev-flow_matching-02",
+      "ev-score_matching-01",
+      "ev-score_matching-02"
     ],
     "evidence_status": "transcript-backed method family"
   },
