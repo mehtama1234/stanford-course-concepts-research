@@ -362,5 +362,131 @@
     "mathematical_claim": "Generalization is measured by the gap between training behavior and behavior on new data. Anti-overfitting techniques try to keep the learned rule from depending on accidental training details.",
     "caveat_or_warning": "The transcript window is brief, so it supports the presence of the overfitting concern rather than a detailed regularization theory.",
     "why_span_matters": "It anchors generalization in the vision-model training course as a practical training failure, not just an abstract evaluation term."
+  },
+  "ev-embeddings-04": {
+    "lecture_argument": "The CME295 recap moves from dividing text into atomic units to representing those units, making embeddings the next required step after tokenization.",
+    "example_or_analogy": "Tokenization cuts the input into pieces; representation gives each piece a numerical handle. Without that second step, the transformer has pieces but no coordinates to process.",
+    "mathematical_claim": "Embeddings map discrete tokens into vectors so later layers can compare, combine, and update token information with matrix operations.",
+    "caveat_or_warning": "The span is a recap and does not derive embedding training. It supports the pipeline role of embeddings rather than claims about semantic interpretability of individual coordinates.",
+    "why_span_matters": "It strengthens the LLM evidence chain for the text-to-vector interface, which is one of the atlas's core first-principles transitions."
+  },
+  "ev-embeddings-05": {
+    "lecture_argument": "The CME295 transformer lecture uses BERT as an example where encoded embeddings are meaningful and expressive enough to support tasks such as classification.",
+    "example_or_analogy": "The classification example makes embeddings practical: a whole input is turned into internal coordinates that can be reused by a downstream decision layer.",
+    "mathematical_claim": "An encoder produces vectors whose coordinates are trained so that useful input structure is available to later prediction heads.",
+    "caveat_or_warning": "The span supports embeddings as useful learned representations, not the claim that every embedding dimension has a clean human label.",
+    "why_span_matters": "It shows embeddings as more than input formatting; they are reusable representations that later tasks can read."
+  },
+  "ev-attention-02": {
+    "lecture_argument": "The CME296 architectures lecture previews cross-attention as one of the operations used inside modern vision-generation architectures.",
+    "example_or_analogy": "Cross-attention is the place where one stream of information can consult another stream, such as a visual representation reading conditioning information.",
+    "mathematical_claim": "Cross-attention uses queries from one set of vectors and keys/values from another set, then copies a weighted mixture from the source into the target.",
+    "caveat_or_warning": "The window is a preview rather than a derivation, so it supports the architectural role of cross-attention but not every formulaic detail.",
+    "why_span_matters": "It gives additional CME296 evidence that attention is a shared information-routing primitive for large vision models."
+  },
+  "ev-transformer_block-06": {
+    "lecture_argument": "The CS224R meta-RL lecture says the learner can train a sequence model such as a transformer or recurrent network with memory, connecting transformer-style blocks to decision histories.",
+    "example_or_analogy": "A sequence model with memory is useful when the current action depends on what happened earlier, much like a transformer uses past tokens as context.",
+    "mathematical_claim": "A transformer block is one possible parameterized sequence update: it reads a context sequence and rewrites internal states through repeated learned operations.",
+    "caveat_or_warning": "This evidence is cross-domain and indirect. It supports transformers as sequence models with memory in RL settings, not a full architecture lecture.",
+    "why_span_matters": "It helps connect the transformer block concept to RL's history-dependent settings instead of leaving it only in the LLM course."
+  },
+  "ev-agents_and_tools-02": {
+    "lecture_argument": "The CS224R robotics lecture frames imitation learning as training an agent to mimic expert demonstrations, giving the agent/action vocabulary in a physical setting.",
+    "example_or_analogy": "The robot learner is the concrete agent: it observes demonstrations, chooses actions, and is judged by whether its behavior matches useful expert behavior.",
+    "mathematical_claim": "An agent can be modeled as a policy that maps observations or states to actions; imitation learning supplies demonstrations as the training signal.",
+    "caveat_or_warning": "This span supports the agent concept in robotics, not tool-calling LLM agents specifically. The connection is the shared state-action behavior loop.",
+    "why_span_matters": "It grounds the atlas's agent language in CS224R's embodied setting, which keeps LLM agents connected to older sequential-decision machinery."
+  },
+  "ev-evaluation-03": {
+    "lecture_argument": "The CS224R frontiers lecture names deployment and evaluation as one of the major challenge areas, while warning that the coverage will not be exhaustive.",
+    "example_or_analogy": "The lecture treats evaluation as part of deployment reality: after methods work in class examples, the question becomes how they behave in broader, messier settings.",
+    "mathematical_claim": "Evaluation samples behavior under chosen conditions and turns those observations into evidence about reliability, capability, or failure.",
+    "caveat_or_warning": "The span is agenda-level evidence, so it supports evaluation as a challenge area rather than any specific evaluation metric.",
+    "why_span_matters": "It adds CS224R support for the atlas claim that measurement is a deployment problem, not just a benchmark-table problem."
+  },
+  "ev-evaluation-05": {
+    "lecture_argument": "The CS224R robotics lecture introduces deployed policy evaluation by asking how good the learned policy is once it is actually deployed.",
+    "example_or_analogy": "The learned robot policy is the concrete case: training success is not enough; the system must be evaluated in the setting where its actions matter.",
+    "mathematical_claim": "Policy evaluation estimates expected performance of a fixed policy, often under the distribution of states and outcomes produced by using that policy.",
+    "caveat_or_warning": "The span supports deployed policy evaluation but does not by itself solve distribution shift or safety risks in deployment.",
+    "why_span_matters": "It grounds evaluation in action systems, where a score is tied to consequences rather than only text or image quality."
+  },
+  "ev-policy-02": {
+    "lecture_argument": "The CS224R off-policy actor-critic lecture recaps policy gradients as the first reinforcement-learning algorithm covered, making policy the behavior object being improved.",
+    "example_or_analogy": "The policy is the learner's current habit. Policy-gradient methods collect experience from that habit and then adjust it using the outcomes.",
+    "mathematical_claim": "A policy is a parameterized mapping from states to action probabilities. Policy-gradient methods change those parameters to increase expected return.",
+    "caveat_or_warning": "The span is introductory recap. It supports the role of policy in the algorithmic sequence but not every off-policy correction detail.",
+    "why_span_matters": "It reinforces policy as the central object that many RL algorithms either learn directly or evaluate indirectly."
+  },
+  "ev-policy-03": {
+    "lecture_argument": "The CS224R offline RL lecture recaps policy gradients by saying the goal was to collect data from the current policy, then use that data for improvement.",
+    "example_or_analogy": "The algorithm learns from its own behavior: act with the current policy, observe what happened, then update the same behavior rule.",
+    "mathematical_claim": "On-policy policy-gradient learning assumes the data distribution comes from the policy being updated, which makes the sampled gradient match the current behavior.",
+    "caveat_or_warning": "This span is especially useful because it sets up why offline RL is different: once data is fixed or from another policy, the clean on-policy assumption breaks.",
+    "why_span_matters": "It anchors the policy concept to the data-collection assumption that later algorithms have to relax."
+  },
+  "ev-policy-05": {
+    "lecture_argument": "The CS224R robotics lecture describes learning policies without human intervention as part of the course's algorithmic goal.",
+    "example_or_analogy": "The robot policy is the behavior rule the system should learn for itself, rather than a set of instructions hand-coded by a person.",
+    "mathematical_claim": "A learned policy maps sensor observations, states, or histories to actions, with parameters adjusted from experience or demonstrations.",
+    "caveat_or_warning": "This span is broad course framing. It supports why policy learning matters in robotics, not one particular learning algorithm.",
+    "why_span_matters": "It connects policy to the real-world goal of autonomous behavior, which is why RL needs a learnable action rule."
+  },
+  "ev-policy-06": {
+    "lecture_argument": "The CS224R policy-gradient lecture lists policy as one of the central objects the course is trying to learn, alongside quantities that judge state-action quality.",
+    "example_or_analogy": "The policy is the actor; the value-like quantity is the critic or judge. The actor decides what to do, while value estimates help decide whether that behavior is good.",
+    "mathematical_claim": "A policy gives action choices or action probabilities conditioned on the current state; it is the object directly optimized in policy-gradient methods.",
+    "caveat_or_warning": "The span is opening setup and does not derive policy gradients by itself, but it cleanly identifies policy as the learnable behavior rule.",
+    "why_span_matters": "It gives a direct lecture anchor for the policy page's plain-language definition."
+  },
+  "ev-reward-02": {
+    "lecture_argument": "The CS224R RL-for-LLMs lecture opens by saying it will focus on preference optimization, placing human or comparative feedback at the center of LLM adaptation.",
+    "example_or_analogy": "Preference optimization begins from comparisons: instead of requiring a perfect answer key, the learner uses signals about which response is preferred.",
+    "mathematical_claim": "Preference optimization converts comparisons into a training objective that shifts probability toward preferred outputs and away from less preferred ones.",
+    "caveat_or_warning": "This span is the lecture opening, so it supports the focus on preference optimization but not every algorithmic detail of the objective.",
+    "why_span_matters": "It anchors reward and preference learning in the LLM-RL bridge, where feedback is no longer only an environment reward."
+  },
+  "ev-credit_assignment-01": {
+    "lecture_argument": "The CS224R introductory lecture explains that a raw sum of rewards can be weighted by a discount factor, introducing one way to connect future reward to earlier choices.",
+    "example_or_analogy": "Discounting is a rule for how much later consequences should count when judging what happened now.",
+    "mathematical_claim": "A discounted return weights rewards at later times by powers of a discount factor, so future outcomes influence present value estimates with controlled strength.",
+    "caveat_or_warning": "Discounting is only one mathematical lever for temporal credit. It does not by itself identify the exact earlier action that caused a later outcome.",
+    "why_span_matters": "It gives a transcript anchor for the time-weighting machinery behind credit assignment."
+  },
+  "ev-policy_gradient-03": {
+    "lecture_argument": "The CS224R actor-critic lecture writes the policy-gradient expression in terms of the gradient of the log probability of actions under the policy.",
+    "example_or_analogy": "The update looks at actions the policy actually took, then changes the policy in proportion to how those sampled actions should be reinforced or discouraged.",
+    "mathematical_claim": "The log-probability gradient tells how changing policy parameters would make a sampled action more or less likely.",
+    "caveat_or_warning": "This is a local formula span. It supports the policy-gradient mechanism, but the quality of the update still depends on the return or advantage signal multiplying it.",
+    "why_span_matters": "It anchors the mathematical object behind policy-gradient updates rather than only the verbal idea of improving a policy."
+  },
+  "ev-policy_gradient-06": {
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture ties LLM reasoning optimization back to value functions and advantage functions.",
+    "example_or_analogy": "For reasoning traces, an advantage can act like a comparison signal: this sampled solution path was better or worse than expected.",
+    "mathematical_claim": "Advantage estimates measure how much better an action or token choice was than a baseline, and they can weight policy-gradient updates.",
+    "caveat_or_warning": "The span assumes students know the value-function machinery, so it supports the bridge to LLM reasoning but not a full derivation by itself.",
+    "why_span_matters": "It connects policy-gradient math to modern reasoning-model training rather than leaving it inside classic RL examples."
+  },
+  "ev-actor_critic-02": {
+    "lecture_argument": "The CS224R offline RL lecture recaps the move from reinforcing good outcomes to introducing a value function that can estimate outcome quality.",
+    "example_or_analogy": "The value function acts as a learned judge: instead of waiting for raw outcomes every time, the learner estimates which situations are promising.",
+    "mathematical_claim": "Actor-critic methods use value estimates to reduce the noise of policy updates, with the actor choosing actions and the critic estimating future reward.",
+    "caveat_or_warning": "The span is a recap and does not cover critic error in detail. A bad value estimate can still mislead the actor.",
+    "why_span_matters": "It anchors the reason a critic exists: sampled rewards are too sparse or noisy to guide policy changes alone."
+  },
+  "ev-actor_critic-04": {
+    "lecture_argument": "The CS224R Q-learning review defines a value function V^pi(s) as expected future reward when starting at state s.",
+    "example_or_analogy": "A value function is a forecast for a situation: if the agent starts here and follows the policy, how much reward should it expect later?",
+    "mathematical_claim": "V^pi(s) estimates expected return under policy pi from state s. Actor-critic methods use related value estimates as critic signals.",
+    "caveat_or_warning": "This tutorial span supports the value-function half of actor-critic, not the full actor update.",
+    "why_span_matters": "It gives a clean transcript definition of the critic-side quantity in plain RL terms."
+  },
+  "ev-actor_critic-05": {
+    "lecture_argument": "The CS224R RL-for-LLM-reasoning lecture points back to value and advantage functions when explaining the optimization setup for reasoning.",
+    "example_or_analogy": "The critic-like signal tells whether a reasoning step or trace did better than expected, which can guide how the language policy changes.",
+    "mathematical_claim": "Advantage functions compare observed or estimated return against a baseline value, producing a lower-noise signal for policy updates.",
+    "caveat_or_warning": "The span is a bridge into LLM reasoning, so it supports the analogy but not a guarantee that every token-level credit estimate is reliable.",
+    "why_span_matters": "It links actor-critic primitives to reasoning models, where generated tokens become sequential choices."
   }
 }

@@ -28,8 +28,9 @@
     "lecture_evidence_chain": "The transcript evidence chain is routed through attention, positional encoding, transformer block, vision transformers. Each listed concept carries concrete course evidence; this page makes a higher-level synthesis over those anchors rather than claiming that every family-level sentence appears verbatim in one lecture.",
     "course_evidence_ids": [
       "ev-attention-01",
-      "ev-attention-04",
+      "ev-attention-02",
       "ev-transformer_block-01",
+      "ev-transformer_block-06",
       "ev-vision_transformers-02"
     ],
     "evidence_status": "transcript-backed method family"
@@ -98,7 +99,8 @@
     "course_evidence_ids": [
       "ev-reasoning_traces-01",
       "ev-reasoning_traces-02",
-      "ev-agents_and_tools-01"
+      "ev-agents_and_tools-01",
+      "ev-agents_and_tools-02"
     ],
     "evidence_status": "transcript-backed method family"
   },
@@ -129,6 +131,7 @@
     "course_evidence_ids": [
       "ev-q_learning-01",
       "ev-q_learning-05",
+      "ev-credit_assignment-01",
       "ev-credit_assignment-04"
     ],
     "evidence_status": "transcript-backed method family"
@@ -164,7 +167,7 @@
       "ev-policy_gradient-01",
       "ev-policy_gradient-02",
       "ev-actor_critic-01",
-      "ev-actor_critic-03",
+      "ev-actor_critic-02",
       "ev-rl_for_llms-01"
     ],
     "evidence_status": "transcript-backed method family"

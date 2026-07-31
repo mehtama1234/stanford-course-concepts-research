@@ -74,6 +74,24 @@
 </article>
 
 
+<article class="evidence" id="ev-actor_critic-02">
+  <h3><a href="../evidence.html#ev-actor_critic-02">ev-actor_critic-02</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:33.920 · strong</p>
+  <p>around 00:00:33.920, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R offline RL lecture recaps the move from reinforcing good outcomes to introducing a value function that can estimate outcome quality.</dd>
+    <dt>Example Or Analogy</dt><dd>The value function acts as a learned judge: instead of waiting for raw outcomes every time, the learner estimates which situations are promising.</dd>
+    <dt>Mathematical Claim</dt><dd>Actor-critic methods use value estimates to reduce the noise of policy updates, with the actor choosing actions and the critic estimating future reward.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span is a recap and does not cover critic error in detail. A bad value estimate can still mislead the actor.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the reason a critic exists: sampled rewards are too sparse or noisy to guide policy changes alone.</dd>
+    <dt>Local Transcript Window</dt><dd>less of the stuff that led to bad outcomes. And then we started introducing this notion of a value function, which can then estimate.</dd>
+  </dl>
+  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
+</article>
+
+
 <article class="evidence" id="ev-actor_critic-03">
   <h3><a href="../evidence.html#ev-actor_critic-03">ev-actor_critic-03</a></h3>
   <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</strong></p>
@@ -89,6 +107,42 @@
   </dl>
   <p class="meta">Matched terms: baseline · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-actor_critic-04">
+  <h3><a href="../evidence.html#ev-actor_critic-04">ev-actor_critic-04</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:02:47.480 · strong</p>
+  <p>around 00:02:47.480, the lecture uses value function while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R Q-learning review defines a value function V^pi(s) as expected future reward when starting at state s.</dd>
+    <dt>Example Or Analogy</dt><dd>A value function is a forecast for a situation: if the agent starts here and follows the policy, how much reward should it expect later?</dd>
+    <dt>Mathematical Claim</dt><dd>V^pi(s) estimates expected return under policy pi from state s. Actor-critic methods use related value estimates as critic signals.</dd>
+    <dt>Caveat Or Warning</dt><dd>This tutorial span supports the value-function half of actor-critic, not the full actor update.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives a clean transcript definition of the critic-side quantity in plain RL terms.</dd>
+    <dt>Local Transcript Window</dt><dd>So we&#x27;ll start off by defining V pi of s or a value function that estimates the expected future reward when you start at a state s</dd>
+  </dl>
+  <p class="meta">Matched terms: value function · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-actor_critic-05">
+  <h3><a href="../evidence.html#ev-actor_critic-05">ev-actor_critic-05</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:33:21.520 · strong</p>
+  <p>around 00:33:21.520, the lecture uses advantage while covering Actor-Critic. This supports the scoped claim that a learner split into a chooser and a judge.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-LLM-reasoning lecture points back to value and advantage functions when explaining the optimization setup for reasoning.</dd>
+    <dt>Example Or Analogy</dt><dd>The critic-like signal tells whether a reasoning step or trace did better than expected, which can guide how the language policy changes.</dd>
+    <dt>Mathematical Claim</dt><dd>Advantage functions compare observed or estimated return against a baseline value, producing a lower-noise signal for policy updates.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span is a bridge into LLM reasoning, so it supports the analogy but not a guarantee that every token-level credit estimate is reliable.</dd>
+    <dt>Why This Span Matters</dt><dd>It links actor-critic primitives to reasoning models, where generated tokens become sequential choices.</dd>
+    <dt>Local Transcript Window</dt><dd>So the way to do this is the following-- and this ties back to a lot of concepts of value functions and advantage functions that many of you are probably familiar with.</dd>
+  </dl>
+  <p class="meta">Matched terms: advantage · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
 </article>
 </div>
 </section>

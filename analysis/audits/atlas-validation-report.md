@@ -10,9 +10,9 @@ python3 scripts/validate_all.py
 Latest validation result:
 
 ```text
-validated 28 concepts, 6 themes, 15 subthemes, 52 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 52 manually deepened evidence records
-validated 34 html files and 52 evidence anchors
-audited 52 published evidence records and 79 queued records; 52 manual, 0 published generated-needs-review, 0 generated strong
+validated 28 concepts, 6 themes, 15 subthemes, 70 evidence records, 10 primitives, 9 method families; 28 manually deepened concepts, 70 manually deepened evidence records
+validated 34 html files and 70 evidence anchors
+audited 70 published evidence records and 61 queued records; 70 manual, 0 published generated-needs-review, 0 generated strong
 ```
 
 ## What Was Checked
@@ -62,7 +62,9 @@ curl -fsS http://127.0.0.1:8876/concepts/attention.html
 curl -fsS http://127.0.0.1:8876/evidence.html
 ```
 
-The smoke test confirmed that the overview, themes, method families, primitives, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. It also checked that generated review-queue evidence is not published on `evidence.html`. A true browser screenshot inspection was not completed because this environment does not have Playwright or a browser binary installed.
+The smoke test confirmed that the overview, themes, method families, primitives, a representative concept page, and the evidence page serve and contain the expected teaching/evidence sections. It also checked that generated review-queue evidence is not published on `evidence.html`.
+
+An attempted Playwright screenshot pass failed before rendering because Chromium could not load the system library `libnspr4.so`. Running `npx -y playwright install-deps chromium` also failed because sudo requires an interactive terminal. Screenshot inspection therefore remains unproven in this environment.
 
 ## Evidence Interpretation
 
@@ -76,8 +78,8 @@ Evidence confidence means:
 
 ## Current Scope
 
-This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus 52 evidence spans across the course corpus.
+This is now a local, reader-facing first-principles lab backed by generated research artifacts and stronger quality gates than the first structural pass. The editorial pass has manually deepened all 28 concept pages plus 70 evidence spans across the course corpus.
 
 The theme, subtheme, primitive, and method-family layers now have deeper first-principles fields and validation gates. The theme pages include cross-course arguments and analogy limits; method-family pages are family-specific rather than generic boilerplate; primitive pages explain the reusable mathematical handle behind each recurring idea.
 
-This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, manually review the remaining 79 generated transcript-cue evidence records, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with a browser.
+This is not the final publication-grade state. The remaining quality frontier is the rendered learning experience and evidence precision: add diagrams or interactive explainers where they clarify the math, manually review the remaining 61 generated transcript-cue evidence records, perform a slower page-by-page editorial read, and complete true browser screenshot inspection or deployment checks in an environment with a browser.

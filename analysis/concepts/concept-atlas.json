@@ -61,6 +61,8 @@
     ],
     "course_evidence_ids": [
       "ev-embeddings-02",
+      "ev-embeddings-04",
+      "ev-embeddings-05",
       "ev-embeddings-06"
     ],
     "evidence_status": "transcript-backed"
@@ -129,6 +131,7 @@
     ],
     "course_evidence_ids": [
       "ev-attention-01",
+      "ev-attention-02",
       "ev-attention-04",
       "ev-attention-05"
     ],
@@ -164,7 +167,8 @@
       "feedback"
     ],
     "course_evidence_ids": [
-      "ev-transformer_block-01"
+      "ev-transformer_block-01",
+      "ev-transformer_block-06"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -300,7 +304,8 @@
       "feedback"
     ],
     "course_evidence_ids": [
-      "ev-agents_and_tools-01"
+      "ev-agents_and_tools-01",
+      "ev-agents_and_tools-02"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -335,7 +340,9 @@
     "course_evidence_ids": [
       "ev-evaluation-01",
       "ev-evaluation-02",
-      "ev-evaluation-04"
+      "ev-evaluation-03",
+      "ev-evaluation-04",
+      "ev-evaluation-05"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -369,7 +376,11 @@
     ],
     "course_evidence_ids": [
       "ev-policy-01",
-      "ev-policy-04"
+      "ev-policy-02",
+      "ev-policy-03",
+      "ev-policy-04",
+      "ev-policy-05",
+      "ev-policy-06"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -402,7 +413,8 @@
       "credit"
     ],
     "course_evidence_ids": [
-      "ev-reward-01"
+      "ev-reward-01",
+      "ev-reward-02"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -435,6 +447,7 @@
       "assignment"
     ],
     "course_evidence_ids": [
+      "ev-credit_assignment-01",
       "ev-credit_assignment-04"
     ],
     "evidence_status": "transcript-backed"
@@ -469,7 +482,9 @@
     ],
     "course_evidence_ids": [
       "ev-policy_gradient-01",
-      "ev-policy_gradient-02"
+      "ev-policy_gradient-02",
+      "ev-policy_gradient-03",
+      "ev-policy_gradient-06"
     ],
     "evidence_status": "transcript-backed"
   },
@@ -503,7 +518,10 @@
     ],
     "course_evidence_ids": [
       "ev-actor_critic-01",
-      "ev-actor_critic-03"
+      "ev-actor_critic-02",
+      "ev-actor_critic-03",
+      "ev-actor_critic-04",
+      "ev-actor_critic-05"
     ],
     "evidence_status": "transcript-backed"
   },

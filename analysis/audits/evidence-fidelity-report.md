@@ -4,61 +4,43 @@ This audit separates transcript anchoring from editorially reviewed evidence. A 
 
 ## Counts
 
-- Published evidence records: 52
-- Published manual deepened records: 52
+- Published evidence records: 70
+- Published manual deepened records: 70
 - Published generated records: 0
-- Unpublished generated transcript-cue records in review queue: 79
-- Review-queue generated records: 79
+- Unpublished generated transcript-cue records in review queue: 61
+- Review-queue generated records: 61
 - Template-style example records still published: 0
 - Published generated records incorrectly marked strong: 0
 - Published records missing useful local transcript windows: 0
 
 ## Confidence Counts
 
-- moderate: 7
-- strong: 38
-- weak: 7
+- moderate: 10
+- strong: 52
+- weak: 8
 
 ## Evidence Basis Counts
 
-- local VTT timestamp cue: 52
+- local VTT timestamp cue: 70
 
 ## Remaining Review Queue
 
 - ev-tokenization-02 (tokenization) — stanford-cme296-diffusion-large-vision-models-spring-2026 — 00:35:56.570 — moderate
 - ev-embeddings-01 (embeddings) — stanford-cme296-diffusion-large-vision-models-spring-2026 — 00:05:16.580 — moderate
 - ev-embeddings-03 (embeddings) — stanford-cs224r-deep-rl-spring-2025 — 00:40:26.570 — moderate
-- ev-embeddings-04 (embeddings) — stanford-cme295-transformers-llms-autumn-2025 — 00:02:30.490 — moderate
-- ev-embeddings-05 (embeddings) — stanford-cme295-transformers-llms-autumn-2025 — 00:02:20.200 — moderate
-- ev-attention-02 (attention) — stanford-cme296-diffusion-large-vision-models-spring-2026 — 00:32:55.100 — moderate
 - ev-attention-03 (attention) — stanford-cs224r-deep-rl-spring-2025 — 00:32:12.760 — weak
 - ev-attention-06 (attention) — stanford-cs224r-deep-rl-spring-2025 — 00:54:12.730 — weak
 - ev-transformer_block-02 (transformer_block) — stanford-cme296-diffusion-large-vision-models-spring-2026 — 00:35:05.103 — moderate
 - ev-transformer_block-03 (transformer_block) — stanford-cs224r-deep-rl-spring-2025 — 00:48:04.220 — moderate
 - ev-transformer_block-04 (transformer_block) — stanford-cme295-transformers-llms-autumn-2025 — timestamp unavailable — weak
 - ev-transformer_block-05 (transformer_block) — stanford-cs224r-deep-rl-spring-2025 — 00:12:53.970 — moderate
-- ev-transformer_block-06 (transformer_block) — stanford-cs224r-deep-rl-spring-2025 — 00:20:49.840 — moderate
-- ev-agents_and_tools-02 (agents_and_tools) — stanford-cs224r-deep-rl-spring-2025 — 00:01:19.350 — moderate
-- ev-evaluation-03 (evaluation) — stanford-cs224r-deep-rl-spring-2025 — 00:00:28.100 — moderate
-- ev-evaluation-05 (evaluation) — stanford-cs224r-deep-rl-spring-2025 — 00:12:40.630 — moderate
 - ev-evaluation-06 (evaluation) — stanford-cme295-transformers-llms-autumn-2025 — 00:04:23.380 — moderate
-- ev-policy-02 (policy) — stanford-cs224r-deep-rl-spring-2025 — 00:00:10.040 — moderate
-- ev-policy-03 (policy) — stanford-cs224r-deep-rl-spring-2025 — 00:00:14.040 — moderate
-- ev-policy-05 (policy) — stanford-cs224r-deep-rl-spring-2025 — 00:00:38.640 — moderate
-- ev-policy-06 (policy) — stanford-cs224r-deep-rl-spring-2025 — 00:00:29.240 — moderate
-- ev-reward-02 (reward) — stanford-cs224r-deep-rl-spring-2025 — 00:00:05.480 — moderate
-- ev-credit_assignment-01 (credit_assignment) — stanford-cs224r-deep-rl-spring-2025 — 00:46:20.770 — weak
 - ev-credit_assignment-02 (credit_assignment) — stanford-cs224r-deep-rl-spring-2025 — 00:28:09.790 — weak
 - ev-credit_assignment-03 (credit_assignment) — stanford-cs224r-deep-rl-spring-2025 — 00:01:51.720 — weak
 - ev-credit_assignment-05 (credit_assignment) — stanford-cs224r-deep-rl-spring-2025 — 00:38:05.020 — weak
 - ev-credit_assignment-06 (credit_assignment) — stanford-cs224r-deep-rl-spring-2025 — timestamp unavailable — weak
-- ev-policy_gradient-03 (policy_gradient) — stanford-cs224r-deep-rl-spring-2025 — 00:01:02.160 — moderate
 - ev-policy_gradient-04 (policy_gradient) — stanford-cs224r-deep-rl-spring-2025 — 00:01:15.430 — moderate
 - ev-policy_gradient-05 (policy_gradient) — stanford-cs224r-deep-rl-spring-2025 — 00:00:59.790 — moderate
-- ev-policy_gradient-06 (policy_gradient) — stanford-cs224r-deep-rl-spring-2025 — 00:33:21.520 — moderate
-- ev-actor_critic-02 (actor_critic) — stanford-cs224r-deep-rl-spring-2025 — 00:00:33.920 — moderate
-- ev-actor_critic-04 (actor_critic) — stanford-cs224r-deep-rl-spring-2025 — 00:02:47.480 — moderate
-- ev-actor_critic-05 (actor_critic) — stanford-cs224r-deep-rl-spring-2025 — 00:33:21.520 — moderate
 - ev-actor_critic-06 (actor_critic) — stanford-cs224r-deep-rl-spring-2025 — 00:02:25.640 — moderate
 - ev-q_learning-02 (q_learning) — stanford-cs224r-deep-rl-spring-2025 — 00:00:11.920 — moderate
 - ev-q_learning-03 (q_learning) — stanford-cs224r-deep-rl-spring-2025 — 00:05:31.730 — moderate
