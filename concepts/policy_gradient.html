@@ -90,6 +90,42 @@
   <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue · Review: manual_deepened</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt</code></p>
 </article>
+
+
+<article class="evidence" id="ev-policy_gradient-03">
+  <h3><a href="../evidence.html#ev-policy_gradient-03">ev-policy_gradient-03</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:01:02.160 · strong</p>
+  <p>around 00:01:02.160, the lecture uses gradient while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R actor-critic lecture writes the policy-gradient expression in terms of the gradient of the log probability of actions under the policy.</dd>
+    <dt>Example Or Analogy</dt><dd>The update looks at actions the policy actually took, then changes the policy in proportion to how those sampled actions should be reinforced or discouraged.</dd>
+    <dt>Mathematical Claim</dt><dd>The log-probability gradient tells how changing policy parameters would make a sampled action more or less likely.</dd>
+    <dt>Caveat Or Warning</dt><dd>This is a local formula span. It supports the policy-gradient mechanism, but the quality of the update still depends on the return or advantage signal multiplying it.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors the mathematical object behind policy-gradient updates rather than only the verbal idea of improving a policy.</dd>
+    <dt>Local Transcript Window</dt><dd>over actions given states. And so this is looking like the gradient of the log probability of the actions under the policy.</dd>
+  </dl>
+  <p class="meta">Matched terms: gradient · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt</code></p>
+</article>
+
+
+<article class="evidence" id="ev-policy_gradient-06">
+  <h3><a href="../evidence.html#ev-policy_gradient-06">ev-policy_gradient-06</a></h3>
+  <p><strong>Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</strong></p>
+  <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:33:21.520 · strong</p>
+  <p>around 00:33:21.520, the lecture uses advantage while covering Policy Gradient. This supports the scoped claim that changing an action rule toward sampled choices that worked better.</p>
+  <dl>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-LLM-reasoning lecture ties LLM reasoning optimization back to value functions and advantage functions.</dd>
+    <dt>Example Or Analogy</dt><dd>For reasoning traces, an advantage can act like a comparison signal: this sampled solution path was better or worse than expected.</dd>
+    <dt>Mathematical Claim</dt><dd>Advantage estimates measure how much better an action or token choice was than a baseline, and they can weight policy-gradient updates.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span assumes students know the value-function machinery, so it supports the bridge to LLM reasoning but not a full derivation by itself.</dd>
+    <dt>Why This Span Matters</dt><dd>It connects policy-gradient math to modern reasoning-model training rather than leaving it inside classic RL examples.</dd>
+    <dt>Local Transcript Window</dt><dd>So the way to do this is the following-- and this ties back to a lot of concepts of value functions and advantage functions that many of you are probably familiar with.</dd>
+  </dl>
+  <p class="meta">Matched terms: advantage · Basis: local VTT timestamp cue · Review: manual_deepened</p>
+  <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
+</article>
 </div>
 </section>
 </main>

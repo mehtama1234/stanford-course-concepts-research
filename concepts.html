@@ -43,7 +43,7 @@
     <dt>First-Principles Reason</dt><dd>A learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.</dd>
     <dt>Math Underneath</dt><dd>An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-06">ev-embeddings-06</a> <span class="time">00:20:34.500</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-04">ev-embeddings-04</a> <span class="time">00:02:30.490</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-embeddings-05">ev-embeddings-05</a> <span class="time">00:02:20.200</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li></ul>
 </article>
 
 <article class="concept-card" id="positional_encoding">
@@ -67,7 +67,7 @@
     <dt>First-Principles Reason</dt><dd>Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
     <dt>Math Underneath</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-04">ev-attention-04</a> <span class="time">01:08:17.450</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-attention-05">ev-attention-05</a> <span class="time">00:38:20.513</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-02">ev-attention-02</a> <span class="time">00:32:55.100</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-attention-04">ev-attention-04</a> <span class="time">01:08:17.450</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li></ul>
 </article>
 
 <article class="concept-card" id="transformer_block">
@@ -79,7 +79,7 @@
     <dt>First-Principles Reason</dt><dd>A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.</dd>
     <dt>Math Underneath</dt><dd>A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-transformer_block-06">ev-transformer_block-06</a> <span class="time">00:20:49.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li></ul>
 </article>
 
 <article class="concept-card" id="pretraining">
@@ -127,7 +127,7 @@
     <dt>First-Principles Reason</dt><dd>A useful system often needs perception, memory, action, and correction, not only prediction.</dd>
     <dt>Math Underneath</dt><dd>The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li><li><a href="evidence.html#ev-agents_and_tools-02">ev-agents_and_tools-02</a> <span class="time">00:01:19.350</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots</li></ul>
 </article>
 
 <article class="concept-card" id="evaluation">
@@ -139,7 +139,7 @@
     <dt>First-Principles Reason</dt><dd>Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.</dd>
     <dt>Math Underneath</dt><dd>A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-evaluation-04">ev-evaluation-04</a> <span class="time">00:12:04.240</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-evaluation-03">ev-evaluation-03</a> <span class="time">00:00:28.100</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers</li></ul>
 </article>
 
 <article class="concept-card" id="policy">
@@ -151,7 +151,7 @@
     <dt>First-Principles Reason</dt><dd>In a changing environment, the learner must connect what it can see now to a choice under uncertainty.</dd>
     <dt>Math Underneath</dt><dd>A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li><li><a href="evidence.html#ev-policy-04">ev-policy-04</a> <span class="time">00:00:28.100</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li><li><a href="evidence.html#ev-policy-02">ev-policy-02</a> <span class="time">00:00:10.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy-03">ev-policy-03</a> <span class="time">00:00:14.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li></ul>
 </article>
 
 <article class="concept-card" id="reward">
@@ -163,7 +163,7 @@
     <dt>First-Principles Reason</dt><dd>Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.</dd>
     <dt>Math Underneath</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-reward-02">ev-reward-02</a> <span class="time">00:00:05.480</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li></ul>
 </article>
 
 <article class="concept-card" id="credit_assignment">
@@ -175,7 +175,7 @@
     <dt>First-Principles Reason</dt><dd>Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.</dd>
     <dt>Math Underneath</dt><dd>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-04">ev-credit_assignment-04</a> <span class="time">00:11:05.430</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-01">ev-credit_assignment-01</a> <span class="time">00:46:20.770</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro</li><li><a href="evidence.html#ev-credit_assignment-04">ev-credit_assignment-04</a> <span class="time">00:11:05.430</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
 </article>
 
 <article class="concept-card" id="policy_gradient">
@@ -187,7 +187,7 @@
     <dt>First-Principles Reason</dt><dd>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
     <dt>Math Underneath</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy_gradient-02">ev-policy_gradient-02</a> <span class="time">00:06:57.150</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy_gradient-02">ev-policy_gradient-02</a> <span class="time">00:06:57.150</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients</li><li><a href="evidence.html#ev-policy_gradient-03">ev-policy_gradient-03</a> <span class="time">00:01:02.160</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
 </article>
 
 <article class="concept-card" id="actor_critic">
@@ -199,7 +199,7 @@
     <dt>First-Principles Reason</dt><dd>Decision making improves when action choice and outcome evaluation can help each other.</dd>
     <dt>Math Underneath</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
   </dl>
-  <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-actor_critic-03">ev-actor_critic-03</a> <span class="time">00:01:26.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
+  <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-actor_critic-02">ev-actor_critic-02</a> <span class="time">00:00:33.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-actor_critic-03">ev-actor_critic-03</a> <span class="time">00:01:26.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
 </article>
 
 <article class="concept-card" id="q_learning">
