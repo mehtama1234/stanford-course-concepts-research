@@ -42,13 +42,13 @@
   <h2>The Operation</h2>
   <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Vision Transformers, this is the move that turns a vague goal into an executable procedure.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose a system faces a new case where the surface details are unfamiliar but the underlying problem is the same. Using Vision Transformers, it first represents the case in the right form, then applies the core operation, then checks the result against evidence or feedback. The important point is not that the method magically knows the answer; it creates a disciplined way to move from messy input toward a better decision.</p>
+  <p>Mini-example: an image can be divided into patches the same way text is divided into tokens. A patch of sky, a patch of teddy bear fur, and a patch containing a book need to exchange information if the model is judging whether the image follows a prompt. The current corpus has weaker direct vision-transformer evidence than language-transformer evidence, but CME296 repeatedly treats image generation and image evaluation as patch- or architecture-level modeling problems, and CME295 recap connects transformer ideas to image settings.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>In the course corpus, Vision Transformers is treated as part of the practical machinery behind modern systems, not as an isolated definition. The lectures connect it to implementation choices, training behavior, or evaluation consequences depending on the course.</p>
+  <p>The lecture evidence here is shallower than for attention or diffusion. CME296 focuses on large vision and text-to-image systems, while CME295 names transformer-based trends that extend beyond text. The first-principles point is still important: vision transformers reuse the transformer move by turning spatial image regions into items that can communicate globally.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common mistake is to treat Vision Transformers as a label for a technique rather than as a response to a constraint. The first-principles view is that the constraint comes first; the method is one way to manage it.</p>
+  <p>A common misunderstanding is that vision transformers understand images because they copy language transformers unchanged. Images need spatial position, patch size choices, visual inductive biases, and architecture adaptations. Treating every patch like a word is the starting trick, not the whole solution.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>When reading a new paper, look for the place where the authors face the same pressure as Vision Transformers: too much information, delayed feedback, uncertain futures, expensive search, or a gap between a score and real behavior. That pressure usually reveals the concept even when the paper uses different terminology.</p>
+  <p>In a new paper, recognize vision-transformer structure when images are split into patches or visual tokens, embedded, given position information, and processed with attention blocks. Terms like ViT, DiT, patch embedding, visual token, self-attention, and cross-attention usually point to the same primitive: global communication among image regions.</p>
   <h2>Connected Concepts</h2>
   <p>The same primitive reappears near attention, positional encoding, latent space. Across the three courses, the shared pattern is composition, invariance: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
   <p class="chips"><a class="chip" href="attention.html">attention</a> <a class="chip" href="positional_encoding.html">positional encoding</a> <a class="chip" href="latent_space.html">latent space</a></p>
@@ -79,11 +79,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:51:26.940 · strong</p>
   <p>around 00:51:26.940, the lecture uses image while covering Vision Transformers. This supports the scoped claim that treating pieces of an image like items that can read from one another.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 9 - Recap &amp; Current Trends and anchors the lecture&#x27;s treatment of Vision Transformers through the local cues image. The supported argument is that treating pieces of an image like items that can read from one another is needed because images are not just local texture. shape, object identity, and layout require comparing distant parts.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Vision Transformers as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>An image is split into patches, each patch gets a vector, and attention lets patches exchange information.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may depend too heavily on local filters and struggle with global image relationships.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Vision Transformers. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 recap connects transformer ideas to broader model trends, including image settings, while CME296 supplies the large-vision context where images are generated and evaluated.</dd>
+    <dt>Example Or Analogy</dt><dd>The useful analogy is to treat image regions as items in a sequence-like workspace: patches become the visual counterpart of tokens, and attention lets distant regions exchange information.</dd>
+    <dt>Mathematical Claim</dt><dd>A vision transformer splits an image into patches, embeds each patch as a vector, adds position information, and applies transformer attention blocks to mix information across patches.</dd>
+    <dt>Caveat Or Warning</dt><dd>Direct transcript support for a full ViT derivation is weaker than for language attention or diffusion. This evidence should be treated as architectural synthesis from course context, not as a lecture-by-lecture derivation.</dd>
+    <dt>Why This Span Matters</dt><dd>It keeps the atlas honest about the language-to-vision bridge: the transformer primitive transfers, but vision-specific details need their own evidence.</dd>
   </dl>
   <p class="meta">Matched terms: image · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap &amp; Current Trends.txt</code></p>

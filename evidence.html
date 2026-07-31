@@ -599,11 +599,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:22.000 · strong</p>
   <p>around 00:00:22.000, the lecture uses policy while covering Policy. This supports the scoped claim that the rule an agent uses to choose what to do next.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 15: Hierarchical RL and IL and anchors the lecture&#x27;s treatment of Policy through the local cues policy. The supported argument is that the rule an agent uses to choose what to do next is needed because in a changing environment, the learner must connect what it can see now to a choice under uncertainty.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Policy as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: There is no explicit way to discuss or improve the system&#x27;s behavior over time.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Policy. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R hierarchical RL lecture frames policy as the behavior object that can be conditioned on task descriptors, goals, or experience and then composed into longer-horizon behavior.</dd>
+    <dt>Example Or Analogy</dt><dd>The lecture&#x27;s long-horizon setup is the concrete case: a policy may solve a small behavior, but hierarchical RL asks how to string multiple behaviors together for a larger task.</dd>
+    <dt>Mathematical Claim</dt><dd>A policy maps a state, goal, task descriptor, or history to an action or action distribution. Conditioning changes what behavior the same learned rule expresses.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span supports policy as a flexible behavior rule, especially in multitask and hierarchical settings. It does not by itself derive policy-gradient or value-based learning.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors policy as the object being adapted, conditioned, and composed in RL, not merely a static lookup table.</dd>
   </dl>
   <p class="meta">Matched terms: policy · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt</code></p>
@@ -775,11 +775,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:11:05.430 · weak</p>
   <p>around 00:11:05.430, the lecture uses discount factor while covering Credit Assignment. This supports the scoped claim that figuring out which earlier choices caused a later success or failure.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 6: Q-Learning and anchors the lecture&#x27;s treatment of Credit Assignment through the local cues discount factor. The supported argument is that figuring out which earlier choices caused a later success or failure is needed because time hides causes. a learner needs a way to connect delayed feedback back to the decisions that shaped it.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Credit Assignment as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system overreacts to the last action or misses the earlier decision that mattered.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Credit Assignment. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R Q-learning lecture uses discounting and future return to connect later rewards back to earlier state-action choices.</dd>
+    <dt>Example Or Analogy</dt><dd>Discounting is like deciding how much a future consequence should count when judging a present action. It does not solve all credit assignment, but it gives a mathematical path for later outcomes to influence earlier estimates.</dd>
+    <dt>Mathematical Claim</dt><dd>Discounted return weights future rewards by powers of a discount factor, so an action&#x27;s value can include consequences that arrive later while still giving nearer rewards more influence.</dd>
+    <dt>Caveat Or Warning</dt><dd>The evidence is weaker than a lecture segment explicitly titled credit assignment. It supports one mathematical lever for temporal credit, not the full set of credit-assignment methods.</dd>
+    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript-backed bridge from delayed reward to the value estimates used in Q-learning and policy improvement.</dd>
   </dl>
   <p class="meta">Matched terms: discount factor · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt</code></p>
@@ -1111,11 +1111,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:07:44.840 · strong</p>
   <p>around 00:07:44.840, the lecture uses offline reinforcement while covering Offline Reinforcement Learning. This supports the scoped claim that learning from logged experience without freely trying new actions during training.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 7: Offline RL and anchors the lecture&#x27;s treatment of Offline Reinforcement Learning through the local cues offline reinforcement. The supported argument is that learning from logged experience without freely trying new actions during training is needed because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Offline Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent can exploit errors in its own value estimates for actions the dataset barely contains.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Offline Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R offline RL lecture defines the setting as learning from a dataset given to us rather than collected by the learner&#x27;s own policy, after warning that Q-function estimates need action coverage.</dd>
+    <dt>Example Or Analogy</dt><dd>The dataset is like a map drawn only from roads someone else drove. If the learned policy tries a road not on the map, the value estimate may be unsupported.</dd>
+    <dt>Mathematical Claim</dt><dd>Offline RL must manage distribution shift between the behavior that produced the dataset and the policy being learned. Conservative or constrained methods reduce trust in unsupported actions.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports the central challenge, but individual offline RL algorithms require separate details. Dataset coverage is necessary context, not a complete method.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors why offline RL exists as a distinct problem: removing online data collection changes which value estimates can be trusted.</dd>
   </dl>
   <p class="meta">Matched terms: offline reinforcement · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
@@ -1207,11 +1207,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:04:50.450 · strong</p>
   <p>around 00:04:50.450, the lecture uses model-based while covering Model-Based Reinforcement Learning. This supports the scoped claim that learning or using a simulator of what might happen next.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 11: Model-Based RL and anchors the lecture&#x27;s treatment of Model-Based Reinforcement Learning through the local cues model-based. The supported argument is that learning or using a simulator of what might happen next is needed because if the agent can imagine consequences, it can compare possible futures before acting.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Model-Based Reinforcement Learning as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The agent must learn mainly by direct experience and may waste attempts.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Model-Based Reinforcement Learning. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R model-based RL lecture introduces the class by asking how to learn models, how to use them for planning and data generation, and what trade-offs the approach creates.</dd>
+    <dt>Example Or Analogy</dt><dd>The dexterous robot hand example motivates imagined futures: before spending expensive real-world interaction, the agent can use a learned dynamics model to reason about possible outcomes.</dd>
+    <dt>Mathematical Claim</dt><dd>A dynamics model estimates how the state changes after an action. Planning uses that model to search over possible action sequences before choosing what to do.</dd>
+    <dt>Caveat Or Warning</dt><dd>The lecture also flags challenges and trade-offs. A learned model can be wrong, and planning through a wrong model can compound errors.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors model-based RL as the first-principles move from direct trial-and-error to prediction-assisted action selection.</dd>
   </dl>
   <p class="meta">Matched terms: model-based · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt</code></p>
@@ -1303,11 +1303,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:00:07.040 · strong</p>
   <p>around 00:00:07.040, the lecture uses exploration while covering Exploration. This supports the scoped claim that trying actions to learn what would otherwise remain unknown.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 14: Exploration and anchors the lecture&#x27;s treatment of Exploration through the local cues exploration. The supported argument is that trying actions to learn what would otherwise remain unknown is needed because information has value. some actions are useful because they reveal the world, not because they immediately pay off.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Exploration as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The system can get stuck repeating a mediocre behavior because it never tests alternatives.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Exploration. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R exploration lecture motivates exploration by contrasting RL success in Breakout with difficulty in Montezuma&#x27;s Revenge, where useful reward requires harder discovery.</dd>
+    <dt>Example Or Analogy</dt><dd>The game contrast is the example: one environment gives frequent enough scoring feedback, while the other hides progress behind sequences of discoveries.</dd>
+    <dt>Mathematical Claim</dt><dd>Exploration methods add mechanisms such as randomness, optimism, intrinsic reward, or uncertainty bonuses so the learner samples informative actions instead of only exploiting current estimates.</dd>
+    <dt>Caveat Or Warning</dt><dd>This span motivates the exploration problem; specific algorithms and guarantees require later lecture material. Random action alone is not the full answer.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors exploration in a concrete failure mode: some tasks cannot be learned if the agent only repeats what currently appears best.</dd>
   </dl>
   <p class="meta">Matched terms: exploration · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 14： Exploration.txt</code></p>
@@ -1927,11 +1927,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:51:26.940 · strong</p>
   <p>around 00:51:26.940, the lecture uses image while covering Vision Transformers. This supports the scoped claim that treating pieces of an image like items that can read from one another.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 9 - Recap &amp; Current Trends and anchors the lecture&#x27;s treatment of Vision Transformers through the local cues image. The supported argument is that treating pieces of an image like items that can read from one another is needed because images are not just local texture. shape, object identity, and layout require comparing distant parts.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Vision Transformers as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>An image is split into patches, each patch gets a vector, and attention lets patches exchange information.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: The model may depend too heavily on local filters and struggle with global image relationships.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Vision Transformers. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 recap connects transformer ideas to broader model trends, including image settings, while CME296 supplies the large-vision context where images are generated and evaluated.</dd>
+    <dt>Example Or Analogy</dt><dd>The useful analogy is to treat image regions as items in a sequence-like workspace: patches become the visual counterpart of tokens, and attention lets distant regions exchange information.</dd>
+    <dt>Mathematical Claim</dt><dd>A vision transformer splits an image into patches, embeds each patch as a vector, adds position information, and applies transformer attention blocks to mix information across patches.</dd>
+    <dt>Caveat Or Warning</dt><dd>Direct transcript support for a full ViT derivation is weaker than for language attention or diffusion. This evidence should be treated as architectural synthesis from course context, not as a lecture-by-lecture derivation.</dd>
+    <dt>Why This Span Matters</dt><dd>It keeps the atlas honest about the language-to-vision bridge: the transformer primitive transfers, but vision-specific details need their own evidence.</dd>
   </dl>
   <p class="meta">Matched terms: image · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap &amp; Current Trends.txt</code></p>
@@ -1943,11 +1943,11 @@
   <p class="meta">stanford-cme295-transformers-llms-autumn-2025 · 00:04:50.840 · strong</p>
   <p>around 00:04:50.840, the lecture uses parameters while covering Scaling Laws. This supports the scoped claim that regular patterns in what improves when models, data, and compute grow.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 4 - LLM Training and anchors the lecture&#x27;s treatment of Scaling Laws through the local cues parameters. The supported argument is that regular patterns in what improves when models, data, and compute grow is needed because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Scaling Laws as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Scaling Laws. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CME295 LLM training lecture discusses mixture-of-experts as a way to scale LLMs without paying the inference cost of activating every parameter.</dd>
+    <dt>Example Or Analogy</dt><dd>Sparse experts are like a large workshop where only the needed specialists are called for a given input. The total capacity can grow without using the whole workshop every time.</dd>
+    <dt>Mathematical Claim</dt><dd>Scaling analysis relates resources such as active parameters, total parameters, data, compute, and inference cost to loss or capability. Sparse activation changes the resource equation by separating total capacity from per-token compute.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span supports scaling trade-offs, not a full empirical scaling-law derivation. It is architectural evidence about why scale must be discussed with cost.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors scale as an engineering constraint: bigger models matter only together with the cost of training and using them.</dd>
   </dl>
   <p class="meta">Matched terms: parameters · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt</code></p>
@@ -2039,11 +2039,11 @@
   <p class="meta">stanford-cs224r-deep-rl-spring-2025 · 00:22:49.090 · moderate</p>
   <p>around 00:22:49.090, the lecture uses test while covering Generalization. This supports the scoped claim that doing well on new cases, not only remembered examples.</p>
   <dl>
-    <dt>Lecture Argument</dt><dd>This span sits inside Lecture 10: RL for LLM Reasoning and anchors the lecture&#x27;s treatment of Generalization through the local cues test. The supported argument is that doing well on new cases, not only remembered examples is needed because past data is only a sample of future situations. learning must capture stable structure rather than accidental details.</dd>
-    <dt>Example Or Analogy</dt><dd>Use the lecture context as a concrete case: the course is not presenting Generalization as vocabulary to memorize, but as machinery needed to make the surrounding model or learning setup work.</dd>
-    <dt>Mathematical Claim</dt><dd>Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.</dd>
-    <dt>Caveat Or Warning</dt><dd>The evidence supports the local lecture connection, not every broader claim in the atlas. The failure mode to keep in view is: Benchmarks and demos stop predicting real deployment behavior.</dd>
-    <dt>Why This Span Matters</dt><dd>It gives the atlas a transcript anchor for the mechanism behind Generalization. That matters because the page&#x27;s explanation should be traceable back to course material rather than free-floating synthesis.</dd>
+    <dt>Lecture Argument</dt><dd>The CS224R RL-for-reasoning lecture uses math exam problems and reference solutions to discuss training language models by next-token prediction, then asks why that paradigm works for reasoning.</dd>
+    <dt>Example Or Analogy</dt><dd>The math exam example is a test of transfer: the model must produce a solution to a new problem, not merely replay a memorized training answer.</dd>
+    <dt>Mathematical Claim</dt><dd>Generalization is the gap between fitting the training signal and performing correctly on new cases. Held-out problems, new prompts, or shifted environments test whether the learned pattern is reusable.</dd>
+    <dt>Caveat Or Warning</dt><dd>The span is indirect evidence for generalization. It motivates the issue through reasoning tasks but does not provide a full generalization theory.</dd>
+    <dt>Why This Span Matters</dt><dd>It anchors generalization in the practical question behind reasoning models: did training teach reusable problem solving or only imitation of seen solution strings?</dd>
   </dl>
   <p class="meta">Matched terms: test · Basis: local VTT timestamp cue</p>
   <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
