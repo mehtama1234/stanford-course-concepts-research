@@ -1,0 +1,3017 @@
+So today we'll not
+talk about SQL.
+We'll talk about reasoning and,
+particularly, reinforcement
+learning for LLM reasoning.
+So a high-level reasoning
+could mean many, many things.
+And it clearly even today
+means different things
+for different people,
+but what I'm going
+to do today in this lecture--
+and also I should
+mention that it's
+very hard to do justice to
+reasoning topics in one lecture.
+This was also a
+trouble that I had
+for my own class
+this semester, where
+I was covering similar
+content two weeks ago,
+and I couldn't go
+over everything.
+But what I'm going
+to do today is
+to give you at least
+one perspective
+on some of the trends in
+the field of reasoning.
+And for doing
+that, what we'll do
+is we'll restrict ourselves
+to solving math problems.
+So if you're following all
+the news in language models
+these days, people
+have been really
+excited about solving technical
+questions like math and coding
+and scientific questions
+with these models.
+And one of the benchmarks
+people look at, for example,
+is this AIME exam, American
+Invitational Mathematical
+Examination.
+This is an example question
+from that particular exam where
+you have to solve a certain
+number theory question,
+for instance.
+And to solve this-- these
+are some ground truth
+solutions for it-- you have to
+solve this in natural language
+where you want your language
+model, for instance, seeing
+this question,
+produce a solution
+that looks like one
+of those solutions
+that you'll see up on the slide.
+So I took these solutions from
+the reference solutions that
+exist for this exam, but
+you would want your LLM
+to be capable enough
+to, one, write
+a solution like this and, two,
+come up with the right answer
+finally.
+So that's all for
+the goal for today.
+So what I'll do today is I'll
+give you my perspective on--
+or I'll organize the
+material and reasoning
+and, especially RL for
+reasoning, in a particular way
+that I particularly like.
+And to do that, we'll start
+off from the conventional way
+or looking back at
+the conventional way
+of training language models.
+So typically, when we train
+language models or just
+generally foundation
+models overall,
+the conventional
+paradigm has been
+to do next token prediction,
+meaning you take your data.
+You tokenize that into a string
+of tokens and token inputs,
+and you train the model with
+a negative log likelihood loss
+to predict the next token
+that appears in the sequence.
+So in the context
+of reasoning, this
+would mean you would
+take the question.
+You would tokenize it
+into a string of tokens.
+You'll take the answer, which
+is from one of these reference
+solutions, tokenize that
+into a string of tokens,
+and then train the
+model to predict
+this answer string conditioned
+on the input question string.
+Now, to start to
+look at, or start
+to understand why
+RL matters here,
+we'll start by
+asking this question
+of why does next token
+prediction of this form
+actually work?
+And again, this
+answering this question
+will take more than--
+it's an open research
+question to be honest.
+But one perspective of looking
+at this that I particularly like
+is to look at this
+particular equation, which
+tells you how well next token
+prediction works in general.
+So what is this
+equation telling me?
+It's telling me that if I
+train a model, if I train
+a particular model p theta,
+which is mapping some inputs x,
+like the question, to some
+output y, like the answer,
+this learned model is only
+going to approximate the ground
+truth underlying model, or
+the ground truth solution,
+with an error, meaning
+with an error that
+is shown on the slide, which
+is p theta minus p star,
+depending on the size of the
+data that you use for training.
+So if you have a
+lot of data which
+shows you many, many questions
+and many, many answers,
+then ideally this
+error would be low,
+and you would approximate a
+very highly capable expert
+at solving these questions.
+But in reality, it so happens
+that the amount of data
+that you have for a
+lot of these reasoning
+problems, many other
+domains as well,
+you really don't have enough
+data to make this bound
+small enough, so
+you end up learning
+models that are
+not approximating
+human-level capabilities if you
+just do next token prediction.
+So there's actually
+a lot of work
+that exists out there which
+studies the amount of data.
+And one of the interesting
+things that they tell you
+is if you simply keep doing--
+if you simply keep taking
+high-quality solutions
+of hard questions
+from the internet,
+and you train your model with
+some supervised training,
+some next token
+prediction, you can not
+do really well
+because it's estimated
+that you're going to run out of
+high-quality data of this sort
+by 2028.
+And clearly, have not
+gotten to a level where
+you can do great research
+with-- or these models,
+can just replace human
+researchers, for instance.
+This also happens
+in other domains,
+like for instance, in robotics
+and embodied AI where, again,
+data is very
+limited, which means
+that if you just simply rely
+on next token prediction
+alone, you'll not be able to get
+the ground truth expert level
+capability in your
+model of sorts.
+So just to give you
+a concrete example,
+if you just train
+models on current data,
+and you ask them to solve
+this very interesting question
+from IMO 2021,
+presumably this question
+exists in the training sets
+of one of these models.
+But if you ask GPT or OpenAI
+family of models to solve this,
+they're going to give you
+a solution that looks very
+sensible in these settings.
+So they're going to
+produce solutions
+that look quite like a solution
+that a human expert would have
+written, except that
+they end up missing
+the logic behind the answer.
+So in this particular question,
+if you need to prove that
+inequality that you
+see up on the slide,
+you cannot really go out there
+and start to look at individual
+terms of that expression.
+You have to think about
+the whole summation
+as a whole and these models.
+This is, I think, from
+an O series model--
+I think O1 that I
+got the solution.
+It starts to look at
+individual terms, for instance,
+and ends up asserting
+its solution at the end.
+But it really does not
+realize that it's actually
+making a mistake and
+does not correct it.
+So really, what
+ends up happening
+with these current supervised
+training paradigms, when
+you think about
+reasoning, is that they're
+going to produce a
+solution that looks very
+much like a legitimate
+solution that you
+could have written on an exam.
+It's just that solution
+ends up being wrong,
+and the logical content of that
+solution is not quite correct.
+And that's precisely something
+that RL tries to fix.
+And I'll hopefully
+try to show you
+some examples today
+of what kind of RL
+techniques come to
+rescue in that setting.
+So in today's
+lecture, I guess we'll
+talk about RL for reasoning.
+I roughly characterized
+this in two parts,
+or I broke this
+down into two parts.
+And these two parts
+are based on timeline.
+So it's based on stuff that
+came before the DeepSeek-R1
+family of models came out.
+How many of you know what the
+DeepSeek R1 model is actually?
+I'm just curious-- or have seen
+it, have played around with it?
+It's a model that
+was released, which
+is from a company in China
+named DeepSeek, which
+is really, really
+good at solving
+a lot of these competition math
+problems or competition coding
+problems.
+It's in a similar
+vein, a similar style
+of model as the OpenAI
+series of models,
+or some of these thinking
+models that exist out there,
+like the Gemini thinking
+model or Claude Sonnet
+thinking version, et cetera.
+So these are models
+of the same family.
+And what we're
+going to do is we're
+going to talk about
+techniques that
+came before these models came
+out, which is early 2025-- so
+January 2025-- and some
+techniques that have become
+much more prominent
+in the community
+after these models came out.
+So the first part
+of my lecture will
+be based on these
+classical techniques
+that I'm going to talk about.
+And I'll talk about
+techniques that rely
+on some form of imitation
+learning, which I'm guessing
+has been covered in the class.
+We'll talk about
+some techniques that
+look like offline
+reinforcement learning,
+and I'll talk about
+some techniques
+that look like online
+reinforcement learning.
+This is my characterization
+of this whole space.
+In general, there's
+a lot of literature
+that has been coming
+out, so I'll probably
+miss out on some
+of them, but this
+is roughly a
+characterization that I think
+makes sense to think about.
+And after that,
+I'm going to talk
+about some modern extensions
+of these techniques
+into this thinking model
+territory, where we'll
+talk about how can you take
+some of these techniques
+that people have built
+before early 2025?
+And think about
+using them to train
+thinking models that have been
+doing really amazing right now.
+And there's some very
+interesting things
+that need to change when you go
+from the first on the left hand
+side to the right hand side
+in this particular setting.
+So I guess I already talked
+about the problem setup,
+but let me just quickly go
+into a little bit of a detail
+and connect back
+to RL terminology.
+So we're going to
+consider reasoning.
+And in this particular setting
+as I described earlier,
+you will be given a problem
+in natural language,
+and you have to write a
+solution in natural language.
+So what we can do when you think
+about this in the context of RL
+from an RL person's
+lens, is you can
+think of this whole
+problem solving as an MDP,
+as a Markov Decision Process.
+And to do that,
+what you can do is
+you can think of
+the string of tokens
+that exist in the--
+or string of words
+that exist in the
+question as sort
+of an initial state of your MDP.
+So it's the initial state
+that your agent or your policy
+is going to start from when
+it starts to act in the world.
+You can think of the solution
+that the model produces
+as being broken down
+into a sequence of steps,
+and these steps could correspond
+to actions, for example.
+So you can think
+of it as there's
+a model, which takes as input
+this initial state, which
+is the problem.
+It, one by one, takes
+in a bunch of actions
+which are these
+steps, and at the end
+ends up with a
+particular answer.
+So in this particular
+setting, that answer
+is represented in this
+box that you see up there.
+And the answer is 8.
+And what you're
+going to do is you're
+going to reward the model
+with a sparse reward of plus 1
+if this answer ends up being
+correct, and a reward of 0
+if this answer does not
+end up being correct.
+So the real Markov decision
+process here is state.
+I'm going to a
+sequence of actions
+and going to a termination
+bit where the model produces
+an answer and you get a
+reward at the end of it
+if the particular answer
+is correct or not.
+So in RL terminology, this is
+a lot like a sparse reward MDP
+with a deterministic dynamics.
+What do I mean by this?
+Basically, there's no
+external environment
+in this whole process of
+producing these steps.
+There's no external environment
+that gives you a next state.
+All you are seeing is the
+initial state and these actions
+one by ond, which tell you that
+the next state of the problem.
+So I'll just draw on the
+board because I think--
+so this is your initial state.
+Your model takes as action,
+the particular step.
+The first step of
+the problem, it
+gets to state S1,
+which is nothing
+but the string of
+tokens in S0 and S0
+concatenated with each other.
+So that's all S1 is.
+It produces the next
+state A1 or next--
+it takes the next step A1 or
+next action A1 goes to S2.
+And your next state
+S2 is just S0, A0, A1
+concatenated with each other
+until you hit the final answer.
+So you do this multiple times.
+You hit the final answer.
+Your model produces some
+answer-- let's say 8.
+You get a reward
+which is based on
+whether 8 is equal to the
+ground truth answer or not.
+So you get a reward of r
+of 8 comma ground truth.
+This is either plus 1 or 0.
+That's your MDP that
+you're operating in.
+So that's a very good question.
+So the actions here
+could be infinity.
+There are infinitely
+many actions.
+But unlike having-- unlike
+continuous control where
+you have a fixed dimension
+vector of continuous values,
+which are also infinite, you
+have a variable length string
+of tokens which are
+discrete, but then there
+could be many of them.
+So the question is,
+what about questions
+where the answer is a proof or
+not a final numerical value?
+That's a very good question.
+I think we as a
+community haven't
+figured out the right set of
+techniques for such problems.
+So that's why we started off
+with competition problems
+where there is a sort of a
+deterministic final answer
+in some ways.
+So we'll assume for
+now that we have
+a deterministic final
+answer we'll end with.
+Yeah, so the question,
+is there a risk
+that we get to the right answer,
+but we take suboptimal steps?
+There is.
+And I'm going to be talking
+about that in this lecture
+actually.
+Yeah.
+So that's a basic reasoning
+MDP or a language.
+MDP, you can pose for
+studying reasoning problems
+in this particular setting,
+and at least something
+that I'm going to be sticking
+to in this particular lecture.
+So we'll start with
+studying some classical RL
+methods for reasoning.
+And what I'm going
+to do here is I'm
+going to cover one of my
+papers from NeurIPS 2024
+that you see on the slide.
+This is the first bullet point.
+And why am I
+covering that paper?
+It's not because
+this paper invented
+a lot of the techniques, but
+because this paper actually
+did a lot of interesting
+empirical analysis
+of a lot of the
+methods that exist out
+there to understand
+why something works
+and why something fails.
+So it's just a nice way
+to get a conceptual model,
+at least in my opinion,
+about all the techniques
+and the classical
+reasoning space with RL.
+So what we're going
+to do is we're
+going to try to understand
+how different methods--
+or how RL methods for
+training for reasoning
+behave when we train them on
+different amounts of data.
+So we're going to do what
+we call a data scaling
+analysis in this particular
+segment of the talk.
+So the basic setup
+here would be,
+I'm going to build
+algorithms that
+can be used to train reasoning
+models on a data set.
+This data set will
+consist of some problems
+or these initial states that
+I described to you earlier.
+And we'll assume access
+to some Oracle solutions
+because we need a way to
+check the ground truth
+answer because that defines
+the reward function.
+So we have a data set of
+problems and solutions
+that we're going to
+be training with.
+And what we're
+going to do is we're
+going to try to understand
+different classes of methods
+by evaluating how well
+they do when we train them
+on different amounts of
+problems and solution pairs
+that this data set gives us.
+So there's three
+axes we're going
+to look at when we
+think about training
+these methods on this data.
+We can train them with
+potentially ground truth answers
+on multiple questions.
+So we can take this data set
+of problems and solutions
+and train the model to
+produce the solution, given
+the question, like, what
+supervised fine tuning
+or imitation learning does.
+So we can just do imitation
+learning on top of this data.
+We'll introduce a new method
+that we call rejection fine
+tuning, which trains on many
+correct solutions for a given
+answer.
+So I'm going to write
+this method out here,
+and that'll be clear for you.
+So what you're going to do is
+you're going to take a model
+pi of y given x.
+We'll take a question
+x from my data set.
+So this is my
+question or problem.
+So this is my initial state.
+This is my solution
+which consists
+of a sequence of actions.
+What I'm going to do now is I'm
+going to take these questions
+and sample multiple solutions
+from my particular model,
+from my current model
+that I want to train
+in this particular setting.
+So I have a model pi theta.
+I'm going to sample multiple
+solutions conditioned
+on the question, given
+this particular model.
+So this is my model I'm
+training, the initial model.
+This is the data set.
+I'm going to sample
+multiple solution traces.
+What I'm going to do now is
+I'm going to take these traces,
+evaluate the rewards
+on each of them.
+So I'm going to evaluate
+r of Y1, r of Y2, r of Yn.
+Why can I do this?
+Because I have this
+question in my data set
+which means I have a
+ground truth answer,
+y star, for this question
+in my data set as well.
+Ground truth answer
+for x question.
+And what I can do
+is I can simply
+match whether multiple traces
+or multiple trajectories
+sampled from my policy pi theta
+end up in the right answer
+or not by checking whether the
+final number was correct or not.
+So what I'm doing here is
+I'm taking my initial model,
+sampling a bunch of
+traces, or rolling it out
+in my environment, which is
+simply producing solutions
+from this model
+for each question
+and evaluating the rewards
+against the ground truth answer.
+Now, what I do is I take
+this particular set of Y1
+to Yn's I produced, and I
+retain only those ones which
+ended up in the right answer.
+So I take the set s of
+Y1 to Yn, and I filter
+it to get some filtered set.
+Let's call it's s
+tilde, which consists
+of Ys, so Yj, such
+that the reward is 1,
+meaning these solutions
+ended up at the right answer.
+Does this procedure
+make sense to people?
+OK.
+And what I'm going
+to do now is now
+I have a bunch of traces
+or a bunch of trajectories
+that ended up at the
+right answer, which
+means they're successful.
+So what I can do is I can simply
+try to train my model pi theta
+to imitate these trajectories.
+So I can train pi theta
+to imitate S tilde.
+So I'm just going to
+write it down here again.
+So my algorithm looks like
+this for iteration 1 to some t
+that I can choose
+however I want.
+So step one is sample Y1
+to n from pi theta of dot
+given x question.
+The second step is
+filter and generate
+s tilde, which consists
+of correct Y's only.
+And the third step is, do
+imitation or do BC or SFP,
+depending upon whatever
+terminology you like--
+you can call that--
+on s tilde.
+So you're training
+the model now by theta
+to produce only the
+Y's that were correct.
+So that's this
+particular approach.
+So this approach
+is what is called
+rejection fine tuning or RFP.
+And that's why you see
+it on the horizontal axis
+up there where what
+you're doing now
+is you're going to
+produce many solutions
+and try to filter for correct
+ones and train on them again.
+What happens now
+is you're rejecting
+the ones that were wrong,
+hence the word rejection.
+And fine tuning just stands
+for fine tuning, so RFT
+or rejection fine tuning.
+The nice property
+about this approach
+is it's not actually, asking
+you for Oracle solutions
+that a human wrote.
+All it asks for is solutions
+that your model can produce,
+which ended up being correct.
+So these are on-policy
+rollouts that
+are sampled from your policy.
+And you're simply
+filtering for correctness,
+which you can because you know
+what the reward function looks
+like.
+And the third axis
+here is actually
+full-blown
+reinforcement learning
+where, in RL when
+we train on data,
+we don't really
+need the data to be
+high-quality or high-rewarding.
+You talked about offline RL.
+That's on your homework.
+You can learn from
+suboptimal data,
+data that does not succeed.
+And so you can also think
+about the third axis in all
+of these methods
+as methods which
+train on incorrect
+solutions or learn
+from traces or rollouts
+that did not succeed,
+that attained a reward of 0.
+So I'm just going
+to call them RL.
+So there are these three
+different axis along which
+you can train methods.
+You can scale your data.
+You can scale your model
+bandwidth, number of questions
+and Oracle solutions,
+SFT, number of questions
+and correct solutions by
+filtering or rejection, which
+is called Rejection
+Fine Tuning, or RFP,
+and just training on
+any kind of data, which
+is reinforcement learning.
+So what I'm going to
+do in this lecture
+is we'll talk about how these
+different methods actually
+behave in practice,
+and that'll give us
+a sense of what to
+use in what case.
+So the question is, are we
+forcing the model to come up
+with overly verbose answers?
+So here we are not really--
+so the short answer is no
+because here we are not really
+encouraging verbosity at all.
+All we're doing is we're
+simply sampling multiple traces
+from a model and training
+the model to find answers--
+train the model to closley
+mimic traces, which ended up
+being successful in some way.
+So if the traces that
+end up being successful
+are those that actually need
+more space to be verbose,
+then it's going to
+incentivize you to be verbose.
+But if the questions
+that end up succeeding
+are not those-- or the
+traces that end up succeeding
+are not the ones that end
+up needing to be verbose,
+then it's going to
+not incentivize it.
+So imagine that, let's
+say, the question
+is 2 plus 2 is equal
+to question mark.
+Maybe one of the traces
+gets you an answer of 4.
+And there are some
+traces which are
+going to do this, which
+are going to count 2 plus 2
+in 10 different ways.
+But most of the traces
+write down 4 right away.
+Then what you're going
+to do in this process
+is you're going to find
+traces which end up with a 4
+right away, and you're going to
+train them all to produce four
+right away as the next token.
+So it's not necessarily
+going to happen that way.
+So the question is if the
+method got the correct answer
+with the wrong approach, then
+you're incentivizing the model
+to learn that.
+And the answer is
+yes, and that's
+why we'll see how these things
+behave in empirical results.
+That's the next
+part of the talk.
+Yeah, so the question
+is, would the data set
+be biased towards easy problems?
+The short answer is, it
+does, yes, in some way.
+But the practical
+answer for this question
+is, well, in these cases,
+what you're going to do
+is you're going to
+potentially start
+with training the model on
+top of Oracle Data or Oracle
+question answer
+pairs, first with SFT,
+the first axis that goes up,
+and then do rejection fine
+tuning on top of it.
+So the model has
+some capability now
+to produce some answers
+for those questions,
+and then you'll start doing it.
+Great, so this was
+actually one of the slides
+which took me a long time
+even in my lecture back then.
+But a lot of the
+slides from here
+on are actually talking about
+properties of these methods
+actually.
+So the first thing
+we're going to look at
+is how does SFT behave?
+So training your
+model with imitation
+learning on correct
+answers, given
+questions that some human wrote.
+So when we're doing this work
+we looked at two benchmarks
+named GSM8K and MATH.
+These benchmarks now
+are fully solved.
+So it doesn't make sense to,
+going forward, benchmark methods
+on these benchmarks.
+But back then in 2024-- this
+was a year ago exactly--
+these benchmarks were very
+sort of representative
+of useful methods.
+So what we tried to do
+in this particular slide
+is we are trying to see
+how well SFT behaves
+and comparing it
+to-- and we're trying
+to compare it to RFP, or
+Rejection Fine Tuning,
+that I described to you.
+We do that on top
+of multiple models,
+and here I'm showing you one
+result on top of the DeepSeek V2
+model.
+That was one of the best math
+models back at that time.
+And what I'm plotting here is
+I'm plotting the average test
+error of these model after fine
+tuning with these SFT and RFP
+methods as a function of how
+much data we run fine tuning on.
+So the more the data, the ideal.
+And the picture is you
+will get lower error,
+and you should be able to
+actually get better accuracy
+because you have more data, more
+coverage of questions like that.
+So that indeed does happen.
+So you do find that
+error goes down
+as you scale up the
+amount of questions
+in both of these settings.
+But clearly, the
+error does not go down
+at a very fast rate,
+meaning it so turns out
+that the test error, if you
+try to approximate the closest
+function to this
+particular curve,
+it'll be the function that
+looks like D to the minus 0.15
+or D to the minus 0.05.
+So this particular curve
+that you're seeing,
+these are empirical
+measurements.
+But if I try to fit
+a smooth curve to it
+as a function of
+the data set size,
+that the exponent is going
+to be a very small number.
+Ideally, you would want this
+exponent to be really large,
+like, D to the minus
+1/2, for instance,
+because this curve will
+go down very quickly.
+And with a reasonable
+amount of data,
+you're going to be succeeding
+at the particular problem--
+at this particular data set.
+But that doesn't
+happen in this case.
+So one of the goals
+that we then could
+have for a lot of these
+reasoning methods and RL
+methods for reasoning
+is to push this curve
+as much as possible towards the
+left and towards the x-axis.
+So push them down
+and towards the left.
+And the first result
+we saw to that extent
+was the fact that rejection
+fine tuning or training
+on your own data, on your
+own correct solutions,
+actually gets you a
+much better test error.
+So you find that you can get the
+same test error on both of these
+benchmarks with RFP, as you
+could do with 2x the number
+of questions and 2x the number
+of human-written solutions
+for SFT.
+So what this tells you at a
+high level is that on-policy
+imitation, learning, sampling
+from your policy and imitating
+the correct answers can be
+2x more efficient in this
+particular setting, compared
+to SFT alone or off-policy SFT
+or just imitation
+learning alone.
+OK, great.
+So that's the first result,
+first takeaway to have here.
+But it so turns out
+that if you simply
+keep doing this
+over and over, it's
+not going to give you the best
+possible policy or the best
+possible model.
+So if you simply keep scaling
+up SFT on policy data,
+what do I mean by scaling it up?
+I mean you increase this value
+of n that you see up here.
+So you just sample tons
+and tons of solutions
+and pick the correct
+ones and just start
+to do BC on all of them.
+Turns out that that recipe
+does not actually work.
+So what happens is on-policy
+imitation learning ends
+up hurting generalization
+if you do too much of it.
+And to show a result
+for it, I'm going
+to show you a plot here,
+which is showing the test
+performance, so the same plot.
+But now the x-axis is the
+number of correct answers
+you get in this filtered
+set that I was describing
+to you earlier per question.
+So you can scale it up for
+how much ever you want.
+The size of s tilde multiplied
+by a constant factor
+is shown on the
+x-axis, and we're
+plotting the performance of the
+resulting RFP trained model.
+The interesting
+thing to notice here
+is that, initially,
+your error goes down.
+So as you do more
+and more correct
+solution traces, as you
+generate more and more
+of these correct
+solution traces,
+your error goes down,
+as you see initially.
+But then beyond a
+point, your error
+starts to go up in this
+particular setting.
+So you find that,
+beyond a point,
+you get diminishing returns.
+And there's no
+way you can simply
+generate more solutions
+from your policy,
+mimic them, and get
+better performance.
+And in fact, the error even goes
+up on some of these data sets
+that you see up here.
+[INAUDIBLE]
+You can think of it as S--
+the size of S tilde.
+It's the number of
+correct solutions
+you retain per question.
+So the question was,
+what is the x-axis?
+The x-axis is number of S tilde.
+For each S.
+So the plot it's basically,
+S tilde times 8K in the plot
+because that's the number of
+prompts that you see up here.
+But yeah, it's just
+a constant multiplier
+which stays same for all the
+points on that particular plot.
+So that's a great question.
+So the question is, when you
+scale S tilde, which is for RFP,
+do you do deduplication?
+The answer is yes.
+And I actually removed
+that detail from my slide
+because I thought it
+would be too much details.
+But since you asked
+it, the answer
+is yes, you would often--
+when you do this process,
+you would often
+deduplicate S tildes.
+There's a lot of
+mechanisms for it.
+People can do just edit
+distance-based rejection
+as well.
+So keep the sample more than n.
+So one of the recipes people do
+is sample more than n, like, 2n,
+and retain the n of them, which
+actually seem to be maximally
+diverse.
+That's something people
+do a lot of times.
+So yeah, you do
+that kind of thing.
+Great, OK.
+So what this tells
+us at a high level
+is that fitting on
+self-generated data
+on a limited number
+of initial states
+actually hurts
+generalization of the model.
+So if you recall the
+picture that I drew earlier,
+which I erased, where there was
+an S0, and your model took an A0
+and went to S1, you can think
+of this as basically training
+on a set of S0 and
+evaluating on a new set,
+on a new test problem.
+And turns out that if you train
+too much on a particular set
+of S naughts in
+this particular way,
+you end up hitting
+the generalization
+bottleneck in that setting.
+OK, so why does this happen?
+And this is the picture that
+I'm going to talk about.
+And I'll connect it to some
+of the interesting concepts
+that we know in imitation
+learning right now,
+which is this picture
+of spurious steps.
+So yeah, so what
+we're going to do
+is we'll move away a
+little bit from examples
+and look at pictures.
+And what we'll do is
+we'll plot these pictures,
+as I was describing
+to you earlier,
+as this little
+trajectory in an MDP.
+So you have prompts
+as initial states,
+and you're producing
+these steps one by one.
+They take you to next states.
+And then eventually, you
+end up at the answer.
+So happens that when you sample
+a lot from your own model
+and train on it on
+policy, like, you
+sample from your
+policy and train
+on it, you'll often
+find that there
+are some of these traces which
+end up having steps which
+are spurious in nature, steps
+which actually are incorrect,
+but they just somehow don't
+affect the model's generation.
+So I'm going to
+show you an example.
+But basically, these are steps
+which would take you to a regime
+where you're maybe doing
+a wrong calculation.
+Somehow, you get there.
+Maybe on this
+particular trace when
+you're sampling
+from your model, you
+end up do recovering
+from these traces.
+So you end up with
+the correct answer.
+But maybe in reality, these
+traces are actually harmful.
+So just to give you
+an example, let's say
+this is a little
+arithmetic problem.
+It's from this GSM8K data set.
+One interesting
+example we found,
+which was the most stark example
+of this particular issue,
+was there's a solution
+from the model which
+does some calculation.
+Then it says that the total
+amount of money needed
+is like, 100 times
+2, which is 200,
+and it reverses its
+calculation in the next line.
+So the true calculation is 100
+by 2, but it ends up saying 200
+and then goes to
+100 by 2 right away.
+So what ends up happening
+is this particular step that
+exists in the middle, where it's
+doing 200, is a spurious step.
+It's a step that is not needed.
+It's an incorrect step that
+exists in the solution.
+You end up still
+at the right answer
+in this particular
+rollout, but this step
+shouldn't be there in reality
+in that particular setting.
+So that's a spurious step
+in this particular set.
+So the question is the
+step is always a sentence.
+For now, you can
+imagine it's always
+a sentence in this
+particular setting.
+There's no universally
+agreed upon definition to it.
+So this is a very--
+I guess in the second
+part of my talk,
+I'm going to show you some
+examples where the step is not
+at all a sentence.
+It's a full block of things.
+So yeah, that's
+a great question.
+So the question is, "Is this the
+main cause of increase in error?
+And can you not measure
+it in some way?"
+So it turns out that
+the answer to both
+is, yes, it's one of the main
+causes for increase in error.
+Can you measure it in some way?
+At least normal notions
+of fitting the data
+won't tell you this.
+That's a great question.
+So the question is, "Can we
+associate the overfitting
+problem to this?"
+So you can actually
+measure this.
+In the paper, we
+did measure this.
+We measured the amount of
+spurious steps that you see,
+and it grows on over time.
+Obviously, I cannot give you
+a proof that this is the only
+cause.
+I can give you proof that
+this should be a problem.
+I cannot give you a proof
+that this is the only problem,
+but this is one of the
+big problems that you see.
+So the question is, "How do
+you find out if it's a spurious
+step?"
+In our experiments, we do
+it in a particular way,
+and that also dictates
+a lot of methodologies
+that I'm going to
+show you in a second.
+So this particular method--
+so the question is, "Do you
+sample entire trajectories?"
+This particular method
+samples entire trajectories.
+You can sample a
+parts of trajectories
+if you want it to
+be, but I think
+it needs some advanced
+machinery that I
+think can be done based on
+what I'm going to talk about
+in the next slide.
+That's a great question.
+So the question is, "Do you
+overfit to a certain class
+of methods that got
+to the right answer?"
+In a way, the answer is, at a
+high level, yes, with the caveat
+that I don't know how to
+define what a method means.
+So you can call a method that--
+so just seeing this
+example, one can
+say that the calculation
+of 100 times 2
+is a methodological phenomenon
+that the model wants
+to do to be able to
+then succeed and then
+realize that it was wrong.
+You can also say that
+really, the method here
+is nothing but just doing
+a bunch of arithmetic,
+so it really depends on
+what you define that.
+And I think it's a semantic
+question at that point.
+But yeah, so from a very
+symbolic perspective,
+one can say that there are a set
+of tokens that maybe still lead
+you to the right answer
+on the training set,
+but may not actually help you do
+the right thing on the test set,
+on a test problem.
+So this is very similar to the
+problem of causal confusion
+in imitation learning actually.
+I'm not sure if
+causal confusion--
+OK, OK, OK, never mind.
+But basically
+there's this problem
+of if you produce
+a bunch of stuff
+in your policy, that might be
+bad, like these spurious steps,
+you might just not
+learn to imitate
+the expert in the
+right way possible.
+So maybe you actually end
+up at the right answer,
+but you're learning these
+incorrect associations.
+That's basically the gist of
+this problem of causal confusion
+that people in
+imitation learning
+know a lot about actually,
+OK, so how can we address this?
+And that's where RL
+comes in, and that's
+the third axis of
+using incorrect data
+or incorrect rollouts
+for learning.
+The simple idea
+is, as many of you
+already asked questions
+about, assigning some notion
+of a credit to a step.
+So if I can understand what is
+the utility of every single step
+or every single state
+that my policy generates,
+then I can somehow
+use that notion
+to filter off these bad kinds
+of solutions in some way.
+So that's exactly what we
+do, or what RL for reasoning
+tries to do at a
+high level as well.
+So identifying
+these spurious steps
+and eliminating
+them in some way.
+So the way to do this is the
+following-- and this ties
+back to a lot of concepts of
+value functions and advantage
+functions that many of you
+are probably familiar with.
+So I'm going to start
+with an illustration,
+and then I'll write down the
+exact math for what this means.
+So let's say I gave you
+a particular rollout
+or a particular trace.
+So again, starting
+from a prompt,
+adding these steps
+or actions and going
+to a final answer, which maybe
+ended up being incorrect,
+so it's shown as a red dot.
+What I can do now is I can try
+to identify whether a step is
+spurious or not by taking
+these particular prefixes,
+or taking these particular
+states that were basically
+concatenating all
+the tokens so far,
+and doing what you can think
+of as rollouts in a way.
+So I can ask some model to try
+to complete the solution, given
+a prefix of a
+generated solution.
+So for example, in
+this particular setting
+that you see on the slide,
+I have kept the first three
+steps the same.
+And I'm asking a separate model
+or a separate rollout policy
+to try to complete the solution,
+given this particular prefix.
+So if I do this, and let's say
+the rollout ends up succeeding--
+so many of these rollouts
+end up at the right answer--
+then, likely, the prefix was
+not too bad because, clearly,
+for this particular
+rollout policy,
+it did not end up
+affecting any of
+its problem-solving abilities.
+On the other hand,
+let's say if I ended up
+at a totally wrong answer,
+conditioned on the prefix
+that you see up here, clearly,
+something is not OK here.
+And clearly, there's something
+wrong with the prefix
+that you're seeing up
+here because your rollout
+policy could not at all succeed,
+conditioned on that prefix, even
+after doing many
+possible rollouts.
+And if I ended up succeeding
+sometimes and sometimes not,
+maybe there's still some issue.
+Maybe it's not the best
+thing you can have,
+but at least it's
+slightly better
+than always failing that you
+see up here, for instance.
+So this basic principle of
+doing rollouts and estimating
+some notion of expected
+success in the future
+can tell you
+something about what
+is wrong with the current
+prefix that you are particularly
+operating at.
+This is also very similar to a
+value function because this is
+basically computing the expected
+future 01 reward that my rollout
+policy, that this orange policy
+gets when it acts in this
+particular MDP.
+So the question is-- the
+spurious step on the previous
+slide--
+"IS that actually
+irrelevant or Incorrect?"
+Or irrelevant slash--
+I mean, it's incorrect
+purely because--
+or OK, the step is not
+incorrect in its own right,
+but it is irrelevant a way.
+Imagine for a second that
+if you pass to a language
+model a million
+irrelevant tokens
+and ask it to dig out the
+information that actually
+matters, that can be a
+challenging problem on a test
+set.
+So that's why, even if
+a step is irrelevant,
+it can be a problem
+for the model.
+OK.
+So we did these rollouts.
+We computed the expected value
+of how many times can I succeed?
+And that resembles
+something that looks
+like a value function of sorts.
+And why is it a value function?
+Because if you write this
+down in a bit of math--
+so let's say if I define the
+problem or the initial state
+as x, each of these steps
+as Y1's to Yn's So I
+guess there's a bit of a
+notation mismatch here Y1
+to Yn's are independent rollout.
+Here, the Yi's I'm showing
+are basically each step
+or each action that you take.
+So if you define a quantity
+that looks like the following,
+it's basically a Q function.
+So what is this quantity?
+It's telling you the Q value
+for your particular rollout
+policy, pi tilde.
+So the policy which is trying
+to complete the solution,
+rollout policy pi tilde.
+I'm computing its Q value at a
+given state given by the initial
+state and the prefix
+of the solution so far,
+and given an action, which
+is the current step that
+your policy adds, I can define
+the Q value here as the expected
+long-term reward, meaning
+the expected 01 reward,
+that I get under
+my rollout policy.
+If I start by executing--
+if I start by getting
+actions I plus 1 to L
+from this rollout policy.
+So what's the Q function?
+A Q function, just
+to recall, Q pi--
+I guess, it's subscript pi.
+Q pi of s,a is basically nothing
+but R of s,a, or, I guess,
+depends upon how you write this.
+But it's basically the expected
+discounted reward that you get,
+starting from P equal to
+0 to, let's say, infinity
+in general, conditioned
+on S0 being S
+and A0 being A. This is the
+definition of a Q function.
+In this particular
+setting, we are
+assuming discount factor is 1.
+So gamma is set to exactly 1.
+And the reward that you
+get is only at termination,
+so there's 0000 until you end
+up hitting the final answer.
+So that's why you see there's
+only one expectation up there.
+And this expectation is
+computed under policy pi.
+So you roll this policy
+pi out from there on.
+There's one minor detail here.
+You typically have R of s,a plus
+this thing because you roll out
+the policy from the next step,
+and you sum up the reward
+at the current state.
+In this case, it doesn't matter
+because r of s,a is equal to 0.
+You only get a
+reward at the end.
+Gamma is set to 1.
+So essentially, the thing
+that you see up here
+is essentially an
+expected future reward,
+starting from a
+given prefix, which
+is the state at a given
+step, which is the action.
+And the rollout is
+performed under pi tilde
+that you see up here.
+So the question is, "Would you
+use the same policy to roll out
+those other trajectories?"
+So in principle, this
+equation that I wrote
+is agnostic of which policy
+you use to do the rollout.
+So there's been actually no--
+so I have a belief
+about this answer,
+about this particular
+choice of the policy.
+So in my opinion, the policy
+that you're doing rollouts
+with should be a
+different policy,
+compared to the current
+one, otherwise, it
+can fail in the same way.
+There's some work
+in literature which
+argues that even
+using the same policy
+can actually be good enough.
+I think we haven't seen an
+apples-to-apples comparison,
+given the scale of
+experiments, which definitively
+shows one way or the other.
+I think most of the evidence
+that exists right now points
+towards the benefits from
+having a different policy
+because that makes sense also.
+But I think there's a part
+of the community, especially
+the NLP community, which
+does it using the same policy
+and finds it to work
+reasonably fine.
+That's a great question.
+So the question is, "This
+similar to trajectory stitching
+and advantage weights?"
+So turns out that the
+answer is exactly, yes.
+It is very related to that.
+I don't think I have a
+discussion of this stitching
+angle in my slides
+because I think it would
+have been a bit too technical.
+But yeah, if you check the
+paper, you will find exactly.
+It talks about stitching
+in this particular setting,
+and it's very related concepts.
+So yeah, think of it that way.
+OK, great.
+So this is the definition
+of a Q function.
+And once you've defined
+this Q function,
+it turns out that you can use
+this Q function to now tell you
+whether steps are spurious
+or not or are good
+or not, in the same way as
+defining advantages would
+have done.
+So I'm pretty sure
+you talked about
+advantage-weighted regression
+as an offline RL method.
+I'm going to do something
+very similar to that,
+but just to spend one minute on
+the definition of the advantage
+here.
+So the advantage function
+typically means q s,a minus V
+of s that you
+probably talked about.
+So a of s,a under a given policy
+is Q pi I of s,a minus V pi
+of S.
+In this particular setting,
+though, the dynamics
+are deterministic, and
+the state is simply
+a concatenation of
+the previous state
+with a new set of tokens
+which define the step that
+is added in there.
+Hence, what happens is you
+can define the advantage as Q
+value of the prefix until step
+I minus Q value of the prefix
+until step I minus 1.
+That serves as the same
+notion of advantage
+in this particular MDP.
+So that's why the
+definition you see up
+there is Q minus Q
+and not Q minus V,
+but it's basically
+the same thing.
+So once you define
+it in this way,
+you can actually compute these
+advantages for every step.
+So you can compute advantages
+by subtracting the Q values
+for consecutive steps,
+one from each other.
+And you'll get some positive
+and some negative numbers
+in this particular setting.
+Just really depends on how
+many times can you succeed.
+And once you have
+these advantages,
+they are a measure of how
+well a particular step, how
+much a particular step
+contributed to your ability
+to be able to succeed from
+that particular prefix.
+So if step two ended up
+reducing the advantage,
+that means your Q value at step
+one was higher than Q value
+after step two
+has been executed,
+which means step
+two is probably not
+that good of a step
+to have in order to be
+able to succeed eventually.
+So a negative or a
+low advantage means
+it's a bad step or
+of a spurious step,
+and you don't want to
+necessarily learn from it.
+A positive advantage
+means it's a good step,
+and you probably want to
+learn from it in some way.
+So this was supposed
+to answer the questions
+about how do you identify
+spurious steps in something.
+So the question is, "Are
+we fitting a Q function?"
+It's a very good question.
+Turns out that in
+the literature,
+there's been two kinds of work.
+They explicitly fit a Q
+function like quantity.
+It's what's called-- so
+in the NLP community,
+this is what's called
+a process reward model,
+process reward model.
+So I'm guessing since
+you covered DPO and RHF,
+you talked about
+reward models which
+give you a score for
+particular question and answer.
+This is giving you the
+score for every step
+and hence, scoring the process
+and, hence, the word Process
+Reward Model, or a PRM.
+I don't necessarily think that
+PRM and Q values are exactly--
+or should be semantically
+the same thing,
+but that's what a lot of
+the NLP people call this.
+But yeah, you can train that.
+But there's the other class
+of methods which would simply
+use rollouts the way I talked
+to you about to estimate
+advantages, and we'll
+see what that means.
+Yeah, that's a great question.
+So the question is, how
+does this help learn--
+or how does this
+help models learn
+general problem-solving
+strategies?
+The rough answer is, ultimately,
+what ends up happening here
+is you're breaking
+down the success
+of a particular long trace into
+successes of individual steps
+that appear inside of it.
+And that can be a useful
+thing to because, now,
+presumably your model can
+realize that, OK, once ,
+let's say, it has broken down a
+problem into four steps or four
+high-level plans, if it can also
+localize which step is going
+wrong, it can actually better
+learn that step as opposed
+to just vaguely
+thinking that, OK,
+a step three might be the cause
+of the problem when it fails,
+whereas maybe it's
+actually step one.
+So it helps you just
+learn in a more--
+so ultimately, you need to
+have some data for learning,
+but then this is vastly
+improving your data efficiency
+and so on.
+Yeah.
+Great.
+OK, so the next
+step is going to be
+to use these advantages
+for training,
+and this is where a lot of the
+methods that I talked about also
+will come into picture.
+So the first thing
+is just going to be
+to filter by advantages
+that I just described.
+So you can take a bunch
+of traces from your model.
+And I still have the
+RFT algorithm here,
+so I'm going to write it down
+as 1 to N, sample from pi theta.
+You can take this--
+You can take the RFT algorithm.
+You can sample from your model
+and on-policy trace potentially.
+You can take every
+step, do these rollouts
+that we talked about, use
+them to estimate advantages,
+and put this into
+your training data set
+for doing imitation
+learning or SFT,
+if this particular
+step is correct.
+So what does that mean?
+That basically means that you
+are taking a particular trace,
+and you are checking
+at a step level
+whether the advantages
+are positive.
+Even if that particular step
+comes from an incorrect solution
+trace, you're going to put
+that into your training
+data set if that step itself
+gives you a high advantage.
+On the other hand, let's say
+if that step itself comes
+from a correct solution trace--
+maybe there's a
+particular step here
+which gets a low advantage or
+a really negative advantage--
+I'm going to just throw it away.
+So this is very much reminiscent
+of advantage-weighted
+regression, except
+that here, rather
+than doing exponentiated
+advantages, which I'm guessing
+was covered, we are doing
+filtering on advantages.
+That's the basic idea.
+You can also do
+exponentiation of advantages.
+So you can train on everything
+but multiply the loss by E
+to the A. That objective, I
+think, requires a lot of tuning.
+And if you can only
+run one experiment,
+you probably prefer
+this objective over E
+to the A in general.
+That's a great question.
+So the question is, "Do you
+only train up to the good steps
+on an incorrect solution?"
+The answer is, not really.
+So we initially thought
+that that's the only way
+to train here.
+And we did a concrete ablation
+studying this as well.
+The answer is, well, you never
+really train the model to--
+so in this particular
+setting, you're not--
+let's say a particular step
+gives you a higher advantage.
+You're not training the model
+to produce this step and then
+this step.
+All you're training is to
+produce this step conditioned
+on the prefix so far.
+So your loss looks like
+train the model to produce Ai
+given Si, and not the previous
+actions or the previous steps
+that you see up here.
+So I'm just going to
+probably just draw it here
+because I think it's
+easiest to draw it.
+So think of it as this way--
+you had X or S0.
+You took A0.
+You went to S1.
+You are taking, A1, S2.
+These are steps, and
+this is the states.
+Let's say this state
+got an advantage which
+is really positive.
+So A of S1, A1 is really
+positive, and A of S0, A0
+is really negative.
+What you are going
+to do now is you're
+going to not necessarily--
+so what I'm not saying
+is train your policy
+to produce A0 given S0.
+You're not going to do that.
+You're going to just train the
+policy to produce A1 given S0
+comma A0.
+So that's all you're trying.
+Or I wrote S0, A0.
+This basically
+just is equal to S1
+because you're
+concatenating steps.
+But that's the thing you're
+going to incentivize.
+So you're only
+training on the steps.
+So the question is, "is there
+a separate prompter that keeps
+prompting the model
+when it acts here?"
+The answer is not really, right?
+So in general, when
+you do RL, we never
+really train the policy to--
+we train a policy to
+produce individual actions.
+Like, in offline RL or
+in imitation learning,
+we try to produce A1, given
+S1, A2 given S2 and so on.
+But when it acts in
+the world, it just
+acts and produces a giant string
+of token-- or giant sequence
+of actions in one go.
+So you can train the policy
+on different segments
+of steps it's seeing.
+But at when it's
+deployed, it's going
+to just produce one action.
+Then the state S1 is going
+to be simply the whole tokens
+and the question tokens and the
+tokens and the steps so far.
+And that's S1, and
+you're going to now--
+the same policy can now continue
+on and produce the next step.
+So it's not going to
+be prompted in any way.
+It's just going to be producing
+the whole solution in one flow,
+except that now you're
+just training it in a way
+that you're breaking
+them down into steps.
+So really, there's no
+notion of a separate actor.
+So the question is, "Do
+you only train on a step
+because of the Markov property,
+because you don't care how you
+got there?"
+In a way, the answer is
+no, because in some ways,
+your state S1 consists
+of all of your history.
+So S1 consists of--
+so S0 is a problem.
+A0 is, let's say, step one.
+And S1, in this
+case, is basically
+problem concatenated
+with step one.
+So in some ways, you have
+preserved all of your history
+in this case, And it's
+a non-Markovian policy
+that you're learning, except
+that here the reason why
+we do this at the step level
+is because now we can better
+understand which
+part of the solution
+actually caused me
+to derail if it did.
+So there's no notion
+of independence.
+It's not like given S-- so,
+OK, in this particular setting,
+given S1, sure, action A1 is
+all matters, but S1 and S0, A0
+are the same.
+Depending upon the
+way you look at it,
+it can be called
+non-Markovian policy
+as well because it's conditioned
+on the whole history.
+But in this particular
+setting, if you
+define S1 as concatenated
+states, it's a Markovian policy.
+So the question is, "If
+your Q value is really--
+so the Q values are
+really negative,
+but your advantages
+are positive,
+would you put it in the
+training data set or not?"
+Yeah, that's a great question.
+I think we tried this with--
+so we did take traces which
+were incorrect, and
+we put the steps
+which were actually good
+from them into our data set.
+And that was fine,
+except that let's
+say if there are traces
+where everything is just a--
+there's no way-- there's no
+prefix of that from which you
+can succeed at all.
+The advantages are also small,
+and the [? QL's ?] are also
+small.
+Turns out that if
+you filter them out,
+you might do a
+little bit better.
+But again, I don't have a
+very, very concrete like result
+I can show you here, so
+I'm not going to tell you
+that this is the way to go.
+But it seems like,
+to a large extent,
+the sensitivity does
+not exist in some way
+because the prefix
+is the culprit then,
+and you're training only a
+one conditioned on the prefix
+and not training the model
+to produce the prefix at all.
+OK, great.
+So that's the first option.
+So this is a lot like
+filtered imitation learning
+or advantage-weighted
+regression.
+OK, before that, I can
+show you some results here.
+So this actually ended up
+addressing that error going up
+problem, at least to
+the extent that we
+were able to train models.
+So here, again, I'm plotting
+the number of correct answers
+per question.
+And you find that the advantage
+filtering did help you,
+compared to the RFP approach
+which was going up before.
+So it does actually--
+and we did measure
+the number of spurious
+steps according
+to some heuristic definition
+of how we can evaluate this,
+how can probe this.
+And it seemed like, just from
+a qualitative perspective also,
+the number of spurious steps
+actually reduced in some way.
+So
+The next thing is,
+how can you use
+this for offline
+reinforcement learning?
+And this is where
+DPO-based methods come in.
+So there was a question about
+this earlier in the class.
+So you can also use them for--
+you can also use
+the same principle
+for doing DPO actually.
+So the idea in DPO is slightly
+different from computing
+this advantage exactly,
+but uses the same protocol
+that I described to
+you earlier, where
+what you're going
+to do now is you're
+going to take a solution
+from your base model
+that you're training.
+Maybe this is incorrect.
+And so far, what we did was we
+found out steps that were useful
+and retained them in some way
+or the other and discarded
+everything else.
+But what we can do now is
+we can do these rollouts.
+And rather than throwing away
+or throwing away these rollouts
+or just using these rollouts
+to estimate the advantage, what
+I can do is I can, instead,
+take a rollout, which ended up
+succeeding, with
+a shared prefix;
+take the solution trace
+from my model, which did not
+end up succeeding, and construct
+a preference pair out of them.
+So I now have a preference pair,
+which looks like some prefix,
+followed by some
+correction, which is good,
+and some prefix followed by some
+steps which are actually wrong.
+And I can throw this into a DPR
+training data set in some way.
+I can also do the same thing
+with a correct rollout.
+So let's say I have a correct
+rollout from my base model.
+I can still do these rollouts,
+and maybe one of them
+will not end up
+succeeding potentially
+from my rollout policy.
+And I can basically put this
+thing as a preference pair
+into my training mix.
+So the nice thing that
+is happening-- or there
+are two differences
+that are happening here.
+In some way, I'm still
+realizing in this process
+that prefixes are shared.
+And really, the difference
+between a correct
+and an incorrect rollout
+comes from that little segment
+that you see, beyond the
+prefix in these settings.
+That's the first thing.
+And the second thing.
+Is, rather than the
+previous approach
+of filtering by
+advantages, I'm actually
+retaining the whole
+steps that appear
+in this rollout distribution.
+So I'm not simply
+using these rollouts
+like the orange-colored, dashed
+lines to compute advantages,
+but I'm retaining
+them, and I'm training
+on top of the tokens that
+appear in that rollout as well.
+So the DPO loss, I guess, I
+don't have that on my slides.
+But, I guess
+probably I don't need
+to necessarily write that down.
+But it's basically just a
+matter of the same old DPO
+loss on top of these two
+segments of solutions
+that we talked about.
+Yeah, great question.
+So the question is, "Do you
+want higher-quality text,
+or do you want more diversity?"
+I think the true--
+OK, I should mention that
+this is something that we
+have tried to formalize.
+So there's an exact equation
+that you can write down.
+And you can be like OK,
+I want a policy to do
+these rollouts which maximizes
+this expression sort of thing
+in one of the papers.
+I think that kind of balances,
+in some way, diversity
+and high quality.
+So imagine for a second that
+your model is really bad.
+So let's say your model mostly
+produces incorrect traces.
+Then you want a rollout
+policy that can actually
+somewhat succeed because,
+otherwise, there's
+no notion of a success that
+you can learn from ever.
+You've only seen failures.
+How can you actually even
+learn to solve that problem
+if you only see failures?
+On the other hand, let's say if
+your model is kind of decent,
+like 50% accurate, but
+it's not as good overall.
+It's not the best
+at solving problems.
+In that case, maybe
+all you want is just
+diverse ways of
+solving the problem,
+such that you can see what ways
+you're more prone to failing.
+So you care about
+coverage in some ways.
+So really, the answer here is
+like every single problem in RL,
+there is some balance between
+exploration and exploitation
+you want to do, which
+is high-quality text
+or high-quality solutions, which
+solve the question correctly
+and being more
+diverse in some way.
+I think the exact
+expression for this
+is actually something
+you can also write down.
+And I'm not going
+to cover today,
+but, yeah, it's a
+trade-off between them.
+Yeah, so basically
+used to train DPO.
+So far, I guess--
+OK, actually, let me just
+write that algorithm down
+for everybody's understanding.
+So what you do is you're
+basically-- so that
+is the RFD algorithm.
+And now what we're
+going to do is
+we're going to simply
+do the same process.
+So for iteration in 1 to
+T, I'm going to sample Y1
+to N from my current
+policy, given any question.
+I am going to now
+do these rollouts,
+so I'm going to do rollouts
+and construct the preference
+data set Dpref.
+In this case, it's
+basically those preferences.
+And now what I'm going
+to do is I'm going
+to run or minimize the loss.
+That's the main algorithm
+that you're going to do.
+And the Dpref reef consists
+of prefixes generated
+from your current base model.
+And the trace is
+coming from-- one part
+of it is from the same model
+that you are training pi theta.
+The other segment, the other
+part of the preference pair
+comes from the rollout policy.
+That's the orange line.
+So the question is, "Given
+a sample trajectory,
+how we segment into steps?"
+So in this work, we
+just used sentences.
+So we just had
+[INAUDIBLE] sentences.
+We're going to break
+them down into steps
+from after every sentence.
+In general, I think it depends--
+it's a thing that you
+can bake into your model.
+So if you have played with,
+for example, OpenAI models,
+you'll see that they
+often produce responses
+that look like step one in
+markdown, like a very big step
+one, and then they'll say a
+bunch of stuff and then step two
+and then say a bunch of stuff
+so you can use that notation.
+Oftentimes it's so happening
+that as these models get better
+at basic instruction
+following, you
+can just prompt them
+to produce responses
+for complex questions in a
+particular stylistic fashion,
+and use some heuristics
+about that style
+to partition things into steps.
+So for instance, you
+can just tell a model,
+well, I want an answer for this
+particular question that never
+uses the word step,
+that always produces
+a logical block of calculation,
+puts a horizontal line
+and then pushes the next
+logical block and so on.
+And it'll most
+likely do it for you,
+which is something
+you can also do
+during the course of training.
+So you can just prompt
+them to produce solutions
+in a particular way and then
+define steps accordingly.
+There's no universal definition.
+So the question is, "Is there
+a convention to produce special
+tokens for generating steps?"
+I think that I've not seen a
+very, very clear convention that
+is universally
+used all the time.
+One convention that
+we have been using
+that I've seen many
+other papers use,
+but they're still
+outliers for this,
+is they would produce step hash
+1 colon and then say something.
+And that could be a
+bunch of lines as well.
+In this work, we use lines.
+In a follow-up thing, we
+had used this step notion.
+So it really depends on up
+to you, really, I think.
+Yeah.
+OK, cool.
+Any questions on the
+DPO part in this case?
+So this is the DPO
+version of the algorithm.
+Great.
+OK.
+So you can do this and
+put this into your data.
+So if you go back to our plot
+from before, if you measure how.
+How well does such kind
+of an offline RL method
+do, what ends up happening is--
+OK, I guess, these were supposed
+to be GIFs, but anyways.
+So I'm now plotting
+the test error
+as a function of
+number of questions
+that existed in my data set.
+So far, we were
+looking at number
+of correct answers
+per question for a lot
+of the plots in the middle.
+But now, I'm back
+to the plot where
+we are plotting the x-axis as a
+function of number of questions
+in the original data set.
+And you find that, compared to--
+and now there are
+two models here.
+One of them is a Llama 2 model.
+So this probably it
+tells you how old
+this work is at this point.
+It's a year old, but Llama 2
+feels like a long time ago--
+and then DeepSeek V2 models,
+as well as DeepSeek V2 models.
+And what we're finding
+in general is that,
+compared to the base SFT method,
+where you were just training
+on human-written solutions,
+you can get up to an 8x boost
+in the amount of data that
+you need for training.
+So the dashed line here is
+this first-step BPO algorithm
+that I talked about.
+And you see that it can get
+you the same test error with 8x
+fewer samples than training
+with SFT on human written data.
+RFP was 2x for recollection.
+I removed that line
+here because it
+would have been too cluttered.
+But in general, this 8x also
+holds true for Llama too roughly
+overall in this setting.
+Yeah, so the question
+is, "What is Pass@5?"
+That's a great question.
+So you can think of Pass@5--
+I guess, for
+understanding the slide,
+it doesn't matter first of all.
+But in general, you can think
+of Pass@5 basically as saying,
+if I gave the
+model five chances,
+can it succeed even once
+out of those five chances?
+So it's a way people
+evaluate models
+because it's telling you that,
+OK, maybe the model could not
+succeed in one try, but
+if I gave it n tries,
+maybe it can succeed.
+And that's what Pass@n
+means in the setting.
+I mean, I don't think for
+this particular result,
+it matters so much.
+The main thing to look at is
+this 8x boost in data efficiency
+that you see up here.
+So the high-level
+takeaway here is
+that if you do offline RL with
+this first step notion of credit
+assignment that we talked
+about, you can actually
+get a lot more data
+efficiency boost
+compared to imitation learning.
+So for the same amount of
+data, for the same base model--
+or sorry, for the same
+base model and for 8x fewer
+questions, you
+can do a similar--
+you can get the same performance
+with RL in this setting.
+Yeah, so, generally,
+I've seen people use 0.6
+as the temperature for a
+lot of the-- so the question
+is, "What's the recommended
+temperature to use?
+I've generally found it to be
+0.6 is what most people use.
+I don't think that there's
+something that's set in stone.
+You can always change
+it in some ways.
+So the question is,
+what's a solid line?
+That's just SFT on human-written
+solutions in this setting.
+There's no advantage
+in that line.
+And the first-step
+advantage one was actually
+the one I showed to you before.
+I removed it here because--
+so this is maybe
+the ultimate kind
+of result in some
+ways from human data
+to self-generated data sorts.
+But yeah, it's like 2x
+with the first step.
+Yeah.
+OK.
+So the final thing--
+that final main
+method, and then I'm
+going to just talk about
+what people are currently
+doing very briefly, and I'll
+end the lecture at that point.
+But the final thing
+we can also do here
+is online
+reinforcement learning.
+There's two ways of doing this.
+So the most basic
+recipe for doing this
+is actually to not use
+any of this advantage,
+but generalize this kind
+of basic RFD algorithm
+without advantages to
+online [INAUDIBLE].
+So how do we do that?
+You can basically
+just take your model,
+similar to how we
+sampled a bunch of traces
+from my current model
+or current policy,
+and filtered the right ones.
+Rather than filtering, you can
+just train it with on-policy RL.
+So you can just
+generate rollouts
+from your current policy, which
+might be correct or wrong.
+You can reward them
+using the reward function
+by just checking the
+answer against the answer
+that the model produces.
+You can penalize it if it
+does not produce an answer.
+You can penalize it
+if it violates format.
+There's a bunch of
+reward-shaping things
+you can do.
+And then you just
+train your policy
+to maximize this reward
+using policy gradients.
+So RFT, we were explicitly
+filtering and training with SFT.
+But rather than doing this
+filtering or training with SFT,
+you can simply run
+on-policy reinforcement
+learning because all
+in this formulation
+is just state action.
+There's an MDP.
+There's a reward and
+just do r on top of it.
+So you can simply write the
+policy gradient equation,
+so that basically just
+looks like grad log
+pi times the reward
+that you see up here.
+And you can just run
+that on your problem.
+There's also a lot
+of work which now
+tries to go beyond the basic
+reinforce style policy gradient
+and goes to methods
+like what's called GRPO.
+It's nothing but just an
+extension of the basic PPO
+algorithm in this setting.
+So the PPO algorithm--
+I guess I'm going
+to say a few things.
+PPO algorithm uses a
+learned value function.
+The GRP algorithm replaces
+that learned value function
+or learned Q-value
+function with simply
+this rollout-based
+estimation of advantages.
+So the same old basic
+RL recipe applied
+on an MDP that looks like the
+thing that you see up there.
+So a trajectory that looks like
+the thing that you see up there
+with a 01 reward.
+OK.
+And what you can
+also do-- and this
+is something that
+finally can do--
+is you can also do per-step
+advantages in online RL.
+That's the final method
+that you can apply.
+So in this setting you can take
+a solution from your base model
+or take a solution from
+your current policy
+that you're training.
+Or over the course
+of training, you
+can do these rollouts
+if you want to.
+You can use these rollouts
+to compute advantages.
+And rather than
+doing these rollouts,
+you can also potentially do
+something slightly different,
+which is basically to
+train a reward model-like
+thing to fit to these
+advantage predictions
+or to fit to these
+Q-value predictions
+and then compute advantages.
+So this is very similar
+to some of the RHLF work
+that you probably saw,
+except that now this
+is a reward model that is
+rewarding every step of sorts,
+or reward model that's producing
+the Q-value for every step,
+or the advantage
+for every step, as
+opposed to producing a
+reward for the whole sequence
+that you're seeing.
+And once you have these
+advantage predictions
+that you can fit to a network,
+you can query this particular--
+so for any rollout that
+your policy produces,
+you can query the
+advantage predictor
+that you have trained to
+reward every single step
+in this particular
+policy generation.
+And once you do that,
+what you can do now
+is you can simply
+take your network,
+produce these advantage
+labels, and optimize for reward
+that you're getting at the
+end, plus these advantages
+that you see up here
+in this setting.
+Yeah, that's great.
+So the question is, "How
+generalizable is reasoning?
+When you train on MATH,
+does it improve on GSM8K?"
+So it turns out if
+you train on MATH, it
+does not improve on GSM8K.
+And many people have shown it.
+But if you train on a bunch
+of mixture of prompts,
+which are of varied
+levels of difficulty,
+you can actually get there.
+So this is precisely
+the recipe, which
+is being used in--
+and/or not this one,
+but the basic online recipe
+which I talked to you about
+earlier, used to
+train all of these,
+or many of these
+thinking models which
+have open recipe descriptions.
+So this online recipe is kind
+of used to train the DeepSeek
+carbon model, for instance.
+And that does generalize to a
+fairly good amount of extent.
+It doesn't also generalize
+to every single problem
+out there, but to a fairly
+good extent it does.
+So you can compute these
+advantage predictions.
+You can fit them
+to a network, use
+them to produce these rewards
+for every single step.
+And that's the more advanced
+way of doing online RL
+with this particular thing.
+So we had a work that we called
+process advantage verifiers
+here.
+A process because it's
+rewarding every step;
+advantage because it's
+fitting an advantage function;
+and a verifier because, somehow
+in the domain of reasoning,
+reward models are referred
+to often as verifiers.
+So if you see that
+word come up, it's
+just synonymous to a
+reward model of sorts.
+Or in this particular
+case, even you
+can think of it as a Q function
+or a value function of sorts.
+But that's the
+name of the method.
+And we find that in general--
+so I'm going to skip
+some of these details.
+But in general, if you
+do dense reward RL,
+like process reward or
+advantage-based reward RL,
+you find that you can get
+to a much better accuracy,
+compared to what's called ORM
+model or just 01 one reward RL,
+like the sparse 01 reward
+provided at the end
+of the trajectory.
+So this is the basic recipe
+that a lot of the current work
+is using.
+This is the advantage-based
+verifiers recipe.
+And you can see that
+you can get a bigger
+boost in sample
+efficiency, as well
+as in terms of just
+absolute performance
+that you see up here.
+Also, these numbers look small,
+but with 2B and 9B models that
+we were basing this off of,
+apparently this is the best
+result that you can get on
+certain data sets that we tried
+this on.
+So it's about 5 or 6x sample
+efficiency boost and about 6%
+to 7% absolute performance
+improvement in this particular
+setting with the dense
+advantages in some way.
+OK, I'm going to skip
+some of these things.
+But at a high level, we are also
+seeing now these newer thinking
+models that have come up where
+basically these models can just
+think for longer and
+produce a better answer.
+This is the DeepSeek-R1
+family of models,
+OpenAI family of models or O
+series of models from OpenAI.
+In my opinion, really,
+these are trained
+using very similar
+recipes that I just
+talked to you about
+for this whole lecture,
+except that there are
+some small changes that
+happen in this process
+from pre these models
+versus these models.
+So the RL training objective
+has remained the same.
+So there's some minor details.
+Like, there's this
+new method called
+TRPO which I just describing.
+It's basically PPO
+with some tweaks.
+There's also some other methods
+like advantage-induced policy
+alignment.
+You don't need to know
+what those methods are.
+Just think of them
+roughly as policy
+gradient methods done with
+slight tweaks overall.
+But what has changed is that
+the action space in a way
+has changed for these
+models, in my opinion.
+Now, this is a very
+crude statement to make.
+And to be really
+rigorous about it,
+I think the statement
+sounds wrong
+because these models do actually
+produce token by token one
+at a time.
+But these models, the base
+models on which we are doing RL,
+have become better at being able
+to implement interesting meta
+procedures.
+These models can actually
+produce a solution,
+maybe go out there and then try
+to verify the solution they have
+produced, maybe then backtrack
+to a particular point
+and do something
+else from there.
+And you can think of this
+as just yet another version
+of defining the step.
+These models can produce
+more interesting steps
+than just going out there and
+calculating yet another quantity
+like the models previously
+could have done.
+So it's just a better notion
+of a step or a better action
+that these models
+can sample when
+you run all of these
+algorithms on top of them.
+And once you do that, and you
+give these models a longer
+budget to act-- so if you tell
+these models that, OK, there's
+no limit on how many
+tokens you can think,
+you can sample during
+the course of RL,
+you can maybe sample solutions
+which are really, really long,
+but just get me
+the right answer.
+If I give these
+models that playground
+to sample more and
+more tokens, turns out
+that RL training algorithms
+with these two bullet points
+actually give you much
+better performance.
+And that's what we see with
+these current thinking models
+right now.
+It turns out that
+these models are--
+if you do a counterfactual
+experiment where you take models
+which are not capable of
+implementing like basic
+answer-checking or verification
+or generating a better answer,
+it turns out that you cannot
+do good RL with them right now.
+So really, nothing
+has changed in terms
+of the high-level techniques
+that I talked about,
+except that the base models have
+become more interesting in a way
+that they can sample interesting
+kinds of steps to train on.
+And that has led to some
+of the most amazing results
+that we are seeing right now.

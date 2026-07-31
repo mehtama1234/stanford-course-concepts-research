@@ -1,0 +1,2350 @@
+For today, we're going to
+be talking about autonomous
+learning, specifically in
+the context of reinforcement
+learning for robots.
+And this lecture
+and the next lecture
+are going to be focusing
+a bit more on robotics use
+cases, where today, we'll
+be talking about autonomy.
+And on Wednesday, we'll
+be talking about--
+we have a guest lecture talking
+about sim to real transfer
+and humanoid robots.
+So we'll be talking about
+why robots aren't autonomous
+already, defining the problem
+of autonomous reinforcement
+learning.
+And then developing
+the algorithms,
+specifically thinking
+about learning policies
+without human intervention,
+and a formulation
+of reinforcement learning
+called single life reinforcement
+learning.
+So the goal here
+will be to think
+about how we can imbue
+intelligent machines
+with autonomy, the ability to
+allow them to, on their own,
+learn, interact,
+practice, get better
+without a human in the loop.
+Cool.
+So let's start with
+some of the motivation.
+So we've been talking a lot
+about reinforcement learning.
+We also talked a little bit
+about imitation learning,
+where imitation
+learning, typically, we
+are training an agent to
+mimic some demonstrations that
+are provided from an expert.
+Whereas, in
+reinforcement learning,
+the agent is practicing
+through trial and error.
+And this notion of
+practicing is something
+that is already more
+autonomous because the agent is
+learning from its own
+experience in the world.
+But it actually isn't entirely
+autonomous in practice,
+when you think about
+running these algorithms
+on physical robots.
+And in particular, if
+we think about saying
+that we want some robot that's
+going from some initial state
+distribution, some distribution
+over initial states.
+So this is the
+starting conditions
+that our agent
+might be faced with,
+when it's actually deployed
+to some region of the state
+space that has high reward.
+Then, typically when we think
+about this learning process,
+we will collect trials.
+So for example, maybe
+at the beginning,
+the first attempt at the
+task will look something
+like this, where because we
+haven't learned anything yet,
+maybe we haven't
+practiced very much,
+we don't have a trajectory
+that is very good.
+And then from there, typically,
+we've thought about, OK,
+can we retry the task and
+attempt the task again,
+where we, again, start from
+a state in our initial state
+distribution and rollout
+our policy again.
+Now when we're rolling
+out these policies,
+we are sampling actions
+from our policy distribution
+and acting according to
+the agent's own actions.
+And so each of
+these trajectories
+are under the control of
+the robot or the agent.
+And as you're rolling
+out your policy,
+this part is fully autonomous.
+Control is fully
+with the policy pi.
+But one thing, one
+little catch is
+that after you've attempted
+the task, once you're
+in a state over here.
+And we've been thinking
+about when you then
+attempt the task
+again, magically,
+you'll somehow
+get back over here
+and attempt the task
+from this starting place.
+And we haven't really
+talked about how do you
+get from here, all
+the way back to here.
+And in practice, when you
+take traditional reinforcement
+learning algorithms that
+we've been talking about,
+we've been assuming that a
+human or, somehow, you'll
+magically get reset to this
+initial starting place.
+And in practice, that might
+mean that a human is actually
+physically moving the
+robot or physically
+moving the objects
+in the scene, back
+to some set of
+initial conditions.
+And as a result, this process
+isn't actually fully autonomous.
+So on the slides, we'll execute
+actions from our policy,
+observe data from the
+environment, update our policy,
+repeat that process,
+and eventually, we'll
+get a policy that is
+able to get high reward.
+For example, in this
+problem, reaching a state
+within some region
+of goal states.
+And we think about
+that as rolling out
+some trajectory of length
+h and then rolling out
+another trajectory of
+length h and so forth.
+But we need to
+think about, how do
+we get from the end
+of one trajectory
+to the start of
+another trajectory.
+Now, if we're in a
+simulation-based environment,
+then what we can do is we
+can create the environment,
+take actions for a
+thousand time steps.
+And then once
+we're done, then we
+can call env.reset,
+which is a very
+nice little friendly utility.
+But that's something that we can
+only really do in simulation.
+We can't reset the physical
+world to our own will.
+And so as some
+specific examples,
+say that you are trying to learn
+how to navigate to a basketball
+court.
+Maybe you have a
+small mobile robot
+that is trying to deliver
+something to the basketball
+court, or an autonomous
+vehicle that's
+trying to navigate to
+the basketball court.
+As it tries to explore
+and attempt this task,
+it might make a wrong
+turn, and rather,
+if it makes that
+wrong turn, it ends up
+in that physical
+location and would
+need to, for example,
+figure out how to navigate,
+either back to the
+starting position
+or find its way from
+that wrong turn,
+back to where the
+basketball truly is.
+If we have a robot
+manipulator, we
+might want to learn
+how to grasp the mug.
+As we're learning
+how to grasp the mug,
+the robot might make a mistake
+and knock the mug over.
+And then, if it wants
+to attempt and learn
+how to grasp things
+again, then, somehow, it
+needs to be within
+reach of the robot.
+Or for more of a
+mobile system, and we
+want to learn how to put
+books onto bookshelves, again,
+we might make some
+mistakes and need
+to figure out how to get back
+to some starting position, where
+the book is in reach or some
+initial state distribution,
+if our goal is to go from
+one set of initial states
+to regions with high reward.
+And one of the reasons why this
+is actually especially important
+is that reinforcement learning
+often takes many attempts.
+It's not a matter of
+taking trying three times
+and then solving the task.
+Oftentimes, there's
+many different trials
+that you'll be attempting and
+practicing over and over again.
+And every time the
+agent tries again,
+that means that you have
+some human intervention
+or some other intervention
+that is bringing you back
+to the initial
+state distribution.
+As more of real examples,
+this video on the left
+is a video of a robot,
+learning how to hit a hockey
+puck into a goal.
+And you can see that
+the human here-- this
+is a friend of mine,
+Yevgen-- he's probably
+doing more work than
+the robot is right now,
+as it attempts to do this.
+Here's another
+example, where Ali
+is closing the doors
+so that the robot can
+learn how to open them.
+And here's an
+example where Archit,
+who you gave a guest lecture
+earlier this quarter,
+is resetting the
+robot so that it
+can attempt to fold the towel.
+OK, so how do we think
+about this problem?
+The problem is reset,
+often in practice,
+requires some
+human intervention,
+that we want to be able
+to ideally eliminate
+so that our agents can practice
+and get better on their own,
+rather than requiring
+some expert or some human.
+Now, one way that we
+could look at this is--
+I mean, what if we
+could just increase h?
+What if we just
+increase the length
+of the episodes in which our
+agents are attempting the task?
+And if we increase the length of
+the episodes, then in principle,
+we won't require as
+much human supervision.
+And we might be able to apply
+the same exact reinforcement
+learning algorithms that we've
+learned about in the course,
+just with less supervision
+during the learning process.
+So we can do that.
+And so the we'll see an
+example of what increasing age
+looks like in a minute.
+But generally, the definition
+of what we want to accomplish
+is initialize the
+scene, the environment.
+Maybe it's already
+initialized in some way.
+Then, we do that once.
+We have the agent interact
+autonomously with the world,
+without any environment resets.
+We could also relax this
+constraint occasionally
+to only reset at a
+very low frequency.
+For example, if h is very large.
+Now, as we start to think
+about these systems,
+we need to think
+about how we actually
+want to evaluate these systems.
+And there's actually a
+couple different ways--
+there's actually a
+couple different things
+that we might care about.
+So one thing that
+we might care about
+is after, for
+example, autonomously
+learned in some environment,
+we might care about--
+maybe let's-- well, let's
+say that we have autonomously
+explored.
+And for example, we have some
+experience that we've collected.
+Maybe that looks
+something like this,
+where there's no resets, no
+going back to the initial state.
+One thing that we might care
+about is we might care about,
+did you achieve high
+reward as you went
+about the agent's experience?
+And basically, did it actually
+complete the task at the end
+of the day, as it was learning?
+And that would be
+looking at, what
+is the sum of the rewards that
+accomplished over its lifetime?
+And alternatively,
+instead of thinking
+about evaluating autonomous
+RL from that perspective,
+we could think about after
+the learning process,
+did we learn a good policy that
+we could then deploy and be
+able to repeatedly do the task?
+And so that would be looking
+at if we-- instead of looking
+at the rewards of
+this red trajectory,
+it would be saying after
+the learning process,
+if we've learned some
+policy, how good is it at,
+for example, going to the goal?
+How good is the
+policy that it learned
+as an outcome of the
+reinforcement learning process?
+So two things here.
+One could be the amount
+of reward recovered
+over the course of its life.
+As one example of this, imagine
+that you're deploying the Mars
+Rover, and you want the
+Rover to be able to collect
+scientific data.
+You don't really care about
+whether it learned a good policy
+that you're going to deploy
+after the learning process.
+You really care
+about whether or not
+it did a good job, as it was
+deployed, as it was learning,
+and so forth.
+So that's more like
+trying to measure how
+good is this red trajectory.
+And so here's my graphical
+depiction of this on the slide.
+Or you could learn about the
+quality of the learn policy.
+An example of this
+is that if you're
+learning how to
+cook meals, maybe
+there's some training process.
+And you don't really
+care that much about
+during the training
+process, how well it
+was able to cook
+as it was learning.
+But then you really care about,
+then can I deploy this system
+and have it be able to cook
+meals effectively, repeatedly
+for a variety of
+customers in the future.
+Cool.
+So that would be typical.
+If we then took a policy that
+we learned, initialized it
+at the starting
+state and ran it,
+does it achieve good reward
+under those conditions.
+So we'll think about these
+as two different things.
+So we can-- first, let's
+think about what we'll call
+deployed policy evaluation.
+So how good is the
+policy that we learned,
+if we were to then deploy it?
+And the objective
+for this circumstance
+can be defined as an objective
+that looks very similar to what
+we've been seeing in
+the course previously,
+which is that you would sample
+a state from your initial state
+distribution and act
+according to your policy
+and measure the sum of rewards,
+or the sum of discounted rewards
+that was observed after
+running an episode.
+This should be an expectation
+after starting from the state
+and acting according
+to the policy.
+So this is deployed
+policy evaluation.
+How good is the policy if it's
+starting from the initial state
+distribution and acting
+according to the policy?
+Alternatively, if we
+were to think about more
+the continuing policy
+evaluation, how good are,
+if we just deploy the system,
+and it's trying to learn,
+as it goes, and how good is it
+during that learning process.
+Then we'd actually be
+considering something
+a little bit different.
+We would want to
+be considering what
+is the average reward that
+it saw during that learning
+process.
+And so we'd be looking at
+something some average quantity.
+So we'll write this as 1/h of
+t equals 1 to h of the reward.
+And if h is small,
+this is not going
+to be averaged
+over small things.
+And so we want to be
+evaluating this, usually,
+as our lifetime might be
+getting longer and longer.
+So this would be a
+limit, evaluating
+average reward and the limit
+in which h goes to infinity.
+So something like this.
+And there should be an
+expectation over this quantity.
+Now, this expectation isn't
+under a single policy.
+It's over the learning
+process itself.
+So that's another
+difference from measuring
+how good a learned policy is.
+Cool.
+And so we'll look at algorithms
+for both of these circumstances.
+Yeah, so the question
+is, why do we
+need an expectation if we're
+just running one trajectory?
+If you want to evaluate,
+just a single lifetime
+or a single rollout of
+your learning process,
+then you could just
+measure precisely that,
+run it and see how well it does.
+Now, in practice,
+there's variability
+that's caused by variability
+in the environment,
+variability in your
+learning process,
+like how you sample
+batches and so forth.
+And you may want to measure,
+like at the algorithm level,
+how good is your
+algorithm at this problem?
+And if you want to measure
+how good the algorithm is,
+you want an expectation over
+multiple runs of the algorithm.
+Why is this important?
+We've already talked a
+bit about the motivation,
+but to elaborate on
+a little bit more,
+we want robots to operate with
+minimal human supervision.
+But we also want them to
+train with minimal supervision
+as well.
+And generally, reinforcement
+learning on real robots
+is a promising path towards
+achieving really high success
+rates, really high reliability
+compared to imitation learning.
+And if you're able to train
+with minimal human supervision,
+then you're able to
+collect more data,
+and more data may also unlock
+both greater reliability
+and also greater generalization,
+if these systems are
+able to be deployed at scale
+in a variety of real world
+environments.
+So that's the problem setup.
+Now, let's dive a
+bit into algorithms.
+So we'd like to learn policies
+without human supervision.
+And we talked
+about this question
+before of, what if
+we just increase
+the length of the episode?
+And can we just take
+a traditional standard
+reinforcement
+learning algorithm?
+In this case, I think we'll be
+looking at a soft actor-critic
+and just run it with longer
+and longer episodes, which,
+in principle, should require
+less and less supervision.
+If we do this, we see
+performance changes a bit.
+So this is a plot
+that's evaluating
+how good is the learned policy
+after training for some number
+of steps, shown on the x-axis.
+So the y-axis is
+reward, accomplished
+by the deployed policy.
+So it's measuring this
+blue equation right here.
+And this green line is if
+you run with an episode
+length of a thousand steps.
+If you run SAC, you
+get a learning curve,
+where it's able to
+learn a policy that's
+able to effectively
+complete the task.
+Now, if you increase the
+length of the episodes
+during training
+by a factor of 2,
+we see that the
+algorithm does worse,
+and then we increase
+it by a factor of 10.
+We see that it does even worse.
+And basically, as we increase
+and make the episode length
+longer, and as a result,
+reduce the supervision required
+for training, the
+algorithm at the very end
+is hardly able to learn
+how to do the task at all,
+how to learn a policy that
+can do the task at all.
+And I should mention this is
+a very simple fish control
+task, where your goal is to
+navigate with what the fish can
+do to a particular position.
+So pretty simple task.
+Even for the simple task, if
+you increase your episode length
+and don't give it
+resets very frequently,
+you're aren't able to
+learn a good policy.
+Now, why is this the case?
+Does anyone have hypotheses for
+why we're not getting a good
+policy, if we only reset every
+50,000 steps or 100,000 steps?
+Yeah.
+So the first issue that can
+happen is it can make a mistake
+and do something that's
+bad, maybe leads it
+to a part of the
+state space that
+is very hard to recover from.
+In this particular
+environment, I
+don't think it's possible for it
+to break its tail or something,
+but you can basically
+drift away from the state
+distribution that's good.
+And so if we were
+to think about this,
+maybe that diagram is
+getting a little bit messy.
+Our goal is to
+learn a policy that
+goes from some initial state
+distribution to some goal,
+as a simple reinforcement
+learning problem.
+As we're learning,
+we might simply
+deviate from where the
+set of good states is.
+And because of this
+drift, it might
+be very hard to
+recover and get closer
+to the parts that
+have high reward.
+So that's one challenge.
+Does anyone else have
+ideas on another challenge?
+The other challenge is actually
+a little bit more nuanced,
+and in particular, say
+that we drift away.
+But maybe either in another
+episode after one reset
+or even for this episode, if
+you are able to eventually get
+to the goal, which is good.
+You got reward.
+From there, you might simply
+stay in this region of the state
+space.
+And if you start
+collecting a lot of data
+in this part of the state space,
+you're getting lots of reward.
+And so the learning
+process is great.
+But then, if your goal
+is to learn a policy that
+starts from here
+and goes to here,
+you're not actually
+visiting the states,
+that will yield a good policy.
+And so you might actually not
+be visiting the states that
+allow you to actually
+go effectively from one
+initial state to the goal.
+So two challenges, if
+we think about this rho
+star as the optimal
+state distribution
+for getting from start to goal,
+then in an episodic learning,
+you can always retry the
+task from the initial state
+distribution.
+Whereas, in autonomous learning
+or non-episodic learning,
+you'll continue from
+where you left off,
+and that exploration
+might lead you
+to drift away from the set
+of good states for getting
+to the goal.
+And then even if you do
+eventually get to the goal,
+your state distribution
+in your replay buffer
+might collapse and might be
+concentrated around the goal
+rather than capturing the
+state distribution that's
+around the optimal policy.
+And if you don't have states
+from the optimal policy,
+you won't know what to do
+or what actions to take,
+when you're in this
+part of the state space.
+Cool.
+So as an outcome of
+this, you'll never
+actually learn a good policy.
+So how can we learn
+an effective policy?
+So if the agent is allowed to
+reset from the initial state
+distribution, we do
+learn successfully.
+And so one very
+simple idea is to try
+to learn a policy that brings
+us from wherever we ended up
+after attempting the task
+back to the initial state
+distribution.
+And we can call
+this idea-- we can
+think of this as a reset policy
+or a backwards policy that's
+trying to undo the task rather
+than do the task forward.
+And so we can think of this
+as a forward backward RL,
+because we will be learning
+a forward policy that
+does the task, and a backward
+policy that undoes the task.
+And where to put this?
+Maybe let's do it over here.
+So you'll first-- maybe step
+0 is to initialize and sample
+an initial state from your
+initial state distribution,
+basically initializing
+the agent.
+And then you're going
+to repeatedly run
+your forward policy,
+which I'll call pi f,
+then update your
+forward policy by trying
+to maximize the sum of rewards.
+And this will be using
+the reward function
+for completing the task.
+I'll call that rf, the
+forward-reward function.
+And then we'll reach some
+state we won't reset,
+and we'll run our
+backward policy, pi b.
+And then we can likewise
+update our backward policy.
+In this case, we
+need to update it
+for the reverse of
+the forward task.
+And so we'll actually rely
+on a reward function that
+will tell us if we are reaching
+the initial state distribution.
+And so this is going to
+require a second reward
+function, rb that is
+going to serve as reward
+for the backward policy.
+Now in terms of
+these update steps,
+you can use your
+favorite reinforcement
+learning algorithm for this.
+And critically, after we
+run the backward policy,
+we're not going to reset.
+We'll then go back to running
+the forward policy again.
+And so what this
+would look like is we
+will define this
+backward-reward function,
+which is rewards us for reaching
+states in the initial state
+distribution.
+Then we'll initialize
+them and repeatedly
+roll out the forward policy,
+then update the forward policy,
+with respect to
+reaching the goal.
+Roll out the backward
+policy, which
+is going to try to go back to
+the initial state distribution,
+then update the backward policy.
+And then without
+resetting, again,
+try to roll out
+the forward policy,
+roll out the backward policy,
+and repeat this process.
+You can also have a reset very
+infrequently, so occasionally
+reset it, just in
+case it does get stuck
+in a really challenging state.
+And then at test time, once
+you're done with this process,
+you can discard
+the backward policy
+and just deploy your
+forward policy, which
+should have learned,
+ideally, how
+to get efficiently from the
+initial state distribution
+to the goal, or
+generally, to maximize
+the forward-forward function.
+One other small note here
+is that we're going to be.
+Typically, you need to
+decide how long to roll out
+the forward policy for.
+The simplest thing
+to do is simply
+to roll it out for
+h time steps, so
+choose a constant number of
+time steps to roll it out for.
+You could imagine doing
+something more sophisticated,
+for example, before the forward
+policy has learned anything,
+the backward policy, if
+it's not moving anywhere,
+the backward policy
+won't really have any job
+to do at the beginning.
+And so you, for
+example, could run this
+for a little bit longer
+at the beginning,
+but then at some
+point, you also need
+to run the backward policy
+for a little bit longer.
+And it's a bit simpler to just
+use a fixed number of steps.
+And ideally, if this
+process is autonomous,
+then the number of
+time steps actually
+matters a little
+bit less because you
+can go to sleep while your
+robot is trying to learn.
+Yeah, so the question is, is
+there any information sharing
+between the forward policy
+and backward policy?
+If you're using
+replay buffers, you
+could consider sharing
+data between the two
+and relabeling the rewards for
+the forward policy for backward
+policy, and vice-versa.
+In practice, it's fairly
+common to actually
+not share much information.
+You can also share an
+image encoder, for example,
+share some of the weights.
+That can be helpful, but they
+are actually trying to learn,
+in some ways, very
+different things.
+And so that makes it
+a little bit tricky.
+We'll also see some algorithms
+later on that do more sharing.
+So the upside of this
+algorithm is quite simple.
+One of the downsides is
+that this backward policy
+that's trying to undo the task.
+Ultimately, this is not
+particularly useful.
+So in some ways, it
+seems a little bit
+wasteful to learn
+this policy, but it
+does enable the autonomous
+learning which is quite nice.
+So this is the most
+simple algorithm
+you could use for trying
+to learn autonomously.
+But there are also some
+alternatives that, in some ways,
+have a number of
+appealing properties.
+So first, for your
+backward policy,
+you can actually change
+the reward function
+that it uses to actually
+not reset all the way back
+to the beginning,
+but potentially
+to reset from a larger
+variety of states.
+Second, we could, instead of
+learning forward and backward,
+just for one task,
+we could think
+about practicing a
+cycle of different tasks
+and not just learning a forward
+task and a backward task.
+We'll talk about that a bit.
+And then the other
+option is you can also
+set up a task that can be done
+repeatedly, where you can just
+keep on attempting the
+task over and over again
+in certain special
+circumstances.
+And we'll talk about
+that briefly as well.
+Cool.
+Let's first talk about
+learning to reset
+to a different initial
+state distribution
+from the initial state.
+And so the motivation here is
+that in forward-backward RL,
+we're trying the task,
+going back, trying the task,
+going back.
+And ultimately, we want
+to be able to do complete
+the task from the initial
+state distribution,
+but we also need
+to know how to take
+good actions, all along the
+expert state distribution as
+well.
+And so one of the
+things that we could do
+is instead of going
+back all the way
+to the beginning,
+every single time,
+we could actually reset
+to different states
+along the expert
+state distribution.
+And there's actually
+work that shows
+that if you were to do this
+and had a way to do this,
+then you'd actually learn
+a bit more efficiently
+than always starting from the
+initial state distribution,
+even in episodic
+learning settings.
+And so the way that
+this works is it's
+basically going to be
+the same exact thing
+as before, but with basically
+two small modifications.
+And the first is that if we want
+to be able to reset and learn
+a policy that brings us to the
+expert state distribution, then
+we need a way to approximate
+what that expert state
+distribution is.
+And so we'll assume that we
+have a few demonstrations.
+And so maybe negative 1
+here is you're basically
+given some set of expert
+trajectories or expert
+demonstrations, and
+these will be examples
+of ways to accomplish the task.
+And then you need to
+change the reward function
+for the backward policy, where
+the reward function shouldn't
+be to reach the initial
+state distribution,
+but instead, it should
+be to reach states
+that the expert visits.
+And so in particular,
+we'll be given
+a small set of demonstrations.
+And ideally, what we want
+this to look like is,
+we'd run our forward policy.
+And then when we run
+our backward policy,
+after it's learned
+something reasonable,
+ideally, it would
+just bring us back
+to the set of the set of states
+in the expert distribution.
+Then we run our
+forward policy again,
+and then it would
+bring us back, again,
+somewhere in this
+pink region that
+is showing the
+distribution of states
+that are visited by the expert.
+And so the forward-backward
+process is the same,
+but we have this modified
+backward-reward function.
+And we're actually going to
+learn this reward function.
+And in particular, we
+talked about in the lecture
+on learning reward functions,
+how you can train discriminators
+to discriminate between
+good states and bad states,
+and use states from the policy
+as examples of bad states.
+And we can do the
+same exact thing here,
+where this reward function will
+be trained to distinguish states
+visited by the policy and states
+visited in the demonstrations.
+And then you'll be
+trying to-- when
+you're training the
+backward policy,
+you'll be trying to trick this
+reward function into thinking
+that it's the state
+that's visiting
+our states from the expert
+and not from the policy.
+And then, again, we'll
+discard our backward policy,
+when we're done, and
+deploy our forward policy.
+Cool.
+So let's see some
+demonstrations,
+run our forward policy,
+backward policy, and so forth.
+This forward-backward RL
+addresses the challenge
+of preventing the agent
+from drifting away.
+And it also avoids collapsing
+the distribution that we
+talked about before as well.
+Cool.
+And then the upside that
+I mentioned very briefly
+is that if you try the task from
+a wide set of initial states,
+both easier states,
+like states that
+are closer to the goal
+and further states, then
+you could actually
+improve the efficiency
+of the entire reinforcement
+learning algorithm.
+The last thing that I'll
+mention is that you can actually
+use these demonstrations
+in the replay buffers
+as data to help train
+the forward policy
+and the reverse policy as well.
+So the question is, if the
+agent finishes the task,
+does the backward
+policy just stay there?
+And here the answer is no.
+So in the case of
+forward-backward RL,
+it would go back to
+the initial state.
+Whereas, in the case of
+this MEDAL algorithm,
+it'll try to push the policy
+to a state in the expert state
+distribution.
+And specifically when we're
+training the classifier
+to classify between policy
+states and expert states,
+we're using all of the states
+in the trajectories, all
+the states in the demos.
+And so it's going to, for
+example, like in this graphic,
+go back to somewhere over
+here so that the policy then
+learns and practices how
+to do the task from here,
+rather than only practicing
+it from the goal state.
+The question is,
+what prevents it
+from actually staying
+in the goal state?
+Because the goal state is
+part of the demonstrations.
+The specifics of--
+I was thinking about
+not going into this.
+But basically, the specifics
+of this reward function
+is actually a state
+distribution matching objective,
+where it's goal is to match
+the states that it visits
+with the states and the demos.
+And if it only resets
+to the goal state,
+then the classifier or the
+discriminator of this reward
+function will learn that if
+you're only in the goal state,
+then that's probably coming
+from the policy and not
+from the expert demos.
+And it will be able
+to distinguish that.
+And the way that you can
+formalize that is you
+can actually think
+about it as a divergence
+between the
+distribution of states
+visited by the backward policy
+and the distribution of states
+visited by the experts.
+Cool.
+So let's actually briefly look
+at how these algorithms perform.
+So there's actually a
+benchmark for this autonomous
+reinforcement learning
+setting called EARL.
+And during training, you only
+get a reset every 200,000
+environment steps,
+so very infrequently.
+And the evaluation is,
+how good is the policy,
+when you start it from some
+initial state distribution?
+The benchmark has a
+few different tasks.
+This is probably
+the simplest task
+in the benchmark, where you
+can basically try to grab a cup
+and move it.
+And there's this very
+simple grabbing mechanism
+that makes the task simpler.
+And then we'll also look
+at a more complex task
+on the next slide.
+And if we look at what
+different algorithms do in this
+environment, where they only
+get resets every 200,000 steps--
+First, if we just run SAC
+without a backward policy, where
+it only gets very
+infrequent resets,
+like we saw with the fish, the
+performance isn't very good,
+and it doesn't learn
+a good forward policy.
+If we use an Oracle that
+is able to get resets
+much more frequently
+than it is actually
+able to learn a good policy.
+And then there's a few
+reset-free algorithms.
+One is something that tries
+to perturb it, and encourage
+it to visit novel states.
+Another, showed in orange, is
+the vanilla forward-backward
+reinforcement
+learning algorithm.
+We can also give it
+some goal curriculum.
+I didn't talk specifically
+about this algorithm.
+And then the blue
+algorithm is the algorithm
+that's trying to reset back to
+states in the demonstrations.
+And so we see that, first, I
+guess the main takeaway here
+is that these algorithms that
+are specifically designed
+for this autonomous or
+reset-free learning setting
+are able to do much better
+than if you don't design it
+for that case.
+And in this simple
+environment, they all
+perform fairly similarly.
+And then as we move towards
+more complex environments,
+we see that forward-backward
+RL and MEDAL
+are able to do the best.
+Whereas, simply,
+if you instead try
+to encourage it to visit
+various states or goals,
+those algorithms aren't
+doing quite as well.
+Yeah, the question is, we're
+you assuming some expert
+trajectories, how
+are those generated?
+So there's a variety of ways
+that you can generate them.
+On a real robot,
+you would typically
+use some teleoperation device.
+And that could be using a
+puppeteering-like setup or a VR
+controller or a 3D
+mouse or a keyboard.
+In simulation, it can
+either be something
+that's like a scripted policy
+that is designed by a person,
+or it could be a policy that's
+trained with RL ahead of time,
+just to test the algorithms.
+Can I describe what
+the episodic part is?
+So episodic is a term
+that often refers
+to the traditional
+reinforcement learning
+setting, where we
+can attempt the task,
+and reset and attempt
+the task again,
+where each attempt
+is like an episode.
+And so it's very episodic.
+You get one episode.
+You try again, you
+get another episode.
+And then it's not the best
+term, but that's one term,
+and then non-episodic
+refers to the setting
+where you don't
+get those resets.
+You just let it go.
+And so it's no longer
+a bunch of episodes.
+It's just like one
+long learning process.
+Sometimes, that
+learning process is also
+called reset-free because there
+are no resets in the process.
+Oh, the other thing that I
+should mention, actually,
+that's cool about
+this particular task
+is the forward task
+is to close the door,
+and the backward task
+is to open the door.
+And the backward
+task is, actually,
+depending on where
+the arm starts,
+it can actually be quite a bit
+harder than the forward task.
+And so you could, sometimes,
+have these mismatches
+between how hard it is
+to do the forward task
+and how hard it is to
+do the backward task.
+And that can make these
+algorithms-- that can generally,
+sometimes, make the learning
+process a bit more challenging.
+Because the forward
+policy, the backward policy
+will learn at different rates.
+Similarly, if you
+could imagine--
+if your forward task
+is to do a backflip,
+for example, maybe doing a
+backflip is really challenging,
+but getting up and standing
+up to start doing the backflip
+is comparably easier.
+And so it's fairly
+common to have
+a mismatch in that difficulty.
+These algorithms have also--
+you can actually run them on
+real robots, and it's cool.
+You can watch time
+lapses of them.
+The left video is running
+forward-backward RL,
+where it's learning
+a forward policy,
+learning a backward policy.
+And you can see that both
+policies make mistakes,
+and it's able to--
+I don't know if you can
+see it in the context
+of this single video, but
+it is able to improve just
+through a fully
+autonomous process.
+And then the right is
+the metal algorithm.
+And you can see
+that, for example,
+if the forward policy misses,
+then the backward policy
+doesn't really have much to do.
+And so you do see, yeah,
+that another property
+of the algorithm in the video.
+Cool.
+One other thing
+that I'll mention
+is that rewards are also
+something that provide.
+And so using reward
+learning algorithms
+in conjunction with autonomous
+or reset-free algorithms
+is also quite common, and in
+both of these circumstances,
+the rewards were using models
+rather than using humans.
+So that this entire
+process can be autonomous,
+and you can actually run
+it overnight, for example.
+Yeah, so the
+question is, it seems
+like for some of
+these tasks, if you
+don't have a good
+backward policy,
+then it's really hard to
+learn the forward policy.
+And also, vice-versa,
+if you don't
+have a good forward
+policy, then you're
+never actually going to
+be picking up the towel.
+And then you need to
+figure out how to--
+then you're not really getting
+actually any good states.
+In general, one of
+the things you can do
+is, you can provide
+demonstrations,
+both for the forward task
+and for the backward task,
+and use that to help
+bootstrap the learning process
+for both of them.
+Other than that, it
+is just generally
+a challenge and to try to
+balance these two things.
+Yeah, in general,
+the algorithms are
+able to work in some settings.
+I should also mention
+that these works--
+most that are doing
+these, they're still--
+I mean, certainly, still in
+the research stages, I think.
+This is not something that
+robot companies are using today.
+Yeah.
+Cool.
+So we've talked
+about algorithms that
+learn a reset policy to help
+learning a forward policy.
+Now, we can also think about
+a slightly different setting,
+which is that if we're trying
+to learn, not just one task,
+but multiple tasks,
+then we could actually
+think about not just going
+forward and backward,
+but practicing going in cycles
+and practicing different tasks,
+depending on what
+state you're in.
+So for example, if
+you have a robot
+that's trying to make coffee,
+maybe the first task is to put--
+or the first subtask is to put
+the cup in the coffee machine.
+And maybe if it attempts
+that, it actually
+drops the cup on accident.
+And then, traditionally,
+what you would do
+is you would have a
+human reset the cup back
+to where it started.
+But we don't want to do that.
+And so, instead,
+maybe the second task
+is instead of-- because
+it made a mistake,
+the second task shouldn't be
+to turn on the coffee machine.
+Instead, it should be
+to pick up the cup.
+And so we can imagine having
+these different cycles,
+where we practice task 1.
+Then if we fail,
+we practice task 2.
+And then task 2 maybe
+is resetting task 1.
+We maybe then go
+back to task 1, which
+is to put the cup in
+the coffee machine.
+If we didn't succeed at task
+2, we might keep trying it.
+If we do succeed at task 1 at
+putting the coffee machine,
+we might move to task 3,
+and so on, and so forth.
+And so we can have this graph
+or cycle of different tasks
+that we're trying, at
+different points in time,
+depending on the state we're in.
+We'll practice a
+different task that
+is possible to practice
+from that state
+and exclude tasks that are
+not feasible from that state.
+Cool.
+So what this would
+look like is, we
+will be learning a task
+condition policy, so
+like a multi-task policy.
+And we will be in some state,
+and so we'll observe the state
+that we're in.
+And then based on the
+state that we're in,
+we'll propose a
+task that we want
+to practice from that state.
+So we'll have a step
+that is proposing
+a task that we can use Zi to
+denote the task that we're
+proposing.
+And this could be the
+descriptor for that task.
+And then we will run the
+policy for that task.
+And so this could be
+a multi-task policy
+that's conditioned on Zi.
+And then we could also
+have an update step,
+where we update our policy.
+If we have more
+on-policy algorithm,
+then this would be updating
+it for this particular task.
+If we have an
+off-policy algorithm,
+we could update it
+for any of the tasks,
+and then repeat
+this process, where
+after we've run it for that
+task for some number of steps,
+we'll then propose a different
+task and practice that task.
+So initialize our
+policy, propose a task,
+roll out the policy for
+each steps, and then update.
+And specifically,
+we'll be updating it
+with the reward function that
+takes into account the tasks
+that we're practicing.
+So we'll need a reward
+function for all of the tasks
+that we might be doing.
+Yeah.
+And then, again, we
+won't have resets,
+or we'll have a very
+infrequent reset.
+And then, at test
+time, we can then
+deploy this multitask policy,
+which can do not just one task,
+but multiple different tasks.
+And as an example, this
+is a robot system that
+is the goal is to pick up--
+basically, it's different
+stages and different tasks
+or different stages.
+You want to pick up this object,
+flip it over, and rotate it.
+And there are different
+subtasks here.
+And so at the beginning, it
+doesn't know how to flip it,
+and it doesn't certainly
+doesn't know how to rotate it.
+Or maybe it does actually
+know how to flip it,
+but it isn't very
+good at rotating it.
+It's something where,
+at the beginning,
+you don't know how to
+flip it or rotate it,
+and you'll basically just be
+like practicing picking it up
+from the hand and putting it
+back, picking it up, putting it
+down, put it down.
+And then once you get
+better at picking it up,
+then you'll start to
+actually rotate it or flip it
+over and rotate it.
+And so depending on which
+state you're actually in you'll
+actually practice
+something that makes
+sense for that given state.
+And this can actually address
+some of the challenges
+that we talked about with regard
+to imbalance and tasks, where
+if you haven't actually
+yet successfully run
+the forward policy to
+actually change the state.
+And you may not
+even be in a state
+where it makes sense to
+run the backward policy,
+then you can keep on running
+the policy for a task that
+makes sense.
+As a couple examples--
+more examples
+of this, this
+example on the left,
+you're trying to learn both
+for walking forward and walking
+backwards.
+And you also, at the
+same time, are actually
+learning how to get back up.
+And so you can see it kind of
+transitioning between going
+forward, going backward.
+If it's too far to
+the back, then it
+will doesn't want to
+keep on going backwards,
+and so then you'll practice
+the task of going forwards.
+And likewise, this example on
+the right, there's actually
+it's like a
+seven-stage test, where
+you need to pick it up, position
+it, and screw repeatedly.
+And so it's running
+these different policies
+or these different controllers
+based on the state that it's in.
+And eventually, it will also run
+the backward policy of putting
+the wrench back on the table.
+Yeah.
+So the question is, how do we
+select these tasks, basically?
+Yeah, basically, there
+are two approaches
+that have been done here.
+And this is also at the bleeding
+edge of research in some ways.
+The verses that you could
+predefine a set of tasks
+and also predefine that graph,
+saying if you failed task 1,
+then you should go
+should practice task 2.
+And basically,
+upfront, predefine
+that graph of what you should
+do in different circumstances,
+and then act according
+to that graph.
+Alternatively, you could
+also train a model that
+proposes tasks for you to do.
+And so, for example,
+in general, I
+think it's an open question,
+with regard to which tasks
+you pick to collect for
+at a given point in time.
+But you could, for example,
+ask a language model to say,
+what are the different
+things that I could
+do in this environment to
+get better and actually
+then practice the tasks
+that it describes as output.
+And so as an example
+of that, if we are at--
+if this is the
+frame that we're in,
+then there's certain things
+that we can do in this task.
+We could open this
+toy microwave.
+We could pick up the banana.
+We could push the
+eggplant, move the pot.
+But if we instead told
+it to pick up the carrot,
+that's not something that
+you can do in the scene.
+And if we're trying
+to actually train
+it to do lots of
+different things,
+these tasks are going
+to be seen dependent.
+So then you could ask
+a VLM to understand--
+think about what are
+the things that you
+can do in this environment,
+and then have it predict,
+for example, take the banana
+out of the silver pot.
+And then from there,
+actually, have
+it practice doing this
+task versus practicing
+doing some other task.
+The question is, how
+is this different
+from hierarchical learning?
+So it's a good question.
+So this task proposer,
+you can think of it--
+it shares some similarities with
+the high-level policy that's
+telling you what to do in
+a certain circumstance.
+But its purpose is
+actually quite different.
+So the purpose here is actually
+having it propose things
+that you could do
+in the environment
+that you could practice.
+Whereas, in a
+hierarchical system,
+the high-level policy
+goal is to say like,
+what is the next subtask that
+will achieve some outcome
+at the end of the day?
+And so this is
+actually something
+where you want it to give
+you lots of different things
+that allow you to learn
+lots of different things.
+Whereas, a high-level
+policy, you're much more
+goal directed in
+terms of accomplishing
+some long-term objective.
+This particular work
+chooses to actually use
+a hierarchical method.
+It's actually builds
+upon one of the works
+that we talked about previously,
+where it actually then feeds
+this into an image
+editing diffusion model
+to generate an image
+of a generated goal.
+And then it trains the policy
+to try to reach this goal image.
+And one of the things
+that's nice about this
+is that with this
+approach, you need
+to update this, using a
+reward function for each task.
+And it can be quite challenging
+to define a reward function
+for all of the different tasks.
+Whereas, if you have
+an image of the task
+that you're trying
+to accomplish,
+then your reward function can
+be based on whether or not
+you're close to this image.
+And so it makes it easier to
+define the reward functions.
+Your question is, would this
+proposer give those outputs?
+Yeah.
+Yeah.
+So, absolutely.
+So this framework was applied
+to these simple robot scenes.
+But you could also, for example,
+like in the hockey example,
+ask it, like, what
+are the things
+I could do in this situation?
+Should I practice passing?
+Should I practice shooting?
+For those particular
+examples, I think
+it's also reasonable
+to just-- there's only
+limited number of things
+that you need to practice,
+and so you could just have one
+session on practicing goals,
+one session on passing.
+But, yeah, you could also
+use an idea like this
+to actually propose what to try
+to do in different situations.
+Those are a couple of
+autonomous learning algorithms,
+the first category
+being algorithms,
+where you try to do
+the task, and then
+undo the task in various ways.
+The second, where you're
+trying to then try
+to do one task and then another
+task, and then another task,
+and try to just get better
+at lots of different tasks
+all at once.
+There's also actually
+some scenarios,
+where you can actually
+set up the task in a way
+that you can do it repeatedly.
+And there isn't
+necessarily a lot
+of research on this
+particular idea,
+but in this particular
+example, the goal
+is to fold napkins for
+businesses, where you
+need to fold lots of napkins.
+So those are all circumstances,
+where we want to learn a policy.
+And like our goal is to get a
+good policy rather than simply
+the Mars Rover example, where
+we want to maximize rewards.
+There's also the second
+category of problems,
+and the motivation is that we've
+been trying to learn policies
+without resets.
+You'd improve the
+quality of the policy
+through practice, but
+then at some point,
+we're actually going to
+be deploying the policy.
+And ideally, this policy
+will be pretty good.
+And maybe you're in a scenario
+where, obviously, everything's
+going to work perfectly.
+Nothing will ever go wrong,
+when you actually go and deploy
+your policy.
+But in practice,
+that's not the case.
+And the natural world,
+things will go wrong,
+despite having a
+lot of training.
+And this latter setting
+is thinking about,
+after we've learned
+some sort of policy,
+when it's out in the
+world on its own,
+can it recover from mistakes
+and learn after the deployment
+process?
+And this is something that
+even humans do to some extent.
+So here's a video where a
+person is trying to open a door.
+And if you look
+really carefully,
+you'll notice that, actually,
+the person makes a mistake,
+and then adapts, really,
+in a split second in order
+to accomplish the task.
+So if you play this
+video again, we'll
+see that right here, the person
+is trying to apply force,
+and the key actually isn't
+correctly in the hole.
+And then they try again by
+removing the key backwards,
+and then putting it
+back into the keyhole.
+And there's lots of examples
+like this, hopefully,
+that you've encountered in
+your own deployed policy.
+And we'd like to think
+about this setting, where
+we could actually adapt, within
+an episode, during deployment.
+So in terms of how this
+compares to previous algorithms,
+we've talked about--
+a lot of the course
+has been talking
+about this episodic setting,
+where you attempt it
+from the initial
+state repeatedly
+and then deploy the policy once.
+We also talked today about
+this reset-free setting,
+where you learn how
+to attempt the task,
+undo the task repeatedly, and
+then want to deploy your policy.
+And this more recent setting
+is something where you
+have some prior training data.
+Maybe you've trained
+a policy, and you're
+in some new out-of-distribution
+circumstance.
+And as you're trying to actually
+do the task, because you're
+in some new circumstances, you
+need to do some problem solving
+and actually adapt and
+learn during deployment,
+during a single
+episode without resets.
+And so you can think of
+this as after previous data
+or previous training, you
+have one life to autonomously
+complete the task.
+As a fairly simple
+example, maybe you
+have training
+experience in a flat,
+like running in
+like flat ground.
+And then at some point,
+you encounter some obstacle
+that you hadn't
+seen before, and you
+need to figure out how to
+get over this obstacle,
+despite not having seen
+this during training.
+And you want to use
+reinforcement learning
+or use some ideas
+from reinforcement
+learning to adapt to
+the new circumstances,
+live within an episode.
+So one thing we might think
+about is, can we just run--
+can we continue to fine tune
+our policy with reinforcement
+learning at test time?
+If, for example,
+we make a mistake,
+maybe we can just
+update our policy
+with TD updates or
+policy gradients,
+live, as we're rolling
+out our policy.
+And so if we actually do
+that-- so we train a policy
+and then try to fine tune it at
+test time with this obstacle,
+we get something
+that looks like this.
+So the policy actually
+does figure out
+how to get over
+the first obstacle,
+even though it has never
+seen that obstacle before.
+And then, eventually,
+it actually
+gets stuck on flipped over.
+And even though it's running
+reinforcement learning,
+and you can see it's--
+it is somewhat trying to get up.
+It essentially gets stuck.
+And even though you're
+still running reinforcement
+learning, still
+running the policy,
+and still running
+updates, it isn't
+able to recover
+from these states
+that it hasn't seen
+before, without on its own,
+without interventions.
+And ideally, we'd have a
+policy that could figure out
+how to get up and how to
+retry during deployment
+in these new circumstances.
+Now this is also
+something that's
+bleeding edge of research.
+And I'll just mention a few
+ideas that have been proposed,
+that seem to be quite helpful
+for addressing this problem.
+One is that when you're getting
+stuck, you end up in this state
+that it's hard to recover from.
+And if you're doing
+reinforcement learning updates,
+say that you are
+running your policy,
+and somehow, you get
+stuck right here.
+If you're running
+reinforcement learning updates,
+you are running reinforcement
+learning updates,
+with regard to the task
+of getting to the goal.
+And if instead of trying to run
+RL updates to get to the goal,
+if you instead tried to run RL
+updates to get back to states
+that are familiar, like
+good states that you visited
+in your previous
+experience, then
+you might have a better
+time at getting unstuck,
+where, for example,
+these states might
+be closer to the ones
+that are at the goal
+and help perturb the agent back
+to something that it knows.
+So that it could then
+continue doing the task.
+So that's one idea.
+And then another idea is to
+try to leverage pre-training.
+So if you're trying to
+run reinforcement learning
+on the policy weights, like
+in the low-level action space,
+you can only change
+the policy so much.
+And there's only so
+many ways you can adapt.
+And if instead, if you could
+adapt in a higher level
+space, if you had some
+set of pre-trained skills,
+then you might be able to
+actually adapt more drastically
+and actually try to change a
+strategy that you're taking,
+rather than just changing
+the weights or the actions
+that you're using.
+So, for example, if you learned
+a skill for a pre-trained skill
+for walking forward
+and a pre-trained skill
+for getting back on your
+feet, then instead of trying
+to continue walk forward
+in that new state,
+if you tried to explore the
+different skills that you have
+and explore the state
+of getting back up,
+then you might be
+able to actually
+be more successful at
+handling these circumstances.
+Because you're basically able to
+try different strategies rather
+than just trying different
+actions or different weights.
+The other thing here is
+that pre-trained LLMs
+might have some common
+sense reasoning that
+could allow an agent to adapt
+a novel circumstances as well,
+and try different strategies.
+So let's look at
+a couple examples
+of these ideas in practice.
+So if we take the
+first idea that's
+trying to guide the agent
+with reinforcement learning
+to familiar states
+rather than to the goal,
+we can actually run it
+on that same example.
+And we see that the
+agent does actually--
+I mean, this is still an
+out-of-distribution environment.
+It does get stuck on its back,
+but it is able to, for example,
+get back up after trying.
+So here, it's stuck
+on its back, and it's
+trying to get back to a
+state that's familiar,
+for example, a state
+where it's on its feet.
+And it's able to
+eventually recover
+from that after
+a bit of attempts
+and then make it
+to the goal state.
+And then in terms
+of adapting, we
+talked about adopting
+the low-level space
+and in the high-level space.
+This first example
+is a system that
+was trained to be able to
+adapt in the low-level space
+from recent history.
+And this is able to handle
+some small out-of-distribution
+scenarios, where it's like
+on different terrains.
+But if you have things
+that are more drastically
+different from what
+you've seen before,
+it can be very helpful to adapt
+in a more high-level space.
+And so what that could
+look like is say that you--
+say that you have this
+legged robot that's trying
+to reach a goal over here.
+Then, if for example,
+all the agencies
+is this image right here
+tries to go forward,
+goes backward, if you
+just keep on running
+a policy without any
+context, it'll just
+keep on trying to go forward.
+Because it doesn't know that
+it tried going forward before.
+If instead you try
+different strategies
+like moving left, moving
+backwards, with context
+and adaptation, then you can
+figure out how to, ultimately--
+Even though the agent
+in this particular case
+has never seen this environment
+before, it's able to problem
+solve its way through
+these different obstacles
+and navigating to
+a goal position.
+This is something where if you
+adapt it in the low-level motor
+space, trying out different
+positions of your joints, then
+it would be very tricky
+to try to problem solve
+through this circumstance.
+Cool.
+So that was a brief foray into
+this single-life reinforcement
+learning setting.
+Yeah, good question.
+So how do we bake in
+safety constraints?
+So yeah, another
+circumstance that
+might require human oversight
+is, if you're in scenarios,
+where you could make safety
+critical mistakes-- if you
+are a legged robot, you can fall
+in a way that damages the robot.
+If you're a manipulator,
+you could drop a glass
+onto the floor.
+You could also hit
+objects pretty hard.
+There's actually work
+that builds very directly
+upon some of these
+ideas, where you actually
+try to learn some
+notion of safety
+and learn when you're
+actually in a high risk state,
+and then go back to a
+state that is less risky.
+So you could actually learn, for
+example, a recovery policy that
+tries to get back to
+states that are known
+to be less risky and more safe.
+And so these ideas,
+actually-- some of these ideas
+were actually, several years
+ago, studied in safety settings.
+The other practical
+thing to do is
+to try to, to the
+extent possible,
+try to impose safety
+constraints on the controller
+itself so that,
+for example, you're
+not using the motors to the
+point in which they'll overheat
+or minimize, have a box around
+the robot that doesn't allow it
+to, for example,
+apply a lot of force
+to different parts
+of the state space.
+Now, that's not
+possible everywhere.
+And learning notions of
+safety might be the only way
+to actually address
+the problem in general.
+Although to learn safety,
+you need examples of failing.
+So it's generally a
+pretty tricky problem.
+And yeah, I guess those are
+my main thoughts on that.
+Yeah, so you also--
+the question is maybe
+when navigate around
+people, you could
+try to ask a VLM,
+like what you might
+try to do at a high level
+in different circumstances.
+And this work, right
+here, actually,
+was using a VLM to indicate
+with past experience what
+are good strategies to try.
+And so these models may have
+some common sense, suggesting
+maybe you shouldn't walk or
+run into a person, for example.
+Or maybe you should
+wait, that sort of thing.
+And so leveraging those
+common sense in those models
+is fairly promising.
+Cool.
+Great.
+So to summarize, we talked
+about why reinforcement learning
+algorithms don't already
+give robots autonomous
+learning capabilities.
+And define the problem,
+define a couple instances
+of this problem,
+where we either want
+to think about the lifetime
+of rewards or learning
+a good policy.
+And we talked about
+algorithms for each
+of those, where we
+try to, for example,
+learn a backward policy,
+learn a task graph,
+and try different tasks,
+and also single life
+RL to prevent drift.

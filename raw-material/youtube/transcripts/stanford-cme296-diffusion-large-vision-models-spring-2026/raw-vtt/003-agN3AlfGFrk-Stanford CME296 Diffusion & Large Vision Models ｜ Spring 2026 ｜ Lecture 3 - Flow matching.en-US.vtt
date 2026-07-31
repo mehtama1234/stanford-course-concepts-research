@@ -1,0 +1,5837 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:05.600 --> 00:00:12.920
+Hello, everyone, and welcome
+to lecture 3 of CME 296.
+
+00:00:12.920 --> 00:00:15.600
+So today is a very
+special day because we're
+
+00:00:15.600 --> 00:00:19.040
+going to talk about
+flow matching, which
+
+00:00:19.040 --> 00:00:24.400
+is a generation paradigm that
+is quite trendy these days.
+
+00:00:24.400 --> 00:00:28.200
+So if you're a member,
+lectures 1 and lecture 2
+
+00:00:28.200 --> 00:00:31.240
+were also about
+generation paradigm
+
+00:00:31.240 --> 00:00:35.440
+where we talked about diffusion
+with DPM and lecture 1
+
+00:00:35.440 --> 00:00:39.040
+and score matching in lecture 2.
+
+00:00:39.040 --> 00:00:43.560
+So flow matching is yet
+another generation paradigm.
+
+00:00:43.560 --> 00:00:45.920
+And we're going to
+see in this lecture
+
+00:00:45.920 --> 00:00:49.840
+what is the mindset behind
+that separate paradigm
+
+00:00:49.840 --> 00:00:55.240
+and how it relates to
+diffusion and score matching.
+
+00:00:55.240 --> 00:01:00.160
+So as usual we're going to
+start the class with a recap
+
+00:01:00.160 --> 00:01:02.760
+of the last episodes.
+
+00:01:02.760 --> 00:01:07.600
+So if you remember
+lecture 1, we saw
+
+00:01:07.600 --> 00:01:11.040
+how we could
+generate new samples,
+
+00:01:11.040 --> 00:01:13.520
+and the way we thought
+about doing that
+
+00:01:13.520 --> 00:01:18.360
+was taking images from
+our training set, which
+
+00:01:18.360 --> 00:01:21.560
+we named clean images.
+
+00:01:21.560 --> 00:01:25.680
+And what we did is that we
+gradually corrupted them
+
+00:01:25.680 --> 00:01:30.560
+with a process that we
+defined, a process q,
+
+00:01:30.560 --> 00:01:34.920
+which, given an image
+at a given time step,
+
+00:01:34.920 --> 00:01:38.720
+noised it by adding some
+Gaussian noise weighted
+
+00:01:38.720 --> 00:01:41.000
+by some coefficients.
+
+00:01:41.000 --> 00:01:45.200
+And the goal of diffusion
+with DPM was to find
+
+00:01:45.200 --> 00:01:48.640
+or was to learn a
+reverse process, which
+
+00:01:48.640 --> 00:01:54.120
+we noted p theta that
+removed the noise gradually.
+
+00:01:54.120 --> 00:01:58.810
+And what we saw was that
+in order to learn p theta.
+
+00:01:58.810 --> 00:02:05.170
+What we did is try to maximize
+the likelihood of our model
+
+00:02:05.170 --> 00:02:07.930
+seeing the training data.
+
+00:02:07.930 --> 00:02:10.490
+And if you remember,
+we did some clever math
+
+00:02:10.490 --> 00:02:14.870
+with some estimation
+of the lower bound.
+
+00:02:14.870 --> 00:02:18.290
+So the elbow and we
+derived some terms
+
+00:02:18.290 --> 00:02:21.250
+and we ended up
+with a pretty good
+
+00:02:21.250 --> 00:02:27.810
+looking loss, which was just an
+L2 regression on the noise that
+
+00:02:27.810 --> 00:02:33.690
+was added up to the
+image at timestamp t.
+
+00:02:33.690 --> 00:02:37.330
+And so this was lecture 1.
+
+00:02:37.330 --> 00:02:42.210
+Lecture 2 was taking
+another perspective
+
+00:02:42.210 --> 00:02:45.690
+and just taking a
+step back, thinking
+
+00:02:45.690 --> 00:02:52.410
+of images in the space of the
+n dimensional space of images,
+
+00:02:52.410 --> 00:02:54.890
+and the fact that
+what we wanted to do
+
+00:02:54.890 --> 00:02:59.690
+was sample from an
+easy distribution
+
+00:02:59.690 --> 00:03:06.130
+and then work our way up until
+the true data distribution.
+
+00:03:06.130 --> 00:03:07.930
+So how did we do that?
+
+00:03:07.930 --> 00:03:11.130
+The whole point
+of the lecture was
+
+00:03:11.130 --> 00:03:14.930
+to learn what we call
+the score, which is
+
+00:03:14.930 --> 00:03:18.770
+the gradient of the log of p.
+
+00:03:18.770 --> 00:03:20.730
+And why did we do that?
+
+00:03:20.730 --> 00:03:24.410
+Because it acted as
+a compass from where
+
+00:03:24.410 --> 00:03:29.650
+we were up until
+regions of high density.
+
+00:03:29.650 --> 00:03:33.610
+And if we learn such a
+score, what we could do
+
+00:03:33.610 --> 00:03:39.210
+was use sampling techniques
+such as Langevin sampling, which
+
+00:03:39.210 --> 00:03:44.210
+allowed us to move towards
+high density regions,
+
+00:03:44.210 --> 00:03:50.810
+but also allow for some
+diversity with some noise term.
+
+00:03:50.810 --> 00:03:56.140
+And we saw that in order for
+us to estimate that score,
+
+00:03:56.140 --> 00:04:01.940
+we cleverly noised the initial
+data distribution in order
+
+00:04:01.940 --> 00:04:06.780
+to learn the score of
+the noised distribution.
+
+00:04:06.780 --> 00:04:12.620
+And then we had a
+progressive noise schedule
+
+00:04:12.620 --> 00:04:16.300
+that allowed us to
+progressively work our way up
+
+00:04:16.300 --> 00:04:18.120
+until the data distribution.
+
+00:04:18.120 --> 00:04:22.380
+So we ended up with
+a score function
+
+00:04:22.380 --> 00:04:25.760
+that was a function of
+the position in space,
+
+00:04:25.760 --> 00:04:28.420
+but also the noise level.
+
+00:04:28.420 --> 00:04:31.320
+And again, after doing
+some clever math,
+
+00:04:31.320 --> 00:04:35.380
+we also ended up with an
+L2 regression loss, which
+
+00:04:35.380 --> 00:04:38.580
+was quite easy to compute.
+
+00:04:38.580 --> 00:04:42.060
+But what we also saw was
+that what we saw in lecture 2
+
+00:04:42.060 --> 00:04:45.700
+was actually quite related
+to what we saw in lecture 1,
+
+00:04:45.700 --> 00:04:50.580
+because both involved
+adding noise.
+
+00:04:50.580 --> 00:04:53.020
+And in particular,
+we saw that there
+
+00:04:53.020 --> 00:04:59.180
+was a relationship between the
+score of a noisy distribution
+
+00:04:59.180 --> 00:05:04.220
+and the noise that we
+added from the clean image
+
+00:05:04.220 --> 00:05:07.460
+to the noisy image.
+
+00:05:07.460 --> 00:05:11.700
+So given that, what
+we did was think
+
+00:05:11.700 --> 00:05:16.580
+of a unified way of looking
+at both these perspectives,
+
+00:05:16.580 --> 00:05:20.740
+and we moved from a
+discrete representation
+
+00:05:20.740 --> 00:05:24.980
+to a continuous one, and
+we obtained this SDE, which
+
+00:05:24.980 --> 00:05:31.260
+was of the form dx equal f
+of x and t dt plus gt times
+
+00:05:31.260 --> 00:05:36.140
+dw, where w is our Wiener
+process which is introducing
+
+00:05:36.140 --> 00:05:38.700
+the stochasticity.
+
+00:05:38.700 --> 00:05:42.780
+And in particular, the first
+term is called the drift term,
+
+00:05:42.780 --> 00:05:47.060
+and it is a term that quantifies
+the deterministic movement
+
+00:05:47.060 --> 00:05:49.780
+in space across time.
+
+00:05:49.780 --> 00:05:53.260
+And the second term is
+called the diffusion term,
+
+00:05:53.260 --> 00:05:57.340
+which quantifies the
+amount of stochasticity
+
+00:05:57.340 --> 00:06:00.500
+that you have in your process.
+
+00:06:00.500 --> 00:06:04.900
+So this expression is the
+expression of the forward pass,
+
+00:06:04.900 --> 00:06:09.900
+meaning, you're actually
+noising your images.
+
+00:06:09.900 --> 00:06:13.060
+And we saw that in
+space, if we were
+
+00:06:13.060 --> 00:06:15.740
+to represent that,
+it meant, again,
+
+00:06:15.740 --> 00:06:21.860
+having a drift component
+and a diffusion component.
+
+00:06:21.860 --> 00:06:25.220
+So now if we wanted
+to denoise our image,
+
+00:06:25.220 --> 00:06:29.380
+we were actually interested
+in the reverse process,
+
+00:06:29.380 --> 00:06:35.660
+which we saw thanks to the
+result from the '80s involved
+
+00:06:35.660 --> 00:06:37.420
+knowing the score.
+
+00:06:37.420 --> 00:06:41.340
+So this expression is
+the reverse process
+
+00:06:41.340 --> 00:06:43.900
+that allows us to
+denoise images, which is
+
+00:06:43.900 --> 00:06:46.860
+why we need to learn the score.
+
+00:06:46.860 --> 00:06:50.310
+And this is where
+the score comes in,
+
+00:06:50.310 --> 00:06:51.770
+in the continuous view.
+
+00:06:54.390 --> 00:06:58.550
+So this was two weeks
+ago and a week ago.
+
+00:06:58.550 --> 00:07:03.770
+But today we're going to see
+this third generation paradigm,
+
+00:07:03.770 --> 00:07:06.470
+which is called flow matching.
+
+00:07:06.470 --> 00:07:09.590
+And similar to the
+past lectures, what
+
+00:07:09.590 --> 00:07:11.710
+we're going to try
+to do is to have
+
+00:07:11.710 --> 00:07:17.270
+a nice balance between
+intuition and math,
+
+00:07:17.270 --> 00:07:20.250
+because you will see that
+these papers are full of math,
+
+00:07:20.250 --> 00:07:22.790
+full of equations,
+and we will try
+
+00:07:22.790 --> 00:07:25.010
+to approach it from an
+intuitive perspective,
+
+00:07:25.010 --> 00:07:29.110
+but not shy away
+from the math either.
+
+00:07:29.110 --> 00:07:31.670
+And of course, please
+interrupt me at any point
+
+00:07:31.670 --> 00:07:37.670
+if you feel there's
+something that's not clear.
+
+00:07:37.670 --> 00:07:39.390
+Cool?
+
+00:07:39.390 --> 00:07:41.870
+OK, let's start.
+
+00:07:41.870 --> 00:07:46.670
+So the whole point of
+these first three lectures
+
+00:07:46.670 --> 00:07:51.110
+is to find a way to
+go from somewhere
+
+00:07:51.110 --> 00:07:56.430
+that is easy to sample
+from up until our data
+
+00:07:56.430 --> 00:07:59.670
+distribution of interests.
+
+00:07:59.670 --> 00:08:03.550
+So the way that flow
+matching works is.
+
+00:08:03.550 --> 00:08:06.590
+It has two distributions.
+
+00:08:06.590 --> 00:08:09.510
+The first one is called
+the initial distribution,
+
+00:08:09.510 --> 00:08:13.382
+which is the distribution
+that you're starting from.
+
+00:08:13.382 --> 00:08:15.590
+And then the second distribution
+is called the target
+
+00:08:15.590 --> 00:08:18.270
+distribution, and it
+is the distribution
+
+00:08:18.270 --> 00:08:21.510
+that you want to end up with.
+
+00:08:21.510 --> 00:08:25.590
+And the whole point
+of flow matching
+
+00:08:25.590 --> 00:08:33.510
+is finding a way to transport
+our initial data distribution up
+
+00:08:33.510 --> 00:08:36.390
+until the target distribution.
+
+00:08:36.390 --> 00:08:41.350
+And just note the terminology
+I'm using, transport.
+
+00:08:41.350 --> 00:08:47.850
+So what we want is to transport
+the whole density that we have,
+
+00:08:47.850 --> 00:08:50.630
+and remember that
+probability, densities
+
+00:08:50.630 --> 00:08:53.750
+have this very nice
+property of summing to 1.
+
+00:08:53.750 --> 00:08:58.030
+So we want to transport the
+whole density distribution
+
+00:08:58.030 --> 00:09:02.310
+from one place to another.
+
+00:09:02.310 --> 00:09:05.870
+So this is the idea
+behind flow matching.
+
+00:09:05.870 --> 00:09:09.830
+And we're going to see
+how we can do that.
+
+00:09:09.830 --> 00:09:16.870
+So I'm going to just give you a
+warning in terms of conventions.
+
+00:09:16.870 --> 00:09:21.790
+In the past, we've seen
+that 0 was clean data
+
+00:09:21.790 --> 00:09:24.730
+and then capital T
+was the noise data.
+
+00:09:24.730 --> 00:09:27.590
+But here it's going
+to be different.
+
+00:09:27.590 --> 00:09:32.790
+So we will be noting p0 our
+initial data distribution, which
+
+00:09:32.790 --> 00:09:35.150
+is typically something
+that is easy to sample
+
+00:09:35.150 --> 00:09:38.630
+from such as Gaussian noise.
+
+00:09:38.630 --> 00:09:41.470
+And the target data
+distribution is
+
+00:09:41.470 --> 00:09:46.560
+going to be noted p1,
+t equal 1, and this is
+
+00:09:46.560 --> 00:09:50.240
+where we want to end up with.
+
+00:09:50.240 --> 00:09:52.200
+And then again, so
+this slide is just
+
+00:09:52.200 --> 00:09:56.640
+to say that lectures 1
+and 2 we said 0 was clean,
+
+00:09:56.640 --> 00:09:59.840
+capital T was noise.
+
+00:09:59.840 --> 00:10:05.460
+But here 0 will be noise
+and 1 will be what we want,
+
+00:10:05.460 --> 00:10:10.360
+which is the clean images,
+which is the data distribution.
+
+00:10:10.360 --> 00:10:14.480
+So the reason why we
+chose to proceed that way
+
+00:10:14.480 --> 00:10:18.120
+is just that the field
+chose these conventions.
+
+00:10:18.120 --> 00:10:22.360
+And if we were to keep the
+conventions of the diffusion
+
+00:10:22.360 --> 00:10:26.480
+and score matching fields,
+it would just completely
+
+00:10:26.480 --> 00:10:30.200
+confuse if you were to read
+papers from the flow matching
+
+00:10:30.200 --> 00:10:34.400
+field, which is the reason
+why we're keeping things
+
+00:10:34.400 --> 00:10:37.320
+consistent with the paper.
+
+00:10:37.320 --> 00:10:39.300
+But just keep those
+things in mind,
+
+00:10:39.300 --> 00:10:42.240
+because sometimes these
+conventions can also
+
+00:10:42.240 --> 00:10:45.180
+be reversed, depending on
+which paper you're reading.
+
+00:10:45.180 --> 00:10:50.040
+But this one is by
+far the most common.
+
+00:10:50.040 --> 00:10:55.320
+So with that warning
+aside, what we want to do
+
+00:10:55.320 --> 00:11:01.760
+is to sample an observation from
+our initial data distribution
+
+00:11:01.760 --> 00:11:07.040
+and then map it to the
+target data distribution.
+
+00:11:07.040 --> 00:11:09.440
+So in order to do
+that, we're now
+
+00:11:09.440 --> 00:11:12.520
+going to go through
+some common notations.
+
+00:11:12.520 --> 00:11:16.560
+And the first one is
+called the trajectory.
+
+00:11:16.560 --> 00:11:21.080
+So the trajectory is
+notated xt, and it
+
+00:11:21.080 --> 00:11:27.040
+is the path that is taken by
+an observation between times 0
+
+00:11:27.040 --> 00:11:28.440
+and 1.
+
+00:11:28.440 --> 00:11:31.760
+So by the way, the time
+0 and 1 is arbitrary.
+
+00:11:31.760 --> 00:11:35.200
+It's just a way for us to
+say, OK, when are we starting
+
+00:11:35.200 --> 00:11:37.960
+and when are we ending?
+
+00:11:37.960 --> 00:11:41.670
+And so here at time t
+equals 0, we have x0.
+
+00:11:41.670 --> 00:11:44.730
+And what we want to do
+is for our trajectory
+
+00:11:44.730 --> 00:11:52.730
+to map a point from
+p0 up until p1.
+
+00:11:52.730 --> 00:11:55.250
+So that's our goal.
+
+00:11:55.250 --> 00:11:58.150
+So now, let's see
+another notation.
+
+00:11:58.150 --> 00:12:01.010
+So this one is called the flow.
+
+00:12:01.010 --> 00:12:08.210
+The flow is known
+as psi of T of x0.
+
+00:12:08.210 --> 00:12:11.050
+So I'm just going to
+write that down here.
+
+00:12:11.050 --> 00:12:23.770
+So it is a function that takes
+time and an initial condition.
+
+00:12:23.770 --> 00:12:30.850
+And it gives you where
+that point at time t.
+
+00:12:30.850 --> 00:12:34.830
+So this is the time
+so belongs to 01.
+
+00:12:34.830 --> 00:12:39.410
+This one is to your
+space, which is maybe--
+
+00:12:39.410 --> 00:12:41.490
+I don't know-- d dimensional.
+
+00:12:41.490 --> 00:12:45.110
+And this one is also in
+the d dimensional space.
+
+00:12:47.890 --> 00:12:50.530
+And you have psi
+of T of x0, which
+
+00:12:50.530 --> 00:12:57.370
+is equal to your point at
+time t, which is x of t.
+
+00:12:57.370 --> 00:13:01.330
+So the flow you can interpret
+it in different ways.
+
+00:13:01.330 --> 00:13:04.730
+So one way you can
+interpret it is it's
+
+00:13:04.730 --> 00:13:07.330
+a collection of trajectories.
+
+00:13:07.330 --> 00:13:11.290
+Because if you change
+the initial condition x0,
+
+00:13:11.290 --> 00:13:15.970
+then psi t of x0 is all
+the possible trajectories
+
+00:13:15.970 --> 00:13:24.230
+that go from an initial
+condition x0 up until time t.
+
+00:13:24.230 --> 00:13:24.730
+Yeah?
+
+00:13:27.410 --> 00:13:30.570
+The flow can also be
+seen as a function that
+
+00:13:30.570 --> 00:13:37.570
+maps your initial condition to
+where it should be at time t.
+
+00:13:37.570 --> 00:13:40.890
+And this is why it's
+called the flow.
+
+00:13:40.890 --> 00:13:43.512
+So this function
+is quite important
+
+00:13:43.512 --> 00:13:44.970
+because at the end
+of the day, what
+
+00:13:44.970 --> 00:13:53.450
+you want is psi 1 of x0 to be
+sampled from-- to be as if it
+
+00:13:53.450 --> 00:13:56.890
+was sampled from p1, which is
+your target distribution, data
+
+00:13:56.890 --> 00:13:57.710
+distribution.
+
+00:14:00.690 --> 00:14:01.190
+Cool.
+
+00:14:01.190 --> 00:14:03.970
+So now we have our
+next terminology
+
+00:14:03.970 --> 00:14:10.930
+which is called the probability
+path, and it's denoted pt of x.
+
+00:14:10.930 --> 00:14:15.490
+So pt of x is the
+probability distribution
+
+00:14:15.490 --> 00:14:20.050
+of your observations at time t.
+
+00:14:20.050 --> 00:14:26.730
+So p0 of x is your initial
+data distribution, and p1 of x
+
+00:14:26.730 --> 00:14:30.530
+is your target
+data distribution.
+
+00:14:30.530 --> 00:14:34.900
+So if t is between 0
+and 1, it's basically
+
+00:14:34.900 --> 00:14:41.500
+the intermediary probability
+data distribution.
+
+00:14:41.500 --> 00:14:47.340
+And as you can imagine, in
+order to go from p0 to p1,
+
+00:14:47.340 --> 00:14:51.260
+you have an infinite
+number of ways
+
+00:14:51.260 --> 00:14:54.300
+of going from one to the other.
+
+00:14:54.300 --> 00:14:58.980
+So pt by no means unique.
+
+00:14:58.980 --> 00:15:02.480
+There are many ways for
+you to go from 0 to 1.
+
+00:15:05.740 --> 00:15:06.260
+Cool.
+
+00:15:06.260 --> 00:15:11.380
+And now we're going to
+talk about a central object
+
+00:15:11.380 --> 00:15:16.660
+of this whole field, and
+it's called the vector field.
+
+00:15:16.660 --> 00:15:21.300
+So vector field
+is noted ut of x.
+
+00:15:21.300 --> 00:15:27.980
+And it is a function that takes
+in a place in space, so x,
+
+00:15:27.980 --> 00:15:30.100
+and a time t.
+
+00:15:30.100 --> 00:15:33.540
+And it gives you a vector.
+
+00:15:33.540 --> 00:15:36.260
+And that vector,
+you can interpret it
+
+00:15:36.260 --> 00:15:41.820
+as the direction and the speed
+that particles should move
+
+00:15:41.820 --> 00:15:44.120
+at that location at that time.
+
+00:15:47.060 --> 00:15:50.240
+So again, the vector
+field takes in a vector,
+
+00:15:50.240 --> 00:15:52.380
+which is your position
+in space and gives you
+
+00:15:52.380 --> 00:15:58.140
+also a vector, which is where
+you need to move and how fast.
+
+00:15:58.140 --> 00:16:02.660
+And we're going to see
+that the vector field is
+
+00:16:02.660 --> 00:16:06.900
+quite central to flow matching.
+
+00:16:06.900 --> 00:16:11.320
+But before we do that,
+I know last lecture,
+
+00:16:11.320 --> 00:16:13.620
+we talked about the score.
+
+00:16:13.620 --> 00:16:17.540
+And the score was also a vector.
+
+00:16:17.540 --> 00:16:20.500
+And if you remember,
+the score was also
+
+00:16:20.500 --> 00:16:26.940
+something we used in order
+to go from noise to data.
+
+00:16:26.940 --> 00:16:29.900
+So one natural question you may
+be asking yourself right now
+
+00:16:29.900 --> 00:16:36.700
+is, well, how does this vector
+field or velocity relate
+
+00:16:36.700 --> 00:16:38.700
+to the score?
+
+00:16:38.700 --> 00:16:41.780
+So I'm going to give you
+the following analogy.
+
+00:16:41.780 --> 00:16:45.980
+So let's suppose you want to go
+from your initial distribution
+
+00:16:45.980 --> 00:16:48.060
+to your target distribution.
+
+00:16:48.060 --> 00:16:50.020
+And let's suppose
+that you're thinking
+
+00:16:50.020 --> 00:16:55.640
+of this in terms of self-driving
+cars that are distributed,
+
+00:16:55.640 --> 00:17:00.100
+let's say, in a Gaussian fashion
+in the middle of the desert.
+
+00:17:00.100 --> 00:17:06.300
+And what you want to do is to
+position your self-driving cars
+
+00:17:06.300 --> 00:17:09.520
+in a certain way so that
+it follows, let's say,
+
+00:17:09.520 --> 00:17:12.940
+a target data distribution.
+
+00:17:12.940 --> 00:17:16.900
+So the way you would
+think of the velocity
+
+00:17:16.900 --> 00:17:19.500
+would be instructions
+that you would
+
+00:17:19.500 --> 00:17:24.619
+give to your self-driving
+cars at a given location
+
+00:17:24.619 --> 00:17:30.950
+and at a given time t So if
+the vector field was not time
+
+00:17:30.950 --> 00:17:34.430
+dependent, you could even think
+of it as highways or routes
+
+00:17:34.430 --> 00:17:35.830
+with speed limits.
+
+00:17:35.830 --> 00:17:38.430
+But here, the vector
+field is actually
+
+00:17:38.430 --> 00:17:43.670
+time dependent, which means that
+at a given location x and at two
+
+00:17:43.670 --> 00:17:48.590
+different time steps, t1 and
+t2, that vector can actually
+
+00:17:48.590 --> 00:17:51.070
+be different.
+
+00:17:51.070 --> 00:17:54.110
+And in that sense,
+just following
+
+00:17:54.110 --> 00:17:57.910
+with that self-driving
+car example,
+
+00:17:57.910 --> 00:18:02.310
+the score would be
+a bit like a compass
+
+00:18:02.310 --> 00:18:06.750
+that you could see in your
+car of where high density
+
+00:18:06.750 --> 00:18:09.630
+regions are.
+
+00:18:09.630 --> 00:18:12.150
+So I hope this is
+useful to just picture
+
+00:18:12.150 --> 00:18:16.450
+the difference between what a
+velocity is and what a score is.
+
+00:18:16.450 --> 00:18:18.550
+So these two are
+vectors, but they
+
+00:18:18.550 --> 00:18:20.450
+have different interpretations.
+
+00:18:24.270 --> 00:18:25.450
+Any questions so far?
+
+00:18:28.230 --> 00:18:32.775
+We've barely started, so we're
+going to see a few things here.
+
+00:18:32.775 --> 00:18:35.150
+But I just want to make sure
+that the notation so far are
+
+00:18:35.150 --> 00:18:35.690
+clear.
+
+00:18:38.870 --> 00:18:41.230
+Yeah, all good?
+
+00:18:41.230 --> 00:18:41.850
+Cool.
+
+00:18:41.850 --> 00:18:46.790
+So we're going to see
+our first identity here.
+
+00:18:46.790 --> 00:18:52.310
+So we introduced the vector
+field, a.k.a. the velocity,
+
+00:18:52.310 --> 00:18:58.870
+because this is the way we're
+going to have our particles
+
+00:18:58.870 --> 00:19:01.990
+move from one place to another.
+
+00:19:01.990 --> 00:19:04.550
+And in particular,
+the definition
+
+00:19:04.550 --> 00:19:07.830
+we're giving to the velocity,
+a.k.a. the vector field,
+
+00:19:07.830 --> 00:19:10.030
+is given as follows.
+
+00:19:10.030 --> 00:19:15.630
+So what we're going to say
+is that a change in position
+
+00:19:15.630 --> 00:19:19.790
+will be associated with the
+velocity at that location
+
+00:19:19.790 --> 00:19:24.440
+at that time t times dt.
+
+00:19:24.440 --> 00:19:29.440
+So in other words, a given
+particle in a given location
+
+00:19:29.440 --> 00:19:33.860
+will be moving according
+to that velocity.
+
+00:19:37.400 --> 00:19:40.600
+And one thing that
+I want to tell you
+
+00:19:40.600 --> 00:19:44.300
+is that the trajectory,
+which as a reminder,
+
+00:19:44.300 --> 00:19:48.800
+is the whole path that the
+particle is taking from time t
+
+00:19:48.800 --> 00:19:53.880
+equals 0 to time t equal to
+1, that trajectory is actually
+
+00:19:53.880 --> 00:19:59.600
+going to be unique for a
+given initial condition
+
+00:19:59.600 --> 00:20:02.600
+if there is a special condition
+on the vector field, which
+
+00:20:02.600 --> 00:20:07.500
+is that if the vector field
+is Lipschitz continuous.
+
+00:20:10.400 --> 00:20:12.280
+So the reason why
+I'm bringing this up
+
+00:20:12.280 --> 00:20:14.920
+is because it's going
+to be important.
+
+00:20:14.920 --> 00:20:18.680
+And so who knows what
+Lipschitz continuity is?
+
+00:20:18.680 --> 00:20:21.480
+Have you ever
+heard of this term?
+
+00:20:21.480 --> 00:20:23.280
+Yeah?
+
+00:20:23.280 --> 00:20:24.000
+No?
+
+00:20:24.000 --> 00:20:27.120
+OK, so maybe I can just recap
+the mathematical definition
+
+00:20:27.120 --> 00:20:31.640
+and maybe how it
+means-- what it means.
+
+00:20:31.640 --> 00:20:35.560
+So Lipschitz continuity
+of a function f
+
+00:20:35.560 --> 00:20:41.160
+is when you have some
+constants, let's call
+
+00:20:41.160 --> 00:20:50.040
+it m such that for all x and
+y in your space of interest,
+
+00:20:50.040 --> 00:21:01.900
+you have your function f that
+satisfies this relationship.
+
+00:21:01.900 --> 00:21:05.740
+So the norm of f of x
+minus f of y is less than
+
+00:21:05.740 --> 00:21:11.320
+or equal than m times
+the norm of x minus y.
+
+00:21:11.320 --> 00:21:17.320
+So what this means is that f
+needs to be continuous, but also
+
+00:21:17.320 --> 00:21:20.380
+not in a very dramatic way.
+
+00:21:23.160 --> 00:21:24.800
+So this is the
+mathematical definition
+
+00:21:24.800 --> 00:21:25.980
+of Lipschitz continuity.
+
+00:21:25.980 --> 00:21:30.160
+And what I'm saying here
+is if the vector field
+
+00:21:30.160 --> 00:21:37.480
+is Lipschitz continuous,
+then the trajectories x
+
+00:21:37.480 --> 00:21:41.660
+will be unique for a
+given initial condition.
+
+00:21:43.985 --> 00:21:45.360
+And so I'm going
+to just give you
+
+00:21:45.360 --> 00:21:51.020
+an example of when
+trajectories are not unique.
+
+00:21:55.960 --> 00:22:04.800
+So here we have our ODE
+which is here like so.
+
+00:22:04.800 --> 00:22:09.560
+So I'm just going to give you an
+example of if we have a vector
+
+00:22:09.560 --> 00:22:13.200
+field that is not Lipschitz
+continuous, how we can have
+
+00:22:13.200 --> 00:22:15.600
+trajectories that start
+from the same point
+
+00:22:15.600 --> 00:22:18.330
+but that are actually different.
+
+00:22:18.330 --> 00:22:20.350
+So here, the example
+is as follows.
+
+00:22:20.350 --> 00:22:23.690
+So let's suppose
+we have your vector
+
+00:22:23.690 --> 00:22:30.950
+field, which is given this, by,
+let's say, square root of x.
+
+00:22:30.950 --> 00:22:36.650
+And you only consider, by
+the way, x positive or 0.
+
+00:22:36.650 --> 00:22:39.570
+So if your vector field, by
+the way, is time independent
+
+00:22:39.570 --> 00:22:47.650
+and it's just a function of
+x by square root of x, then
+
+00:22:47.650 --> 00:22:51.850
+if you say you want your
+initial condition to be x0
+
+00:22:51.850 --> 00:23:05.210
+is equal to 0, then xt equal
+to 0 is going to be a solution,
+
+00:23:05.210 --> 00:23:13.330
+but xt equals to
+t squared over 4
+
+00:23:13.330 --> 00:23:16.730
+is also going to be a solution.
+
+00:23:16.730 --> 00:23:18.750
+So here t squared over 4.
+
+00:23:18.750 --> 00:23:22.610
+So the derivative is t over 2.
+
+00:23:22.610 --> 00:23:26.610
+And here's when you put this
+also in the square root,
+
+00:23:26.610 --> 00:23:30.050
+it's also t over 2.
+
+00:23:30.050 --> 00:23:35.330
+So all of that to say that
+your vector field needs
+
+00:23:35.330 --> 00:23:38.010
+to behave in a
+certain way if you
+
+00:23:38.010 --> 00:23:41.810
+want to guarantee that your
+trajectories are unique.
+
+00:23:41.810 --> 00:23:46.330
+And this is
+Lipschitz continuity.
+
+00:23:46.330 --> 00:23:48.750
+And you're going to
+see why that matters.
+
+00:23:51.690 --> 00:23:52.190
+Cool.
+
+00:23:52.190 --> 00:23:54.910
+So that's the first equation
+that's going to be important.
+
+00:23:54.910 --> 00:23:59.610
+So the ODE here,
+which is dx over dt
+
+00:23:59.610 --> 00:24:03.790
+is equal to the velocity
+at location x and time t.
+
+00:24:03.790 --> 00:24:05.770
+It's the first one.
+
+00:24:05.770 --> 00:24:10.010
+The second one that we're
+going to see is the following.
+
+00:24:10.010 --> 00:24:13.570
+So I told you that
+what we want to do
+
+00:24:13.570 --> 00:24:21.250
+is transport our distribution
+from one place to another.
+
+00:24:21.250 --> 00:24:24.170
+So when you transport
+something, one thing
+
+00:24:24.170 --> 00:24:26.690
+that you want to guarantee
+is that you're not
+
+00:24:26.690 --> 00:24:32.770
+going to lose or gain anything
+of what you're transporting.
+
+00:24:32.770 --> 00:24:37.530
+You have what we call
+conservation of mass.
+
+00:24:37.530 --> 00:24:42.730
+And this idea is also something
+we want to put in writing.
+
+00:24:42.730 --> 00:24:48.170
+And in particular, we're going
+to focus on the following case.
+
+00:24:48.170 --> 00:24:51.010
+So let's assume you're
+in a region of space
+
+00:24:51.010 --> 00:24:55.650
+and you consider
+a very small area.
+
+00:24:55.650 --> 00:25:00.890
+And here you have your data
+distribution that is around it.
+
+00:25:00.890 --> 00:25:04.050
+So the equation that we
+want to put in writing
+
+00:25:04.050 --> 00:25:11.730
+is around making sure that
+the evolution of your density
+
+00:25:11.730 --> 00:25:17.300
+at time t is equal
+to the density that
+
+00:25:17.300 --> 00:25:26.260
+is coming minus the density that
+is going out or that is leaving.
+
+00:25:26.260 --> 00:25:28.580
+Do you all agree with this idea?
+
+00:25:28.580 --> 00:25:32.780
+So the evolution of
+density as at time t
+
+00:25:32.780 --> 00:25:34.900
+is a function of how
+much density comes
+
+00:25:34.900 --> 00:25:41.020
+in minus how many comes out.
+
+00:25:41.020 --> 00:25:44.940
+So the left-hand
+side is kind of easy.
+
+00:25:44.940 --> 00:25:49.820
+It's just a partial derivative
+of your probability path
+
+00:25:49.820 --> 00:25:54.900
+at that region with
+respect to time.
+
+00:25:54.900 --> 00:26:00.420
+But then the right side, I don't
+about you, but very intuitively,
+
+00:26:00.420 --> 00:26:07.340
+there's not like a supernatural
+operator that does that.
+
+00:26:07.340 --> 00:26:10.260
+So what we're
+going to see now is
+
+00:26:10.260 --> 00:26:14.220
+how we can quantify the
+idea on the right side
+
+00:26:14.220 --> 00:26:16.580
+of the equal sign.
+
+00:26:16.580 --> 00:26:19.780
+But before we do that, I
+just want to take a pause.
+
+00:26:19.780 --> 00:26:24.380
+Does this idea make sense,
+conservation of mass?
+
+00:26:24.380 --> 00:26:29.620
+By the way, have you
+seen it in another topic?
+
+00:26:29.620 --> 00:26:31.460
+Yeah?
+
+00:26:31.460 --> 00:26:33.900
+So in physics, you
+have the same thing,
+
+00:26:33.900 --> 00:26:35.720
+and it's actually
+called-- it has a name.
+
+00:26:35.720 --> 00:26:39.500
+It's called the
+continuity equation.
+
+00:26:39.500 --> 00:26:43.260
+Anyways, so instead of just
+giving you the formula,
+
+00:26:43.260 --> 00:26:47.940
+we're just going to
+intuitively get to it.
+
+00:26:47.940 --> 00:26:52.500
+And in particular, I want us to
+think about this right-hand side
+
+00:26:52.500 --> 00:26:55.220
+of this equation
+and think for a bit
+
+00:26:55.220 --> 00:27:02.180
+how we want to quantify the
+inflow minus outflow bit.
+
+00:27:02.180 --> 00:27:07.260
+So let's suppose you
+have an operator that's
+
+00:27:07.260 --> 00:27:10.070
+called of the divergence.
+
+00:27:10.070 --> 00:27:13.430
+But right now, I'm not
+telling you anything
+
+00:27:13.430 --> 00:27:15.130
+about what that operator is.
+
+00:27:15.130 --> 00:27:20.590
+I'm just telling you that
+the operator is positive
+
+00:27:20.590 --> 00:27:24.530
+when things are coming
+out more than coming in.
+
+00:27:27.510 --> 00:27:31.150
+And we're going to
+see what happens then.
+
+00:27:31.150 --> 00:27:37.130
+So here, when we're talking
+about coming in and coming out,
+
+00:27:37.130 --> 00:27:41.470
+we're, of course,
+talking about vectors.
+
+00:27:41.470 --> 00:27:45.010
+So here we're
+assuming, for instance,
+
+00:27:45.010 --> 00:27:47.710
+if there's more coming
+out than coming in that--
+
+00:27:47.710 --> 00:27:53.670
+let's assume if we are
+in one dimensional space,
+
+00:27:53.670 --> 00:28:00.510
+you have a vector that is
+such that at first it's
+
+00:28:00.510 --> 00:28:06.430
+small in magnitude, and then
+it's much bigger in magnitude.
+
+00:28:06.430 --> 00:28:08.830
+So here, do you agree
+with me that whatever
+
+00:28:08.830 --> 00:28:11.430
+this vector is
+representing, there is more
+
+00:28:11.430 --> 00:28:14.790
+coming out than coming in?
+
+00:28:14.790 --> 00:28:16.190
+You all agree?
+
+00:28:16.190 --> 00:28:19.765
+OK, so that's one
+case where coming out
+
+00:28:19.765 --> 00:28:20.890
+can be more than coming in.
+
+00:28:20.890 --> 00:28:22.450
+So let's see a second case.
+
+00:28:22.450 --> 00:28:25.370
+So second case is here.
+
+00:28:25.370 --> 00:28:28.830
+And then let's say your vector
+is coming out here and coming
+
+00:28:28.830 --> 00:28:31.470
+out there.
+
+00:28:31.470 --> 00:28:33.950
+Yeah?
+
+00:28:33.950 --> 00:28:35.770
+I'm sure you can have
+more cases than that.
+
+00:28:35.770 --> 00:28:43.430
+But in this 1D example, if you
+were to represent your vector,
+
+00:28:43.430 --> 00:28:52.480
+let's say f, over the
+dimension x, here,
+
+00:28:52.480 --> 00:28:56.750
+what is the
+magnitude of f doing?
+
+00:28:56.750 --> 00:28:58.670
+It is increasing.
+
+00:28:58.670 --> 00:29:04.990
+OK, so here, we just see that
+partial derivative of x/x
+
+00:29:04.990 --> 00:29:06.030
+is increasing.
+
+00:29:06.030 --> 00:29:06.990
+How about here?
+
+00:29:06.990 --> 00:29:08.090
+So here it's negative.
+
+00:29:08.090 --> 00:29:10.230
+And then it becomes positive.
+
+00:29:10.230 --> 00:29:11.490
+Also increasing, right?
+
+00:29:16.870 --> 00:29:24.270
+OK, so based on this very
+back-of-the-envelope intuition,
+
+00:29:24.270 --> 00:29:28.990
+we see that when
+things are leaving,
+
+00:29:28.990 --> 00:29:34.510
+partial derivative of x over
+this dimension of f over this
+
+00:29:34.510 --> 00:29:40.670
+dimension x is positive, which
+seems to match the sign that we
+
+00:29:40.670 --> 00:29:45.790
+want from our
+divergence operation.
+
+00:29:45.790 --> 00:29:48.290
+So now let's see the other case.
+
+00:29:48.290 --> 00:29:52.270
+So let's assume that we have
+now the case where we want
+
+00:29:52.270 --> 00:29:57.110
+our operator to be negative
+when there is, quote unquote,
+
+00:29:57.110 --> 00:30:00.990
+"more coming than leaving."
+
+00:30:00.990 --> 00:30:05.220
+So here again, this example.
+
+00:30:05.220 --> 00:30:08.760
+So you have, let's say, a
+bigger vector here coming
+
+00:30:08.760 --> 00:30:12.960
+and then a smaller one leaving.
+
+00:30:12.960 --> 00:30:15.640
+And then let's say you
+have another case, which
+
+00:30:15.640 --> 00:30:20.760
+is given by this, which
+is just vectors pointing
+
+00:30:20.760 --> 00:30:22.740
+towards that area.
+
+00:30:25.280 --> 00:30:30.920
+So here you see that f is
+becoming more and more negative
+
+00:30:30.920 --> 00:30:33.320
+when you project it on x.
+
+00:30:33.320 --> 00:30:36.920
+So here you have
+partial derivative
+
+00:30:36.920 --> 00:30:40.500
+of f over x, which is negative.
+
+00:30:40.500 --> 00:30:44.920
+And here you see that
+it was first positive,
+
+00:30:44.920 --> 00:30:52.800
+and then it becomes negative,
+which again, boils down to this.
+
+00:30:52.800 --> 00:30:57.360
+So this is by no
+means a formal proof,
+
+00:30:57.360 --> 00:31:04.560
+but I hope I gave you some
+intuition that if you take
+
+00:31:04.560 --> 00:31:09.840
+the partial derivative of your
+function that is outputting
+
+00:31:09.840 --> 00:31:15.560
+a vector over its
+coordinates, at least in 1D,
+
+00:31:15.560 --> 00:31:19.017
+it would give you this
+intuition that if it's positive,
+
+00:31:19.017 --> 00:31:21.100
+then it's more coming out,
+and when it's negative,
+
+00:31:21.100 --> 00:31:24.600
+then there's more coming in.
+
+00:31:24.600 --> 00:31:28.800
+So based on this intuition,
+what I'm now telling
+
+00:31:28.800 --> 00:31:32.400
+you is that there is an
+operator that is indeed
+
+00:31:32.400 --> 00:31:38.360
+called the divergence that is
+a function of a vector, that
+
+00:31:38.360 --> 00:31:44.080
+is a function of x, which
+is also multidimensional.
+
+00:31:44.080 --> 00:31:48.680
+And what it is
+doing is it is just
+
+00:31:48.680 --> 00:31:52.640
+the sum of the partial
+derivatives of x
+
+00:31:52.640 --> 00:31:56.520
+over each dimension.
+
+00:31:56.520 --> 00:32:00.440
+So the divergence is a scalar.
+
+00:32:00.440 --> 00:32:02.283
+It's a number.
+
+00:32:02.283 --> 00:32:04.200
+And if it's positive,
+it just means that there
+
+00:32:04.200 --> 00:32:05.325
+are more things coming out.
+
+00:32:05.325 --> 00:32:10.080
+And if it's negative, it means
+there are more things coming in.
+
+00:32:10.080 --> 00:32:16.960
+So based on that, we want to see
+how we can use this divergence
+
+00:32:16.960 --> 00:32:21.920
+operator back into our
+continuity equation example,
+
+00:32:21.920 --> 00:32:28.880
+where we want to quantify
+the fact that we want
+
+00:32:28.880 --> 00:32:34.080
+the net inflows, which
+is how much density
+
+00:32:34.080 --> 00:32:38.200
+is coming in versus out.
+
+00:32:38.200 --> 00:32:40.640
+So now a second
+question is something
+
+00:32:40.640 --> 00:32:44.960
+that we ask ourselves, which
+is OK, what should we use as f?
+
+00:32:44.960 --> 00:32:47.120
+What should f be?
+
+00:32:47.120 --> 00:32:48.800
+So we saw the
+vector field, which
+
+00:32:48.800 --> 00:32:52.240
+is a vector that
+could be a candidate.
+
+00:32:52.240 --> 00:32:54.740
+So do you think the vector
+field could be a good candidate?
+
+00:32:58.810 --> 00:33:01.270
+So let's see with an example.
+
+00:33:01.270 --> 00:33:04.210
+So let's suppose you
+have two points in space,
+
+00:33:04.210 --> 00:33:05.630
+let's say x1 and x2.
+
+00:33:05.630 --> 00:33:10.410
+And then you have their
+respective vector fields.
+
+00:33:10.410 --> 00:33:14.650
+If you happen to have a higher
+density in one of the two
+
+00:33:14.650 --> 00:33:18.450
+points, then our
+intuition tells us
+
+00:33:18.450 --> 00:33:22.850
+that you would want the point
+in the higher density region
+
+00:33:22.850 --> 00:33:27.370
+to transport more things than
+the one in the lower density
+
+00:33:27.370 --> 00:33:30.330
+region.
+
+00:33:30.330 --> 00:33:34.690
+So in that case, the vector
+field alone would actually not
+
+00:33:34.690 --> 00:33:37.650
+be a good candidate.
+
+00:33:37.650 --> 00:33:41.090
+Instead, and maybe you
+have guessed it, in order
+
+00:33:41.090 --> 00:33:46.230
+to quantify the movement
+of density, we, of course,
+
+00:33:46.230 --> 00:33:50.970
+need to take into consideration
+the probability density.
+
+00:33:50.970 --> 00:33:53.930
+And so here the actual
+quantity that we will use
+
+00:33:53.930 --> 00:33:57.770
+is called the
+probability flux, and it
+
+00:33:57.770 --> 00:34:04.050
+is defined by dt,
+which is a scalar times
+
+00:34:04.050 --> 00:34:06.390
+ut, which is the vector field.
+
+00:34:10.210 --> 00:34:14.969
+So going back to
+the equation that we
+
+00:34:14.969 --> 00:34:18.449
+wanted to put in writing,
+what we're saying
+
+00:34:18.449 --> 00:34:24.449
+is that the temporal evolution
+of the density at time t, which
+
+00:34:24.449 --> 00:34:29.170
+we said is simply the partial
+derivative of p with respect
+
+00:34:29.170 --> 00:34:30.810
+to t.
+
+00:34:30.810 --> 00:34:36.530
+We're now saying that this is
+equal to minus the divergence
+
+00:34:36.530 --> 00:34:39.770
+of the probability flux.
+
+00:34:39.770 --> 00:34:44.850
+And this quantity, so minus
+divergence of dt ut of x.
+
+00:34:44.850 --> 00:34:50.889
+It just means that we're
+interested in the net inflows
+
+00:34:50.889 --> 00:34:57.060
+of density within
+our small volume.
+
+00:34:57.060 --> 00:35:03.860
+So all in all, that equation,
+which I'm going to write,
+
+00:35:03.860 --> 00:35:08.780
+is nothing else than the
+continuity equation, which
+
+00:35:08.780 --> 00:35:10.360
+you may have seen in physics.
+
+00:35:16.860 --> 00:35:19.320
+So I'm going to write it down.
+
+00:35:19.320 --> 00:35:21.240
+And of course, OK, this is here.
+
+00:35:31.100 --> 00:35:36.180
+So what we're saying is that the
+evolution of density at a given
+
+00:35:36.180 --> 00:35:40.820
+location, the temporal evolution
+of the density at a given
+
+00:35:40.820 --> 00:35:46.380
+location, is given by how much
+density is coming in minus
+
+00:35:46.380 --> 00:35:48.860
+how much density is coming out.
+
+00:35:48.860 --> 00:35:57.300
+And this just conveys
+the facts that we're not
+
+00:35:57.300 --> 00:35:59.740
+creating new density
+out of thin air,
+
+00:35:59.740 --> 00:36:08.260
+we're just conserving it
+when time goes from t0 to 1.
+
+00:36:08.260 --> 00:36:14.460
+And compared to the
+ODE that we saw before,
+
+00:36:14.460 --> 00:36:17.620
+you can think of this
+equation as being
+
+00:36:17.620 --> 00:36:24.260
+a macro perspective of how
+your probability path evolves.
+
+00:36:24.260 --> 00:36:28.340
+And the ODE itself
+is actually centered
+
+00:36:28.340 --> 00:36:31.380
+on how one particle
+evolves, which
+
+00:36:31.380 --> 00:36:35.680
+is more a micro perspective,
+which we're going to see here.
+
+00:36:35.680 --> 00:36:40.140
+So a single sample, you take
+your sample x at time t.
+
+00:36:40.140 --> 00:36:45.220
+And what you're saying is that
+how fast that particle is going
+
+00:36:45.220 --> 00:36:48.180
+is actually given
+by the vector field
+
+00:36:48.180 --> 00:36:51.500
+at that location at that time.
+
+00:36:51.500 --> 00:36:59.020
+So the distance dx is
+given by ut of x times dt.
+
+00:36:59.020 --> 00:37:02.700
+So this is the
+micro perspective.
+
+00:37:02.700 --> 00:37:06.020
+But we also saw that
+this vector field that
+
+00:37:06.020 --> 00:37:10.100
+was coming into the picture
+in this micro perspective
+
+00:37:10.100 --> 00:37:12.900
+is also in the
+macro perspective.
+
+00:37:12.900 --> 00:37:16.660
+And what we're saying is
+given that we're transporting
+
+00:37:16.660 --> 00:37:19.820
+the density and we're not
+losing it or gaining it,
+
+00:37:19.820 --> 00:37:24.380
+we also have this nice
+identity that we can use,
+
+00:37:24.380 --> 00:37:26.920
+which is also called
+the continuity equation.
+
+00:37:30.340 --> 00:37:36.260
+And so there is expression that
+you will see a lot in papers.
+
+00:37:36.260 --> 00:37:38.420
+I'm going to read it out loud.
+
+00:37:38.420 --> 00:37:44.460
+The vector field ut of x
+generates the probability path.
+
+00:37:44.460 --> 00:37:47.060
+So when people say
+that, what they mean
+
+00:37:47.060 --> 00:37:55.910
+is that ut and dt satisfy
+the continuity equation.
+
+00:37:55.910 --> 00:38:00.470
+So now you may wonder,
+well, why should we care?
+
+00:38:00.470 --> 00:38:04.550
+So just remember
+that our goal is
+
+00:38:04.550 --> 00:38:09.870
+to sample an observation from
+the initial distribution p0,
+
+00:38:09.870 --> 00:38:15.110
+and to map it to the
+target data distribution.
+
+00:38:15.110 --> 00:38:18.270
+And the way we want
+to map it is we
+
+00:38:18.270 --> 00:38:21.550
+want that particle
+to go from one place
+
+00:38:21.550 --> 00:38:25.150
+to another using
+the vector field.
+
+00:38:25.150 --> 00:38:30.870
+And so what we want is to find
+a probability path that will
+
+00:38:30.870 --> 00:38:35.590
+allow us to go from p0 to p1.
+
+00:38:35.590 --> 00:38:38.570
+And in order to find
+the probability path,
+
+00:38:38.570 --> 00:38:43.070
+we also need to find the
+associated vector field that
+
+00:38:43.070 --> 00:38:46.590
+will allow us to actually do
+the mapping because that vector
+
+00:38:46.590 --> 00:38:54.390
+field is in the single
+sample perspective.
+
+00:38:54.390 --> 00:38:55.490
+So that's the idea.
+
+00:38:55.490 --> 00:38:58.090
+We're going to see it in
+other words, in a little bit.
+
+00:38:58.090 --> 00:39:03.790
+But this is the intuition
+behind flow models.
+
+00:39:03.790 --> 00:39:07.430
+Any questions on this?
+
+00:39:07.430 --> 00:39:10.490
+Everything is clear so far?
+
+00:39:10.490 --> 00:39:10.990
+Yep.
+
+00:39:14.710 --> 00:39:17.030
+So question is the
+solution of this equation
+
+00:39:17.030 --> 00:39:17.890
+would be the target.
+
+00:39:17.890 --> 00:39:25.390
+So on the left-hand
+side, if we know ut
+
+00:39:25.390 --> 00:39:31.070
+and if we know that ut is
+allowing pt to go from p0,
+
+00:39:31.070 --> 00:39:33.630
+something that we decide
+that is easy to sample
+
+00:39:33.630 --> 00:39:38.070
+to p1, what we care
+about, what we're saying
+
+00:39:38.070 --> 00:39:45.360
+is if we know such a ut,
+then on the left-hand side,
+
+00:39:45.360 --> 00:39:51.520
+if you sample x from p0, you
+have your initial condition.
+
+00:39:51.520 --> 00:39:54.640
+And if you ut,
+what that means is
+
+00:39:54.640 --> 00:40:00.680
+you can solve this equation
+in order to find x1.
+
+00:40:00.680 --> 00:40:07.440
+And x1, by definition, will be
+as if it was sample from p1.
+
+00:40:07.440 --> 00:40:08.540
+So that's the idea.
+
+00:40:11.200 --> 00:40:12.500
+I know it was a lot.
+
+00:40:12.500 --> 00:40:15.260
+I know it may not seem
+clear, but don't worry,
+
+00:40:15.260 --> 00:40:19.200
+we have a lot of
+examples down the line.
+
+00:40:19.200 --> 00:40:20.100
+So let's move on.
+
+00:40:20.100 --> 00:40:22.820
+Oh, this is exactly my
+next slide actually.
+
+00:40:22.820 --> 00:40:26.680
+So here what we're saying is the
+relationship between these two
+
+00:40:26.680 --> 00:40:28.360
+perspectives, I'm
+going to just repeat
+
+00:40:28.360 --> 00:40:30.040
+what I said but in
+mathematical terms,
+
+00:40:30.040 --> 00:40:37.480
+is if we sample x0 from p0.
+
+00:40:37.480 --> 00:40:45.040
+Given that our particle
+x is subject to velocity,
+
+00:40:45.040 --> 00:40:49.240
+then what that means is, if
+that velocity is actually
+
+00:40:49.240 --> 00:40:54.480
+generating the probability path
+from the initial to the target
+
+00:40:54.480 --> 00:41:02.280
+one, then what that means is
+that xt will be sampled from dt.
+
+00:41:02.280 --> 00:41:06.220
+And in particular, t=1, x1
+will be sampled from p1.
+
+00:41:11.160 --> 00:41:11.860
+OK, cool.
+
+00:41:11.860 --> 00:41:12.780
+So don't worry.
+
+00:41:12.780 --> 00:41:15.960
+We're going to go into
+more details on this.
+
+00:41:15.960 --> 00:41:25.400
+So the whole goal of flow models
+is to map points, is to map x0
+
+00:41:25.400 --> 00:41:27.920
+to x1.
+
+00:41:27.920 --> 00:41:30.100
+So what is our strategy here?
+
+00:41:30.100 --> 00:41:34.240
+We saw that the vector
+field was a central piece
+
+00:41:34.240 --> 00:41:36.160
+of this whole problem.
+
+00:41:36.160 --> 00:41:39.240
+So number one,
+step number one is
+
+00:41:39.240 --> 00:41:46.600
+for us to estimate this
+vector field via some model
+
+00:41:46.600 --> 00:41:50.200
+that we're going to
+note ut theta of x.
+
+00:41:50.200 --> 00:41:54.240
+So theta is the parameters
+that we're learning.
+
+00:41:54.240 --> 00:41:57.440
+So if we learn such
+a vector field,
+
+00:41:57.440 --> 00:42:02.200
+then what we're going to
+do in order to map x0 to x1
+
+00:42:02.200 --> 00:42:09.040
+is we're going to use the
+ODE and solve it numerically.
+
+00:42:09.040 --> 00:42:10.400
+So what does that mean?
+
+00:42:10.400 --> 00:42:14.360
+That means that we're
+going to sample x0,
+
+00:42:14.360 --> 00:42:17.960
+and we're just going to
+follow the vector field up
+
+00:42:17.960 --> 00:42:20.920
+until time equal to 1.
+
+00:42:20.920 --> 00:42:22.760
+So this integral
+here in practice
+
+00:42:22.760 --> 00:42:27.200
+is going to be just a numerical
+solver that maybe Euler,
+
+00:42:27.200 --> 00:42:29.560
+for instance.
+
+00:42:29.560 --> 00:42:33.780
+And it's going to be giving
+you x1, which is what you want,
+
+00:42:33.780 --> 00:42:36.760
+because at the end of the day,
+you want to be able to sample
+
+00:42:36.760 --> 00:42:40.450
+from your target
+data distribution.
+
+00:42:40.450 --> 00:42:45.730
+So starting from
+now, our full focus
+
+00:42:45.730 --> 00:42:52.410
+will be around finding the
+vector field ut theta of x.
+
+00:42:52.410 --> 00:42:55.190
+Because right now, I just
+told you what we care about.
+
+00:42:55.190 --> 00:42:57.930
+But I didn't tell you how
+we're going to do that.
+
+00:42:57.930 --> 00:43:02.250
+So now we're going
+to focus on that.
+
+00:43:02.250 --> 00:43:06.530
+So in the past, there
+has been many papers
+
+00:43:06.530 --> 00:43:12.770
+published on how you can
+estimate your vector field.
+
+00:43:12.770 --> 00:43:17.350
+And there is one method that
+I'm going to mention here,
+
+00:43:17.350 --> 00:43:19.650
+which is not going to be
+the focus of this class
+
+00:43:19.650 --> 00:43:24.590
+because it is a method that
+was used a number of years ago.
+
+00:43:24.590 --> 00:43:26.570
+So eight years ago, I believe.
+
+00:43:26.570 --> 00:43:29.710
+But it is not something that
+could be used in practice.
+
+00:43:29.710 --> 00:43:31.190
+So people are not
+using it so far.
+
+00:43:31.190 --> 00:43:36.610
+But I'm just telling you
+just for historical purposes.
+
+00:43:36.610 --> 00:43:41.290
+So one way of learning
+the vector fields
+
+00:43:41.290 --> 00:43:47.970
+is by maximizing the likelihood
+that your model is seeing
+
+00:43:47.970 --> 00:43:50.370
+the data, the training set.
+
+00:43:50.370 --> 00:43:51.810
+So how can you do that?
+
+00:43:51.810 --> 00:43:55.770
+Well, if you take the
+continuity equation that we saw,
+
+00:43:55.770 --> 00:43:58.810
+so this one--
+
+00:43:58.810 --> 00:44:03.930
+so if you take this
+equation, then what happens
+
+00:44:03.930 --> 00:44:07.890
+is if you do some
+math, you can actually
+
+00:44:07.890 --> 00:44:11.530
+pop up that log
+of dt of x, which
+
+00:44:11.530 --> 00:44:15.410
+is what you want to maximize.
+
+00:44:15.410 --> 00:44:19.750
+And you can have the
+following strategy.
+
+00:44:19.750 --> 00:44:26.670
+So you want to determine
+log of p1 of x1.
+
+00:44:26.670 --> 00:44:29.830
+So x1 is the data
+from the training set.
+
+00:44:29.830 --> 00:44:34.530
+So you want to compute the
+probability of your model
+
+00:44:34.530 --> 00:44:36.410
+seeing x1.
+
+00:44:36.410 --> 00:44:40.850
+The problem is you
+don't how to compute it.
+
+00:44:40.850 --> 00:44:44.250
+So the way you're going
+to do this is you're
+
+00:44:44.250 --> 00:44:49.170
+first going to realize that
+you can compute the probability
+
+00:44:49.170 --> 00:44:54.370
+that the initial distribution
+is seeing x0, because typically,
+
+00:44:54.370 --> 00:44:57.170
+the initial distribution is an
+easy one, something that you
+
+00:44:57.170 --> 00:45:00.150
+can analytically compute,
+such as a Gaussian.
+
+00:45:00.150 --> 00:45:04.410
+So you know how to
+compute log p0 of x0.
+
+00:45:04.410 --> 00:45:06.170
+And what you're
+going to do is you're
+
+00:45:06.170 --> 00:45:11.170
+going to link x1 and
+x0 by integrating
+
+00:45:11.170 --> 00:45:16.010
+the divergence of the vector
+fields, because you have--
+
+00:45:16.010 --> 00:45:18.530
+the formula above that is true.
+
+00:45:18.530 --> 00:45:23.950
+So if you know log p0 of x0 and
+if you know the vector field,
+
+00:45:23.950 --> 00:45:26.290
+then you can compute
+this quantity.
+
+00:45:26.290 --> 00:45:27.870
+And so what that
+paper was doing,
+
+00:45:27.870 --> 00:45:31.410
+which is called continuous
+normalizing flow,
+
+00:45:31.410 --> 00:45:36.060
+was that it was us trying to
+learn the parameters theta
+
+00:45:36.060 --> 00:45:43.060
+by maximizing the likelihood
+of your training sets
+
+00:45:43.060 --> 00:45:45.140
+happening under theta.
+
+00:45:45.140 --> 00:45:49.580
+And it was computing the
+likelihood using this formula.
+
+00:45:49.580 --> 00:45:51.740
+So what is the problem?
+
+00:45:51.740 --> 00:45:55.140
+The problem is that
+at training time,
+
+00:45:55.140 --> 00:45:59.040
+you need to constantly
+solve this integral.
+
+00:45:59.040 --> 00:46:03.620
+So it's a numerical solver
+that works all the time.
+
+00:46:03.620 --> 00:46:06.460
+So it's very expensive
+and very slow,
+
+00:46:06.460 --> 00:46:09.900
+which is why we
+have a snail emoji.
+
+00:46:09.900 --> 00:46:11.540
+So it's just not practical.
+
+00:46:11.540 --> 00:46:16.340
+People just couldn't use that.
+
+00:46:16.340 --> 00:46:20.540
+And for that
+reason, I hope I did
+
+00:46:20.540 --> 00:46:23.620
+a good job of motivating
+the reason why
+
+00:46:23.620 --> 00:46:25.140
+we needed another approach.
+
+00:46:25.140 --> 00:46:27.820
+The approach we're
+going to see now
+
+00:46:27.820 --> 00:46:32.100
+is actually what is called
+flow matching, because we're
+
+00:46:32.100 --> 00:46:35.960
+going to see we're not doing
+maximum likelihood estimation.
+
+00:46:35.960 --> 00:46:43.940
+We're instead trying to
+directly learn the vector field.
+
+00:46:43.940 --> 00:46:46.020
+So if you remember
+for score matching,
+
+00:46:46.020 --> 00:46:48.820
+you were directly trying
+to learn the score.
+
+00:46:48.820 --> 00:46:53.400
+So here we're directly trying
+to learn the vector field.
+
+00:46:53.400 --> 00:46:59.100
+But the problem is that
+you don't know what it is.
+
+00:46:59.100 --> 00:47:05.500
+So we're going to see how
+we can compute this loss
+
+00:47:05.500 --> 00:47:12.860
+and indeed optimize on theta in
+order to find our vector field.
+
+00:47:12.860 --> 00:47:18.460
+So just remember that the
+problem that we have is we
+
+00:47:18.460 --> 00:47:21.060
+have an initial data
+distribution and a target data
+
+00:47:21.060 --> 00:47:22.860
+distribution.
+
+00:47:22.860 --> 00:47:26.340
+And what we care
+about is finding
+
+00:47:26.340 --> 00:47:32.150
+this ut of x, which will
+allow us to go from p0 to p1.
+
+00:47:32.150 --> 00:47:34.390
+That is our goal.
+
+00:47:34.390 --> 00:47:38.310
+Well, p0 is easy, so it's
+a Gaussian typically.
+
+00:47:38.310 --> 00:47:43.030
+But then p1 can be
+super complicated.
+
+00:47:43.030 --> 00:47:48.390
+So one idea we can
+have is what if we just
+
+00:47:48.390 --> 00:47:51.870
+remember that the target
+data distribution is just
+
+00:47:51.870 --> 00:47:55.290
+composed of points from
+your training data?
+
+00:47:55.290 --> 00:47:58.310
+So it's like individual points.
+
+00:47:58.310 --> 00:48:03.150
+So what if instead we
+simplify our problem
+
+00:48:03.150 --> 00:48:07.870
+and we ask ourselves how we
+can transport the initial data
+
+00:48:07.870 --> 00:48:14.950
+distribution, not to the target
+one, but to a single point?
+
+00:48:14.950 --> 00:48:18.790
+How about if we just move
+our whole data distribution
+
+00:48:18.790 --> 00:48:21.090
+from initial to a single point?
+
+00:48:21.090 --> 00:48:24.310
+And here, I noted
+the single point
+
+00:48:24.310 --> 00:48:28.150
+with the distribution delta x1.
+
+00:48:28.150 --> 00:48:33.370
+So delta x1 is the notation
+for a Dirac delta distribution.
+
+00:48:33.370 --> 00:48:36.110
+So who has heard of
+the Dirac distribution?
+
+00:48:36.110 --> 00:48:37.870
+Yeah?
+
+00:48:37.870 --> 00:48:40.132
+So Dirac distribution
+is actually probably
+
+00:48:40.132 --> 00:48:41.590
+the simplest
+distribution out there
+
+00:48:41.590 --> 00:48:44.470
+because it's a
+deterministic distribution.
+
+00:48:44.470 --> 00:48:47.990
+It will always give
+you one quantity.
+
+00:48:47.990 --> 00:48:53.670
+So here delta-- so I'm
+going to write it down.
+
+00:48:53.670 --> 00:49:06.230
+So delta x1 of x is going to
+be 0 if x is different than x1.
+
+00:49:06.230 --> 00:49:08.530
+And otherwise, it will be
+actually a very high number.
+
+00:49:08.530 --> 00:49:13.710
+So typically, people
+say, let's say infinity.
+
+00:49:13.710 --> 00:49:16.590
+But of course, it's
+infinity, but the integral
+
+00:49:16.590 --> 00:49:21.350
+of this distribution, like
+the density needs to be 1.
+
+00:49:21.350 --> 00:49:27.710
+So long story short is that
+we simplified our problem
+
+00:49:27.710 --> 00:49:33.670
+from initial data distribution
+to your target one.
+
+00:49:33.670 --> 00:49:37.670
+So we changed from that
+formulation to initial data
+
+00:49:37.670 --> 00:49:41.390
+distribution to a single point.
+
+00:49:41.390 --> 00:49:49.750
+So one idea could be for us
+to think of the following way
+
+00:49:49.750 --> 00:49:51.090
+of going from one to the other.
+
+00:49:51.090 --> 00:49:54.110
+So let's suppose you
+have a probability
+
+00:49:54.110 --> 00:49:57.450
+path that is super simple.
+
+00:49:57.450 --> 00:50:00.630
+It's just a Gaussian
+distribution
+
+00:50:00.630 --> 00:50:09.750
+that is being interpolated
+between 0 and x1.
+
+00:50:09.750 --> 00:50:16.470
+So here what I'm saying is,
+how about we think of the way
+
+00:50:16.470 --> 00:50:20.030
+we want to go from
+0 to the points
+
+00:50:20.030 --> 00:50:25.760
+by taking our normal
+distribution of mean 0
+
+00:50:25.760 --> 00:50:29.300
+and variance identity?
+
+00:50:29.300 --> 00:50:31.660
+And how about we
+just scale it down,
+
+00:50:31.660 --> 00:50:34.800
+scale it down and then
+move it towards x1
+
+00:50:34.800 --> 00:50:39.040
+until it becomes
+just that point?
+
+00:50:39.040 --> 00:50:43.840
+So here pt-- so we say
+x given x1, because it's
+
+00:50:43.840 --> 00:50:48.920
+a conditional probability, it's
+like given we're arriving at x1
+
+00:50:48.920 --> 00:50:56.520
+at time t equal 1, it will
+be given by a mean of t x1
+
+00:50:56.520 --> 00:51:02.440
+and a variance of 1 minus
+t squared times identity.
+
+00:51:02.440 --> 00:51:06.260
+So let me tell you
+why that is the case.
+
+00:51:15.480 --> 00:51:23.840
+So what I'm saying here is
+that I'm proposing a way for us
+
+00:51:23.840 --> 00:51:29.840
+to go from the normal
+distribution that
+
+00:51:29.840 --> 00:51:34.820
+is this one of mean 0 and
+then variance the identity.
+
+00:51:34.820 --> 00:51:38.840
+So what I'm saying is in order
+to go from here to this point,
+
+00:51:38.840 --> 00:51:42.760
+which is x1, what
+I'm telling you
+
+00:51:42.760 --> 00:51:50.520
+is we're going to have a
+path pt given x1, which
+
+00:51:50.520 --> 00:51:54.000
+is a normal distribution of--
+
+00:51:54.000 --> 00:51:59.335
+as a function of t because it's
+probability path at time t,
+
+00:51:59.335 --> 00:52:03.880
+t x1 and 1 minus t squared I.
+
+00:52:03.880 --> 00:52:12.240
+So when t equals 0, this
+is 0, this is identity.
+
+00:52:12.240 --> 00:52:16.200
+So p0 is just the
+normal distribution of 0
+
+00:52:16.200 --> 00:52:21.160
+and I. And p1 is--
+
+00:52:21.160 --> 00:52:25.680
+well, t=1 is just x1.
+
+00:52:25.680 --> 00:52:28.500
+And this one is a variance of 0.
+
+00:52:28.500 --> 00:52:31.640
+So you can think of
+t just tending to 0.
+
+00:52:31.640 --> 00:52:37.280
+So p1 is just a
+Dirac distribution.
+
+00:52:37.280 --> 00:52:43.280
+So this probability path
+that I'm telling you
+
+00:52:43.280 --> 00:52:49.760
+is something that is letting
+us go from our initial data
+
+00:52:49.760 --> 00:52:51.020
+distribution to this point.
+
+00:52:51.020 --> 00:52:53.040
+So it's a valid one.
+
+00:52:53.040 --> 00:52:55.960
+So why am I choosing this?
+
+00:52:55.960 --> 00:53:01.440
+Well it can be shown that
+one vector field that
+
+00:53:01.440 --> 00:53:03.960
+is generating this
+probability path
+
+00:53:03.960 --> 00:53:05.500
+has the following expression.
+
+00:53:05.500 --> 00:53:12.960
+So ut of x given x1 is x1
+minus x over 1 minus t.
+
+00:53:12.960 --> 00:53:16.520
+So I'm just giving you the
+formula so you can derive it.
+
+00:53:16.520 --> 00:53:19.770
+So I'm looking at the time,
+we will not have time.
+
+00:53:19.770 --> 00:53:24.170
+But the reason why I proposed
+the probability path,
+
+00:53:24.170 --> 00:53:25.770
+the conditional
+probability path is
+
+00:53:25.770 --> 00:53:31.510
+because it's much easier for
+us to compute a vector field,
+
+00:53:31.510 --> 00:53:35.490
+and it's something that
+we can actually write.
+
+00:53:35.490 --> 00:53:36.930
+And it is this one.
+
+00:53:36.930 --> 00:53:40.050
+And what I'm going
+to tell you is
+
+00:53:40.050 --> 00:53:43.850
+that this vector
+field is generating
+
+00:53:43.850 --> 00:53:47.490
+the conditional
+probability path.
+
+00:53:47.490 --> 00:53:50.010
+So in other words,
+the vector field
+
+00:53:50.010 --> 00:53:54.690
+will be such that if
+you sample from p0
+
+00:53:54.690 --> 00:53:57.770
+of this conditional
+probability path,
+
+00:53:57.770 --> 00:54:02.170
+and if you follow these
+conditional vector fields,
+
+00:54:02.170 --> 00:54:04.930
+what I am telling you
+is that you will end up
+
+00:54:04.930 --> 00:54:10.010
+at time equal t
+with xt following
+
+00:54:10.010 --> 00:54:14.330
+your conditional
+probability path.
+
+00:54:14.330 --> 00:54:18.570
+Well, that's a huge
+step forward, no?
+
+00:54:18.570 --> 00:54:20.270
+So how do you prove
+that, by the way?
+
+00:54:20.270 --> 00:54:26.090
+So you just use the quantities,
+you use the vector field that
+
+00:54:26.090 --> 00:54:29.970
+is just this formula, and you
+use the conditional probability
+
+00:54:29.970 --> 00:54:32.510
+paths which you can
+analytically derive.
+
+00:54:32.510 --> 00:54:35.750
+Because, if you remember
+the Gaussian distribution,
+
+00:54:35.750 --> 00:54:37.870
+we just know
+everything about it.
+
+00:54:37.870 --> 00:54:42.570
+We also know the
+density formula.
+
+00:54:42.570 --> 00:54:51.930
+So if you take both formula
+and if you use the continuity
+
+00:54:51.930 --> 00:54:56.770
+equation, which is
+here, you can show
+
+00:54:56.770 --> 00:55:00.610
+that this expression is true.
+
+00:55:00.610 --> 00:55:02.210
+And this is how you prove that.
+
+00:55:02.210 --> 00:55:06.930
+Now we're not going to do it
+because this is just some math.
+
+00:55:06.930 --> 00:55:08.690
+But maybe one thing
+I will tell you
+
+00:55:08.690 --> 00:55:14.240
+is why that vector
+fields makes sense.
+
+00:55:18.380 --> 00:55:20.320
+So we said that--
+
+00:55:24.860 --> 00:55:29.540
+we said that the conditional
+vector field, which
+
+00:55:29.540 --> 00:55:33.980
+is noted ut of x
+given x1, what we said
+
+00:55:33.980 --> 00:55:41.180
+was that this was equal to
+x1 minus x over 1 minus t.
+
+00:55:41.180 --> 00:55:51.700
+Well, when t is approaching 1,
+and when your x is not near x1,
+
+00:55:51.700 --> 00:55:55.080
+then what you're seeing is
+that this quantity goes crazy,
+
+00:55:55.080 --> 00:55:56.720
+goes very close to infinity.
+
+00:55:56.720 --> 00:55:59.140
+It goes very, very high.
+
+00:55:59.140 --> 00:56:01.580
+Well, why does that make sense?
+
+00:56:01.580 --> 00:56:05.940
+It's because at time t equal 1,
+your distribution is literally
+
+00:56:05.940 --> 00:56:10.380
+a deterministic
+distribution that is x1.
+
+00:56:10.380 --> 00:56:15.300
+So you want all your
+particles to be exactly at x1.
+
+00:56:15.300 --> 00:56:21.460
+So if you're not at x1,
+then you better hurry.
+
+00:56:21.460 --> 00:56:25.460
+Your velocity will
+be very, very high.
+
+00:56:25.460 --> 00:56:27.420
+So that's one thing
+I want to say.
+
+00:56:27.420 --> 00:56:29.980
+And one other
+thing I want to say
+
+00:56:29.980 --> 00:56:32.860
+is there is a very
+nice expression
+
+00:56:32.860 --> 00:56:40.940
+of the conditional
+vector fields if xt
+
+00:56:40.940 --> 00:56:46.140
+is drawn from that conditional
+probability path, which
+
+00:56:46.140 --> 00:56:51.500
+as a reminder, is a normal
+distribution of mean t x1
+
+00:56:51.500 --> 00:56:55.500
+and 1 minus t squared I.
+
+00:56:55.500 --> 00:56:58.860
+So if xt is drawn from such
+a conditional probability
+
+00:56:58.860 --> 00:57:06.280
+path, that means that you
+can express xt as follows.
+
+00:57:06.280 --> 00:57:12.100
+So t x1 plus 1
+minus t x0, with x0
+
+00:57:12.100 --> 00:57:17.500
+drawn from a normal
+distribution.
+
+00:57:17.500 --> 00:57:29.180
+So what that means is
+ut of xt, given x1,
+
+00:57:29.180 --> 00:57:35.660
+if I were to just replace xt
+in this formula, what I would
+
+00:57:35.660 --> 00:57:39.540
+obtain is x1 minus--
+so x, I'm just
+
+00:57:39.540 --> 00:57:43.280
+going to directly replace just
+because I don't have space.
+
+00:57:43.280 --> 00:57:53.160
+So t x1 plus 1 minus
+t x0 over 1 minus t.
+
+00:57:55.820 --> 00:58:06.980
+So x1 minus t x1 is 1 minus
+t times x1 minus 1 minus t
+
+00:58:06.980 --> 00:58:11.290
+times x0 over 1 minus t.
+
+00:58:11.290 --> 00:58:19.950
+So what that means this
+is equal to x1 minus x0.
+
+00:58:19.950 --> 00:58:24.570
+The conditional
+vector field for xt,
+
+00:58:24.570 --> 00:58:28.590
+which is drawn from a
+conditional probability path,
+
+00:58:28.590 --> 00:58:39.430
+is nothing else than x1
+minus x0, which is very nice.
+
+00:58:39.430 --> 00:58:41.510
+So why is it very nice?
+
+00:58:41.510 --> 00:58:45.770
+Well, it's tractable and it's
+going to be useful for us.
+
+00:58:50.710 --> 00:58:54.010
+OK, any questions?
+
+00:58:54.010 --> 00:58:54.510
+Yeah?
+
+00:58:58.390 --> 00:59:01.050
+So the question is, how do
+we get to that equation?
+
+00:59:04.830 --> 00:59:07.170
+So the question is, where
+does this equation come from?
+
+00:59:07.170 --> 00:59:10.230
+So this one, the one
+above is just an equation
+
+00:59:10.230 --> 00:59:12.310
+that I'm just telling
+you, I'm just giving you.
+
+00:59:12.310 --> 00:59:15.910
+And you can verify
+that it actually
+
+00:59:15.910 --> 00:59:18.290
+is generating the
+conditional probability path.
+
+00:59:18.290 --> 00:59:21.510
+You can prove it, but
+we're not doing it.
+
+00:59:21.510 --> 00:59:25.950
+So given that this
+part is just me
+
+00:59:25.950 --> 00:59:29.950
+telling you that
+this expression can
+
+00:59:29.950 --> 00:59:35.510
+be even further simplified if
+the x that you're putting here
+
+00:59:35.510 --> 00:59:40.150
+is actually drawn from the
+conditional probability path.
+
+00:59:40.150 --> 00:59:42.830
+So as a reminder, the
+conditional probability path
+
+00:59:42.830 --> 00:59:48.110
+is given by a normal
+distribution of mean t x1
+
+00:59:48.110 --> 00:59:53.070
+and 1 minus t
+squared I. So if you
+
+00:59:53.070 --> 00:59:57.130
+were to draw from
+such a distribution.
+
+00:59:57.130 --> 01:00:01.310
+It would be the same
+thing because you x1.
+
+01:00:01.310 --> 01:00:04.630
+It would be the same
+thing as sampling
+
+01:00:04.630 --> 01:00:09.390
+from just a standard
+normal Gaussian
+
+01:00:09.390 --> 01:00:14.670
+and writing xt as follows,
+because this is your variance,
+
+01:00:14.670 --> 01:00:16.030
+this is the mean.
+
+01:00:16.030 --> 01:00:19.710
+So this is the mean
+plus the variance times
+
+01:00:19.710 --> 01:00:22.750
+something that is run from
+the normal distribution.
+
+01:00:22.750 --> 01:00:25.190
+And so what I'm
+telling you is if you
+
+01:00:25.190 --> 01:00:30.230
+were to plug in that
+expression in here,
+
+01:00:30.230 --> 01:00:33.070
+then a lot of
+simplifications occur.
+
+01:00:33.070 --> 01:00:37.950
+And you end up with a
+very simple expression
+
+01:00:37.950 --> 01:00:42.430
+of the conditional vector
+field at that point
+
+01:00:42.430 --> 01:00:47.270
+being equal to just x1 minus
+x0, where x0 is basically
+
+01:00:47.270 --> 01:00:48.810
+this component of xt.
+
+01:00:51.390 --> 01:00:55.527
+And follow up question is, well,
+why are you telling me this?
+
+01:00:55.527 --> 01:00:56.610
+It's a very fair question.
+
+01:00:56.610 --> 01:00:59.650
+I'm going to tell
+you in 15 minutes.
+
+01:01:02.270 --> 01:01:04.500
+But does everyone
+agree with me so far?
+
+01:01:07.960 --> 01:01:10.480
+I'm going to take that as a yes.
+
+01:01:10.480 --> 01:01:18.600
+OK, so now that we looked at a
+very simple case of transporting
+
+01:01:18.600 --> 01:01:23.920
+our data distribution from this
+initial one to a single point,
+
+01:01:23.920 --> 01:01:29.040
+now our goal is going to figure
+out how we can map that back
+
+01:01:29.040 --> 01:01:31.600
+to our initial problem.
+
+01:01:31.600 --> 01:01:35.440
+So our initial problem is
+to map from the initial data
+
+01:01:35.440 --> 01:01:38.960
+distribution to the
+target data distribution.
+
+01:01:38.960 --> 01:01:46.720
+So an idea to obtain the
+target data distribution
+
+01:01:46.720 --> 01:01:51.240
+is to replicate this
+conditional path
+
+01:01:51.240 --> 01:01:57.040
+over all points of your
+target data distribution.
+
+01:01:57.040 --> 01:01:59.200
+So if we do that,
+we consider, let's
+
+01:01:59.200 --> 01:02:02.500
+say, one point of your
+target data distribution,
+
+01:02:02.500 --> 01:02:05.760
+we have this conditional
+probability path.
+
+01:02:05.760 --> 01:02:08.800
+We consider a second point.
+
+01:02:08.800 --> 01:02:12.320
+And let's assume here that
+our target data distribution,
+
+01:02:12.320 --> 01:02:14.880
+our training set
+only has two points.
+
+01:02:14.880 --> 01:02:21.280
+Then what that means
+is that at time t,
+
+01:02:21.280 --> 01:02:24.820
+we can consider what we call
+a marginal probability path.
+
+01:02:24.820 --> 01:02:29.840
+So marginal because we
+marginalize across the x1's.
+
+01:02:29.840 --> 01:02:33.200
+And we will end up with
+a mixture of Gaussians,
+
+01:02:33.200 --> 01:02:35.520
+where each Gaussian
+is interpolating
+
+01:02:35.520 --> 01:02:41.680
+between the normal one
+to the single point.
+
+01:02:41.680 --> 01:02:49.280
+So let me tell you why I'm
+telling you all of this.
+
+01:02:49.280 --> 01:02:54.480
+So just remember that
+what we care about
+
+01:02:54.480 --> 01:03:01.610
+is to map our initial
+distribution to the target one.
+
+01:03:01.610 --> 01:03:05.450
+So there are many ways to
+go from one to the other.
+
+01:03:05.450 --> 01:03:10.890
+And what we say is
+that we can just
+
+01:03:10.890 --> 01:03:16.370
+propose this marginal
+probability path, which I'm
+
+01:03:16.370 --> 01:03:18.030
+going to explain in a second.
+
+01:03:22.250 --> 01:03:28.810
+So what I'm telling
+you is let's fix x1.
+
+01:03:28.810 --> 01:03:31.830
+And just consider the
+conditional probability path.
+
+01:03:31.830 --> 01:03:34.690
+So p of x given x1
+which is what we saw.
+
+01:03:34.690 --> 01:03:42.490
+Before Now let's consider all
+such conditional probability
+
+01:03:42.490 --> 01:03:47.850
+path across all the x1's that
+are composing our target data
+
+01:03:47.850 --> 01:03:51.250
+distribution.
+
+01:03:51.250 --> 01:03:54.930
+And let's consider the
+following expression,
+
+01:03:54.930 --> 01:04:00.730
+which is a natural
+way of defining it.
+
+01:04:00.730 --> 01:04:06.490
+So we notice that p0 of x--
+
+01:04:06.490 --> 01:04:10.330
+so p0 of x, given x1 is just the
+standard normal distribution,
+
+01:04:10.330 --> 01:04:12.410
+p0.
+
+01:04:12.410 --> 01:04:20.970
+So this is indeed the
+initial data distribution.
+
+01:04:20.970 --> 01:04:22.510
+So the standard Gaussian.
+
+01:04:25.170 --> 01:04:29.810
+And p1, what is p1?
+
+01:04:29.810 --> 01:04:41.130
+So we said that when t equals
+1, p of x given x1 is the Dirac.
+
+01:04:41.130 --> 01:04:48.350
+So when t equal 1, this one
+is equal to Dirac of x1 at x.
+
+01:04:51.850 --> 01:04:59.190
+So this whole thing
+simplifies to P data of x.
+
+01:05:02.330 --> 01:05:06.970
+So this marginal
+probability path
+
+01:05:06.970 --> 01:05:12.210
+is verifying p0,
+like t equals 0,
+
+01:05:12.210 --> 01:05:14.270
+is equal to your initial
+data distribution.
+
+01:05:14.270 --> 01:05:17.290
+And p1 is your target
+data distribution.
+
+01:05:17.290 --> 01:05:22.730
+So it is a valid path
+to go from 0 to 1.
+
+01:05:22.730 --> 01:05:28.570
+So now our goal-- because
+just remember, what we want
+
+01:05:28.570 --> 01:05:31.650
+is to go from 0 to 1.
+
+01:05:31.650 --> 01:05:34.650
+And we want to learn
+the vector field that
+
+01:05:34.650 --> 01:05:36.810
+is getting us from 0 to 1.
+
+01:05:36.810 --> 01:05:40.050
+So the good thing here is we
+have a probability path that
+
+01:05:40.050 --> 01:05:42.770
+is getting us from 0 to 1.
+
+01:05:42.770 --> 01:05:46.290
+So now let's look
+at the vector field.
+
+01:05:46.290 --> 01:05:49.090
+Let's see if there
+is a way for us
+
+01:05:49.090 --> 01:05:53.660
+to aggregate the conditional
+vector fields such
+
+01:05:53.660 --> 01:05:59.940
+that it is going to enable
+us to go from 0 to 1.
+
+01:05:59.940 --> 01:06:02.460
+So here we consider the
+conditional vector field
+
+01:06:02.460 --> 01:06:04.920
+for each data point like
+conditional on each data point.
+
+01:06:04.920 --> 01:06:08.020
+So this one and this one.
+
+01:06:08.020 --> 01:06:11.500
+And what we want is to
+also have a marginal vector
+
+01:06:11.500 --> 01:06:14.820
+field, something that
+is able to generate
+
+01:06:14.820 --> 01:06:18.220
+the marginal probability path.
+
+01:06:18.220 --> 01:06:22.980
+And what I'm going
+to tell you is
+
+01:06:22.980 --> 01:06:30.460
+that the way we want to
+aggregate the vector field
+
+01:06:30.460 --> 01:06:32.480
+is going to actually
+be quite intuitive.
+
+01:06:32.480 --> 01:06:36.300
+So I'm going to
+just write it down.
+
+01:06:36.300 --> 01:06:38.260
+So up until now,
+what we're doing is
+
+01:06:38.260 --> 01:06:42.540
+we're constructing things.
+
+01:06:42.540 --> 01:06:44.260
+We're constructing
+things, and then we're
+
+01:06:44.260 --> 01:06:50.920
+verifying that it's actually
+something that is what we want.
+
+01:06:50.920 --> 01:06:52.820
+So what I'm saying
+is we're going
+
+01:06:52.820 --> 01:06:57.700
+to aggregate the conditional
+vector fields by considering
+
+01:06:57.700 --> 01:06:58.880
+the following aggregation.
+
+01:06:58.880 --> 01:07:01.660
+So I'm going to take my
+conditional vector fields.
+
+01:07:01.660 --> 01:07:03.440
+I'm going to aggregate
+it as follows.
+
+01:07:03.440 --> 01:07:08.720
+So I'm going to say
+it's equal to this.
+
+01:07:08.720 --> 01:07:14.260
+So the conditional probability
+path times p data of x1
+
+01:07:14.260 --> 01:07:17.380
+over the marginal
+probability path which we
+
+01:07:17.380 --> 01:07:20.200
+have derived a short while ago.
+
+01:07:20.200 --> 01:07:22.360
+And I'm going to say that
+this is my definition.
+
+01:07:22.360 --> 01:07:27.380
+This is my proposed definition
+of the marginal vector field.
+
+01:07:27.380 --> 01:07:32.980
+So this expression
+may seem scary to you,
+
+01:07:32.980 --> 01:07:37.240
+but if you remember
+Bayes' rule, this one--
+
+01:07:39.860 --> 01:07:42.660
+you recognize Bayes'
+rule here, a little bit?
+
+01:07:42.660 --> 01:07:46.540
+So it's as if-- so I'm
+going to put this in quotes.
+
+01:07:46.540 --> 01:07:55.380
+So it's as if it was the
+probability of x1 being
+
+01:07:55.380 --> 01:08:01.580
+where you're headed given
+x, which is where you are.
+
+01:08:01.580 --> 01:08:04.620
+So the way you're aggregating
+your conditional vector
+
+01:08:04.620 --> 01:08:11.660
+fields is OK, I'm
+at point x and I'm
+
+01:08:11.660 --> 01:08:18.540
+going to weight each conditional
+vector fields with a weight that
+
+01:08:18.540 --> 01:08:24.340
+is telling me the probability
+of this x1 being my destination
+
+01:08:24.340 --> 01:08:25.560
+given where I am.
+
+01:08:28.460 --> 01:08:31.840
+So you can think of this
+as the posterior mean.
+
+01:08:34.660 --> 01:08:38.300
+And this coefficient can
+be interpreted as OK,
+
+01:08:38.300 --> 01:08:43.020
+given where I am, how likely
+is it that this point is
+
+01:08:43.020 --> 01:08:45.939
+where I want to go?
+
+01:08:45.939 --> 01:08:53.590
+And now I'm going to tell
+you the biggest result.
+
+01:08:53.590 --> 01:08:57.550
+These marginal vector
+field which we defined
+
+01:08:57.550 --> 01:08:59.970
+is actually generating
+the probability path,
+
+01:08:59.970 --> 01:09:02.950
+the marginal probability path.
+
+01:09:02.950 --> 01:09:04.710
+So this is a big deal.
+
+01:09:04.710 --> 01:09:09.590
+So what that means is there is a
+vector field that is generating
+
+01:09:09.590 --> 01:09:12.029
+the probability path that
+is actually something that
+
+01:09:12.029 --> 01:09:16.510
+satisfies what we want, which
+is it's a path that goes
+
+01:09:16.510 --> 01:09:19.689
+from the initial to the target.
+
+01:09:22.229 --> 01:09:25.229
+So I'm looking at the time.
+
+01:09:25.229 --> 01:09:27.069
+I'm not going to
+derive it, but I'm
+
+01:09:27.069 --> 01:09:29.710
+going to derive
+something else instead.
+
+01:09:29.710 --> 01:09:37.069
+So in order for you to show that
+this vector field is generating
+
+01:09:37.069 --> 01:09:43.990
+the probability path is by
+just plugging these quantities
+
+01:09:43.990 --> 01:09:45.407
+in the continuity equation.
+
+01:09:45.407 --> 01:09:46.490
+So I'm not going to do it.
+
+01:09:46.490 --> 01:09:51.069
+I'm just going to tell
+you how you would do it.
+
+01:09:51.069 --> 01:09:52.170
+So you just do that.
+
+01:09:52.170 --> 01:09:54.170
+So you take your marginal
+probability path.
+
+01:09:54.170 --> 01:09:56.150
+You derive it here,
+and just recognize
+
+01:09:56.150 --> 01:09:59.070
+that it is indeed the
+minus the divergence
+
+01:09:59.070 --> 01:10:04.110
+of the marginal probability path
+and the marginal vector field.
+
+01:10:04.110 --> 01:10:10.750
+So what this is telling
+us is if we sample x0
+
+01:10:10.750 --> 01:10:17.910
+from p0, which is the initial
+one, then if we follow
+
+01:10:17.910 --> 01:10:21.710
+the marginal vector
+field, then xt
+
+01:10:21.710 --> 01:10:28.110
+is going to be following
+the probability path p of t.
+
+01:10:28.110 --> 01:10:32.590
+This is huge because
+if you take x0
+
+01:10:32.590 --> 01:10:37.550
+and you take it all the way to
+t equal 1 with the vector field,
+
+01:10:37.550 --> 01:10:41.750
+then x1 will be
+actually following p1,
+
+01:10:41.750 --> 01:10:44.640
+which is what you care about.
+
+01:10:44.640 --> 01:10:47.080
+So this is huge.
+
+01:10:47.080 --> 01:10:48.740
+This can be proven
+mathematically.
+
+01:10:48.740 --> 01:10:50.920
+We're not going to
+do it with respect
+
+01:10:50.920 --> 01:10:54.400
+to how much time we have.
+
+01:10:54.400 --> 01:10:59.400
+And so this leads us
+to our initial problem,
+
+01:10:59.400 --> 01:11:05.480
+which is us wanting to learn
+a vector field that will
+
+01:11:05.480 --> 01:11:09.120
+allow us to go from p0 to p1.
+
+01:11:09.120 --> 01:11:11.320
+So here, what I'm
+going to tell you
+
+01:11:11.320 --> 01:11:17.720
+is that optimizing for
+the flow matching loss
+
+01:11:17.720 --> 01:11:21.440
+that I told you at
+the very beginning
+
+01:11:21.440 --> 01:11:24.440
+is equivalent to you
+optimizing for what
+
+01:11:24.440 --> 01:11:26.360
+we call the conditional
+flow matching
+
+01:11:26.360 --> 01:11:30.640
+loss, which is given by here.
+
+01:11:30.640 --> 01:11:35.800
+And I'm going to tell you more
+about this for the next five
+
+01:11:35.800 --> 01:11:37.640
+minutes.
+
+01:11:37.640 --> 01:11:41.680
+So let me take this.
+
+01:11:41.680 --> 01:11:49.840
+So here, what we want is
+to have a tractable loss.
+
+01:11:49.840 --> 01:11:55.840
+And if you look at the
+flow matching loss,
+
+01:11:55.840 --> 01:11:59.200
+it is still a loss
+that is quite complex.
+
+01:11:59.200 --> 01:12:02.440
+So our goal is to
+really make our loss
+
+01:12:02.440 --> 01:12:06.400
+as tractable as possible.
+
+01:12:06.400 --> 01:12:11.795
+So as a result what
+we're saying is
+
+01:12:11.795 --> 01:12:16.280
+that the loss of
+flow matching, which
+
+01:12:16.280 --> 01:12:18.880
+is given by this, so
+it's the expectation
+
+01:12:18.880 --> 01:12:22.160
+of the squared distance
+of your learned
+
+01:12:22.160 --> 01:12:24.840
+vector field minus the
+marginal vector field
+
+01:12:24.840 --> 01:12:28.480
+that you constructed.
+
+01:12:28.480 --> 01:12:39.404
+So what we're saying is
+optimizing for the loss above
+
+01:12:39.404 --> 01:12:44.720
+is the same as optimizing
+for the conditional flow
+
+01:12:44.720 --> 01:12:52.940
+matching loss,
+which is this one.
+
+01:12:55.560 --> 01:13:02.320
+So if we aggregate
+over time steps t and x
+
+01:13:02.320 --> 01:13:07.300
+drawn from the probability
+path dt of this expression,
+
+01:13:07.300 --> 01:13:09.720
+what I'm saying is that
+optimizing for this loss
+
+01:13:09.720 --> 01:13:13.200
+is the same as optimizing
+for the conditional flow
+
+01:13:13.200 --> 01:13:20.280
+matching loss, where the
+expectation is over t x1,
+
+01:13:20.280 --> 01:13:27.720
+and then x belonging to the
+conditional probability path.
+
+01:13:27.720 --> 01:13:29.840
+And back to your question.
+
+01:13:29.840 --> 01:13:33.080
+This whole expression
+that we had here
+
+01:13:33.080 --> 01:13:42.930
+was ut of xt given x1,
+which was x1 minus x0.
+
+01:13:42.930 --> 01:13:47.890
+So this thing is super simple.
+
+01:13:47.890 --> 01:13:57.130
+It is just the thing that you
+want to learn minus x1 minus x0.
+
+01:13:57.130 --> 01:13:59.850
+Super simple.
+
+01:13:59.850 --> 01:14:03.810
+OK, so now why is it
+equivalent to optimize
+
+01:14:03.810 --> 01:14:06.810
+on the flow matching and the
+conditional flow matching loss?
+
+01:14:06.810 --> 01:14:08.410
+That's another question.
+
+01:14:08.410 --> 01:14:10.970
+So if you remember,
+for score matching,
+
+01:14:10.970 --> 01:14:13.450
+we had a very similar question.
+
+01:14:13.450 --> 01:14:17.170
+So I'm going to give
+you the same trick.
+
+01:14:17.170 --> 01:14:22.730
+So let's assume you have
+distance squared of a minus
+
+01:14:22.730 --> 01:14:28.010
+B, which is basically
+what we have here.
+
+01:14:28.010 --> 01:14:31.930
+And what you want is to optimize
+these losses with respect
+
+01:14:31.930 --> 01:14:35.810
+to the parameters
+of the model theta.
+
+01:14:35.810 --> 01:14:41.170
+So everything that you
+care here is only terms
+
+01:14:41.170 --> 01:14:44.210
+that are a function of theta.
+
+01:14:44.210 --> 01:14:52.343
+So a minus b that norm squared
+is equal to a squared minus 2
+
+01:14:52.343 --> 01:14:55.990
+dot product of a and
+b plus b squared.
+
+01:15:01.090 --> 01:15:07.290
+So ut theta x squared,
+this and this are the same.
+
+01:15:07.290 --> 01:15:09.350
+Perfect.
+
+01:15:09.350 --> 01:15:11.570
+So how about this term.
+
+01:15:11.570 --> 01:15:16.930
+The b term is actually
+not dependent on theta.
+
+01:15:16.930 --> 01:15:20.090
+So we actually don't care.
+
+01:15:20.090 --> 01:15:21.990
+So a is good.
+
+01:15:21.990 --> 01:15:23.330
+It's the same.
+
+01:15:23.330 --> 01:15:25.670
+b is not a function of theta.
+
+01:15:25.670 --> 01:15:28.410
+We don't care.
+
+01:15:28.410 --> 01:15:31.850
+The only thing that is
+different between these two
+
+01:15:31.850 --> 01:15:34.940
+is the dot product of a and b.
+
+01:15:34.940 --> 01:15:39.940
+So this one and this one
+and this one and this one.
+
+01:15:39.940 --> 01:15:44.100
+So what we want to show
+is the expectation over t
+
+01:15:44.100 --> 01:15:49.700
+and x of this dot product is
+the same as the expectation
+
+01:15:49.700 --> 01:15:50.520
+over this.
+
+01:15:50.520 --> 01:15:53.340
+So t x1 and x over the
+conditional probability
+
+01:15:53.340 --> 01:15:55.260
+part of this one and this one.
+
+01:15:55.260 --> 01:15:58.820
+We want to show that
+these two are the same.
+
+01:15:58.820 --> 01:16:03.000
+So I'm going to do
+this in two minutes.
+
+01:16:10.500 --> 01:16:11.280
+OK.
+
+01:16:16.860 --> 01:16:26.580
+So let's suppose-- so we're
+going to go from one side
+
+01:16:26.580 --> 01:16:28.080
+and end up with another.
+
+01:16:28.080 --> 01:16:31.820
+So what I'm going to do is
+start from the dot product
+
+01:16:31.820 --> 01:16:36.020
+of the conditional flow matching
+loss and end up with the one
+
+01:16:36.020 --> 01:16:38.380
+from the flow matching one.
+
+01:16:38.380 --> 01:16:42.900
+So what I'm going to
+compute is the expectation.
+
+01:16:42.900 --> 01:16:48.740
+And here, I'm going
+to say t x1 and x
+
+01:16:48.740 --> 01:16:58.320
+of the dot product of ut theta
+of x and your conditional vector
+
+01:16:58.320 --> 01:16:58.820
+field.
+
+01:16:58.820 --> 01:17:05.340
+So ut of x given x1.
+
+01:17:05.340 --> 01:17:09.700
+So what I'm telling you is by
+definition of the expectation--
+
+01:17:09.700 --> 01:17:14.780
+so this is just a
+bunch of integrals.
+
+01:17:14.780 --> 01:17:22.300
+So this is the integral over
+t over x1 and x of ut of theta
+
+01:17:22.300 --> 01:17:27.460
+of x dot product with the
+conditional vector field
+
+01:17:27.460 --> 01:17:30.660
+ut of x given x1.
+
+01:17:30.660 --> 01:17:37.920
+And this is over x1 and x so I'm
+going to say it's p data of x1.
+
+01:17:37.920 --> 01:17:40.980
+And then the conditional
+probability path x
+
+01:17:40.980 --> 01:17:48.540
+given x1 dx1, dx, dt.
+
+01:17:48.540 --> 01:17:50.700
+So far so good?
+
+01:17:50.700 --> 01:17:55.540
+So here what we
+notice is that if we
+
+01:17:55.540 --> 01:18:04.380
+put this quantity here,
+this quantity here,
+
+01:18:04.380 --> 01:18:18.500
+and if I divide by dt of x and I
+do times dt of x, then what I'm
+
+01:18:18.500 --> 01:18:23.500
+going to recognize is
+the marginal vector field
+
+01:18:23.500 --> 01:18:26.980
+that we have constructed.
+
+01:18:26.980 --> 01:18:33.050
+So this is going to be equal to
+the integral over t integral.
+
+01:18:33.050 --> 01:18:36.610
+So this integral over x1
+is also going to come here.
+
+01:18:40.270 --> 01:18:52.830
+So integral over t, integral
+over x of ut theta of x.
+
+01:18:52.830 --> 01:18:57.990
+And this ut of x, which is
+the marginal vector field,
+
+01:18:57.990 --> 01:19:05.570
+times this marginal probability
+path dt of x, dx, dt.
+
+01:19:08.270 --> 01:19:13.910
+And this is nothing else
+than the expectation over t
+
+01:19:13.910 --> 01:19:18.070
+and x, which is run from
+the marginal probability
+
+01:19:18.070 --> 01:19:24.710
+path of the dot product
+of ut theta of x
+
+01:19:24.710 --> 01:19:32.950
+and the marginal vector field,
+which is exactly what we want.
+
+01:19:32.950 --> 01:19:37.990
+So what I'm showing you here is
+that the marginal vector field,
+
+01:19:37.990 --> 01:19:41.030
+the way we
+constructed it, allows
+
+01:19:41.030 --> 01:19:44.790
+us to optimize on a loss,
+the conditional flow matching
+
+01:19:44.790 --> 01:19:48.390
+loss, which is much
+more tractable,
+
+01:19:48.390 --> 01:19:52.650
+and leads us to the same
+gradients with respect to theta.
+
+01:19:56.270 --> 01:20:01.850
+And so long story short,
+we have this loss,
+
+01:20:01.850 --> 01:20:05.950
+which is called the conditional
+flow matching loss, which
+
+01:20:05.950 --> 01:20:11.790
+is the expectation over t x1,
+which is run over the pdata,
+
+01:20:11.790 --> 01:20:14.670
+and then x drawn over the
+conditional probability
+
+01:20:14.670 --> 01:20:19.990
+path of a quantity that
+is extremely simple.
+
+01:20:19.990 --> 01:20:21.710
+So it's just the
+squared distance
+
+01:20:21.710 --> 01:20:27.430
+between the learned velocity,
+which is what you want to learn,
+
+01:20:27.430 --> 01:20:32.430
+and the conditional
+vector field,
+
+01:20:32.430 --> 01:20:37.230
+which we saw was nothing
+else than just x1 minus x0.
+
+01:20:37.230 --> 01:20:40.230
+So it's a very
+tractable loss, and it
+
+01:20:40.230 --> 01:20:44.470
+does exactly what you want.
+
+01:20:44.470 --> 01:20:45.330
+Any questions?
+
+01:20:45.330 --> 01:20:46.130
+So it's a lot.
+
+01:20:53.150 --> 01:20:54.970
+Are we all clear with this?
+
+01:20:58.550 --> 01:21:03.410
+OK, I'm going to say that it's
+OK if you feel like it's a lot.
+
+01:21:03.410 --> 01:21:04.410
+It is indeed a lot.
+
+01:21:04.410 --> 01:21:07.670
+So I'm going to
+recap the strategy.
+
+01:21:07.670 --> 01:21:11.230
+So what we said at
+the very beginning
+
+01:21:11.230 --> 01:21:14.870
+was that we had
+two different views
+
+01:21:14.870 --> 01:21:18.230
+of how we want to go
+from one distribution
+
+01:21:18.230 --> 01:21:21.110
+to another distribution.
+
+01:21:21.110 --> 01:21:25.040
+What we said was that there was
+this quantity called the vector
+
+01:21:25.040 --> 01:21:31.200
+field, a.k.a. the velocity that
+was linked to how we could move
+
+01:21:31.200 --> 01:21:36.560
+our particles, so with the ODE
+dx over dt equal vector field
+
+01:21:36.560 --> 01:21:39.440
+that one, but also
+the continuity
+
+01:21:39.440 --> 01:21:45.720
+equation that linked the vector
+field with the probability path.
+
+01:21:45.720 --> 01:21:49.600
+So what we want is to find
+the vector field that will
+
+01:21:49.600 --> 01:21:53.880
+allow us to go from p0 to p1.
+
+01:21:53.880 --> 01:21:57.040
+So what you need to
+do is to find first
+
+01:21:57.040 --> 01:22:00.680
+a probability path that goes
+from p1 to-- sorry, from p0
+
+01:22:00.680 --> 01:22:02.440
+to p1.
+
+01:22:02.440 --> 01:22:04.520
+First you need to find that.
+
+01:22:04.520 --> 01:22:09.680
+And then you need to construct
+a vector field that indeed
+
+01:22:09.680 --> 01:22:13.080
+allows you to go from p0 to p1.
+
+01:22:13.080 --> 01:22:15.680
+So how do you do--
+how do you do that?
+
+01:22:15.680 --> 01:22:20.080
+Well, you propose
+some quantities
+
+01:22:20.080 --> 01:22:24.520
+and you try to see if the
+continuity equation is indeed
+
+01:22:24.520 --> 01:22:27.600
+satisfied.
+
+01:22:27.600 --> 01:22:30.160
+So that's step number one.
+
+01:22:30.160 --> 01:22:35.080
+Once you your vector
+field of interest,
+
+01:22:35.080 --> 01:22:37.680
+your goal now is to learn it.
+
+01:22:37.680 --> 01:22:40.640
+Because if you learn
+it, then what you can do
+
+01:22:40.640 --> 01:22:43.320
+is to integrate the ODE.
+
+01:22:43.320 --> 01:22:44.940
+Why do you want to
+integrate the ODE?
+
+01:22:44.940 --> 01:22:47.460
+It's because you want
+to go from x0 to x1.
+
+01:22:50.000 --> 01:22:54.880
+Therefore, you need to
+learn your vector field.
+
+01:22:54.880 --> 01:23:01.920
+And here what we did is, in
+order to learn the vector field,
+
+01:23:01.920 --> 01:23:07.040
+we first thought of
+a very simple case
+
+01:23:07.040 --> 01:23:11.000
+of us wanting to
+go from the initial
+
+01:23:11.000 --> 01:23:15.280
+to a single point via the
+conditional probability
+
+01:23:15.280 --> 01:23:19.040
+path and the conditional
+vector field.
+
+01:23:19.040 --> 01:23:22.690
+So this is the simple case
+with the Dirac distribution
+
+01:23:22.690 --> 01:23:25.810
+being the target distribution.
+
+01:23:25.810 --> 01:23:30.170
+And then what we said was OK,
+given this very simple case that
+
+01:23:30.170 --> 01:23:36.010
+is super tractable, let's try to
+match our initial distribution
+
+01:23:36.010 --> 01:23:39.690
+with the actual target
+one of interest, which
+
+01:23:39.690 --> 01:23:42.350
+is the whole data distribution,
+not just a single point,
+
+01:23:42.350 --> 01:23:43.830
+but the whole data distribution.
+
+01:23:46.370 --> 01:23:50.130
+And we proposed the
+marginal probability
+
+01:23:50.130 --> 01:23:57.730
+path which satisfies t equals
+0 equals p0 and t equal 1.
+
+01:23:57.730 --> 01:23:59.070
+It's equal to p data.
+
+01:23:59.070 --> 01:24:02.770
+So it was a valid
+probability path.
+
+01:24:02.770 --> 01:24:06.730
+And we also saw that the
+constructed vector field
+
+01:24:06.730 --> 01:24:10.850
+was actually generating that
+proposed marginal probability
+
+01:24:10.850 --> 01:24:11.350
+path.
+
+01:24:11.350 --> 01:24:13.790
+It was generating it, why?
+
+01:24:13.790 --> 01:24:19.410
+Because it satisfies the
+continuity equation, which
+
+01:24:19.410 --> 01:24:21.510
+I said I don't have
+time to derive,
+
+01:24:21.510 --> 01:24:25.810
+but you just need to
+replace the quantities
+
+01:24:25.810 --> 01:24:32.530
+and see that the continuity
+equation is indeed satisfied.
+
+01:24:32.530 --> 01:24:37.070
+So given that we were finally
+with the vector field,
+
+01:24:37.070 --> 01:24:42.250
+that was something that was
+adapted to our use case.
+
+01:24:42.250 --> 01:24:44.730
+But now what we wanted
+to do was to learn it
+
+01:24:44.730 --> 01:24:47.690
+with the tractable loss.
+
+01:24:47.690 --> 01:24:51.290
+So in this last
+part, what we did
+
+01:24:51.290 --> 01:24:58.210
+is show that the loss
+that we wanted to optimize
+
+01:24:58.210 --> 01:25:01.050
+was actually equivalent
+to another loss that
+
+01:25:01.050 --> 01:25:04.610
+was extremely tractable, which
+is the conditional flow matching
+
+01:25:04.610 --> 01:25:07.490
+loss.
+
+01:25:07.490 --> 01:25:10.930
+And the way we showed
+that was by showing
+
+01:25:10.930 --> 01:25:13.330
+that the gradient of this
+losses with respect to theta
+
+01:25:13.330 --> 01:25:15.950
+were equal, which
+is what I did here.
+
+01:25:19.410 --> 01:25:22.270
+And then finally, we have
+our final loss function,
+
+01:25:22.270 --> 01:25:32.290
+which is ut theta of x minus x1
+minus x0 expectation of that.
+
+01:25:32.290 --> 01:25:34.730
+So it's incredibly simple.
+
+01:25:34.730 --> 01:25:39.850
+So everything I told you is
+actually-- so a lot of it
+
+01:25:39.850 --> 01:25:42.770
+is coming from this paper
+that's called Flow Matching
+
+01:25:42.770 --> 01:25:45.090
+for Generative Modeling.
+
+01:25:45.090 --> 01:25:48.450
+So I highly
+recommend reading it.
+
+01:25:48.450 --> 01:25:51.430
+It may not be the
+simplest to read,
+
+01:25:51.430 --> 01:25:55.970
+but I hope what I
+just told you actually
+
+01:25:55.970 --> 01:26:00.810
+will allow you to understand the
+formulas in there a bit better.
+
+01:26:00.810 --> 01:26:04.430
+But I didn't want to
+give it to Shervine
+
+01:26:04.430 --> 01:26:07.770
+before telling you a bit
+more about why we're calling
+
+01:26:07.770 --> 01:26:10.450
+this whole thing flow matching.
+
+01:26:10.450 --> 01:26:12.770
+Because core matching,
+it was called core
+
+01:26:12.770 --> 01:26:16.500
+matching because you
+tried to match the score.
+
+01:26:16.500 --> 01:26:19.360
+But here, we're not
+matching the flow,
+
+01:26:19.360 --> 01:26:20.680
+we're matching the velocity.
+
+01:26:20.680 --> 01:26:23.980
+So one natural question
+is, why is it not
+
+01:26:23.980 --> 01:26:25.200
+called velocity matching?
+
+01:26:25.200 --> 01:26:26.992
+Why is it not called
+vector field matching?
+
+01:26:26.992 --> 01:26:29.860
+Why is it called flow matching?
+
+01:26:29.860 --> 01:26:32.200
+So these points are
+a bit more informal.
+
+01:26:32.200 --> 01:26:36.460
+It's just a personal take
+on why that is the case.
+
+01:26:36.460 --> 01:26:41.220
+So one potential reason
+is, historically,
+
+01:26:41.220 --> 01:26:43.920
+these models which
+are flow models,
+
+01:26:43.920 --> 01:26:49.340
+meaning trying to map a point
+to another via this psi t of x
+
+01:26:49.340 --> 01:26:53.440
+minus 0, they had the
+term flow in their names,
+
+01:26:53.440 --> 01:26:58.020
+and in particular the
+method that I mentioned
+
+01:26:58.020 --> 01:27:03.180
+that try to learn the vector
+field with maximum likelihood
+
+01:27:03.180 --> 01:27:03.960
+estimation.
+
+01:27:03.960 --> 01:27:07.780
+That one was called
+continuous normalizing flows.
+
+01:27:07.780 --> 01:27:13.700
+So one reason is maybe
+branding, but actually, I
+
+01:27:13.700 --> 01:27:19.380
+want to get back to my earlier
+Lipschitz continuity comment.
+
+01:27:19.380 --> 01:27:25.460
+It turns out that if the vector
+field that you learn here
+
+01:27:25.460 --> 01:27:31.260
+is Lipschitz continuous,
+then what happens
+
+01:27:31.260 --> 01:27:34.120
+is that your trajectories,
+they're all unique.
+
+01:27:36.820 --> 01:27:41.940
+So you actually have a
+mapping between vector fields
+
+01:27:41.940 --> 01:27:46.740
+that you learn and the flow.
+
+01:27:46.740 --> 01:27:48.420
+So if you're matching
+the velocity,
+
+01:27:48.420 --> 01:27:52.060
+you're also matching the flow.
+
+01:27:52.060 --> 01:27:54.460
+Now you may be
+wondering, OK, how
+
+01:27:54.460 --> 01:28:00.380
+do that the learned vector field
+is indeed Lipschitz continuous?
+
+01:28:00.380 --> 01:28:02.600
+Well, we have not seen that yet.
+
+01:28:02.600 --> 01:28:07.660
+We're going to see
+that in lecture 5.
+
+01:28:07.660 --> 01:28:11.660
+But the model that
+is behind this
+
+01:28:11.660 --> 01:28:14.420
+learned vector
+field is something
+
+01:28:14.420 --> 01:28:17.140
+that is composed of
+matrix multiplications
+
+01:28:17.140 --> 01:28:21.260
+and some smooth
+activation functions.
+
+01:28:21.260 --> 01:28:26.820
+All of that is
+Lipschitz continuous.
+
+01:28:26.820 --> 01:28:28.780
+So what you will
+learn is actually
+
+01:28:28.780 --> 01:28:31.660
+Lipschitz continuous
+vector field
+
+01:28:31.660 --> 01:28:35.940
+with respect to
+x, which is going
+
+01:28:35.940 --> 01:28:41.900
+to give you a one-to-one mapping
+between velocity and flow.
+
+01:28:41.900 --> 01:28:44.840
+And we have two minutes.
+
+01:28:44.840 --> 01:28:46.440
+So bear with me.
+
+01:28:49.420 --> 01:28:51.100
+In two minutes,
+I'm going to cover
+
+01:28:51.100 --> 01:28:54.020
+how we train and do inference.
+
+01:28:54.020 --> 01:28:56.940
+But it's going to be very easy.
+
+01:28:56.940 --> 01:28:59.620
+So let's see how we do training.
+
+01:28:59.620 --> 01:29:04.980
+So as I mentioned, the
+loss is extremely simple.
+
+01:29:04.980 --> 01:29:08.160
+And so what we do is
+we sample the noise.
+
+01:29:08.160 --> 01:29:12.590
+So x0 from your standard
+Gaussian distribution,
+
+01:29:12.590 --> 01:29:15.990
+your clean image, so
+x1 from your training
+
+01:29:15.990 --> 01:29:21.270
+set, which is pdata, and you
+also sample your time step.
+
+01:29:21.270 --> 01:29:26.150
+And what you do is you
+construct xt, your noise image.
+
+01:29:26.150 --> 01:29:30.310
+And what I'm telling you is
+thanks to the loss function
+
+01:29:30.310 --> 01:29:38.150
+that we derived, what we do is
+we use xt, the noise image and t
+
+01:29:38.150 --> 01:29:42.550
+to predict x1 minus x0, which
+is the conditional vector
+
+01:29:42.550 --> 01:29:49.750
+field via this model that
+is your vector field model.
+
+01:29:49.750 --> 01:29:54.230
+And you're going to compute
+the loss and backpropagate.
+
+01:29:54.230 --> 01:29:55.770
+That's how you do training.
+
+01:29:55.770 --> 01:29:57.370
+Now, how do you do inference?
+
+01:29:57.370 --> 01:30:02.570
+Well, inference, you just sample
+from an easy data distribution.
+
+01:30:02.570 --> 01:30:06.750
+And here it's, again,
+standard, normal distribution.
+
+01:30:06.750 --> 01:30:12.950
+And what you're going to do is
+to numerically solve the ODE.
+
+01:30:12.950 --> 01:30:16.530
+So what you do is you go
+time step to time step,
+
+01:30:16.530 --> 01:30:19.710
+and you use your
+learned vector fields,
+
+01:30:19.710 --> 01:30:26.310
+and you end up with your
+final estimated image x1.
+
+01:30:26.310 --> 01:30:28.510
+And that's how you do inference.
+
+01:30:28.510 --> 01:30:32.830
+And with that, I'm going
+to give it to Shervine.
+
+01:30:32.830 --> 01:30:34.710
+Thank you, Afshine.
+
+01:30:34.710 --> 01:30:37.910
+So now we're going to see
+in a more visual manner
+
+01:30:37.910 --> 01:30:41.390
+the training process and
+discuss some edge cases
+
+01:30:41.390 --> 01:30:44.230
+and how to solve
+them in practice.
+
+01:30:44.230 --> 01:30:46.110
+So you remember the
+training process
+
+01:30:46.110 --> 01:30:49.030
+that Afshine just mentioned.
+
+01:30:49.030 --> 01:30:52.410
+You sample x0 from the
+normal distribution,
+
+01:30:52.410 --> 01:30:55.470
+you sample x1 from
+your training set.
+
+01:30:55.470 --> 01:30:59.750
+And what you do is that you draw
+a straight line between the two,
+
+01:30:59.750 --> 01:31:06.120
+and you try to fit the
+velocity to this x1 minus x0.
+
+01:31:06.120 --> 01:31:11.280
+Now I want you to imagine that
+we do that for a given pair.
+
+01:31:11.280 --> 01:31:14.360
+And now for another pair.
+
+01:31:14.360 --> 01:31:19.960
+And suppose that these pairings
+intersect at a given point.
+
+01:31:19.960 --> 01:31:25.120
+And let's suppose that this
+intersection is for a same t.
+
+01:31:25.120 --> 01:31:30.480
+So in other words, we're trying
+to fit the loss at a same x,
+
+01:31:30.480 --> 01:31:35.040
+at a same T on two
+different vectors.
+
+01:31:35.040 --> 01:31:39.660
+So who knows what the resulting
+learned velocity will be?
+
+01:31:44.120 --> 01:31:45.740
+So it cannot be two
+velocities right.
+
+01:31:45.740 --> 01:31:48.180
+We cannot have two
+vectors at a single point.
+
+01:31:48.180 --> 01:31:51.360
+It has to be one.
+
+01:31:51.360 --> 01:31:57.680
+So we have this MSE loss
+that will make it such
+
+01:31:57.680 --> 01:32:00.560
+that it will be an
+average of all the vectors
+
+01:32:00.560 --> 01:32:03.720
+that we tried to fit at
+that given point points x
+
+01:32:03.720 --> 01:32:10.520
+and at given point t and you
+see that as being a problem
+
+01:32:10.520 --> 01:32:14.840
+or, so what does that mean?
+
+01:32:14.840 --> 01:32:18.480
+So here in practice, let's
+say you're at inference time
+
+01:32:18.480 --> 01:32:22.880
+and you want to go from,
+let's say, x0 to x1.
+
+01:32:22.880 --> 01:32:27.360
+And let's say you have learned
+a vector fields of velocity that
+
+01:32:27.360 --> 01:32:28.660
+doesn't go to x1.
+
+01:32:28.660 --> 01:32:33.560
+That goes in an
+average direction.
+
+01:32:33.560 --> 01:32:38.480
+Are you going to be
+able to go to x1?
+
+01:32:38.480 --> 01:32:41.160
+No, right?
+
+01:32:41.160 --> 01:32:43.960
+So the thing that will
+occur is that you're
+
+01:32:43.960 --> 01:32:48.040
+going to have something
+averaged that might repel
+
+01:32:48.040 --> 01:32:54.600
+the trajectories that you try to
+learn into different directions.
+
+01:32:54.600 --> 01:32:58.760
+But be reassured,
+we showed that these
+
+01:32:58.760 --> 01:33:01.600
+learned vector fields
+was such that if you
+
+01:33:01.600 --> 01:33:04.800
+sample a point in the
+normal distribution
+
+01:33:04.800 --> 01:33:06.820
+and follow the
+learned vector field,
+
+01:33:06.820 --> 01:33:11.120
+you land into a
+distribution land, that will
+
+01:33:11.120 --> 01:33:12.780
+be your distribution pdata.
+
+01:33:12.780 --> 01:33:14.360
+So that part is fine.
+
+01:33:14.360 --> 01:33:18.080
+But still, you
+have this property
+
+01:33:18.080 --> 01:33:21.400
+that the learned
+trajectories are not
+
+01:33:21.400 --> 01:33:25.760
+going to be the same as the
+ones that you teach your model.
+
+01:33:25.760 --> 01:33:30.160
+And that is a source of what
+I would call complexity, where
+
+01:33:30.160 --> 01:33:34.160
+you teach a model
+that doesn't follow
+
+01:33:34.160 --> 01:33:36.180
+what you said at test time.
+
+01:33:36.180 --> 01:33:37.960
+So that is inherently--
+
+01:33:37.960 --> 01:33:44.960
+so your intuition could make you
+feel that this is not efficient.
+
+01:33:44.960 --> 01:33:47.560
+And the second thing
+that I want to say
+
+01:33:47.560 --> 01:33:51.520
+is that you could have
+this phenomenon happening,
+
+01:33:51.520 --> 01:33:56.320
+even though the
+points of intersection
+
+01:33:56.320 --> 01:33:59.810
+are not at the exact same T,
+because in practice, you're
+
+01:33:59.810 --> 01:34:03.290
+going to learn this vector
+field with a neural network.
+
+01:34:03.290 --> 01:34:06.450
+And neural network
+are going to be
+
+01:34:06.450 --> 01:34:10.010
+a class of functions that are
+going to be smoothing things
+
+01:34:10.010 --> 01:34:11.130
+in space.
+
+01:34:11.130 --> 01:34:15.650
+So you won't have a
+drastic change of velocity
+
+01:34:15.650 --> 01:34:18.210
+for neighboring t's.
+
+01:34:18.210 --> 01:34:22.690
+And so because
+one thing that you
+
+01:34:22.690 --> 01:34:25.050
+could have told me
+is, but Shervine,
+
+01:34:25.050 --> 01:34:26.530
+that is never going to happen.
+
+01:34:26.530 --> 01:34:30.590
+01 is an interval with
+infinitely many numbers.
+
+01:34:30.590 --> 01:34:33.410
+You're never going to draw the
+same t, and you would be right.
+
+01:34:33.410 --> 01:34:36.970
+And I'm just saying that it
+could be valid for neighboring
+
+01:34:36.970 --> 01:34:38.730
+t's.
+
+01:34:38.730 --> 01:34:47.490
+And more importantly, let's say
+you sample your point x0 out
+
+01:34:47.490 --> 01:34:49.490
+of your normal distribution.
+
+01:34:49.490 --> 01:34:51.510
+What is going to
+be your issue here?
+
+01:34:51.510 --> 01:34:54.410
+Afshine mentioned that
+you want to integrate
+
+01:34:54.410 --> 01:34:56.650
+the ODE at inference time.
+
+01:34:56.650 --> 01:34:59.170
+And we had seen
+last time that you
+
+01:34:59.170 --> 01:35:04.570
+want to find methods that
+optimize that number of NFEs
+
+01:35:04.570 --> 01:35:07.370
+in such a way that you can
+find your target sample
+
+01:35:07.370 --> 01:35:09.810
+in a minimum amount of steps.
+
+01:35:09.810 --> 01:35:13.410
+And when you have a path
+that is getting curved,
+
+01:35:13.410 --> 01:35:16.970
+so you don't have these straight
+lines at inference time,
+
+01:35:16.970 --> 01:35:20.670
+you're not going to be able to
+solve that in a single step.
+
+01:35:20.670 --> 01:35:22.650
+Because let's say you use Euler.
+
+01:35:22.650 --> 01:35:27.170
+Euler is estimating the velocity
+at the beginning points.
+
+01:35:27.170 --> 01:35:29.590
+And if you try to do
+it in a single step,
+
+01:35:29.590 --> 01:35:31.790
+it will end up somewhere else.
+
+01:35:31.790 --> 01:35:35.450
+It will follow a straight
+path, whereas the curve isn't
+
+01:35:35.450 --> 01:35:36.950
+going to be taken into account.
+
+01:35:39.570 --> 01:35:42.010
+And you're going to tell
+me, but Shervine, you
+
+01:35:42.010 --> 01:35:44.110
+have tricks in your pockets.
+
+01:35:44.110 --> 01:35:47.690
+Last time you talked
+about a DPM solver
+
+01:35:47.690 --> 01:35:51.010
+in a different setting that
+was able to reframe things
+
+01:35:51.010 --> 01:35:52.290
+in an exact way.
+
+01:35:52.290 --> 01:35:53.570
+Well, no.
+
+01:35:53.570 --> 01:35:56.850
+This time, the ODE that
+we want to integrate
+
+01:35:56.850 --> 01:35:58.630
+has no linear components.
+
+01:35:58.630 --> 01:36:01.770
+It's all non-linear
+because here we're directly
+
+01:36:01.770 --> 01:36:04.970
+learning that velocity field.
+
+01:36:04.970 --> 01:36:07.970
+So no DPM solver here.
+
+01:36:07.970 --> 01:36:11.750
+You need to use traditional
+sampler techniques.
+
+01:36:15.330 --> 01:36:17.350
+So not quite happy.
+
+01:36:17.350 --> 01:36:19.570
+We're happy but not quite.
+
+01:36:19.570 --> 01:36:23.010
+So now I'm going to walk
+you through the intuition
+
+01:36:23.010 --> 01:36:30.410
+of a retraining or fine tuning
+procedure that is called reflow.
+
+01:36:30.410 --> 01:36:34.210
+And so first I'm going to
+recap the training procedure
+
+01:36:34.210 --> 01:36:35.810
+that we have already.
+
+01:36:35.810 --> 01:36:39.410
+So you sample a point x0,
+you sample a point x1,
+
+01:36:39.410 --> 01:36:43.890
+you draw a path and then
+you fit a velocity on it.
+
+01:36:43.890 --> 01:36:49.210
+So it is called in that paper
+a one rectified flow model.
+
+01:36:49.210 --> 01:36:55.940
+And you obtain trajectories that
+we saw we're going to be curved.
+
+01:36:55.940 --> 01:37:01.740
+And one idea that we have
+here, one temptation,
+
+01:37:01.740 --> 01:37:04.420
+is to locate these new pairings.
+
+01:37:04.420 --> 01:37:06.480
+So you started from point x0.
+
+01:37:06.480 --> 01:37:07.920
+You integrated the ODE.
+
+01:37:07.920 --> 01:37:13.140
+You ended up at somewhere in
+the distribution of pdata.
+
+01:37:13.140 --> 01:37:18.100
+You're tempted to use these
+new pairs as your new pairings,
+
+01:37:18.100 --> 01:37:22.060
+because they will
+be, by construction,
+
+01:37:22.060 --> 01:37:26.260
+in such a way that the
+velocity field will carry
+
+01:37:26.260 --> 01:37:30.360
+the trajectory directly there.
+
+01:37:30.360 --> 01:37:32.920
+So the reflow
+procedure says, OK,
+
+01:37:32.920 --> 01:37:36.140
+let's take these
+new pairs as those
+
+01:37:36.140 --> 01:37:40.980
+that we use to
+retrain the model.
+
+01:37:40.980 --> 01:37:46.140
+So this will be our new lines
+that we fit our new model.
+
+01:37:46.140 --> 01:37:49.380
+And so this is the reflow step.
+
+01:37:49.380 --> 01:37:52.220
+And you do that
+process again and again
+
+01:37:52.220 --> 01:37:56.420
+until your lines
+becomes straighter.
+
+01:37:56.420 --> 01:37:59.040
+And once that is the
+case, at inference time,
+
+01:37:59.040 --> 01:38:01.980
+you're able to use a limited
+amount of inference steps
+
+01:38:01.980 --> 01:38:09.500
+in order to get your
+sample in the pdata space.
+
+01:38:09.500 --> 01:38:11.440
+So does this
+procedure make sense?
+
+01:38:11.440 --> 01:38:11.940
+Yep?
+
+01:38:21.820 --> 01:38:25.700
+So the comment is
+if you retrain, then
+
+01:38:25.700 --> 01:38:28.640
+the two points are going to
+be from the new distribution.
+
+01:38:28.640 --> 01:38:30.780
+So the magic in all of this--
+
+01:38:30.780 --> 01:38:33.860
+so first, you're going to keep
+that Gaussian distribution
+
+01:38:33.860 --> 01:38:34.760
+at the beginning.
+
+01:38:34.760 --> 01:38:36.260
+That will not change.
+
+01:38:36.260 --> 01:38:38.540
+And at the end,
+we're going to see
+
+01:38:38.540 --> 01:38:40.780
+that there are some
+properties that
+
+01:38:40.780 --> 01:38:44.900
+makes it such that the resulting
+points that you get still
+
+01:38:44.900 --> 01:38:47.580
+preserve the
+distribution p data.
+
+01:38:47.580 --> 01:38:51.110
+So there is some
+theoretical justification
+
+01:38:51.110 --> 01:38:53.910
+that it does follow pdata.
+
+01:38:53.910 --> 01:38:55.955
+But this is a great point.
+
+01:38:55.955 --> 01:38:58.330
+We're going to discuss that
+in more detail in two slides.
+
+01:39:01.750 --> 01:39:05.870
+Any other questions or comments?
+
+01:39:05.870 --> 01:39:08.790
+OK, so you're right
+to be skeptical.
+
+01:39:08.790 --> 01:39:11.410
+So this works because
+of two things.
+
+01:39:11.410 --> 01:39:15.150
+So first, actually, one slide.
+
+01:39:15.150 --> 01:39:20.550
+So we need to show that this
+follows the distribution pdata.
+
+01:39:20.550 --> 01:39:23.390
+So I'm not going to give
+you the whole proof, just
+
+01:39:23.390 --> 01:39:24.610
+the gist of it.
+
+01:39:24.610 --> 01:39:29.870
+So you start by defining
+this random variable that
+
+01:39:29.870 --> 01:39:32.430
+starts at x0.
+
+01:39:32.430 --> 01:39:36.350
+And you integrate the ODE
+to end up in the new space
+
+01:39:36.350 --> 01:39:46.590
+and define this velocity for the
+x random variable and the proof
+
+01:39:46.590 --> 01:39:50.990
+to show that the law that you
+get for the end distribution
+
+01:39:50.990 --> 01:39:53.370
+after a reflow
+procedure goes through,
+
+01:39:53.370 --> 01:40:00.790
+showing that these two
+probability flows respect
+
+01:40:00.790 --> 01:40:03.430
+the same continuity equation.
+
+01:40:03.430 --> 01:40:08.390
+And with some uniqueness
+theorem and the presence
+
+01:40:08.390 --> 01:40:14.950
+of initial conditions at the
+fact that dt equals 0 is still
+
+01:40:14.950 --> 01:40:17.790
+the Gaussian
+distribution, you can
+
+01:40:17.790 --> 01:40:22.550
+show that it's valid for all t
+and, in particular, t equals 1.
+
+01:40:22.550 --> 01:40:26.090
+So yeah, just hand-waving
+the proof here.
+
+01:40:26.090 --> 01:40:29.830
+So it's theoretically the case.
+
+01:40:29.830 --> 01:40:32.150
+But you are right
+to be skeptical,
+
+01:40:32.150 --> 01:40:35.030
+because once you
+integrate the ODE,
+
+01:40:35.030 --> 01:40:39.250
+you have errors that
+come in from two sources.
+
+01:40:39.250 --> 01:40:42.410
+So the first error is
+the discretization error.
+
+01:40:42.410 --> 01:40:46.890
+So as we said, we're
+sampling these new points.
+
+01:40:46.890 --> 01:40:50.050
+So maybe you have some errors
+in the way you do these steps.
+
+01:40:50.050 --> 01:40:54.070
+So you don't necessarily end
+up in a theoretical location
+
+01:40:54.070 --> 01:40:55.750
+you should be at.
+
+01:40:55.750 --> 01:40:59.550
+And the second point is
+that you're operating off
+
+01:40:59.550 --> 01:41:02.830
+of a learned vector field
+that is approximated
+
+01:41:02.830 --> 01:41:05.790
+by a neural network,
+and it is possible
+
+01:41:05.790 --> 01:41:07.770
+that you haven't
+learned it perfectly.
+
+01:41:07.770 --> 01:41:09.990
+I mean, of course
+it's sure that you
+
+01:41:09.990 --> 01:41:12.510
+haven't learned it perfectly.
+
+01:41:12.510 --> 01:41:16.430
+And the quality of
+your results will
+
+01:41:16.430 --> 01:41:20.310
+be a function of how well
+you learn that vector field
+
+01:41:20.310 --> 01:41:22.630
+and of your
+discretization errors.
+
+01:41:22.630 --> 01:41:24.870
+And we're going to see
+very soon that this
+
+01:41:24.870 --> 01:41:30.070
+is one of the reasons why we
+don't perform this procedure too
+
+01:41:30.070 --> 01:41:34.430
+many times, because the
+degradation is going to be
+
+01:41:34.430 --> 01:41:38.230
+a trade off to balance here.
+
+01:41:38.230 --> 01:41:40.490
+So this is the first
+point I wanted to justify.
+
+01:41:40.490 --> 01:41:42.550
+The second point I
+wanted to justify
+
+01:41:42.550 --> 01:41:47.600
+is we hand waved the fact that
+the flows like the trajectories
+
+01:41:47.600 --> 01:41:51.360
+were getting
+straighter, and there
+
+01:41:51.360 --> 01:41:55.082
+is a mathematical way of
+writing it down and proving it.
+
+01:41:55.082 --> 01:41:57.040
+And this is also something
+that is being proven
+
+01:41:57.040 --> 01:41:58.800
+in case you're interested.
+
+01:41:58.800 --> 01:42:01.540
+And for the interest of time,
+I'm not going to be covering it,
+
+01:42:01.540 --> 01:42:11.160
+but that s quantity quantifies
+straightness and compares
+
+01:42:11.160 --> 01:42:14.860
+the actual velocity with
+the theoretical one.
+
+01:42:14.860 --> 01:42:19.060
+And we show that it
+decays with a good speed.
+
+01:42:19.060 --> 01:42:24.120
+And this is why we're saying
+it's getting straighter.
+
+01:42:24.120 --> 01:42:27.160
+And exactly as we discussed,
+the reflow procedure
+
+01:42:27.160 --> 01:42:30.880
+is one that you wouldn't
+want to do too many times,
+
+01:42:30.880 --> 01:42:34.640
+but usually, one procedure
+is already great.
+
+01:42:34.640 --> 01:42:39.380
+And the goal is for us to use a
+very simple sampling techniques,
+
+01:42:39.380 --> 01:42:42.960
+such as Euler, optimally
+in just a few steps,
+
+01:42:42.960 --> 01:42:45.400
+finding the right solution.
+
+01:42:45.400 --> 01:42:47.780
+And of course, it
+isn't a free lunch.
+
+01:42:47.780 --> 01:42:49.400
+It comes at a trade off.
+
+01:42:49.400 --> 01:42:56.720
+So you're trading off simplicity
+and potentially lower quality
+
+01:42:56.720 --> 01:43:01.840
+for faster inference
+time speeds.
+
+01:43:01.840 --> 01:43:03.000
+OK, great.
+
+01:43:03.000 --> 01:43:06.240
+So this past three lectures,
+including this one,
+
+01:43:06.240 --> 01:43:12.280
+we've come across these concepts
+of diffusion, score matching,
+
+01:43:12.280 --> 01:43:14.840
+and now flows, flow matching.
+
+01:43:14.840 --> 01:43:17.560
+And I want to spend
+five minutes together
+
+01:43:17.560 --> 01:43:21.680
+to tie all of these frameworks
+together in a way that
+
+01:43:21.680 --> 01:43:25.600
+will hopefully show links
+between them and the fact
+
+01:43:25.600 --> 01:43:29.700
+that we are solving the
+same category of problems
+
+01:43:29.700 --> 01:43:32.760
+but from different lenses.
+
+01:43:32.760 --> 01:43:34.400
+And in order to
+do that, I'm going
+
+01:43:34.400 --> 01:43:38.560
+to look at each of the
+processes that we defined
+
+01:43:38.560 --> 01:43:42.680
+and then look at the difference
+with respect to each method.
+
+01:43:42.680 --> 01:43:46.900
+So the first one is
+the forward process.
+
+01:43:46.900 --> 01:43:48.200
+So it's a long time ago.
+
+01:43:48.200 --> 01:43:52.240
+Already two weeks ago, we talked
+about DPM and all this class
+
+01:43:52.240 --> 01:43:56.320
+of discrete time, diffusion.
+
+01:43:56.320 --> 01:44:00.960
+And then we saw in score-based
+diffusion world that if you
+
+01:44:00.960 --> 01:44:07.800
+reframed these equations and
+converted it into continuous
+
+01:44:07.800 --> 01:44:12.760
+time, put some delta t to 0, you
+could get some SDE formulation
+
+01:44:12.760 --> 01:44:20.680
+that was equivalent to it, Where
+we saw at the DPM solver section
+
+01:44:20.680 --> 01:44:24.840
+that actually, in diffusion
+space, you could approximate--
+
+01:44:24.840 --> 01:44:28.360
+I mean, you could always
+assume that f of x and t
+
+01:44:28.360 --> 01:44:30.640
+was linear in x.
+
+01:44:30.640 --> 01:44:31.780
+And this is why.
+
+01:44:31.780 --> 01:44:33.780
+So it's something that
+we haven't seen so far
+
+01:44:33.780 --> 01:44:36.400
+but I'm telling you that
+you have a nice closed form
+
+01:44:36.400 --> 01:44:41.770
+expression with respect
+to f and g of xt.
+
+01:44:41.770 --> 01:44:45.930
+And now we saw today
+that you can write down
+
+01:44:45.930 --> 01:44:51.850
+xt as an interpolation between
+x0 and x1 in flow matching.
+
+01:44:51.850 --> 01:44:56.690
+And now we're going to see
+that in all of these methods,
+
+01:44:56.690 --> 01:44:58.710
+you start from a clean sample.
+
+01:44:58.710 --> 01:45:03.930
+So in a diffusion space, we
+start the clean sample from t
+
+01:45:03.930 --> 01:45:05.250
+equals 0.
+
+01:45:05.250 --> 01:45:07.090
+But in flow matching
+space, we saw
+
+01:45:07.090 --> 01:45:09.450
+that the notation was reversed.
+
+01:45:09.450 --> 01:45:12.130
+Clean sample is t equals 1.
+
+01:45:12.130 --> 01:45:14.130
+And on the other
+side of the spectrum,
+
+01:45:14.130 --> 01:45:19.910
+you have noise, which was in
+diffusion world t equals big t.
+
+01:45:19.910 --> 01:45:22.370
+And here it's t equals 0.
+
+01:45:22.370 --> 01:45:26.530
+So you're here drawing an
+interpolation between the two
+
+01:45:26.530 --> 01:45:29.050
+in each of these cases.
+
+01:45:29.050 --> 01:45:32.410
+Now when we look at
+the loss functions,
+
+01:45:32.410 --> 01:45:38.370
+we saw that the diffusion
+view of writing things down
+
+01:45:38.370 --> 01:45:40.670
+was focusing on noise.
+
+01:45:44.010 --> 01:45:47.390
+The score matching view
+was linking scores,
+
+01:45:47.390 --> 01:45:51.450
+and you had a nice relationship
+between noise and score.
+
+01:45:51.450 --> 01:45:55.450
+And in the flow matching world,
+you were directly fitting
+
+01:45:55.450 --> 01:45:58.410
+the velocity field such
+that you have the simplest
+
+01:45:58.410 --> 01:46:02.450
+ODE to integrate in the end.
+
+01:46:02.450 --> 01:46:04.810
+Now, when we look at
+the generation process,
+
+01:46:04.810 --> 01:46:08.050
+we saw in the diffusion
+world that you
+
+01:46:08.050 --> 01:46:11.530
+had all these
+steps to go through
+
+01:46:11.530 --> 01:46:14.370
+with some stochasticity,
+which you also
+
+01:46:14.370 --> 01:46:18.290
+had in the score-based
+diffusion world,
+
+01:46:18.290 --> 01:46:23.370
+and you had for the first two,
+a deterministic counterpart.
+
+01:46:23.370 --> 01:46:25.530
+And you will notice
+that the flow matching
+
+01:46:25.530 --> 01:46:28.490
+one doesn't have such
+a balance because it's
+
+01:46:28.490 --> 01:46:31.810
+deterministic to start with.
+
+01:46:31.810 --> 01:46:36.740
+And I'm just showing you some
+relationships between all
+
+01:46:36.740 --> 01:46:38.220
+these methods, but
+actually, there
+
+01:46:38.220 --> 01:46:42.940
+is a whole theory linking these
+concepts in a very nice way.
+
+01:46:42.940 --> 01:46:46.680
+And this is why I recommend
+if you're interested.
+
+01:46:46.680 --> 01:46:48.640
+So it's out of scope
+for this class.
+
+01:46:48.640 --> 01:46:52.660
+And just if you're interested,
+to take a look at the paper
+
+01:46:52.660 --> 01:46:58.380
+called Stochastic Interpolants
+that writes down equations that
+
+01:46:58.380 --> 01:47:00.260
+links all of these together.
+
+01:47:00.260 --> 01:47:06.160
+And turns out that r of
+noise, score, and velocity,
+
+01:47:06.160 --> 01:47:09.380
+if you know two of them, you
+can deduce the third one.
+
+01:47:09.380 --> 01:47:13.540
+And that paper designs
+a problem space
+
+01:47:13.540 --> 01:47:17.660
+that is bigger than what each
+of these frameworks detailed.
+
+01:47:17.660 --> 01:47:20.580
+And all of these
+frameworks can live
+
+01:47:20.580 --> 01:47:25.260
+in the same unified framework.
+
+01:47:25.260 --> 01:47:28.890
+And with that, I hope
+you have a great weekend.
+

@@ -1,0 +1,1753 @@
+My name is Anikait.
+I'm a TA here for CS 224R.
+And I hope you guys
+are in the right place
+for the Q-Learning lecture.
+So just as a general overview,
+what we're going to cover,
+we're going to start off
+by just doing a very, very
+brief overview of MDPs.
+Hopefully at this
+point, you guys
+will be somewhat familiar
+with the notation.
+And then we're
+going to switch over
+to talking a little bit about
+a more controlled or tabular
+problem where we're going to be
+looking at fitted Q iteration
+as an algorithm, and
+how we can build up
+from the tabular setting to
+learn an effective function.
+And then we're going to move
+on to parametric Q-learning,
+looking at the bias
+and variance trade-off,
+learning from TD regression
+versus Monte Carlo rollouts.
+And then finally
+talk a little bit
+about some of the practical
+details that go into learning
+effective Q functions.
+So this includes things
+like the replay buffer
+that we just briefly chatted
+about, overestimation,
+and how to deal with the
+gradient effects of TD learning.
+So an MDP or a Markov
+Decision Process.
+So as you guys have
+been probably looking
+at in the last
+couple of lectures,
+we've defined a
+framework for us to look
+at [? RLs ?] where
+we have an agent
+on the right-hand side that is
+interacting with an environment.
+And we define this
+framework of an MDP
+that's defined by a set
+of states and actions,
+and also a transition
+dynamics function
+which allows you to go
+from a certain state,
+take a particular action,
+and go to the next state.
+You're also rewarded for a
+particular state and action
+that you take, as well
+as have different metrics
+like the starting
+state, which tells you
+where in the
+trajectory you're from,
+and things like the discount
+factor and horizon, which
+allow you to encourage
+longer or shorter horizon
+trajectories where your horizon
+is the length of the trajectory.
+In this lecture,
+we'll be talking
+a little bit about the
+GridWorld assignment--
+sorry, this GridWorld
+problem on the top right
+where we have this
+little robot that's
+trying to navigate to
+this gem on the top right.
+And similar to classes
+we've seen before,
+our goal is to maximize the
+expected return conditioned
+on a policy that
+we're trying to learn,
+where a policy is simply
+defined as a set of actions
+for each state in this
+tabular environment
+that should be taken to
+reach a particular goal.
+So in the past
+couple of lectures,
+we've been looking at a
+certain set of objects which
+we denote as value functions.
+So we'll start off
+by defining V pi of s
+or a value function that
+estimates the expected
+future reward when
+you start at a state s
+and follow your policy pi.
+We also have this other useful
+object called the Q function
+where the distinction between a
+value function and a Q function
+is that now you additionally
+condition on an action
+and look at what the expected
+future reward looks like when
+you follow your policy.
+So both of these quantities are
+an estimate of how good either
+a current state is or a
+state and a particular action
+is to give you guidance for
+your policy in terms of what
+actions I should
+potentially take.
+So if we look at, for
+example, a set of trajectories
+as seen here, your
+value function,
+which is only
+conditioned on the state,
+estimates from a given state
+how well, if I follow my policy,
+will I do going forward.
+And a Q function gives you a
+little bit more information
+where you can probe a particular
+action for an immediate action
+that you can take.
+And consider, if I take this
+action versus another one, what
+my value can be.
+And a useful relation
+to know in this case is
+that your value function that
+you've learned on the left
+is like an expectation,
+the Q function
+that you'll learn on the right.
+Another useful quantity that
+you might have already seen
+is this notion of
+an advantage, which
+estimates how useful it is to
+take a particular action A,
+then follow the policy
+at the current time step.
+So to understand
+this we denote this.
+We define the advantage as the
+difference between the key value
+and the value as
+seen on the bottom.
+So to explore how you
+can learn a Q function,
+we're going to go back to this
+tabular GridWorld environment
+that we've been
+looking at and see
+how we can learn a Q function
+through dynamic programming.
+So in class, you might have
+seen this Bellman equation
+as seen on this slide here,
+which is defined as the expected
+reward to go where we look
+at the transition dynamics
+from a current
+state st multiplied
+by the reward at the
+current time step
+when we take a
+particular action,
+as well as added to the max of
+the Q-value at the next state.
+We can then convert
+this Bellman equation
+which gives you the
+optimal Q function
+into an iterative
+learning process where
+we are going to define our
+Q function at each time step
+starting from the Q time step
+at the previous time step
+and doing this same
+maximization procedure.
+So you'll start off with
+maybe an empty GridWorld where
+your value function-- or Q
+function here is starting off
+at 0 at all steps.
+And then you iteratively,
+starting from your terminal
+states, propagate reward
+from your terminal
+states back to all states
+within your GridWorld.
+So we'll see pictorially
+how that will happen.
+But this is an
+iterative process that
+allows you to propagate
+value from any terminal state
+to all states within
+your GridWorld.
+This is the foundation
+of TD learning or Q
+learning in general, and
+is how we'll visualize this
+in the next couple of slides.
+So in this GridWorld environment
+that we're going to look at,
+we're going to have,
+again, this robot that's
+in this toy environment where it
+can have five different actions
+that it can take at every step.
+It can either stay
+in its current spot,
+move left, move right,
+move up, or move down.
+And we're going to be rewarding
+it if it lands in the top right
+square and penalizing
+it with a negative value
+if it lands in this square
+in the middle up here.
+Additionally, we have this
+notion of a discount factor
+to allow us to
+encourage the robot
+to reach the goal state
+as quickly as it can
+and not do spurious exploration.
+So we'll start off with the
+Q-value function defined
+as the right here
+where for every state
+it's essentially going to be
+0, except for the terminal
+states on the right
+top up right hand
+side, where for the
+top right corner
+it is plus 1 because it gets a
+plus 1 reward when you terminate
+there, and negative 1
+for this lava square.
+And we can then run
+this propagation
+for the Q-value over
+multiple iterations.
+And what we'll see is
+that in time step 2,
+the states very close
+to the top right
+seem to now get Q values
+due to the propagation.
+And eventually, over
+multiple iterations,
+we're able to fill up
+the grid, leading us
+to stable convergence
+over Q function.
+So what is the
+particular difference
+between the Bellman
+equation and this equation?
+Yeah.
+That's a really good point.
+So let me go back to
+where I defined that.
+Sorry.
+So the Bellman equation here,
+as you can see on the top,
+has no subscript
+denoting what iteration
+you're updating the policy.
+And all it's saying is that
+for the optimal policy,
+this relation will hold.
+And then a natural
+derivation from there
+is that you can do this
+iteratively where you start
+from your terminal states which
+already have a given reward,
+and you know what that would
+be, and propagate information
+from that point to
+then learn the true Q
+function at every single state
+and action in your state space.
+So this is now going to have
+a subscript k plus 1 or k
+that represents what
+iteration you're going
+to be looking at for each step.
+I guess the question
+or clarification was,
+which one of these is like Monte
+Carlo or dynamic programming?
+So right now we're going to be
+looking at a dynamic programming
+algorithm.
+And a quick way to sanity
+check that, or get a heuristic
+sense of that, is that
+if you see the Q function
+on both sides of
+your update, that
+will generally be a dynamic
+programming style of algorithm.
+Whereas for a Monte
+Carlo, you will
+see strictly only
+rewards, at least
+for the Q-learning updates
+and value function updates.
+But right now we're looking at
+a dynamic programming algorithm,
+and that is why we start
+from these terminal states
+as we see here on the right.
+And we then propagate value
+to all states within our grid.
+I'll start off by saying that--
+is the state space here clear?
+And the actions are going up,
+down, left, right, and stay.
+So these are just denoting
+each of the five directions.
+So the Q-value for being
+at this state and going up
+is the top value.
+And going left is the
+value on the left there.
+The initial state of the
+Q function just something
+you made up?
+The initial state
+of the Q function?
+Yeah.
+No, it's not something
+that I've made up.
+So generally-- oh, sorry, I
+haven't defined this here.
+But Q0 is defined as all zeros
+for all states in your tabular
+setting.
+So you generally typically
+initialize your Q function
+as zeros.
+And then Q1 is just a single
+update using the equation above.
+And the reason that for these
+states the reward is plus 1
+and minus 1 is because
+these are terminal states,
+and then from any action
+that you take at these states
+will result in the reward.
+So this is iteration one.
+And from there, we just
+do the dynamic programming
+update as seen on the top.
+And we see that the
+value essentially
+propagates from the top
+state to any other state
+in our GridWorld.
+So in the class we've
+been discussing,
+notation is something that
+you probably are maybe
+getting overwhelmed with.
+So I want to maybe clarify
+a few different quantities
+that you might
+have seen and talk
+about how it relates to the
+current GridWorld's that we've
+been exploring.
+So the top left here,
+which is V of s,
+is going to be the
+value function that is
+unconditional on the actions.
+And you can see that for every
+state we assign it a value.
+And we see that from the
+top right corner, which
+is the place where
+you get a reward,
+you essentially get
+a reward of plus 1,
+and the discounting of 0.9 then
+applies for every state that
+is far away from it.
+So you can see that if
+you're one step away,
+you have a value of 0.9.
+If you're two steps, it would be
+like 0.81, so on and so forth,
+until you complete the full
+grid, except for the lava
+state where you get a minus
+1 reward for terminating.
+Additionally,
+there's the Q star,
+which is the center thing
+that we were just looking at.
+And you can either get
+this through convergence
+of the algorithm that
+we were just describing,
+or you can also calculate
+it analytically.
+Finally, there is the policy.
+And the policy is just going
+to be a deterministic function
+that's primarily
+because, for any MDP
+without any partial
+observability,
+the policy is going to be a
+deterministic function that
+is defined as strictly the
+argmax of the Q function.
+And as you can see
+here, it typically
+has a path towards the goal.
+And it's generally
+the shortest path
+for any state in your GridWorld.
+So these are all the optimal
+value, Q-value, and policies.
+For me looking at this
+I think the policy
+is pretty much all I need.
+So what are the
+different advantages?
+Yeah.
+That's a good question.
+So you're saying that, OK, maybe
+these things seem really extra.
+I don't need to
+actually learn them.
+If I learn the policy,
+I'm going to be all good.
+That's a great question
+and probably worth thinking
+a little bit about.
+So what you can think about is
+that, in this tabular domain,
+the way that we've
+extracted the policy
+is just by doing it
+argmax of our Q function.
+So we needed the
+Q function to help
+us determine what are the values
+throughout the entire state
+space, and we were able to
+extract a policy from it.
+There are also
+approaches that only
+utilize a policy, such as policy
+gradient objectives, which
+you might have explored in
+the first couple of classes.
+But they do experience some
+amount of variance issues
+in your environment.
+We'll talk a little
+bit about this
+when we go to discuss the
+differences between Monte Carlo
+and TD.
+But essentially, once
+your environment ends up
+having a lot of
+variance, either in terms
+of the reward or the
+transition dynamics,
+that results in policy
+gradient methods
+or Monte Carlo based methods
+to solve for a little bit
+because there's very high
+variance in your environment.
+So a Q value function
+can allow you
+to trade-off that
+variance for bias
+and is maybe another way to deal
+with those specific environment
+configurations.
+So there are trade-offs
+to learning each of them.
+And certain environment
+configurations
+allow you to learn a Q
+function better than others.
+So those were the optimal
+value, Q value, and policies.
+Additionally, as I
+discussed before,
+there's also a notion of
+an advantage which gives us
+an estimate of how good
+a particular action is
+relative the action that your
+policy would essentially take.
+So for the optimal
+policy, the advantage
+should always be negative.
+And the reason for that
+is that your policy
+is the optimal policy,
+so there's no action
+that's better than it.
+And you can see this
+in the GridWorld
+on the right, where
+there are actions
+that are in red that go
+towards the lava state,
+for example, that are
+negative in nature.
+And all of the actions
+that are from the policy
+are all going to
+have zero advantage
+because they're equivalent.
+So yeah.
+So the advantage is zero for
+actions from our current policy.
+But for actions that are
+not from the optimal policy
+they're going to be negative.
+So that is why for every action
+that the optimal policy takes
+in the GridWorld
+on the top right,
+the advantage is
+going to be zero.
+But for all other
+actions, the advantage
+will be negative because
+they can be worse
+performing than
+the optimal policy,
+because there could be, for
+example, two actions that
+lead to similar values, which
+I think was an example I think
+in the state on 0, 0.
+So you can either go up or
+to the right from the state,
+and the advantage
+for both of them
+will be 0 because they
+match to the optimal policy.
+But the optimal policy
+is deterministic,
+so you'll end up picking
+one of them as your policy.
+So far we've been looking
+at the optimal policy.
+But what would it look like
+for your current policy
+or suboptimal one?
+So here I'm going to
+show, again, Q star of s,
+a and pi of a given s, and Q
+pi of s, a and pi of a given s.
+So as you can see, this is
+not a deterministic policy
+on the bottom, and in
+many cases actually
+does not lead you to
+the right set of actions
+to take, sometimes even
+leading to the lawless state,
+for example.
+And we can see that here
+the Q function that's
+associated with it is also
+different from the optimal Q
+function.
+So you can learn a
+critic or Q function that
+is conditioned on a
+policy that tells you
+how close am I to
+the optimal policy,
+and how can I
+improve using that.
+So if I wanted to learn an
+actor critic style algorithm,
+for example, I could
+use this critic
+that's conditioned on
+a particular policy
+to tell me what are actions that
+might be better than the ones
+that I'm taking, and
+use that to update the
+to do one step of improvement.
+Q store, on other hand,
+has been converged,
+so the optimal
+policy can no longer
+be updated because of that.
+This is just to give
+you a sense of what
+the different notation means.
+So Q pi just relates
+to the current policy,
+whereas Q star is
+the optimal one.
+If you guys would
+like to play around
+with some of these
+tabular environments,
+feel free to do so through the
+Colab in the PDF that I shared.
+We've been talking a little
+bit about these tabular
+environments, and it's great
+to play around with these girls
+and see how values and stuff
+propagate, but with something
+like this actually scale.
+And unfortunately,
+it doesn't seem
+to be the case because a tabular
+value function, as your state
+or action space grows, will have
+thousands or millions of rows,
+and it will be really
+hard to learn that.
+Additionally, if you instead
+learn a parametric value
+function through a neural
+network or something,
+you can allow for generalization
+to occur in a better way.
+So for example, if you have
+two states that are close
+to each other, either
+in a semantic sense
+or a literal sense,
+you would hope
+that their Q-values are also
+very similar to each other.
+And this is like a
+property of smoothness
+that you get from the
+underlying representation
+that you've learned.
+And what we'll look at next is
+how to use regression techniques
+to learn a value function
+with a neural network
+in both continuous and
+discrete environments.
+So we'll go back to
+look at these figures
+on the right-hand side
+where the first figure here
+is the value function that
+is not conditional on state,
+and this takes in
+as input the state
+and outputs a scalar
+which is V pi of s.
+Additionally, there's now
+two types of Q functions
+that you'll look at.
+One is a continuous
+Q function which
+takes in both a state and an
+action, and outputs a scalar,
+as well as a discrete
+value function
+which outputs for a
+given state a vector
+for all possible actions
+that you essentially have.
+To be fair, you could also
+use the left representation
+to learn the discrete key
+value, but generally, it's
+advisable to do this
+as long as you're
+discrete space is tractable
+because you have the ability
+to enumerate all
+actions in your space.
+Yeah.
+So there's a discrete Q function
+and a continuous Q function,
+but for the value function it's
+irrelevant to the action space.
+So there's only one general
+parameterization people
+use there.
+For the discrete Q function,
+what you can actually do
+is that you can
+predict the action--
+sorry, predict the Q value
+for all actions in your space,
+and then you can choose
+the particular one
+that you'd want to use.
+For example, let's say that
+there are four actions.
+In the GridWorld that we
+had four to five actions,
+you can predict the Q value for
+up, down, left, right, and stay.
+Whereas for a
+continuous space, it
+would be really hard to
+enumerate all possible actions,
+so you generally take
+that as input instead.
+So in a continuous
+space, you typically
+condition on a action
+and output a scalar.
+And when you do an
+expectation calculation here,
+you typically sample
+actions from your policy
+in order to do so.
+We have this robotic
+policy, and you
+can see that we are
+predicting values for it
+at every single state.
+Whereas for discrete
+case, so you
+can output a value
+for each bin and then
+enumerate over all of them
+when you take an expectation.
+So an advantage of
+doing the bottom case
+is that if you're
+doing an expectation,
+you can enumerate all
+actions, and you'll
+get an exact estimate
+of your expectation,
+whereas on top it's just
+a sample-based estimate.
+So let's dive a little bit into
+how to actually do Q-learning
+as a regression problem.
+And I'll use the whiteboard
+on the right here.
+So we're going to be working
+with basically V pi of s.
+And you can do a similar
+derivation for Q of s as well.
+This is adapted from the
+Sutton and Barto textbook.
+So our value, as
+we've discussed,
+is going to be conditioned
+on a particular state,
+and it can be modeled or it
+represents the expected return
+to go from that
+particular state.
+So we're going to
+then write it now
+as an expectation under our
+policy pi of the return, Rt,
+conditioned on our state s.
+So the return can be now
+expanded a little bit
+to be equivalent to the
+sum of discounted rewards.
+So we're going to
+quickly do that.
+And this here is going to be--
+sorry, I need to take
+into account k here.
+Gamma to the k st plus k and
+at plus k given st equals s.
+So what this
+essentially is saying
+is that from our
+current point in time,
+we're going to look at all
+of the rewards going forward.
+Discount them by our
+discount factor, which
+is exponentiated according to
+how many time steps you are away
+from your current
+state, and look
+at what the summation of
+that would essentially be.
+This, as you asked
+about, is the Monte Carlo
+estimate of our value function,
+and it's denoted as a sum.
+So we can do now some algebra to
+convert this into a one step TD
+estimate.
+And the way that we're
+going to do that is we're
+going to take this reward
+out of the summation
+here and use it to go back to
+the value function definition
+that we'd had above.
+So the first thing that I'll
+do is that I'll remove r of st
+at when k equals 0, and then
+also apply the discounting here.
+We're going to keep
+the summation again
+from k equals 0 to
+infinity, and now we're
+going to have this
+summation again.
+So this part on the right-hand
+side is just going to be
+an expansion--
+sorry, this line here is just
+an expansion of the line above.
+We've just done some algebra.
+So we can get it into a form
+similar to the MC definition
+that we've written above.
+And what you'll notice
+here is that this looks
+a lot like a value function.
+But now instead of
+at the current state,
+it is going to be
+at the next state.
+So we can now write this
+as the following, e of st
+plus 1 given st equals s.
+And by doing so, we have now
+arrived at our TD function.
+So you might be asking, what
+is the difference between doing
+a Monte Carlo value estimate
+versus doing a TD estimate?
+And the main distinction
+here is that we're
+going to be representing
+the Monte Carlo
+estimate as the
+discounted sum of returns
+over our entire trajectory.
+So this is going
+to have no bias.
+But instead here, when we
+look at the TD estimate,
+we're going to actually
+substitute our value function
+back in.
+And this is going to
+introduce some amount of bias
+because our value function
+here can be inaccurate.
+But it will reduce our
+variance because we're
+going to reduce the
+horizon of our trajectory.
+So we're going from a horizon
+of each, which can be very, very
+large for a lot of problems
+to just a horizon of one,
+and this will reduce our
+variance significantly
+over the horizon.
+So that is the TD
+learning estimate
+that we've described here.
+So notice here that k equals 0.
+So if I break up
+this summation into--
+let me just add this
+as a step below.
+So if I look at the
+case where k equals 0,
+it's going to be r of st plus
+at plus the summation from k
+equals 1 to infinity of gamma
+to the k, r of st plus k.
+Whoops.
+at plus k, all
+given st equals s.
+So that is how we
+remove that term.
+And you can just do
+some minor algebra
+to convert it from the
+step to the one on top.
+So I'm going to
+quickly erase this
+because I also want to
+talk about what an n step
+return looks like.
+So right now like what we did is
+that we only expanded this once.
+But we can also do
+this expansion n times.
+And what this will
+allow us to do
+is to trade-off between
+the bias and the variance.
+So the bias comes again from the
+value function parametrization.
+And the variance comes from
+the horizon of your trajectory,
+essentially.
+Because as your reward
+function might be noisy
+or your transition
+dynamics might be noisy,
+you introduce a
+little bit of variance
+amongst all of the
+trajectories that you roll out.
+So let's look at
+what that would be.
+I'm just going to
+quickly grab my iPad so I
+don't make a notation mistake.
+T
+So basically what
+we've done here
+is that we've done
+k steps of rolling
+out using the same expansion
+that we did for one step.
+And now our value
+function is discounted
+by k steps instead of one step.
+And we are now turning off
+between the Monte Carlo rollout,
+which is going to be the full
+discounted sum of rewards,
+as well as this value
+function estimate that we do,
+allowing us to effectively
+trade-off between TD and Monte
+Carlo.
+So let's take a look at how this
+would look in a visualization.
+So I'll put both of
+these up on the slide
+so we can compare one by one.
+But if you look at
+the left-hand side,
+what we're essentially doing is
+that from a particular state,
+we're going to let our policy
+rollout until it reaches
+a terminal state, and we're
+going to collect multiple
+of these rollouts
+to do essentially
+an update by collecting
+these rollouts,
+averaging the reward
+amongst them to the reward
+to go amongst them to calculate
+this value function estimate,
+and that can have
+a lot of variance
+because at every action, you
+introduce this amount of noise
+from your transition dynamics
+function or the reward.
+In contrast, with
+this TD backup,
+we're only going to do
+one step of unrolling,
+but we're going to then
+use the value function
+estimate at the next
+state to then reduce
+the variance of our estimate.
+But again, because our value
+function can be inaccurate,
+that leads to potential
+issues with bias.
+And both of these have
+some amount of trade-off.
+Yeah.
+So for tabular settings
+both of these approaches
+should converge to the
+same resulting equation.
+But when you go beyond
+that they don't seem
+to converge to the same thing.
+And again, we're looking
+at the n-step returns
+here as well where we're going
+to allow the TD target to look
+n-steps in the future before
+being applied so we could then
+trade-off between the
+bias and variance here.
+And yeah, you can
+look at this table
+here to look at what the
+trade-off of each of these
+would be, where the
+bootstrap depth of TD
+is going to be one step.
+For n-steps is going to be n.
+And for Monte Carlo it's
+going to be the full episode.
+The bias for
+something like TD is
+going to be high,
+whereas for n-steps it's
+going to be somewhere
+in the middle,
+depending on how
+large your k is.
+And for Monte Carlo, you're not
+going to have any bias at all.
+And then the variance
+would be the reverse
+of this where TD has lower
+variance with n-steps return
+being somewhere again in
+the middle and Monte Carlo
+having high variance.
+Again, this also depends
+heavily on the environment
+that you're in.
+So for example, in language,
+Monte Carlo rollouts
+are actually the way that
+a lot of people do things,
+because in many cases,
+your environment dynamics
+are almost perfect, and your
+reward signal, especially
+in domains like math
+or code reasoning,
+are going to be perfect as well.
+So you don't have to
+worry about things
+like variance of your dynamics.
+But if you go to things
+like maybe agentic domains
+or robotic domains, a
+lot of these factors
+come back into play.
+One other thing that dynamic
+programming gives you
+is this notion of stitching.
+And if we look at
+this maze environment
+on the left-hand side,
+you can see an example
+of why this might be powerful.
+So let's say that we've
+collected through our policy
+two different trajectories,
+one that goes from A to B,
+and another that
+goes from C to D.
+Through this one step of dynamic
+programming, what you'll see
+is that you can actually
+find the optimal path from A
+to D because of the
+fact that at every step
+you're looking like
+one step before it,
+and you can stitch these
+trajectories together
+to form what the optimal
+path would be to the goal.
+So this allows you to get
+better coverage of your space,
+and allows these
+algorithms to potentially
+be somewhat more efficient.
+Any questions about this?
+If not, then let's
+talk a little bit more
+about some of the practical
+design details that are needed
+to get Q-learning to stabilize.
+The first thing that
+we'll quickly talk about
+is this notion of a
+semi-gradient or target network.
+And we're now going to look
+back at our Q value estimate
+that we've been looking at
+so far, where we define it
+as the reward at the
+current time step,
+plus the discounted Q value
+at the next time step.
+We'll look at the
+max over all actions.
+So what you'll see here is
+that the Q function on the left
+is going to be the same as
+the Q function on the right,
+but this will make
+optimization very difficult,
+especially if you like
+propagate gradients through it.
+So one trick that people
+do use is this notion
+of a semi-gradient, which
+allows you to freeze your target
+network or not pass any
+gradients to it to make
+optimization a little
+bit more stable,
+and that's defined as the second
+equation that I defined here.
+Additionally, to further make
+things a little bit more stable,
+people add in this notion
+of a target network, which
+delays the updates of
+the right-hand side
+to allow your Q function to
+regress to a more stable target.
+And there are two
+types of updates
+that people use in this space.
+One is this notion of a
+hard target update where,
+at a fixed frequency, you allow
+the model to essentially update
+to the most recent
+model that you've used.
+Additionally, you can
+also use this notion
+of a soft target update or of
+an EMA or Polyak style averaging
+technique, which allows
+you to smoothly interpolate
+between the Q functions that
+you've seen so far with a decay
+parameter.
+In practice, people, I think,
+try to use the on the right.
+Both of them empirically have
+been seen to work somewhat well.
+And the reason that
+you want to do this
+is that you want to make
+sure that when you're
+doing some amount of regression,
+your value function is a really
+stable target to approach.
+And some of these
+things like removing
+the gradient on the
+right-hand side,
+as well as introducing
+a target network,
+makes the learning
+problem a lot easier.
+There are things that
+you'd have to consider
+in terms of how frequently
+you update your target network
+and things like that.
+But for most cases,
+people have stabilized
+this as a hyperparameter to
+around 0.99, for example,
+for the Polyak averaging.
+Typically when you're
+learning a Q function,
+you would learn this
+through a regression
+style of technique, which
+would look something like this.
+So I'm just going to, again,
+do the value function update
+to match what we have there.
+So on this side here,
+this is going to basically
+be our loss quantity.
+This is essentially just--
+for a single sample estimate
+what our loss would be.
+And basically we have a learned
+network on both sides of our MSE
+which will be very unstable
+to basically learn from.
+What a stop gradient
+essentially does
+is that it prevents you
+from passing gradients
+to the right-hand side.
+So your target is
+going to be fixed
+when you can't pass
+any gradients to it,
+but you can pass gradients
+through your network
+on the left-hand side.
+So in this case, when you
+do the semi-gradient trick,
+it's going to keep the
+same set of parameters
+but not pass
+gradients through it,
+but the target network is in
+a completely different set
+of parameters that is
+independent of the parameters
+that you've learned,
+and you then
+update them through this
+Polyak averaging, which
+I was showing here.
+So you have these sets
+of weights, the w prime.
+And w is maybe the weights
+of your current network.
+And every so often, for
+a hard target update,
+you would update them, or
+for your Polyak averaging,
+you would update
+them at every step
+but with this soft
+ratio averaging.
+This one here?
+Yes, so this would
+be exactly the term
+that we were looking
+at here as our target.
+OK, let me be a little
+bit more precise.
+So let's say we have
+a target value, which
+looks as our reward at
+our current time step
+plus the discounted
+value, our next time step.
+So this is the one
+step TD approach
+that we're taking there.
+And then our loss would
+look something like this.
+It's our value at
+our current time step
+minus y, is like
+an MSE star loss.
+So this is what the
+right-hand side represents.
+This is like the TD loss here.
+So we're not done yet in terms
+of how to fix the gradients
+or making this a little bit
+more stable, unfortunately.
+There are a few other
+types of techniques
+people have used to make this
+converge a little bit better.
+The first is gradient
+clipping, which
+you might have seen
+in things when you've
+trained networks in the past.
+Where if you have a
+gradient that's too large,
+which unfortunately comes a lot
+of the time when you do updates
+like TD, you want to
+clip them a little bit
+to allow you to do optimization
+a little bit more stably.
+And here you can see,
+in this lost landscape,
+for example, on the left, if
+you don't do gradient clipping,
+you go around the
+optimal parameter space.
+Whereas if you do some
+gradient clipping,
+you can smoothly approach it.
+Additionally, you can use
+objectives other than MSE
+to make this a
+little bit better.
+And one standard
+thing people have used
+is this notion of
+a Huber loss, which
+is an interpolation between an
+L1 and L2 loss, where it allows
+you to not be affected by
+outliers through the L1 loss,
+which is this one in green.
+But then when you get
+close to the right answer
+or the right value, you
+allow for an L2 loss
+to kick in and get you closer
+and closer to the target value.
+So this is like
+the interpolation
+that you're essentially
+doing by this.
+There are other things
+that people have done,
+but these are some
+standard things
+that people have found to help
+with learning value functions.
+Now let's get to replay buffers.
+So one thing that you might have
+seen in lecture, either today
+or last week, was this notion of
+replay buffer, which is a memory
+structure that you can use to
+store past experiences that
+have been seen by an agent.
+And the way that
+we parametrize this
+is in this buffer
+like format right here
+where we have these
+tuples of state action
+rewards and next states.
+And we store them individually
+as transitions instead
+of trajectories as a whole.
+And the reason that
+we want to do it
+that way is that it
+allows us to break down
+the temporal
+correlations of our data
+set, and also allow us
+to prevent recency bias.
+So there are two things
+that come into play.
+So the temporal correlations
+come from the fact
+that, at every time step, we
+sample transitions rather than
+trajectories.
+And this can be across
+trajectories as well.
+So I can sample any set of
+indices across my entire data
+set, and they can be
+from trajectories 1
+through n, which are the
+maximum of trajectories
+I have in the data set.
+Additionally, by having this
+buffer of past trajectories
+that I've visited, I
+can avoid recency bias
+by making sure that I don't
+overfit to my current policy
+because one thing that
+Q-functions benefit from
+is having a lot of
+coverage in the space,
+and this allows you to not
+narrow down the distribution
+by your current policy.
+And all of these lead to
+better sample efficiency
+when you want to
+learn Q-functions,
+and it allows the agent
+to reuse its experience
+in an effective way.
+So this is just going to denote
+that your replay buffer can
+sometimes have a
+max size, depending
+on how much capacity you have.
+Typically, this
+is not a concern.
+But if do you might want to
+either reweigh or throw out
+parts of your buffer as needed.
+I think people have
+explored both RNN and even
+transformer-based architectures.
+There works like
+decision transformer,
+for example, that do
+conditioning on long horizons
+to predict both actions and
+values and things like that,
+and they all have different
+amounts of trade-offs.
+For learning critics
+or Q functions,
+it's definitely very
+feasible to do so.
+For policies, in language, for
+example, we do this by default.
+But in other places
+like robotics
+where you might have temporal
+correlations in your data,
+learning with history might be
+actually a more nuanced topic
+and can actually lead to more
+design decisions needing to be
+made to do this more carefully.
+But yeah, it's definitely
+an interesting area
+to consider of how can I keep
+in history all of the states
+and actions that I've
+seen so far, or maybe even
+from previous trials,
+and things like that.
+I now want to quickly chat
+about Q-learning overestimation.
+So this is going to
+follow a derivation using
+function approximation from RL.
+And again, we're going
+to look at, again,
+Q-learning like Bellman or
+TD backup as seen on the top.
+And one thing that
+you might notice here
+is that we have this max
+operation on the right hand
+side.
+And what happens,
+essentially, if we
+have some noise
+in our Q function
+when we try to learn
+it in this way?
+And this is what we're
+basically going to look at.
+So essentially, when we are
+parameterizing this Q function
+as a neural network, there
+can be noise in the estimation
+that we incur.
+And we're going to denote
+our Q function currently
+as approximate, which is
+the learned parametrization.
+And Q target here is
+the optimal Q function
+or the true
+underlying Q function.
+And we're now also going to
+introduce this Y parameter here
+that denotes some
+amount of noise that
+might be present due to
+things like modeling errors.
+And what we'll see
+is that if there
+is noise on the
+right-hand side when we're
+trying to predict the
+target, this actually
+transfers pretty badly
+to the left-hand side.
+So what we're actually looking
+at here on the left-hand side
+is, what would the Q values
+look like after one step
+of iteration, and how does that
+differ from the true target
+Value
+So Q approx of s
+prime a hat is going
+to be basically what we see
+on the right-hand side there,
+and Q target is what
+the true value would be.
+And what we're
+going to see here is
+that if we define even a
+noise that is of zero mean,
+eventually the noise on
+the left hand side, which
+is going to be after
+one step of update,
+will have a positive mean
+leading to a Q values
+to be overestimated.
+So this results in us having to
+deal with this overestimation
+issue when we're trying
+to learn our critics.
+I think one thing
+that I mentioned
+here is that we're going to do
+a maximization over actions.
+There could be issues, for
+example, with sampling as well.
+Actually I don't think
+that's necessarily
+the case because your true
+target value over all actions
+might be actually
+higher, in that case,
+than if you only look at a
+subset of your total actions.
+So in that case,
+then, this property
+would not necessarily
+be an issue.
+I think the main concern
+actually just comes
+from modeling errors,
+because in some cases,
+you might actually overestimate
+your Q value on the right.
+And once you do multiple
+rounds of dynamic programming,
+this error will propagate
+through your entire state space
+and will compound, essentially.
+Let me clarify a little bit.
+What I mean here by an
+error or an overestimation
+is actually in the
+Q function and not
+in the actions that were taken.
+Let's assume that we can
+enumerate all actions
+in the discrete space
+that we're working in.
+And we look at the
+value for each of them.
+What the failure case
+I'm describing here
+is what the difference
+is between the Q
+function that we're learning
+versus the true or optimal Q
+function or Q star.
+And what can happen is
+that your Q function
+can be incorrectly
+modeled, maybe
+due to some noise is higher than
+what the true target actually
+is.
+And what I'm saying is
+that even if that noise has
+zero mean, when you do these
+dynamic programming updates,
+it propagates to
+the left-hand side
+and allows you to
+essentially get
+nonzero mean noise that's being
+added due to this max operation.
+And this essentially propagates
+through your entire state space
+and makes your Q values
+blow up, resulting
+in this overestimation.
+Actually, I was going to go
+through this a little bit later,
+but we can talk about it now.
+So imagine that this
+is our state space--
+sorry, there are a lot of
+columns in this figure.
+And we can look at each step
+what the value estimate of looks
+like.
+What I am showing
+in the second column
+here is the difference in the
+estimate and the max value
+the Q function can
+essentially have.
+So you can look at
+the left-hand side
+and essentially telling you what
+the max that the next time step
+could essentially be.
+And the third here shows
+what the difference
+is between the true value and
+the value that we want to learn.
+And if you look at
+this red figure, which
+is typical Q-learning
+style algorithms,
+we can see that there's a
+huge error bar just because
+of the fact that we're
+overestimating what
+the true value can be,
+and we're propagating that
+through all of the states.
+I'll talk about how we
+essentially fix this.
+And one approach that
+people have taken
+is this notion of
+critic ensembling
+where we want to estimate the
+epistemic uncertainty of our Q
+function using an
+ensemble of networks.
+And we can then use all of
+these ensemble of networks
+and minimize over
+the ensemble to get
+an underestimate of what the
+Q value should essentially be.
+The reason that this
+works is that you
+can imagine that when you
+initialize your network,
+they're initialized in
+different ways, and the errors
+that they will get
+across states is also
+going to be very different.
+So you can reduce
+the uncertainty
+or remove these modeling
+errors by ensembling and then
+doing something like a min
+reduction over all of them.
+And this has been shown
+to be effective in works
+like double Q-learning which
+I'll show in the next slide,
+as well as things like
+offline RL, which we'll
+talk about later, where
+essentially you can increase
+your ensemble size quite a lot,
+and the distribution shift is
+actually mitigated because
+of ensembling pretty heavily,
+and learning an underestimation
+of what the Q value should
+essentially be removing
+you from getting
+an overestimation due
+to things like noise.
+So the figure that I
+described essentially
+goes through exactly this.
+And this is from the
+double Q-learning paper.
+And like what we see is that
+in the figure on the right,
+despite the red
+curve here, which
+is standard q-learning having
+very large errors, just
+having ensemble size of two
+or doing double Q-learning
+allows you to mitigate a lot
+of these overestimation errors
+for Q-learning and makes
+things a lot stable.
+So for online
+Q-learning algorithms,
+you can get away
+with just doing two,
+and for most intents and
+purposes like that works
+really well and
+beyond that saturates.
+But you can definitely try
+to increase that for things
+like offline reinforcement
+learning where
+the problem setting that
+you're looking at there
+is that you have a static data
+set that you're working with.
+And any errors that
+happen because you
+leave the support of your
+current state or action
+distribution allows
+your model to propagate
+these errors even more.
+So there, I think being very
+careful about the distribution
+that you're in matters a lot.
+And you can increase the
+ensemble size for approaches
+like [? Edak ?] or [? Sakan, ?]
+for example, that do this.
+There are ways that
+have been looking
+at this in the context of
+language for reward modeling,
+because in reward
+modeling you're
+going to face similar effects
+with maybe overestimation,
+potentially, and that
+reduced the performance.
+So there have been
+papers that have come out
+that just do things
+like Laura or make sure
+that you share a lot of
+the layers of your network
+and have linear adapters
+or something beyond that,
+and those are parameter
+efficient ways
+to learn something like this.

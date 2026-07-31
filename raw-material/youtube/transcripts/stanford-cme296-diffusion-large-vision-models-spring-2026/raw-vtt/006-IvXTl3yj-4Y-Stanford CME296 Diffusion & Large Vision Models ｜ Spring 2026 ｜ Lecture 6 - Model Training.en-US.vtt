@@ -1,0 +1,5816 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:05.640 --> 00:00:12.600
+Hello, everyone, and welcome
+to Lecture 6 of CME 296.
+
+00:00:12.600 --> 00:00:15.240
+So today is a very
+exciting day because we'll
+
+00:00:15.240 --> 00:00:20.960
+be talking about how to
+train a model in practice,
+
+00:00:20.960 --> 00:00:23.640
+a text-to-image
+generation model.
+
+00:00:23.640 --> 00:00:27.200
+And as you know, the
+first half of this class
+
+00:00:27.200 --> 00:00:31.840
+was all about preparing the
+foundational theoretical
+
+00:00:31.840 --> 00:00:34.600
+foundations for us to
+be able to do that.
+
+00:00:34.600 --> 00:00:38.160
+And in this second part,
+we'll be really talking about
+
+00:00:38.160 --> 00:00:45.800
+more the practical aspects,
+and today will be no exception.
+
+00:00:45.800 --> 00:00:48.520
+So as usual, before
+we start, we're
+
+00:00:48.520 --> 00:00:52.520
+going to just recap
+what we saw last time.
+
+00:00:52.520 --> 00:00:55.920
+So if you remember
+last lecture, we
+
+00:00:55.920 --> 00:01:00.230
+saw the main image
+generation architectures.
+
+00:01:00.230 --> 00:01:04.030
+And we started with
+the big one, the UNet,
+
+00:01:04.030 --> 00:01:08.110
+which was trendy up until 2022.
+
+00:01:08.110 --> 00:01:10.070
+And we saw that
+among the things we
+
+00:01:10.070 --> 00:01:13.110
+wanted to see in an
+image generation model,
+
+00:01:13.110 --> 00:01:16.870
+we wanted the model that
+was able to understand
+
+00:01:16.870 --> 00:01:20.830
+the global structure
+of an image,
+
+00:01:20.830 --> 00:01:25.990
+also capture the local
+details, able to receive
+
+00:01:25.990 --> 00:01:29.310
+external signals, for
+instance, a condition,
+
+00:01:29.310 --> 00:01:32.950
+and be computationally
+tractable.
+
+00:01:32.950 --> 00:01:38.430
+And we saw that the UNet was
+relying on an inductive bias.
+
+00:01:38.430 --> 00:01:41.830
+Which was something that was
+reflected by the convolution
+
+00:01:41.830 --> 00:01:49.110
+operation, which is mimicking
+how humans look at pictures.
+
+00:01:49.110 --> 00:01:54.350
+And we saw that the unit was
+composed of two main phases.
+
+00:01:54.350 --> 00:01:57.770
+The first one is the
+downsampling phases,
+
+00:01:57.770 --> 00:02:03.810
+where we put an input, a
+noisy latent, that we then
+
+00:02:03.810 --> 00:02:08.050
+perform convolution operations
+and downsampling operations
+
+00:02:08.050 --> 00:02:11.290
+so that we can get a
+bigger receptive field that
+
+00:02:11.290 --> 00:02:15.450
+would enable us to have
+a global understanding
+
+00:02:15.450 --> 00:02:18.570
+of the input in the bottleneck.
+
+00:02:18.570 --> 00:02:19.830
+So that was the first phase.
+
+00:02:19.830 --> 00:02:24.090
+And then the second phase
+with the upsampling phase,
+
+00:02:24.090 --> 00:02:27.290
+which was composed of
+upsampling operations,
+
+00:02:27.290 --> 00:02:30.650
+for instance, the transpose
+convolution, where
+
+00:02:30.650 --> 00:02:37.130
+we were able to get back to the
+dimension of interest, which
+
+00:02:37.130 --> 00:02:39.850
+is the same dimension
+as the input.
+
+00:02:39.850 --> 00:02:45.210
+And we saw that there are these
+copy-and-crop connections that
+
+00:02:45.210 --> 00:02:50.290
+were allowing us to transport
+the local details that we were
+
+00:02:50.290 --> 00:02:55.210
+able to compute in the
+downsampling phase and couple
+
+00:02:55.210 --> 00:02:57.890
+that with the global
+understanding that we had,
+
+00:02:57.890 --> 00:02:59.640
+the global structure
+understanding that we
+
+00:02:59.640 --> 00:03:03.240
+had from the bottleneck.
+
+00:03:03.240 --> 00:03:04.960
+So that was the UNet.
+
+00:03:04.960 --> 00:03:10.240
+We saw that the UNet
+was great, but the UNet
+
+00:03:10.240 --> 00:03:13.440
+had a failure case,
+which was that there
+
+00:03:13.440 --> 00:03:18.080
+was no direct connection
+between different local parts
+
+00:03:18.080 --> 00:03:19.480
+of the image.
+
+00:03:19.480 --> 00:03:24.080
+And for an example, such as
+someone looking at oneself
+
+00:03:24.080 --> 00:03:25.480
+in the mirror.
+
+00:03:25.480 --> 00:03:28.960
+You need to be aware
+of the local details
+
+00:03:28.960 --> 00:03:32.720
+from two different
+parts of the image.
+
+00:03:32.720 --> 00:03:37.280
+So this was motivating us to
+look at another architecture,
+
+00:03:37.280 --> 00:03:42.320
+which is the diffusion
+transformer, which was published
+
+00:03:42.320 --> 00:03:46.760
+in 2022, late 2022, which
+relies on the concept
+
+00:03:46.760 --> 00:03:53.990
+of self-attention, where each
+patch of the input latents
+
+00:03:53.990 --> 00:03:58.070
+attends to one another, allowing
+these direct connections
+
+00:03:58.070 --> 00:03:59.910
+to form.
+
+00:03:59.910 --> 00:04:06.390
+And as a result, we were able
+to have this concern mitigated.
+
+00:04:06.390 --> 00:04:10.750
+And we also saw a way
+to inject conditions
+
+00:04:10.750 --> 00:04:12.010
+into the architecture.
+
+00:04:12.010 --> 00:04:18.589
+So we spend some time on the
+adaptive layer normalization,
+
+00:04:18.589 --> 00:04:21.990
+which was taking the
+condition and the time step
+
+00:04:21.990 --> 00:04:27.830
+as inputs that was modulating
+the token embeddings
+
+00:04:27.830 --> 00:04:33.950
+via this gates, shift,
+and scale factors.
+
+00:04:33.950 --> 00:04:38.570
+And we also saw that there were
+very many variants, actually.
+
+00:04:38.570 --> 00:04:41.290
+It was not just the
+diffusion transformer,
+
+00:04:41.290 --> 00:04:44.450
+there were many variants of
+the diffusion transformer,
+
+00:04:44.450 --> 00:04:48.390
+such as the multi-modal
+diffusion transformer, which
+
+00:04:48.390 --> 00:04:55.850
+is now more trendy, which was
+looking at making the input
+
+00:04:55.850 --> 00:05:02.510
+text as a standalone modality
+that was being injected as input
+
+00:05:02.510 --> 00:05:07.330
+as opposed to an afterthought
+via the modulation,
+
+00:05:07.330 --> 00:05:12.250
+mainly because the adaptive
+layer norm was injecting
+
+00:05:12.250 --> 00:05:18.650
+the condition across all patch
+embeddings in a uniform way.
+
+00:05:18.650 --> 00:05:23.330
+And we didn't want to have
+that, so we also saw the MMD.
+
+00:05:23.330 --> 00:05:25.930
+And of course,
+these architectures
+
+00:05:25.930 --> 00:05:27.830
+are not the only ones
+that are out there.
+
+00:05:27.830 --> 00:05:29.930
+There are many variations.
+
+00:05:29.930 --> 00:05:34.250
+So hopefully, that
+lecture was a lecture
+
+00:05:34.250 --> 00:05:39.050
+that gave you the intuitive
+tools to at least understand why
+
+00:05:39.050 --> 00:05:40.550
+certain components are used.
+
+00:05:43.410 --> 00:05:44.570
+All good on this?
+
+00:05:44.570 --> 00:05:46.570
+So this was last lecture.
+
+00:05:46.570 --> 00:05:50.840
+We also saw the timeline,
+which I briefly mentioned here.
+
+00:05:50.840 --> 00:05:55.660
+So UNet largely dominated
+the early 2020s,
+
+00:05:55.660 --> 00:05:57.680
+if I can say it like this.
+
+00:05:57.680 --> 00:06:04.120
+And then the DIT-based models
+are dominating the architectures
+
+00:06:04.120 --> 00:06:12.200
+that are coming out nowadays,
+from end of 2022 onwards.
+
+00:06:12.200 --> 00:06:14.600
+And what are we
+going to do today?
+
+00:06:14.600 --> 00:06:20.580
+Today, we're going to focus
+on practical applications,
+
+00:06:20.580 --> 00:06:26.640
+on how we can actually train a
+text to image generation model.
+
+00:06:26.640 --> 00:06:31.040
+And I know so far we have
+seen different components
+
+00:06:31.040 --> 00:06:34.880
+of that overall system.
+
+00:06:34.880 --> 00:06:39.160
+We've seen the
+actual backbone that
+
+00:06:39.160 --> 00:06:43.720
+is allowing us to denoise
+the noise latents,
+
+00:06:43.720 --> 00:06:46.920
+which is for instance
+here a DIT-based model.
+
+00:06:46.920 --> 00:06:49.820
+We've seen that there is
+also another model involved,
+
+00:06:49.820 --> 00:06:55.420
+the VAE, which is allowing us to
+have a latent space in which we
+
+00:06:55.420 --> 00:06:59.940
+can operate, which lowers
+the computational burden
+
+00:06:59.940 --> 00:07:03.780
+of our training process
+and generation process.
+
+00:07:03.780 --> 00:07:07.620
+And we've also seen that there
+are multiple models we could
+
+00:07:07.620 --> 00:07:12.100
+use that could embed
+conditions that we would then
+
+00:07:12.100 --> 00:07:14.180
+have as input.
+
+00:07:14.180 --> 00:07:16.980
+So to be clear,
+today we're going
+
+00:07:16.980 --> 00:07:22.940
+to focus on how to train the
+image generation model itself,
+
+00:07:22.940 --> 00:07:28.260
+and we're not going to focus
+on the VAE and the embedding
+
+00:07:28.260 --> 00:07:30.860
+models.
+
+00:07:30.860 --> 00:07:33.100
+So just for reference,
+we will actually
+
+00:07:33.100 --> 00:07:39.860
+dig into embedding models next
+week with the multi-modal LLMs.
+
+00:07:39.860 --> 00:07:42.400
+But I'm going to just
+push it for next week.
+
+00:07:42.400 --> 00:07:45.660
+More on that soon.
+
+00:07:45.660 --> 00:07:46.950
+Cool.
+
+00:07:46.950 --> 00:07:49.770
+So let's start.
+
+00:07:49.770 --> 00:07:55.290
+And I just first want us to
+look at this whole problem
+
+00:07:55.290 --> 00:07:57.130
+at a very high level.
+
+00:07:57.130 --> 00:08:01.650
+And in particular, look
+at the overall process
+
+00:08:01.650 --> 00:08:07.170
+that allows us to go
+from an initialized model
+
+00:08:07.170 --> 00:08:11.770
+to a model that is able
+to work in production.
+
+00:08:11.770 --> 00:08:16.890
+So the first step, we have
+our image generation model.
+
+00:08:16.890 --> 00:08:23.530
+We first teach it how to
+generate images, any images.
+
+00:08:23.530 --> 00:08:27.810
+This phase is typically
+called the pre-training phase.
+
+00:08:27.810 --> 00:08:31.130
+And it's quite
+compute intensive.
+
+00:08:31.130 --> 00:08:37.210
+It involves a lot of data and
+a lot of work on the data side.
+
+00:08:37.210 --> 00:08:39.330
+So that's number
+one, and it's a phase
+
+00:08:39.330 --> 00:08:43.250
+that all models go through.
+
+00:08:43.250 --> 00:08:48.640
+Then we have a second stage
+that is called the post-training
+
+00:08:48.640 --> 00:08:53.720
+stage, where we take that
+pre-trained model that already
+
+00:08:53.720 --> 00:09:00.080
+knows how to generate images,
+and we teach it how to generate
+
+00:09:00.080 --> 00:09:02.080
+"good" images.
+
+00:09:02.080 --> 00:09:04.380
+And we will see what good means.
+
+00:09:07.400 --> 00:09:12.760
+We could also optionally
+also personalize
+
+00:09:12.760 --> 00:09:16.640
+our model to generate
+specific kinds of images.
+
+00:09:16.640 --> 00:09:19.420
+And we will see this
+optional third step,
+
+00:09:19.420 --> 00:09:23.400
+which is here called tuning.
+
+00:09:23.400 --> 00:09:25.980
+And then at the end
+of this lecture,
+
+00:09:25.980 --> 00:09:29.120
+we'll also look at
+how we can actually
+
+00:09:29.120 --> 00:09:32.720
+make our model be able
+to work in production
+
+00:09:32.720 --> 00:09:34.440
+in an efficient way.
+
+00:09:34.440 --> 00:09:38.160
+And here we will look
+at distillation models
+
+00:09:38.160 --> 00:09:39.840
+or distillation
+methods, I should
+
+00:09:39.840 --> 00:09:48.780
+say, that allow our model to
+generate samples in fewer steps,
+
+00:09:48.780 --> 00:09:52.000
+because we've seen that usually
+these image generation models,
+
+00:09:52.000 --> 00:09:56.260
+they're working in
+an iterative fashion.
+
+00:09:56.260 --> 00:10:01.900
+So you always have to have
+one the initial noise as input
+
+00:10:01.900 --> 00:10:03.940
+to get the let's
+say vector field,
+
+00:10:03.940 --> 00:10:08.880
+and then iterate on that
+many times potentially.
+
+00:10:08.880 --> 00:10:13.940
+And here we want to
+shorten the amount of times
+
+00:10:13.940 --> 00:10:19.100
+we need to do that so that we
+can make this process just less
+
+00:10:19.100 --> 00:10:23.860
+costly and reduce the latency,
+which is typically what we care
+
+00:10:23.860 --> 00:10:28.580
+about for production use cases.
+
+00:10:28.580 --> 00:10:33.220
+Everyone good with
+the big, big steps?
+
+00:10:33.220 --> 00:10:36.420
+So we'll start with the first.
+
+00:10:36.420 --> 00:10:40.860
+Even before starting, actually,
+we'll be talking about the loss
+
+00:10:40.860 --> 00:10:44.650
+that we will use for
+our training process.
+
+00:10:44.650 --> 00:10:47.370
+And I think you
+already what the loss
+
+00:10:47.370 --> 00:10:51.290
+is because we've spent the
+first three lectures talking
+
+00:10:51.290 --> 00:10:54.410
+about three different
+perspectives on getting
+
+00:10:54.410 --> 00:10:55.890
+to that stage.
+
+00:10:55.890 --> 00:11:01.530
+So here, this part
+is mainly around just
+
+00:11:01.530 --> 00:11:07.370
+all agreeing on what
+those losses are and see
+
+00:11:07.370 --> 00:11:11.570
+what are the changes that happen
+in practice to these losses
+
+00:11:11.570 --> 00:11:15.230
+to make the training
+process more optimized.
+
+00:11:15.230 --> 00:11:18.290
+And you will see what I mean.
+
+00:11:18.290 --> 00:11:24.130
+So first, I'm going to recap
+what we saw during the three
+
+00:11:24.130 --> 00:11:26.050
+first lectures.
+
+00:11:26.050 --> 00:11:30.970
+So the first one, if you
+recall, was diffusion with DDPM
+
+00:11:30.970 --> 00:11:38.530
+where our thought process was
+we take clean images that we
+
+00:11:38.530 --> 00:11:44.320
+corrupt step by step,
+so you have this xt that
+
+00:11:44.320 --> 00:11:49.200
+is a function of the clean image
+and the noise that you add.
+
+00:11:49.200 --> 00:11:53.240
+And we saw that we could
+derive a tractable loss,
+
+00:11:53.240 --> 00:11:55.920
+and you end up
+with a formula that
+
+00:11:55.920 --> 00:12:01.480
+is allowing you to denoise
+the noise with the formula
+
+00:12:01.480 --> 00:12:06.480
+on the slides by
+parameterizing a model that
+
+00:12:06.480 --> 00:12:12.400
+is geared towards predicting the
+noise to remove epsilon theta.
+
+00:12:12.400 --> 00:12:15.020
+And here, the loss
+is as follows.
+
+00:12:15.020 --> 00:12:19.200
+So it's the expectation
+of just the L2 distance
+
+00:12:19.200 --> 00:12:23.560
+between your predicted
+noise to remove
+
+00:12:23.560 --> 00:12:26.520
+and the actual noise
+that was added,
+
+00:12:26.520 --> 00:12:33.120
+and it's an expectation
+over the time steps,
+
+00:12:33.120 --> 00:12:37.440
+the clean images that are
+part of your training sets,
+
+00:12:37.440 --> 00:12:40.340
+and then the noise that
+is typically sampled
+
+00:12:40.340 --> 00:12:43.540
+from a Gaussian distribution.
+
+00:12:43.540 --> 00:12:47.300
+Then in Lecture 2, we had
+this second perspective
+
+00:12:47.300 --> 00:12:50.740
+of looking at the same problem,
+which was, OK, in order
+
+00:12:50.740 --> 00:12:54.500
+to recover clean
+images, let's actually
+
+00:12:54.500 --> 00:12:59.980
+look at where the
+clean images are
+
+00:12:59.980 --> 00:13:05.220
+by estimating the score, which
+is acting like a compass.
+
+00:13:05.220 --> 00:13:09.340
+And here we saw that there
+was a stochastic differential
+
+00:13:09.340 --> 00:13:14.060
+equation, way of putting
+this, which was given by dx
+
+00:13:14.060 --> 00:13:19.700
+is equal to some drift term
+and some diffusion term,
+
+00:13:19.700 --> 00:13:25.740
+along with the continuous noise,
+which was the Wiener process.
+
+00:13:25.740 --> 00:13:27.320
+So this was the forward process.
+
+00:13:27.320 --> 00:13:29.980
+And then, the reverse
+process was something
+
+00:13:29.980 --> 00:13:34.940
+that was popping up the score.
+
+00:13:34.940 --> 00:13:37.250
+And this just
+highlighted the fact
+
+00:13:37.250 --> 00:13:40.410
+that we needed to estimate
+the score in order
+
+00:13:40.410 --> 00:13:45.410
+to denoise into clean images.
+
+00:13:45.410 --> 00:13:53.730
+And here, the last was an
+expectation over the score
+
+00:13:53.730 --> 00:13:57.970
+that you wanted to estimate
+minus the actual score
+
+00:13:57.970 --> 00:14:02.050
+of the noise distribution.
+
+00:14:02.050 --> 00:14:04.810
+So that's the second
+loss that we saw.
+
+00:14:04.810 --> 00:14:08.650
+And then the third perspective,
+which was lecture 3,
+
+00:14:08.650 --> 00:14:11.570
+was the flow
+perspective, where we
+
+00:14:11.570 --> 00:14:17.010
+said that in order to go
+from noise to our target
+
+00:14:17.010 --> 00:14:21.010
+distribution, we're going
+to interpret that problem
+
+00:14:21.010 --> 00:14:24.010
+as a transport problem.
+
+00:14:24.010 --> 00:14:27.810
+And here, we focused
+on the velocity
+
+00:14:27.810 --> 00:14:30.330
+or also known as
+the vector field,
+
+00:14:30.330 --> 00:14:38.520
+that could be used using an ODE
+solver like the Euler method.
+
+00:14:38.520 --> 00:14:44.840
+And we had a loss that was
+regressing the vector field
+
+00:14:44.840 --> 00:14:48.620
+by just taking two points.
+
+00:14:48.620 --> 00:14:51.320
+So one from the target
+distribution, x1,
+
+00:14:51.320 --> 00:14:55.080
+and then x0 from the noisy
+distribution, typically
+
+00:14:55.080 --> 00:14:57.760
+a Gaussian distribution.
+
+00:14:57.760 --> 00:15:02.880
+And we ended up with
+this last function.
+
+00:15:02.880 --> 00:15:06.000
+Now, one thing I want
+to say, and maybe
+
+00:15:06.000 --> 00:15:10.720
+I've said it some
+time in the past,
+
+00:15:10.720 --> 00:15:16.880
+nowadays, people mainly focus on
+the flow-matching perspective.
+
+00:15:16.880 --> 00:15:21.720
+So I just want us to all be
+aligned that moving forward,
+
+00:15:21.720 --> 00:15:25.680
+by default, we'll be
+using the flow matching
+
+00:15:25.680 --> 00:15:27.940
+loss as the default loss.
+
+00:15:31.200 --> 00:15:33.460
+Does that sound good?
+
+00:15:33.460 --> 00:15:35.860
+So let's look at this loss.
+
+00:15:35.860 --> 00:15:39.540
+So here what we're
+doing is we're
+
+00:15:39.540 --> 00:15:43.460
+optimizing on the
+parameter theta
+
+00:15:43.460 --> 00:15:48.020
+such that we minimize
+the loss on the slides
+
+00:15:48.020 --> 00:15:52.660
+in particular by taking
+the expectation over time
+
+00:15:52.660 --> 00:16:00.140
+steps over data points in
+the training data, so pdata,
+
+00:16:00.140 --> 00:16:04.020
+and over noisy observations
+that are part of a Gaussian
+
+00:16:04.020 --> 00:16:06.500
+distribution.
+
+00:16:06.500 --> 00:16:10.020
+And in particular,
+we are taking--
+
+00:16:10.020 --> 00:16:14.900
+so we were saying we
+were taking t drawn
+
+00:16:14.900 --> 00:16:18.740
+from a uniform distribution.
+
+00:16:18.740 --> 00:16:22.820
+And I just want us to
+pause on this statement
+
+00:16:22.820 --> 00:16:26.140
+and see if this
+actually makes sense.
+
+00:16:26.140 --> 00:16:31.210
+But first, just as a
+reminder, here by t we
+
+00:16:31.210 --> 00:16:40.090
+level where t equals 0
+corresponds to a lot of noise,
+
+00:16:40.090 --> 00:16:45.090
+t equal to 1 means
+no noise at all,
+
+00:16:45.090 --> 00:16:51.010
+and t is somewhere in between
+means a little bit noisy.
+
+00:16:51.010 --> 00:16:56.010
+So I'm going to ask
+you some questions.
+
+00:16:56.010 --> 00:17:03.650
+So let's suppose we want to
+figure out from an input that
+
+00:17:03.650 --> 00:17:07.530
+is extremely noisy,
+think of it as x0,
+
+00:17:07.530 --> 00:17:13.369
+whether making a prediction
+on where to go from x0
+
+00:17:13.369 --> 00:17:17.250
+is an easy or a hard task.
+
+00:17:17.250 --> 00:17:20.109
+And so I'm just going
+to make our life easier.
+
+00:17:20.109 --> 00:17:23.490
+So if you remember
+the illustration
+
+00:17:23.490 --> 00:17:26.300
+we had-- so we have the
+noisy distribution that
+
+00:17:26.300 --> 00:17:28.050
+is the one on the left
+and then the target
+
+00:17:28.050 --> 00:17:29.150
+distribution on the right.
+
+00:17:29.150 --> 00:17:35.150
+So what we're saying is if
+we sample a noisy latent that
+
+00:17:35.150 --> 00:17:40.070
+is very noisy, is the
+task of predicting
+
+00:17:40.070 --> 00:17:43.410
+where to go an easy
+task or a hard task?
+
+00:17:49.030 --> 00:17:50.790
+Yeah, easy.
+
+00:17:50.790 --> 00:17:52.390
+Do you want to say easy?
+
+00:17:52.390 --> 00:17:55.030
+Yes, so it's indeed easy.
+
+00:17:55.030 --> 00:17:56.590
+Now, why is it easy?
+
+00:17:56.590 --> 00:18:02.870
+So at the very beginning,
+the input that you have
+
+00:18:02.870 --> 00:18:06.490
+is actually void
+of all information.
+
+00:18:06.490 --> 00:18:10.710
+You don't anything about
+where you're going.
+
+00:18:10.710 --> 00:18:13.870
+So what your model will
+be incentivized to do
+
+00:18:13.870 --> 00:18:18.590
+will be to just try
+to predict if you
+
+00:18:18.590 --> 00:18:23.190
+want the average direction,
+where you need to go.
+
+00:18:23.190 --> 00:18:25.770
+So regardless of how much
+time you spend learning that,
+
+00:18:25.770 --> 00:18:28.680
+it will just learn
+roughly where to go,
+
+00:18:28.680 --> 00:18:31.540
+which will be if you
+want the mean of where
+
+00:18:31.540 --> 00:18:37.740
+all the observations in your
+target data distribution are.
+
+00:18:37.740 --> 00:18:42.660
+So no matter how much time you
+spend in that region of noise,
+
+00:18:42.660 --> 00:18:46.020
+you will be incentivized to
+predict the mean of where
+
+00:18:46.020 --> 00:18:47.580
+all the observations are.
+
+00:18:47.580 --> 00:18:50.620
+So that's why I say
+it's an easy task.
+
+00:18:50.620 --> 00:18:53.640
+So now, how about
+if t is close to 1,
+
+00:18:53.640 --> 00:18:59.020
+meaning that we're already very,
+very advanced in the denoising
+
+00:18:59.020 --> 00:19:02.480
+process and there is
+almost no noise left?
+
+00:19:02.480 --> 00:19:07.960
+Is it an easy task or a hard
+task to where to go from there?
+
+00:19:11.260 --> 00:19:13.740
+Hard?
+
+00:19:13.740 --> 00:19:17.020
+Yeah, OK, so we have one heart.
+
+00:19:17.020 --> 00:19:18.900
+Yep.
+
+00:19:18.900 --> 00:19:20.580
+Easy again.
+
+00:19:20.580 --> 00:19:22.940
+OK, so let's see.
+
+00:19:22.940 --> 00:19:25.130
+So let's try to think.
+
+00:19:25.130 --> 00:19:29.130
+So when t is close
+to 1, what that means
+
+00:19:29.130 --> 00:19:36.250
+is that the input xt is
+already almost clean.
+
+00:19:36.250 --> 00:19:38.730
+So we're almost there.
+
+00:19:38.730 --> 00:19:41.850
+So what that means
+is you only need
+
+00:19:41.850 --> 00:19:45.570
+to make a few tweaks
+to little details
+
+00:19:45.570 --> 00:19:49.010
+to have a fully denoised image.
+
+00:19:49.010 --> 00:19:54.090
+And in that sense, it
+is actually an easy task
+
+00:19:54.090 --> 00:19:59.010
+because you already have an
+image that is almost clean
+
+00:19:59.010 --> 00:19:59.590
+and so on.
+
+00:19:59.590 --> 00:20:05.850
+The illustration, it corresponds
+to if your observation is
+
+00:20:05.850 --> 00:20:09.470
+already part of the
+target data distribution,
+
+00:20:09.470 --> 00:20:14.010
+and you just need to do a
+small step towards having
+
+00:20:14.010 --> 00:20:16.810
+your final observation.
+
+00:20:16.810 --> 00:20:19.410
+OK, so let's do the last one.
+
+00:20:19.410 --> 00:20:24.990
+How about if your input image is
+not super, super, super noisy,
+
+00:20:24.990 --> 00:20:31.190
+it's not almost clean, it's
+somewhere in the middle?
+
+00:20:31.190 --> 00:20:32.810
+Is the task easy?
+
+00:20:32.810 --> 00:20:35.410
+Is the task of knowing
+where to go easy or hard?
+
+00:20:38.830 --> 00:20:40.790
+Yep.
+
+00:20:40.790 --> 00:20:41.330
+Hard?
+
+00:20:41.330 --> 00:20:42.670
+And same here?
+
+00:20:42.670 --> 00:20:45.870
+OK, so yeah, you're
+completely right.
+
+00:20:45.870 --> 00:20:49.150
+And to illustrate the
+point that you're saying,
+
+00:20:49.150 --> 00:20:53.790
+we are indeed in
+this space at a point
+
+00:20:53.790 --> 00:20:58.230
+where we need to figure
+out about where to go.
+
+00:20:58.230 --> 00:21:02.150
+But even thinking about it
+from an intuitive perspective,
+
+00:21:02.150 --> 00:21:06.390
+let's assume that your target
+distribution is composed
+
+00:21:06.390 --> 00:21:09.310
+of images of teddy bears.
+
+00:21:09.310 --> 00:21:11.590
+If you're in the
+middle, then it means
+
+00:21:11.590 --> 00:21:16.230
+that roughly what the body is
+like, what the head is like,
+
+00:21:16.230 --> 00:21:18.050
+you know a little bit
+where the arms like,
+
+00:21:18.050 --> 00:21:19.990
+but there's a lot of things
+that you need to figure out
+
+00:21:19.990 --> 00:21:20.865
+about where to place.
+
+00:21:20.865 --> 00:21:23.100
+You need to figure out
+what kind of texture
+
+00:21:23.100 --> 00:21:25.100
+you want your teddy
+bear to develop.
+
+00:21:25.100 --> 00:21:27.440
+You need to put the eyes.
+
+00:21:27.440 --> 00:21:30.060
+You need to put a
+bunch of things.
+
+00:21:30.060 --> 00:21:32.860
+And these are all hard
+decisions that you
+
+00:21:32.860 --> 00:21:37.940
+need to take at time steps that
+are typically in the middle.
+
+00:21:37.940 --> 00:21:42.340
+And for that reason,
+t equal to 0.5
+
+00:21:42.340 --> 00:21:46.580
+is a hard, hard
+task for the model.
+
+00:21:46.580 --> 00:21:52.180
+So if you remember,
+what we saw was
+
+00:21:52.180 --> 00:21:57.220
+that we were drawing our time
+step when computing the loss
+
+00:21:57.220 --> 00:22:00.020
+from a uniform distribution.
+
+00:22:00.020 --> 00:22:05.340
+So what that means is
+we're asking our model
+
+00:22:05.340 --> 00:22:11.260
+to try to be good at predicting
+the target as many times
+
+00:22:11.260 --> 00:22:16.940
+for easy tasks as much
+as for hard tasks.
+
+00:22:16.940 --> 00:22:21.890
+And this is the reason why,
+in practice, people actually
+
+00:22:21.890 --> 00:22:27.050
+do not sample the time step
+from a uniform distribution.
+
+00:22:27.050 --> 00:22:30.750
+They actually sample from
+another distribution,
+
+00:22:30.750 --> 00:22:35.130
+which we're going to see in
+a second, that emphasizes
+
+00:22:35.130 --> 00:22:38.410
+on middle steps more
+than it emphasizes
+
+00:22:38.410 --> 00:22:43.730
+on either the early or
+the late, late steps.
+
+00:22:43.730 --> 00:22:47.750
+And the distribution that
+people in general use
+
+00:22:47.750 --> 00:22:52.410
+typically is called the
+logit-normal distribution.
+
+00:22:52.410 --> 00:22:55.470
+So the formula on the
+slide may look scary,
+
+00:22:55.470 --> 00:22:58.250
+but it's actually quite simple.
+
+00:22:58.250 --> 00:23:00.810
+So what we're saying is--
+
+00:23:00.810 --> 00:23:04.770
+so first of all, I'm going
+to define what logit means.
+
+00:23:04.770 --> 00:23:09.810
+So the logit of a
+quantity-- so let's suppose
+
+00:23:09.810 --> 00:23:12.370
+the logit of our time step t.
+
+00:23:12.370 --> 00:23:21.390
+--is defined as the log of
+t over 1 minus t as follows.
+
+00:23:21.390 --> 00:23:26.270
+And so t is between 0 and 1.
+
+00:23:26.270 --> 00:23:31.230
+So if t is between 0
+and 1, then logit of t
+
+00:23:31.230 --> 00:23:36.910
+is anywhere between minus
+infinity to plus infinity.
+
+00:23:36.910 --> 00:23:42.910
+And what we're saying
+is if we sample
+
+00:23:42.910 --> 00:23:52.950
+x from a normal distribution,
+which is between minus infinity
+
+00:23:52.950 --> 00:24:03.590
+to plus infinity, then if we
+express t as a function of x,
+
+00:24:03.590 --> 00:24:04.830
+which--
+
+00:24:04.830 --> 00:24:09.230
+I'm looking at the time,
+we will probably not do.
+
+00:24:09.230 --> 00:24:16.310
+You will have something like
+this, which is just a sigmoid.
+
+00:24:16.310 --> 00:24:22.060
+And that quantity will
+have a distribution
+
+00:24:22.060 --> 00:24:26.340
+that will be really
+centered in the middle.
+
+00:24:26.340 --> 00:24:32.020
+So you may ask me, "Well, why do
+you not sample directly t from
+
+00:24:32.020 --> 00:24:34.740
+a normal distribution?"
+
+00:24:34.740 --> 00:24:36.120
+Maybe it's a question you ask.
+
+00:24:36.120 --> 00:24:39.780
+But the reason why you don't do
+that is the normal distribution
+
+00:24:39.780 --> 00:24:42.660
+is a distribution that
+can take any values,
+
+00:24:42.660 --> 00:24:47.060
+and you only want
+values between 0 and 1.
+
+00:24:47.060 --> 00:24:51.380
+So that mathematical trick
+is just a way for you
+
+00:24:51.380 --> 00:24:55.880
+to guarantee that
+in between 0 and 1
+
+00:24:55.880 --> 00:24:59.880
+because here the sigmoid
+is between 0 and 1.
+
+00:25:03.220 --> 00:25:06.420
+Does that make sense?
+
+00:25:06.420 --> 00:25:07.200
+OK, great.
+
+00:25:07.200 --> 00:25:10.060
+I just want this formula
+or this distribution
+
+00:25:10.060 --> 00:25:14.800
+to not seem like it's
+coming out of nowhere.
+
+00:25:14.800 --> 00:25:18.280
+So the good thing
+with this distribution
+
+00:25:18.280 --> 00:25:24.600
+is you can tweak the way
+the distribution is shaped.
+
+00:25:24.600 --> 00:25:28.060
+So you can play with the mean
+and the standard deviation,
+
+00:25:28.060 --> 00:25:31.780
+so you can shift it towards the
+time steps that you care about.
+
+00:25:31.780 --> 00:25:33.680
+So for instance, if
+you in your use case
+
+00:25:33.680 --> 00:25:39.400
+care about the later
+steps, you can do that.
+
+00:25:39.400 --> 00:25:44.400
+And so that is the reason why
+people use that distribution.
+
+00:25:44.400 --> 00:25:47.120
+But I'm not done
+with time steps.
+
+00:25:47.120 --> 00:25:51.520
+There's another thing I
+want to talk to you about.
+
+00:25:51.520 --> 00:25:54.960
+So we're talking
+about noise levels,
+
+00:25:54.960 --> 00:25:59.040
+but what we actually
+care about is how much
+
+00:25:59.040 --> 00:26:02.740
+noise is perceived by yourself.
+
+00:26:02.740 --> 00:26:09.200
+So if you take the same
+image, one in low resolution
+
+00:26:09.200 --> 00:26:12.640
+and the other one
+in high resolution--
+
+00:26:12.640 --> 00:26:19.410
+and if you apply the same amount
+of noise, which, from the slide,
+
+00:26:19.410 --> 00:26:22.190
+I hope you can see, that the one
+on the left, the low resolution
+
+00:26:22.190 --> 00:26:27.750
+one, feels more noisy
+than the one on the right.
+
+00:26:27.750 --> 00:26:30.650
+So same image,
+different resolution,
+
+00:26:30.650 --> 00:26:32.310
+but same noise level.
+
+00:26:32.310 --> 00:26:36.270
+The one on the left feels more
+noisy than the one on the right.
+
+00:26:36.270 --> 00:26:39.230
+So something tells
+you that you also
+
+00:26:39.230 --> 00:26:43.670
+need to take that into
+account in some way.
+
+00:26:43.670 --> 00:26:48.070
+So right now, we're not taking
+that into account, but not
+
+00:26:48.070 --> 00:26:49.430
+for long.
+
+00:26:49.430 --> 00:26:51.710
+So you will see that
+in papers, there
+
+00:26:51.710 --> 00:26:55.630
+is this concept of
+time step shifting
+
+00:26:55.630 --> 00:27:00.990
+as a function of resolution,
+where the idea is to rescale
+
+00:27:00.990 --> 00:27:07.670
+the noise level in a way that
+reflects the perceived noise
+
+00:27:07.670 --> 00:27:10.350
+that you see.
+
+00:27:10.350 --> 00:27:14.820
+And so I just want to pause
+on this concept for a second.
+
+00:27:14.820 --> 00:27:20.020
+Why would you perceive a
+low-resolution image would
+
+00:27:20.020 --> 00:27:23.438
+be more noisy than a
+high-resolution one
+
+00:27:23.438 --> 00:27:24.480
+for the same noise level?
+
+00:27:24.480 --> 00:27:25.840
+Why would you have to do that?
+
+00:27:25.840 --> 00:27:28.540
+Or why would you think that?
+
+00:27:28.540 --> 00:27:31.940
+Well, there is one
+thing with images,
+
+00:27:31.940 --> 00:27:37.420
+which is that they have a
+lot of spatial correlation.
+
+00:27:37.420 --> 00:27:40.500
+Meaning for a given
+pixel, you have--
+
+00:27:40.500 --> 00:27:44.940
+you are very likely to have
+pixels around it that have
+
+00:27:44.940 --> 00:27:49.060
+the same value or same color.
+
+00:27:49.060 --> 00:27:52.820
+And so remember that
+when you add your noise,
+
+00:27:52.820 --> 00:27:57.580
+you're adding Gaussian
+noise with mean 0.
+
+00:27:57.580 --> 00:28:01.700
+So what that means is if you
+have very few pixels, when
+
+00:28:01.700 --> 00:28:06.660
+you're in low resolution,
+then if the pixel that
+
+00:28:06.660 --> 00:28:08.620
+is responsible for,
+let's say, the color
+
+00:28:08.620 --> 00:28:12.520
+that characterizes how good
+your image looks, let's
+
+00:28:12.520 --> 00:28:15.320
+say, at a particular angle--
+
+00:28:15.320 --> 00:28:20.780
+if that one gets noised, then
+you're losing that information.
+
+00:28:20.780 --> 00:28:23.600
+You're not able
+to see it anymore.
+
+00:28:23.600 --> 00:28:26.920
+But in the
+high-resolution case, you
+
+00:28:26.920 --> 00:28:31.760
+have multiple pixels
+surrounding that region.
+
+00:28:31.760 --> 00:28:33.920
+So even if one gets
+noise, the other one
+
+00:28:33.920 --> 00:28:36.757
+gets noise the other way because
+remember that the mean should
+
+00:28:36.757 --> 00:28:38.840
+be equal to 0, the mean
+of the noise, added noise,
+
+00:28:38.840 --> 00:28:41.360
+should be equal to
+0, you will still
+
+00:28:41.360 --> 00:28:47.800
+have an average value that
+will reflect the underlying
+
+00:28:47.800 --> 00:28:54.800
+pixels much more compared
+to the low-resolution case.
+
+00:28:54.800 --> 00:28:58.020
+So for that reason, I hope
+the statement that I'm making,
+
+00:28:58.020 --> 00:29:01.560
+which is, for a
+given noise level,
+
+00:29:01.560 --> 00:29:05.640
+things feel more noisy for
+low-resolution images compared
+
+00:29:05.640 --> 00:29:07.020
+to high-resolution ones--
+
+00:29:07.020 --> 00:29:09.677
+I hope that one is intuitive.
+
+00:29:09.677 --> 00:29:11.010
+I'm going to pause for a second.
+
+00:29:11.010 --> 00:29:14.750
+Does everyone agree
+with my statement?
+
+00:29:14.750 --> 00:29:15.590
+Yep?
+
+00:29:15.590 --> 00:29:22.270
+OK, so there is, again, a very
+scary formula on the slides.
+
+00:29:22.270 --> 00:29:25.710
+The reason why there
+is just to show you
+
+00:29:25.710 --> 00:29:30.350
+how people shift time
+steps in practice.
+
+00:29:30.350 --> 00:29:34.790
+So I would first want us to
+look at the chart on the right.
+
+00:29:34.790 --> 00:29:40.750
+So you see tn and tm.
+
+00:29:40.750 --> 00:29:46.910
+So here, let's assume you have
+two images, one of resolution n
+
+00:29:46.910 --> 00:29:54.470
+and the other one of resolution
+m, where n is smaller than m.
+
+00:29:54.470 --> 00:30:01.750
+So here for a
+given tn, you would
+
+00:30:01.750 --> 00:30:09.300
+want to have a higher tm because
+for a low-resolution image,
+
+00:30:09.300 --> 00:30:13.340
+for a given noise level,
+you would want that noise
+
+00:30:13.340 --> 00:30:16.000
+level to be higher for
+the high-resolution image,
+
+00:30:16.000 --> 00:30:20.580
+for the perceived
+noise to be the same.
+
+00:30:20.580 --> 00:30:24.460
+So that is what this
+formula is saying.
+
+00:30:24.460 --> 00:30:27.220
+But I know it's not
+intuitive, so what we'll do
+
+00:30:27.220 --> 00:30:33.940
+is we'll take 10 minutes
+to try to understand
+
+00:30:33.940 --> 00:30:35.240
+what that is about.
+
+00:30:40.380 --> 00:30:45.620
+So the formula on the
+slide is all about
+
+00:30:45.620 --> 00:30:51.420
+reflecting the change in
+uncertainty of pixel values
+
+00:30:51.420 --> 00:30:54.940
+that are noised under
+different resolutions.
+
+00:30:54.940 --> 00:31:00.380
+So let's assume that
+we have an image,
+
+00:31:00.380 --> 00:31:05.960
+so you can think of
+it as this, with--
+
+00:31:05.960 --> 00:31:08.480
+OK, I'm being quick.
+
+00:31:08.480 --> 00:31:14.400
+So you have, let's say,
+height and some width.
+
+00:31:14.400 --> 00:31:17.840
+And let's say that n--
+
+00:31:17.840 --> 00:31:22.720
+so let's say m is this one.
+
+00:31:22.720 --> 00:31:28.480
+And let's say you have a
+smaller image with, let's say,
+
+00:31:28.480 --> 00:31:36.840
+h, little h, and little w,
+and n is equal to h times w.
+
+00:31:36.840 --> 00:31:42.720
+I'm just saying that n is
+a lower resolution than m.
+
+00:31:42.720 --> 00:31:45.760
+That's just what I want to say.
+
+00:31:45.760 --> 00:31:50.160
+So here, what we
+want to do is to try
+
+00:31:50.160 --> 00:31:54.800
+to quantify the
+uncertainty of what
+
+00:31:54.800 --> 00:31:57.280
+the underlying pixel values
+are in the case where
+
+00:31:57.280 --> 00:32:01.520
+we have noise for both cases.
+
+00:32:01.520 --> 00:32:09.510
+So what I propose to do is to
+just assume that these images--
+
+00:32:09.510 --> 00:32:14.330
+let's assume that they all
+have a certain value as pixels.
+
+00:32:14.330 --> 00:32:16.450
+So pixels have three channels.
+
+00:32:16.450 --> 00:32:18.870
+Let's assume here that
+we have only one channel,
+
+00:32:18.870 --> 00:32:22.270
+one value by component.
+
+00:32:22.270 --> 00:32:26.070
+So here, let's assume that
+each of these is, let's say,
+
+00:32:26.070 --> 00:32:28.770
+equal to some value
+c that is constant.
+
+00:32:31.710 --> 00:32:34.750
+So far so good?
+
+00:32:34.750 --> 00:32:41.470
+So let's assume that
+for a given let's
+
+00:32:41.470 --> 00:32:48.550
+say index i that tells you about
+where you are in the image,
+
+00:32:48.550 --> 00:32:59.870
+and for a given noise level
+t, the value at that index
+
+00:32:59.870 --> 00:33:04.580
+is something that is
+given as a function of C,
+
+00:33:04.580 --> 00:33:10.620
+the value of your pixel,
+and the amount of noise
+
+00:33:10.620 --> 00:33:13.820
+that you're adding to it.
+
+00:33:13.820 --> 00:33:19.540
+So here I just need to
+put the noise level.
+
+00:33:19.540 --> 00:33:23.580
+So I told you in
+lecture one that people
+
+00:33:23.580 --> 00:33:27.100
+use different conventions
+for time steps.
+
+00:33:27.100 --> 00:33:30.380
+And it just happens
+that the formula here
+
+00:33:30.380 --> 00:33:35.020
+and the paper here, they
+used the reverse convention
+
+00:33:35.020 --> 00:33:36.660
+when it comes to time steps.
+
+00:33:36.660 --> 00:33:44.300
+And in particular, they used
+t equals 0, means clean, and t
+
+00:33:44.300 --> 00:33:49.980
+equals 1, means noise,
+which is the opposite
+
+00:33:49.980 --> 00:33:52.140
+of what usually people do.
+
+00:33:52.140 --> 00:33:56.620
+But in order for us to
+be consistent and end up
+
+00:33:56.620 --> 00:33:59.000
+at the same formula,
+we will just
+
+00:33:59.000 --> 00:34:03.960
+assume that is the convention
+that we're going to use.
+
+00:34:03.960 --> 00:34:11.040
+So here, what we're going
+to say is it's 1 minus tc
+
+00:34:11.040 --> 00:34:14.253
+plus t epsilon.
+
+00:34:14.253 --> 00:34:15.420
+Does everyone agree with me?
+
+00:34:15.420 --> 00:34:20.440
+So this is the value of the
+noise pixel at the noise level
+
+00:34:20.440 --> 00:34:22.800
+t.
+
+00:34:22.800 --> 00:34:30.020
+So here epsilon is drawn
+from a normal distribution.
+
+00:34:33.199 --> 00:34:35.900
+And so what can we
+say about this one?
+
+00:34:35.900 --> 00:34:42.760
+So we assume that this
+quantity is a constant,
+
+00:34:42.760 --> 00:34:46.800
+but we don't what that quantity
+is when we look at an image.
+
+00:34:46.800 --> 00:34:52.719
+So our goal here is to
+quantify the uncertainty
+
+00:34:52.719 --> 00:34:56.880
+if we were to estimate
+c, which is a constant.
+
+00:34:56.880 --> 00:35:00.190
+So what I'm going to do
+is to try to quantify
+
+00:35:00.190 --> 00:35:03.670
+the uncertainty of c.
+
+00:35:03.670 --> 00:35:09.310
+So here, just because
+we have n elements,
+
+00:35:09.310 --> 00:35:14.150
+so m here and n
+here n elements, I'm
+
+00:35:14.150 --> 00:35:16.270
+just going to leverage
+the fact that we
+
+00:35:16.270 --> 00:35:24.870
+have this n elements to take the
+average over all pixel values.
+
+00:35:24.870 --> 00:35:27.670
+So I'm going to sum
+over, let's say,
+
+00:35:27.670 --> 00:35:32.990
+i my index, that's between
+1 and the number of pixels,
+
+00:35:32.990 --> 00:35:34.910
+of the zi(t).
+
+00:35:34.910 --> 00:35:42.590
+And I'm going to call
+this zt bar for average.
+
+00:35:42.590 --> 00:35:45.370
+So here, this thing is a
+constant, so it doesn't move.
+
+00:35:48.990 --> 00:35:52.390
+And this thing just gets--
+
+00:35:52.390 --> 00:35:59.570
+so here, I'm going to write
+this here plus the average.
+
+00:35:59.570 --> 00:36:01.470
+So I'm going to put the t here.
+
+00:36:04.730 --> 00:36:07.490
+The sum of y from--
+sorry, sorry.
+
+00:36:07.490 --> 00:36:13.538
+The sum of I from 1 to n of
+the epsilons, which are--
+
+00:36:13.538 --> 00:36:14.330
+as a function of i.
+
+00:36:14.330 --> 00:36:18.570
+Because the noise here
+is different from one
+
+00:36:18.570 --> 00:36:21.650
+pixel to another.
+
+00:36:21.650 --> 00:36:26.610
+So here what I wrote is that
+the average value of a pixel
+
+00:36:26.610 --> 00:36:33.130
+is 1 minus t times
+c plus t over n
+
+00:36:33.130 --> 00:36:36.370
+of the sum of the noise values.
+
+00:36:36.370 --> 00:36:38.190
+So you're going to
+see why I did that.
+
+00:36:51.890 --> 00:36:56.390
+So here, I just want
+to remember our--
+
+00:36:56.390 --> 00:36:58.440
+to remind you of our objective.
+
+00:36:58.440 --> 00:37:05.400
+Our objective is to quantify
+the uncertainty in estimating c.
+
+00:37:05.400 --> 00:37:12.600
+So I want us to first
+see that zt bar is
+
+00:37:12.600 --> 00:37:19.880
+equal to a constant plus a
+sum of independent Gaussian
+
+00:37:19.880 --> 00:37:22.760
+variables.
+
+00:37:22.760 --> 00:37:24.560
+So what you can see
+about-- what you
+
+00:37:24.560 --> 00:37:32.320
+can say about this quantity
+is that its mean is
+
+00:37:32.320 --> 00:37:36.320
+1 minus t times c.
+
+00:37:36.320 --> 00:37:38.920
+And its variance-- let's see.
+
+00:37:38.920 --> 00:37:43.320
+So t over n is a constant.
+
+00:37:43.320 --> 00:37:49.160
+So the variance of a constant
+is just the constant squared.
+
+00:37:49.160 --> 00:37:53.430
+And then the variance
+of each epsilon i is 1,
+
+00:37:53.430 --> 00:37:57.070
+and you're adding n of them.
+
+00:37:57.070 --> 00:38:09.670
+So it's n times 1, which
+is t squared over n.
+
+00:38:09.670 --> 00:38:11.070
+OK, great.
+
+00:38:11.070 --> 00:38:13.850
+So why am I doing all of this?
+
+00:38:13.850 --> 00:38:17.710
+I just want to remind all of us
+that what we know-- what we want
+
+00:38:17.710 --> 00:38:20.470
+is to estimate the
+uncertainty of C.
+
+00:38:20.470 --> 00:38:23.310
+So what is a good
+estimator for C?
+
+00:38:23.310 --> 00:38:27.270
+So C-- here, we
+see that zt bar is
+
+00:38:27.270 --> 00:38:33.910
+equal to minus C times C plus
+something where the mean is 0.
+
+00:38:33.910 --> 00:38:46.950
+So a good estimate of C could be
+1 over 1 minus t times zt bar.
+
+00:38:46.950 --> 00:38:52.650
+And what we want to quantify is
+the uncertainty in estimating c.
+
+00:38:52.650 --> 00:38:58.890
+So what is the uncertainty
+around estimating c.
+
+00:38:58.890 --> 00:39:03.090
+So this thing is a constant.
+
+00:39:03.090 --> 00:39:06.130
+So the variance of
+a constant is just--
+
+00:39:06.130 --> 00:39:09.130
+so sorry, the
+variance of a factor
+
+00:39:09.130 --> 00:39:13.090
+in front of something else
+is the constant squared
+
+00:39:13.090 --> 00:39:18.070
+times the variance of this
+one, which is t squared over n.
+
+00:39:21.010 --> 00:39:27.250
+So what we're saying is
+that the standard deviation
+
+00:39:27.250 --> 00:39:36.390
+of our estimate is equal to the
+square root of the variance,
+
+00:39:36.390 --> 00:39:45.916
+which is t over 1 minus t
+times 1 over square root of n.
+
+00:39:45.916 --> 00:39:48.400
+OK, so what does that mean?
+
+00:39:48.400 --> 00:39:53.440
+That means that the
+uncertainty that we have around
+
+00:39:53.440 --> 00:39:56.720
+determining what the pixel
+value, underlying pixel value,
+
+00:39:56.720 --> 00:40:05.640
+is a function of 1 over the
+square root of the resolution.
+
+00:40:05.640 --> 00:40:11.480
+So as we increase
+the resolution n,
+
+00:40:11.480 --> 00:40:15.120
+that uncertainty gets smaller.
+
+00:40:15.120 --> 00:40:18.520
+And so in order to get
+that derivation, which
+
+00:40:18.520 --> 00:40:21.920
+I don't think I will do,
+it is just some math,
+
+00:40:21.920 --> 00:40:30.200
+you would just equal
+that uncertainty for n.
+
+00:40:30.200 --> 00:40:35.440
+So it's t under
+subscript n here.
+
+00:40:35.440 --> 00:40:37.100
+And you do the same for m.
+
+00:40:40.640 --> 00:40:45.200
+So you get exactly-- so the
+noise level at time step--
+
+00:40:45.200 --> 00:40:53.630
+for resolution m
+will be as follows.
+
+00:40:53.630 --> 00:41:00.270
+And the goal that we have
+is to determine the time
+
+00:41:00.270 --> 00:41:06.150
+step for resolution m such that
+the uncertainty of determining
+
+00:41:06.150 --> 00:41:09.350
+the pixel value is the same.
+
+00:41:09.350 --> 00:41:16.910
+So you just need to take
+these two quantities
+
+00:41:16.910 --> 00:41:21.550
+and just say that
+they need to be equal,
+
+00:41:21.550 --> 00:41:25.610
+and you find tm as
+a function of tn.
+
+00:41:29.870 --> 00:41:33.070
+Does that make sense?
+
+00:41:33.070 --> 00:41:39.470
+So the low-level derivation
+is not that important.
+
+00:41:39.470 --> 00:41:41.210
+What is important
+is just the mindset,
+
+00:41:41.210 --> 00:41:46.650
+which is that here we want to
+shift the time step for higher
+
+00:41:46.650 --> 00:41:52.050
+resolution, such that
+we match this perceived
+
+00:41:52.050 --> 00:41:53.750
+noise that we have.
+
+00:41:57.330 --> 00:41:59.710
+And so hopefully, when you
+take a look at that formula,
+
+00:41:59.710 --> 00:42:03.470
+you're not thinking, "OK,
+where does that come from?"
+
+00:42:06.170 --> 00:42:06.750
+OK, cool.
+
+00:42:06.750 --> 00:42:08.970
+So I think we're done
+with the time steps.
+
+00:42:08.970 --> 00:42:12.670
+Any questions on this?
+
+00:42:12.670 --> 00:42:13.170
+Yep.
+
+00:42:16.490 --> 00:42:17.210
+What is c again?
+
+00:42:17.210 --> 00:42:17.710
+Yes.
+
+00:42:17.710 --> 00:42:19.810
+So the question is,
+What is c again?
+
+00:42:19.810 --> 00:42:23.450
+So this was actually
+a toy example
+
+00:42:23.450 --> 00:42:27.410
+that we had where
+we said let's assume
+
+00:42:27.410 --> 00:42:32.010
+that we have an image where all
+the pixel values are constants,
+
+00:42:32.010 --> 00:42:34.130
+all equal to c.
+
+00:42:34.130 --> 00:42:38.850
+So c is the value of the
+pixel that is across all
+
+00:42:38.850 --> 00:42:41.330
+our image in this toy example.
+
+00:42:41.330 --> 00:42:45.420
+And the only problem with
+c-- we know it's constant,
+
+00:42:45.420 --> 00:42:50.440
+but we don't what c is because
+we have noised that image.
+
+00:42:50.440 --> 00:42:55.760
+And this whole derivation
+is about quantifying
+
+00:42:55.760 --> 00:43:02.120
+our uncertainty of what c is
+if we were to estimate it.
+
+00:43:02.120 --> 00:43:07.560
+And what we said was that we
+could quantify the uncertainty
+
+00:43:07.560 --> 00:43:11.000
+through this standard deviation.
+
+00:43:11.000 --> 00:43:14.040
+And what we said was,
+depending on the resolution
+
+00:43:14.040 --> 00:43:18.740
+at which you're operating, that
+uncertainty is higher or lower.
+
+00:43:18.740 --> 00:43:20.480
+And in particular,
+that uncertainty
+
+00:43:20.480 --> 00:43:24.040
+is lower as the
+resolution gets higher.
+
+00:43:24.040 --> 00:43:28.760
+And this is all because you can
+actually perform your estimation
+
+00:43:28.760 --> 00:43:31.520
+by averaging across
+all pixel values, which
+
+00:43:31.520 --> 00:43:37.360
+are getting bigger and bigger
+when the resolution increases.
+
+00:43:37.360 --> 00:43:38.720
+Does that make sense?
+
+00:43:38.720 --> 00:43:40.240
+OK, perfect.
+
+00:43:40.240 --> 00:43:41.350
+Yeah, yep.
+
+00:43:41.350 --> 00:43:44.910
+So the question is, we said that
+the diffusion process is taking
+
+00:43:44.910 --> 00:43:47.890
+place in the latent space, so m
+and n are in the latent space?
+
+00:43:47.890 --> 00:43:49.910
+Yes.
+
+00:43:49.910 --> 00:43:52.630
+Yep.
+
+00:43:52.630 --> 00:43:54.310
+OK, perfect.
+
+00:43:54.310 --> 00:43:56.510
+Let's move on.
+
+00:43:56.510 --> 00:43:58.310
+We're done with the time steps.
+
+00:43:58.310 --> 00:44:01.870
+Now we're going to the
+next training trick
+
+00:44:01.870 --> 00:44:04.190
+that I wanted to
+talk about, which
+
+00:44:04.190 --> 00:44:13.790
+is helping our model with
+learning representations faster.
+
+00:44:13.790 --> 00:44:15.710
+And how do we want to do that?
+
+00:44:15.710 --> 00:44:22.230
+So here, the whole idea is to
+leverage the representation
+
+00:44:22.230 --> 00:44:27.510
+that some already pre-trained
+encoders have learned
+
+00:44:27.510 --> 00:44:32.870
+and incorporate that,
+and incentivize our model
+
+00:44:32.870 --> 00:44:36.510
+to match that representation.
+
+00:44:36.510 --> 00:44:42.330
+So in other words, it's as if
+you want to learn about a topic,
+
+00:44:42.330 --> 00:44:46.270
+and I come and get you
+a book about that topic.
+
+00:44:46.270 --> 00:44:48.390
+So you can learn
+faster about the topic,
+
+00:44:48.390 --> 00:44:51.210
+so it's exactly
+the same mindset.
+
+00:44:51.210 --> 00:44:53.910
+So here, REPA is the
+name of the method.
+
+00:44:53.910 --> 00:44:57.810
+It stands for
+Representation Alignment.
+
+00:44:57.810 --> 00:45:03.370
+And it consists of
+coupling your loss
+
+00:45:03.370 --> 00:45:07.970
+with a loss that reflects how
+similar the representations
+
+00:45:07.970 --> 00:45:11.650
+that you're obtaining within
+your diffusion transformer
+
+00:45:11.650 --> 00:45:15.330
+is with respect to what the
+pre-trained encoder is giving
+
+00:45:15.330 --> 00:45:18.090
+you.
+
+00:45:18.090 --> 00:45:20.650
+So that's what REPA is about.
+
+00:45:20.650 --> 00:45:22.890
+So let's go step by step.
+
+00:45:22.890 --> 00:45:26.190
+Here, we mentioned
+the L loss for REPA,
+
+00:45:26.190 --> 00:45:28.170
+but we have not seen
+what that loss is.
+
+00:45:28.170 --> 00:45:30.250
+So we're going to see now.
+
+00:45:30.250 --> 00:45:36.090
+So here what we're saying is
+in the diffusion transformer,
+
+00:45:36.090 --> 00:45:39.160
+you have several layers.
+
+00:45:39.160 --> 00:45:43.280
+So what you're saying is you're
+taking the encoded output
+
+00:45:43.280 --> 00:45:45.440
+of a given layer.
+
+00:45:45.440 --> 00:45:48.280
+So let's call that ht.
+
+00:45:48.280 --> 00:45:52.080
+And here n, I believe,
+represents the patch,
+
+00:45:52.080 --> 00:45:55.800
+let's say, for a given patch n.
+
+00:45:55.800 --> 00:46:00.560
+And let's project
+that on a space where
+
+00:46:00.560 --> 00:46:07.440
+we can compare the equivalent
+clean patch representation
+
+00:46:07.440 --> 00:46:12.080
+from the pretrained encoder,
+and then have a similarity
+
+00:46:12.080 --> 00:46:15.680
+operation between the two.
+
+00:46:15.680 --> 00:46:20.840
+So in other words, we will
+be penalizing our model
+
+00:46:20.840 --> 00:46:25.980
+for having a projection of the
+encoded output of a given patch.
+
+00:46:25.980 --> 00:46:31.200
+That is, noise we will penalize
+our model from this being
+
+00:46:31.200 --> 00:46:34.320
+dissimilar from
+the representation
+
+00:46:34.320 --> 00:46:44.100
+given by the pre-trained encoder
+of that same patch, but cleaned.
+
+00:46:44.100 --> 00:46:46.240
+So why do we do that?
+
+00:46:46.240 --> 00:46:49.355
+So as I mentioned,
+we're giving a book
+
+00:46:49.355 --> 00:46:50.980
+to someone who's
+learning about a topic
+
+00:46:50.980 --> 00:46:52.480
+so that they can learn faster.
+
+00:46:52.480 --> 00:46:54.940
+And that's exactly what happens.
+
+00:46:54.940 --> 00:46:56.820
+So what we're seeing
+with this strategy
+
+00:46:56.820 --> 00:47:01.860
+is that it speeds up training
+significantly, so here
+
+00:47:01.860 --> 00:47:03.960
+on the order of 18 times.
+
+00:47:03.960 --> 00:47:07.460
+So this graph
+represents some measure
+
+00:47:07.460 --> 00:47:11.220
+of how good your images are
+as a function of the training
+
+00:47:11.220 --> 00:47:12.660
+iteration.
+
+00:47:12.660 --> 00:47:16.100
+And what the
+authors did was just
+
+00:47:16.100 --> 00:47:19.280
+try out a bunch of different--
+
+00:47:21.952 --> 00:47:23.160
+they tried a bunch of things.
+
+00:47:23.160 --> 00:47:24.920
+So they tried different models.
+
+00:47:24.920 --> 00:47:26.120
+They tried different layers.
+
+00:47:26.120 --> 00:47:29.300
+They tried-- so they did
+a lot of ablation studies.
+
+00:47:29.300 --> 00:47:32.060
+One of the things
+that they saw was
+
+00:47:32.060 --> 00:47:39.730
+if you were to perform that loss
+on the embedding from earlier
+
+00:47:39.730 --> 00:47:44.370
+layers, then you actually
+get better results.
+
+00:47:44.370 --> 00:47:47.730
+And I just want to pause
+on that statement for a bit
+
+00:47:47.730 --> 00:47:50.770
+just to understand
+why that is the case.
+
+00:47:50.770 --> 00:47:55.330
+So our diffusion
+transformer gets
+
+00:47:55.330 --> 00:48:03.450
+to compute a prediction
+of where it wants to go.
+
+00:48:03.450 --> 00:48:08.170
+And in that sense,
+the later layers
+
+00:48:08.170 --> 00:48:14.050
+may actually involve
+more local details
+
+00:48:14.050 --> 00:48:17.370
+rather than a semantic
+representation
+
+00:48:17.370 --> 00:48:19.330
+of where you want to go.
+
+00:48:19.330 --> 00:48:23.730
+And so here that
+pre-trained encoders,
+
+00:48:23.730 --> 00:48:25.850
+some of them, what
+they're good at
+
+00:48:25.850 --> 00:48:30.970
+is representing things in a
+semantically meaningful way.
+
+00:48:30.970 --> 00:48:34.680
+And so one can
+understand these facts
+
+00:48:34.680 --> 00:48:39.120
+by saying that, OK, we actually
+want the representation
+
+00:48:39.120 --> 00:48:41.800
+from a layer that is supposed
+to output something that
+
+00:48:41.800 --> 00:48:44.520
+is semantically
+meaningful to align
+
+00:48:44.520 --> 00:48:50.160
+with a semantic or semantically
+meaningful representation.
+
+00:48:50.160 --> 00:48:55.360
+I just wanted to vocalize
+a possible interpretation.
+
+00:48:55.360 --> 00:48:56.800
+And then the last
+thing I will say
+
+00:48:56.800 --> 00:49:00.760
+is that an interesting thing
+is that the bigger your model,
+
+00:49:00.760 --> 00:49:07.200
+the faster or the more benefits
+you have from this method.
+
+00:49:07.200 --> 00:49:07.920
+Cool.
+
+00:49:07.920 --> 00:49:11.660
+And the REPA was
+published in 2024,
+
+00:49:11.660 --> 00:49:14.440
+but it is a technique
+that I have personally
+
+00:49:14.440 --> 00:49:20.440
+seen in a lot of new papers,
+so worth keeping in mind.
+
+00:49:20.440 --> 00:49:26.300
+And that is concluding the
+first preliminary parts.
+
+00:49:26.300 --> 00:49:29.020
+So now we're going
+to first start
+
+00:49:29.020 --> 00:49:33.140
+the first step of the lifecycle,
+training lifecycle, which
+
+00:49:33.140 --> 00:49:35.900
+is pre-training.
+
+00:49:35.900 --> 00:49:39.780
+And so as a reminder,
+in this first step,
+
+00:49:39.780 --> 00:49:45.620
+the goal is to teach our model
+how to generate just images.
+
+00:49:45.620 --> 00:49:50.260
+And so here there
+is a lot of work
+
+00:49:50.260 --> 00:49:53.180
+that goes into
+what kind of images
+
+00:49:53.180 --> 00:49:57.140
+you want your model
+to learn from.
+
+00:49:57.140 --> 00:50:00.120
+And so I just have
+this one slide,
+
+00:50:00.120 --> 00:50:03.580
+which is coming from-- so
+it's an image from the Quinn
+
+00:50:03.580 --> 00:50:06.100
+technical report,
+which just tells you
+
+00:50:06.100 --> 00:50:08.820
+that this is a very
+time-consuming work
+
+00:50:08.820 --> 00:50:14.740
+that's involves data pipeline
+with a bunch of filtering,
+
+00:50:14.740 --> 00:50:17.160
+different resolutions,
+cleaning, and so on.
+
+00:50:17.160 --> 00:50:19.840
+So I just have one slide
+to illustrate this,
+
+00:50:19.840 --> 00:50:21.720
+but it's a very
+time consuming step.
+
+00:50:21.720 --> 00:50:27.780
+So just know that this is an
+important part of the process.
+
+00:50:27.780 --> 00:50:30.190
+There is a concept that I
+want to talk to you about,
+
+00:50:30.190 --> 00:50:34.650
+which is called
+curriculum learning, which
+
+00:50:34.650 --> 00:50:42.090
+is about teaching your model on
+things in a progressive manner
+
+00:50:42.090 --> 00:50:44.850
+on the scale of difficulty.
+
+00:50:44.850 --> 00:50:48.250
+So in other words,
+here, what we want
+
+00:50:48.250 --> 00:50:52.930
+is to teach first our model
+on doing the easy things
+
+00:50:52.930 --> 00:50:56.370
+before doing the hard things.
+
+00:50:56.370 --> 00:50:59.090
+And this is a practice
+that is typically something
+
+00:50:59.090 --> 00:51:04.250
+that people do as this just
+helps the model learn better.
+
+00:51:04.250 --> 00:51:09.250
+And so here, by "easy" I mean
+low-resolution images that are
+
+00:51:09.250 --> 00:51:12.650
+of very easy aspect
+ratio, so fixed square.
+
+00:51:12.650 --> 00:51:14.170
+You can think of that.
+
+00:51:14.170 --> 00:51:18.350
+And then the input text
+is simple and short,
+
+00:51:18.350 --> 00:51:20.890
+so for instance, a teddy bear.
+
+00:51:20.890 --> 00:51:23.370
+And then the hard
+part is if you want
+
+00:51:23.370 --> 00:51:25.770
+to predict something that
+is of high resolution,
+
+00:51:25.770 --> 00:51:27.500
+different aspect ratios.
+
+00:51:27.500 --> 00:51:29.120
+It's not a square anymore.
+
+00:51:29.120 --> 00:51:33.640
+And then, your prompt can be
+much, much more complicated,
+
+00:51:33.640 --> 00:51:36.720
+such as the one on the slides.
+
+00:51:36.720 --> 00:51:41.560
+And now you may ask me, well,
+how would you handle images
+
+00:51:41.560 --> 00:51:43.640
+of different resolutions?
+
+00:51:43.640 --> 00:51:48.840
+And so I want us to remember
+that the default architectures
+
+00:51:48.840 --> 00:51:51.480
+these days are DIT-based.
+
+00:51:51.480 --> 00:51:58.520
+And in DIT, what you do is you
+divide your input into patches
+
+00:51:58.520 --> 00:52:04.440
+where each patch is
+equivalent to some embedding.
+
+00:52:04.440 --> 00:52:06.880
+And so what happens
+is for low resolution,
+
+00:52:06.880 --> 00:52:09.900
+you will have a certain
+number of patches,
+
+00:52:09.900 --> 00:52:12.480
+some number of tokens.
+
+00:52:12.480 --> 00:52:17.680
+And for high resolution, you
+will just have more tokens.
+
+00:52:17.680 --> 00:52:18.460
+Yes, exactly.
+
+00:52:18.460 --> 00:52:20.260
+So yeah, that's exactly that.
+
+00:52:20.260 --> 00:52:22.340
+It's as if it was large context.
+
+00:52:22.340 --> 00:52:26.540
+And if you remember
+the length t will
+
+00:52:26.540 --> 00:52:30.080
+be i, which is the
+dimension of an input.
+
+00:52:30.080 --> 00:52:33.460
+So if it's a squared
+over p squared.
+
+00:52:33.460 --> 00:52:37.980
+So that's the order of
+magnitude to have in mind.
+
+00:52:37.980 --> 00:52:43.020
+I will go ahead and move on to
+the second step of the training
+
+00:52:43.020 --> 00:52:47.700
+lifecycle, which is
+the post training step.
+
+00:52:47.700 --> 00:52:51.180
+And so here what
+we want to do is
+
+00:52:51.180 --> 00:52:56.780
+to teach our model on how
+to generate good images.
+
+00:52:56.780 --> 00:53:02.140
+Now you may tell me, "Well,
+what does good mean?"
+
+00:53:02.140 --> 00:53:05.460
+Well, you have, of
+course several angles,
+
+00:53:05.460 --> 00:53:10.340
+but I'll talk about
+two main names
+
+00:53:10.340 --> 00:53:12.060
+that you will see out there.
+
+00:53:12.060 --> 00:53:16.620
+The first one is called
+continued training, CT,
+
+00:53:16.620 --> 00:53:22.460
+which is around teaching your
+model on a bunch of other things
+
+00:53:22.460 --> 00:53:26.863
+that you may care about
+in your task of interest.
+
+00:53:26.863 --> 00:53:28.030
+So I'll give you an example.
+
+00:53:28.030 --> 00:53:30.970
+So let's suppose you have a
+model that has been pre-trained
+
+00:53:30.970 --> 00:53:36.750
+on a bunch of nature
+images, and cars, and so on,
+
+00:53:36.750 --> 00:53:40.050
+but what you want to do
+is to have a model that
+
+00:53:40.050 --> 00:53:42.890
+generates images of teddy bear.
+
+00:53:42.890 --> 00:53:45.490
+Well, what you'll
+do here is you will
+
+00:53:45.490 --> 00:53:49.230
+have a dataset of
+what you care about,
+
+00:53:49.230 --> 00:53:51.450
+and here that is teddy bears.
+
+00:53:51.450 --> 00:53:55.810
+And you will just continue
+your training on that data set.
+
+00:53:55.810 --> 00:53:57.330
+So that part, you
+can think of it
+
+00:53:57.330 --> 00:54:03.010
+as focusing on increasing
+your knowledge.
+
+00:54:03.010 --> 00:54:06.770
+Then you have another category
+of post-training methods, which
+
+00:54:06.770 --> 00:54:10.290
+are called supervised
+fine-tuning.
+
+00:54:10.290 --> 00:54:14.170
+Same thing, but
+here the mindset is
+
+00:54:14.170 --> 00:54:17.930
+to focus on the behavior
+of your model as opposed
+
+00:54:17.930 --> 00:54:20.650
+to increasing the knowledge.
+
+00:54:20.650 --> 00:54:26.520
+So in that case, what that means
+is generating an image that
+
+00:54:26.520 --> 00:54:30.600
+is more aesthetically pleasing,
+that has better lighting,
+
+00:54:30.600 --> 00:54:35.120
+or that just follows
+the text better.
+
+00:54:35.120 --> 00:54:40.280
+So these are the kinds of
+dimensions that you care about.
+
+00:54:40.280 --> 00:54:45.440
+And up until now,
+we've only seen
+
+00:54:45.440 --> 00:54:50.400
+how to teach our
+model on what to do,
+
+00:54:50.400 --> 00:54:55.640
+but we have not taught our
+model on what not to do.
+
+00:54:55.640 --> 00:55:00.920
+And that is the objective of
+the second category of methods,
+
+00:55:00.920 --> 00:55:05.960
+which is preference tuning
+methods, where for a given
+
+00:55:05.960 --> 00:55:10.640
+prompt, you may have two images
+where one of those images
+
+00:55:10.640 --> 00:55:14.760
+is something that you want to
+happen more than another one.
+
+00:55:14.760 --> 00:55:18.360
+So here I will illustrate an
+example of the left image, which
+
+00:55:18.360 --> 00:55:21.220
+is an image of a teddy
+bear reading, very high
+
+00:55:21.220 --> 00:55:24.940
+resolution, good lighting,
+and aesthetically pleasing,
+
+00:55:24.940 --> 00:55:29.180
+and the one on the right,
+which is not as aesthetically
+
+00:55:29.180 --> 00:55:30.340
+pleasing.
+
+00:55:30.340 --> 00:55:34.420
+And what you want to do is
+to incentivize your model
+
+00:55:34.420 --> 00:55:37.540
+to generate an
+image that is more
+
+00:55:37.540 --> 00:55:41.380
+aligned with human preferences.
+
+00:55:41.380 --> 00:55:45.500
+So here the thumbs
+up and thumbs down
+
+00:55:45.500 --> 00:55:50.660
+are typically either human
+ratings or some measure
+
+00:55:50.660 --> 00:55:53.180
+that you can obtain
+with some model
+
+00:55:53.180 --> 00:55:56.060
+that we will talk
+about next lecture.
+
+00:55:56.060 --> 00:56:01.780
+But you will need to have some
+measure of pairwise comparison
+
+00:56:01.780 --> 00:56:04.700
+or listwise comparison
+of different images.
+
+00:56:04.700 --> 00:56:10.100
+And in this case, the left image
+being better than the right one.
+
+00:56:10.100 --> 00:56:13.260
+So how do you do that?
+
+00:56:13.260 --> 00:56:16.300
+So before we move
+further, I just
+
+00:56:16.300 --> 00:56:21.050
+want to say that the field
+is still a developing field,
+
+00:56:21.050 --> 00:56:27.530
+and that next to it, there's
+also the text field, the LLM
+
+00:56:27.530 --> 00:56:30.050
+field, that has been growing.
+
+00:56:30.050 --> 00:56:32.290
+And so one observation
+is that you
+
+00:56:32.290 --> 00:56:35.290
+will find the same
+kinds of techniques
+
+00:56:35.290 --> 00:56:38.970
+that are used in
+the LLM space be
+
+00:56:38.970 --> 00:56:43.090
+adapted for the text-to-image
+generation space.
+
+00:56:43.090 --> 00:56:45.090
+And that is something
+that I'm going to show you
+
+00:56:45.090 --> 00:56:49.770
+in the slides that will follow.
+
+00:56:49.770 --> 00:56:55.410
+So the first method that
+is around tuning your model
+
+00:56:55.410 --> 00:57:01.690
+to incentivize generating
+images that are more
+
+00:57:01.690 --> 00:57:04.930
+aligned with human
+preferences is a method called
+
+00:57:04.930 --> 00:57:08.690
+reward feedback learning.
+
+00:57:08.690 --> 00:57:12.410
+So I'll go step by step
+into what that does.
+
+00:57:12.410 --> 00:57:16.870
+So as I mentioned, what you
+do is you take a prompt,
+
+00:57:16.870 --> 00:57:21.390
+and then you have a bunch of
+images related to that prompt.
+
+00:57:21.390 --> 00:57:25.790
+And what you do is you try to
+get some sense of which one
+
+00:57:25.790 --> 00:57:29.470
+is better than the other.
+
+00:57:29.470 --> 00:57:32.510
+So you can either
+get pairwise ratings
+
+00:57:32.510 --> 00:57:34.910
+or even list wise ratings.
+
+00:57:34.910 --> 00:57:39.830
+So for instance, A is better
+than B, than C, et cetera.
+
+00:57:39.830 --> 00:57:46.150
+And from there, the idea
+is to train a reward model
+
+00:57:46.150 --> 00:57:51.350
+that takes in a
+prompt and an image,
+
+00:57:51.350 --> 00:57:54.630
+and that gets you a
+score that tells you
+
+00:57:54.630 --> 00:57:57.790
+how good that image was
+with respect to the score,
+
+00:57:57.790 --> 00:58:02.830
+or how good that image was
+with respect to the prompt.
+
+00:58:02.830 --> 00:58:05.790
+And so here we will not
+go through the math.
+
+00:58:05.790 --> 00:58:07.790
+So in case you're
+interested, we actually
+
+00:58:07.790 --> 00:58:13.510
+have a whole lecture on that
+in our sister class, CME 295.
+
+00:58:13.510 --> 00:58:19.620
+But long story short is that you
+can use a pairwise loss based
+
+00:58:19.620 --> 00:58:23.920
+on formulation called the
+Bradley-Terry formulation
+
+00:58:23.920 --> 00:58:28.340
+and train a model that
+does that for you.
+
+00:58:28.340 --> 00:58:32.780
+So at the end of this step,
+you get a reward model
+
+00:58:32.780 --> 00:58:35.300
+that takes in a prompt,
+that takes in an image,
+
+00:58:35.300 --> 00:58:40.420
+and that tells you how good
+that image was to this prompt.
+
+00:58:40.420 --> 00:58:45.820
+So what you care
+about is to tune
+
+00:58:45.820 --> 00:58:49.260
+your text-to-image
+generation model
+
+00:58:49.260 --> 00:58:53.500
+to produce images
+that are higher
+
+00:58:53.500 --> 00:58:58.020
+rewards, because the reward
+model that you trained
+
+00:58:58.020 --> 00:59:03.380
+is something that hopefully
+aligns with human preferences.
+
+00:59:03.380 --> 00:59:06.440
+So if the reward model
+says that one is good,
+
+00:59:06.440 --> 00:59:09.340
+then hopefully, it's
+something that is aligned
+
+00:59:09.340 --> 00:59:11.420
+with what the human would say.
+
+00:59:11.420 --> 00:59:17.290
+And what you want is to
+train your image generation
+
+00:59:17.290 --> 00:59:25.450
+model in order to produce
+images that are higher rewards.
+
+00:59:25.450 --> 00:59:28.150
+So there is some math involved,
+but at a very high level,
+
+00:59:28.150 --> 00:59:32.610
+what we do is we take
+the noisy latent,
+
+00:59:32.610 --> 00:59:38.370
+we predict or generate an image
+for which we have the reward.
+
+00:59:38.370 --> 00:59:41.950
+But in this case, the good
+thing is that we have the model.
+
+00:59:41.950 --> 00:59:43.110
+We have the reward model.
+
+00:59:43.110 --> 00:59:46.650
+It is a reward model that
+we have at our disposal.
+
+00:59:46.650 --> 00:59:52.250
+So it is actually something
+that is differentiable.
+
+00:59:52.250 --> 00:59:57.290
+And so here, you
+can back propagate
+
+00:59:57.290 --> 00:59:59.470
+the loss or the
+objective that you have,
+
+00:59:59.470 --> 01:00:03.090
+which is to maximize those
+rewards back into your image
+
+01:00:03.090 --> 01:00:07.290
+generation model in order
+to incentivize that model
+
+01:00:07.290 --> 01:00:13.670
+to produce images that
+are higher rewards.
+
+01:00:13.670 --> 01:00:17.990
+So that is reward
+feedback learning.
+
+01:00:17.990 --> 01:00:21.110
+The second method
+I will introduce
+
+01:00:21.110 --> 01:00:26.670
+is called Flow Group Reward
+Policy Optimization a.k.a.
+
+01:00:26.670 --> 01:00:28.870
+Flow-GRPO.
+
+01:00:28.870 --> 01:00:31.730
+So for those of you who
+are also in the LLM field,
+
+01:00:31.730 --> 01:00:35.350
+you may have heard
+the term GRPO a lot
+
+01:00:35.350 --> 01:00:38.270
+during the past year or so.
+
+01:00:38.270 --> 01:00:41.310
+And so here, the
+idea is to leverage
+
+01:00:41.310 --> 01:00:45.550
+that algorithm in the
+case of image generation.
+
+01:00:45.550 --> 01:00:50.670
+So in a very similar
+fashion, what you do is you
+
+01:00:50.670 --> 01:00:54.790
+take a look at images that
+are generated by your image
+
+01:00:54.790 --> 01:01:00.310
+generation model, and in
+this case, what you want
+
+01:01:00.310 --> 01:01:07.430
+is for a given prompt to have a
+diverse set of generated images.
+
+01:01:07.430 --> 01:01:09.480
+So it's going a little
+bit into the details,
+
+01:01:09.480 --> 01:01:15.620
+but the authors are
+framing this via an SDE
+
+01:01:15.620 --> 01:01:21.460
+that increases the diversity
+of images that are generated,
+
+01:01:21.460 --> 01:01:25.780
+so this is all so
+that we can have,
+
+01:01:25.780 --> 01:01:29.980
+for a given prompt,
+a diverse set
+
+01:01:29.980 --> 01:01:32.660
+of images that are generated.
+
+01:01:32.660 --> 01:01:37.200
+And from there, compute
+relative rewards,
+
+01:01:37.200 --> 01:01:41.980
+meaning you pass
+each prompt along
+
+01:01:41.980 --> 01:01:47.140
+with each image to some
+black-box reward model,
+
+01:01:47.140 --> 01:01:51.060
+and it tells you whether or
+not that is a good image.
+
+01:01:51.060 --> 01:01:56.100
+And what you do is you
+compute a relative measure
+
+01:01:56.100 --> 01:01:59.900
+of how good that image was
+with respect to the other image
+
+01:01:59.900 --> 01:02:01.620
+in your group.
+
+01:02:01.620 --> 01:02:03.820
+So that's why this
+method is called
+
+01:02:03.820 --> 01:02:05.700
+group Reward Policy
+Optimization,
+
+01:02:05.700 --> 01:02:09.170
+is because you
+actually compute--
+
+01:02:09.170 --> 01:02:11.230
+so an advantage, that's
+the technical term,
+
+01:02:11.230 --> 01:02:17.570
+which is the reward relative
+to the reward in your group.
+
+01:02:17.570 --> 01:02:21.690
+And then based on that,
+you update the policy which
+
+01:02:21.690 --> 01:02:24.050
+is your image generation model.
+
+01:02:24.050 --> 01:02:26.270
+And so one thing
+that I want to say,
+
+01:02:26.270 --> 01:02:30.410
+and it's true for all of
+these reward-based approaches,
+
+01:02:30.410 --> 01:02:34.890
+is your reward is not
+necessarily something that
+
+01:02:34.890 --> 01:02:38.810
+is fully aligned with
+what you care about.
+
+01:02:38.810 --> 01:02:43.010
+And so you can have a problem
+of reward hacking, where
+
+01:02:43.010 --> 01:02:48.250
+your model is being
+updated too much in a way
+
+01:02:48.250 --> 01:02:50.690
+to optimize the reward
+that is not perfectly
+
+01:02:50.690 --> 01:02:52.610
+aligned with what you want.
+
+01:02:52.610 --> 01:02:57.770
+And so in order to have a
+way to mitigate that issue,
+
+01:02:57.770 --> 01:03:01.597
+you typically have an
+extra term in your loss.
+
+01:03:01.597 --> 01:03:03.430
+And so here in the slide
+it's kind of small,
+
+01:03:03.430 --> 01:03:09.230
+but it's a KL divergence term
+between the policy that you're
+
+01:03:09.230 --> 01:03:12.710
+training on and the old policy.
+
+01:03:12.710 --> 01:03:14.310
+So it's just a
+way for you to not
+
+01:03:14.310 --> 01:03:20.530
+have iterations, updates that
+are too far from the old model.
+
+01:03:23.510 --> 01:03:26.790
+And the last one I will
+mention, and here I'm
+
+01:03:26.790 --> 01:03:29.510
+sorry for this big
+formulas, but I
+
+01:03:29.510 --> 01:03:32.150
+couldn't find a good
+illustration for this one.
+
+01:03:32.150 --> 01:03:35.510
+So this one is
+called Diffusion DPO.
+
+01:03:35.510 --> 01:03:39.150
+And Diffusion DPO is
+the diffusion equivalent
+
+01:03:39.150 --> 01:03:45.110
+of DPO, which is a supervised
+method used in the LLM world
+
+01:03:45.110 --> 01:03:47.830
+to tune the weights
+of your model
+
+01:03:47.830 --> 01:03:50.550
+with respect to
+human preferences.
+
+01:03:50.550 --> 01:03:54.550
+And here, what you need to take
+away from these three lines
+
+01:03:54.550 --> 01:04:00.950
+of equations is that you want
+to incentivize your model
+
+01:04:00.950 --> 01:04:07.540
+to predict cities associated
+with "winning" images.
+
+01:04:07.540 --> 01:04:10.000
+You want to
+incentivize your model,
+
+01:04:10.000 --> 01:04:12.740
+doing a better job
+at predicting those,
+
+01:04:12.740 --> 01:04:18.340
+and you want to incentivize
+your model to do a worse job
+
+01:04:18.340 --> 01:04:24.620
+at predicting velocities
+of the "bad" images.
+
+01:04:24.620 --> 01:04:27.260
+So if you do that,
+you're going to have
+
+01:04:27.260 --> 01:04:31.020
+a higher chance of having the
+winning images be generated
+
+01:04:31.020 --> 01:04:36.220
+and a lower chance of having
+your model generate the worse
+
+01:04:36.220 --> 01:04:40.180
+images from being generated.
+
+01:04:40.180 --> 01:04:41.320
+Does this part make sense?
+
+01:04:41.320 --> 01:04:43.240
+So we have these three
+lines of equations.
+
+01:04:43.240 --> 01:04:45.520
+You can stare at
+it after the class.
+
+01:04:45.520 --> 01:04:47.780
+It's something
+that also tells you
+
+01:04:47.780 --> 01:04:52.060
+that we want the model to be
+better at predicting velocities
+
+01:04:52.060 --> 01:04:55.380
+of winning images, and
+worse at predicting
+
+01:04:55.380 --> 01:04:59.860
+loss velocity of losing images.
+
+01:04:59.860 --> 01:05:04.370
+So yeah, so this is what this
+loss is telling you to do.
+
+01:05:04.370 --> 01:05:05.430
+OK, great.
+
+01:05:05.430 --> 01:05:10.330
+So there is one last
+thing I want to tell you.
+
+01:05:10.330 --> 01:05:14.090
+We want to make
+our images better.
+
+01:05:14.090 --> 01:05:18.050
+And I want you to
+tell me, or I'm
+
+01:05:18.050 --> 01:05:23.730
+asking if you would know
+what kind of prompts
+
+01:05:23.730 --> 01:05:27.470
+would lead to that kind of
+image at this point in time,
+
+01:05:27.470 --> 01:05:29.810
+in the training, if
+you were to guess.
+
+01:05:29.810 --> 01:05:33.570
+So here on the left, you
+have a beautiful image
+
+01:05:33.570 --> 01:05:35.590
+of a Teddy bear reading a book.
+
+01:05:35.590 --> 01:05:40.570
+So the question here is what
+prompt do you want to put?
+
+01:05:40.570 --> 01:05:41.790
+Anyone wants to try?
+
+01:05:44.690 --> 01:05:45.750
+Can be creative.
+
+01:05:52.450 --> 01:05:55.250
+You think it's a trick question.
+
+01:05:55.250 --> 01:05:58.670
+So I'm going to just
+for the sake of time,
+
+01:05:58.670 --> 01:06:00.870
+tell you what the prompt was.
+
+01:06:00.870 --> 01:06:03.830
+So it's actually a
+truncated prompt,
+
+01:06:03.830 --> 01:06:06.050
+and I'll just read
+the first few words.
+
+01:06:06.050 --> 01:06:09.150
+So "A warm, intimate indoor
+reading scene featuring a plush
+
+01:06:09.150 --> 01:06:12.390
+teddy bear as a central
+object, and it talks about how
+
+01:06:12.390 --> 01:06:14.690
+the objects are, how
+the lighting is."
+
+01:06:14.690 --> 01:06:19.670
+And it's actually maybe four
+times what is on the slide.
+
+01:06:19.670 --> 01:06:25.430
+So the point here is that
+these alignment methods
+
+01:06:25.430 --> 01:06:29.630
+allow us to have much
+greater control on what we
+
+01:06:29.630 --> 01:06:31.950
+want the output image to be.
+
+01:06:31.950 --> 01:06:34.750
+And there is,
+therefore, a mismatch
+
+01:06:34.750 --> 01:06:38.990
+between what we teach
+the model and what
+
+01:06:38.990 --> 01:06:41.250
+users tell to the model.
+
+01:06:41.250 --> 01:06:44.350
+Because let's be
+honest, you and I,
+
+01:06:44.350 --> 01:06:47.530
+if we want to create an
+image of a teddy bear,
+
+01:06:47.530 --> 01:06:50.110
+we'll just say "a teddy
+bear reading a book."
+
+01:06:50.110 --> 01:06:52.670
+But we want something
+that looks like this.
+
+01:06:52.670 --> 01:06:55.750
+So there needs to be
+something in between that
+
+01:06:55.750 --> 01:06:59.420
+is able to prompt our
+model well in a way that
+
+01:06:59.420 --> 01:07:02.220
+will generate beautiful images.
+
+01:07:02.220 --> 01:07:08.100
+And there is a method called
+prompts enhancement, which
+
+01:07:08.100 --> 01:07:13.020
+will take a given user
+input and transform it
+
+01:07:13.020 --> 01:07:18.300
+into a very elegant,
+long, detailed prompt that
+
+01:07:18.300 --> 01:07:20.900
+would be similar to
+the kinds of prompts
+
+01:07:20.900 --> 01:07:24.060
+that the model has
+been trained on.
+
+01:07:24.060 --> 01:07:27.540
+And so this is all for us to
+have a beautiful image based
+
+01:07:27.540 --> 01:07:31.580
+on a prompt that is in
+distribution, if you want,
+
+01:07:31.580 --> 01:07:35.780
+and that is leveraging the
+capabilities of the model.
+
+01:07:35.780 --> 01:07:39.140
+So I just want to
+take a pause here.
+
+01:07:39.140 --> 01:07:41.560
+So I know I'm doing a lot
+of metaphors comparisons,
+
+01:07:41.560 --> 01:07:47.100
+but let's try to recap all
+the steps we've been through
+
+01:07:47.100 --> 01:07:49.740
+by taking the following analogy.
+
+01:07:49.740 --> 01:07:57.480
+So let's assume that our
+image generation model is us,
+
+01:07:57.480 --> 01:08:01.320
+is similar to us actually
+learning how to cook.
+
+01:08:01.320 --> 01:08:05.380
+So pre-training is about
+learning how to generate images.
+
+01:08:05.380 --> 01:08:09.400
+So here just learn about the
+different kinds of foods.
+
+01:08:09.400 --> 01:08:14.200
+Post-training is about learning
+how to generate "good" images.
+
+01:08:14.200 --> 01:08:15.980
+So here, what does good mean?
+
+01:08:15.980 --> 01:08:18.800
+So these are examples
+that we give you,
+
+01:08:18.800 --> 01:08:21.819
+so supervised fine tuning
+and continued training.
+
+01:08:21.819 --> 01:08:24.120
+Continued training
+is new knowledge.
+
+01:08:24.120 --> 01:08:29.520
+So here, it's as if I was
+reading about recipes.
+
+01:08:29.520 --> 01:08:33.160
+So I read about recipes
+of how to make good food.
+
+01:08:33.160 --> 01:08:36.020
+And then supervised fine-tuning
+is about the aesthetics,
+
+01:08:36.020 --> 01:08:38.740
+it's about the prompts,
+the instruction following.
+
+01:08:38.740 --> 01:08:42.220
+And so here, I'm just making
+sure that the food looks great.
+
+01:08:42.220 --> 01:08:44.285
+The delivery is good.
+
+01:08:44.285 --> 01:08:46.160
+And then you have the
+preference tuning stage
+
+01:08:46.160 --> 01:08:49.680
+where you want to make sure
+to do more of the things
+
+01:08:49.680 --> 01:08:52.120
+that you may like
+rather than not.
+
+01:08:52.120 --> 01:08:54.160
+And in this food
+analogy case, you
+
+01:08:54.160 --> 01:08:57.390
+have an inspector, food
+inspector that comes,
+
+01:08:57.390 --> 01:09:00.870
+and you cook several
+times the same dish.
+
+01:09:00.870 --> 01:09:06.029
+And inspector just
+tastes how good
+
+01:09:06.029 --> 01:09:08.229
+each of the dishes
+that you prepared
+
+01:09:08.229 --> 01:09:10.490
+was and it just tells
+you which one was better.
+
+01:09:10.490 --> 01:09:15.670
+And you update your way
+of cooking based on that.
+
+01:09:15.670 --> 01:09:21.990
+And this prompt enhancement
+thing is the same as you being
+
+01:09:21.990 --> 01:09:28.350
+in a restaurant and a customer
+walking in and telling you,
+
+01:09:28.350 --> 01:09:30.830
+"I want meat."
+
+01:09:30.830 --> 01:09:34.750
+But for you, you just know
+medium-rare kind of meat
+
+01:09:34.750 --> 01:09:36.210
+with a pinch of salt and so on.
+
+01:09:36.210 --> 01:09:40.990
+So you will have a waiter
+between the customer
+
+01:09:40.990 --> 01:09:48.270
+and yourself that will
+rephrase the customer's request
+
+01:09:48.270 --> 01:09:51.430
+in a way that aligns with
+what you have learned.
+
+01:09:51.430 --> 01:09:56.500
+And this is exactly what
+prompts enhancement is.
+
+01:09:56.500 --> 01:09:58.380
+I hope this made sense.
+
+01:09:58.380 --> 01:10:02.580
+And with that, let's go to the
+third stage of the training
+
+01:10:02.580 --> 01:10:05.460
+lifecycle, which is tuning.
+
+01:10:05.460 --> 01:10:11.860
+So as I mentioned, tuning is
+about personalizing your model
+
+01:10:11.860 --> 01:10:15.740
+for a special use case
+that you care about.
+
+01:10:15.740 --> 01:10:20.340
+And so here, the method that
+I want to talk to you about
+
+01:10:20.340 --> 01:10:23.260
+is a method that you may
+have seen on the internet
+
+01:10:23.260 --> 01:10:25.700
+because a lot of people
+have been using it.
+
+01:10:25.700 --> 01:10:28.500
+It's called DreamBooth.
+
+01:10:28.500 --> 01:10:37.040
+And the idea is that you
+have something of interest,
+
+01:10:37.040 --> 01:10:39.780
+let's say a specific
+teddy bear, that you
+
+01:10:39.780 --> 01:10:44.540
+want to have in the
+images that you generate.
+
+01:10:44.540 --> 01:10:46.780
+You don't want any teddy bear.
+
+01:10:46.780 --> 01:10:49.500
+You want that
+specific teddy bear.
+
+01:10:49.500 --> 01:10:53.680
+So what you want is to
+personalize your model
+
+01:10:53.680 --> 01:10:59.320
+to generate images of that
+very specific teddy bear.
+
+01:10:59.320 --> 01:11:01.720
+So here's what you would do.
+
+01:11:01.720 --> 01:11:06.240
+What you would do
+is taking your model
+
+01:11:06.240 --> 01:11:09.640
+and then having a few images
+of that very specific teddy
+
+01:11:09.640 --> 01:11:13.800
+bear that you have, take
+images of that teddy bear
+
+01:11:13.800 --> 01:11:17.560
+with different poses,
+and train your model
+
+01:11:17.560 --> 01:11:23.000
+to generate that teddy bear
+based on a prompt that relies
+
+01:11:23.000 --> 01:11:30.760
+on a rare token, that is here
+bracket V. That will teach
+
+01:11:30.760 --> 01:11:37.240
+your model to associate
+that specific person/object
+
+01:11:37.240 --> 01:11:41.720
+reference with that token.
+
+01:11:41.720 --> 01:11:44.040
+So you do that.
+
+01:11:44.040 --> 01:11:47.080
+So let's say you do that.
+
+01:11:47.080 --> 01:11:52.170
+Do you see an example or
+something that can go wrong.
+
+01:11:52.170 --> 01:11:55.990
+If you train your model to
+generate these images based
+
+01:11:55.990 --> 01:11:58.600
+on that prompt?
+
+01:11:58.600 --> 01:12:00.890
+OK, let's assume
+you just do that.
+
+01:12:05.870 --> 01:12:08.590
+Yep.
+
+01:12:08.590 --> 01:12:11.550
+So the answer is it's
+not diverse enough.
+
+01:12:11.550 --> 01:12:14.590
+So I think you're very,
+very-- you're touching exactly
+
+01:12:14.590 --> 01:12:18.750
+the problem that we have at
+hand, which is that you will
+
+01:12:18.750 --> 01:12:21.630
+specialize your model
+too much into generating
+
+01:12:21.630 --> 01:12:25.330
+that and actually forgetting
+the kinds of concepts,
+
+01:12:25.330 --> 01:12:28.870
+the kinds of images it was
+able to produce before.
+
+01:12:28.870 --> 01:12:31.390
+And so for that reason,
+so it's a great answer
+
+01:12:31.390 --> 01:12:35.430
+for that reason, what you
+want is to also make sure
+
+01:12:35.430 --> 01:12:39.950
+that your model does not lose
+the ability that it had before.
+
+01:12:39.950 --> 01:12:44.310
+And so that's why what you
+would want to do is to have some
+
+01:12:44.310 --> 01:12:49.980
+reference of text-to-image pairs
+that it was able to generate
+
+01:12:49.980 --> 01:12:53.100
+successfully, that you would
+also tell it to generate
+
+01:12:53.100 --> 01:12:59.680
+successfully and combine the
+two into a loss that tells you,
+
+01:12:59.680 --> 01:13:05.100
+"I want to generate images
+with that specific teddy bear,
+
+01:13:05.100 --> 01:13:08.140
+but also preserving the
+performance that I had
+
+01:13:08.140 --> 01:13:10.540
+in the past."
+
+01:13:10.540 --> 01:13:13.440
+And this is called the
+prior preservation loss.
+
+01:13:13.440 --> 01:13:15.940
+That's second term.
+
+01:13:15.940 --> 01:13:18.420
+So when you do that training--
+
+01:13:18.420 --> 01:13:19.220
+and so yeah.
+
+01:13:19.220 --> 01:13:20.900
+So you prevent overfitting.
+
+01:13:20.900 --> 01:13:23.740
+So when you do that training,
+what you're able to do
+
+01:13:23.740 --> 01:13:27.900
+is to use that rare special
+token that you have trained
+
+01:13:27.900 --> 01:13:34.880
+your model on and then generate
+new images in specific settings.
+
+01:13:34.880 --> 01:13:39.640
+So here the special token
+teddy bear attending CME 296,
+
+01:13:39.640 --> 01:13:43.420
+so this is how teddy
+bear would look like.
+
+01:13:43.420 --> 01:13:46.360
+So that method is great,
+and what we're doing
+
+01:13:46.360 --> 01:13:50.560
+is updating our model and
+in particular the model
+
+01:13:50.560 --> 01:13:56.760
+weights in order to reflect
+what we want to generate.
+
+01:13:56.760 --> 01:14:00.840
+Well, the problem is your
+model can be quite big.
+
+01:14:00.840 --> 01:14:05.160
+It can be as big as
+billions of parameters.
+
+01:14:05.160 --> 01:14:08.440
+I believe the biggest
+text-to-image models
+
+01:14:08.440 --> 01:14:11.280
+that are out there are in the
+order of tens of billions,
+
+01:14:11.280 --> 01:14:12.960
+the open-source ones.
+
+01:14:12.960 --> 01:14:19.720
+And so you would not want to
+update all the weights, which
+
+01:14:19.720 --> 01:14:22.600
+is the reason why
+there is a method that
+
+01:14:22.600 --> 01:14:27.360
+is very commonly used in the LLM
+world, which is also something
+
+01:14:27.360 --> 01:14:32.200
+that people use in this
+instance, which is called LoRA,
+
+01:14:32.200 --> 01:14:36.320
+and stands for
+Low-Rank Adaptation.
+
+01:14:36.320 --> 01:14:39.280
+And what this method
+does is instead
+
+01:14:39.280 --> 01:14:43.360
+of training all the
+weights of your model, what
+
+01:14:43.360 --> 01:14:50.110
+it does is it only trains
+a fraction by considering
+
+01:14:50.110 --> 01:14:53.790
+that the weights of your model
+are the weights of the base
+
+01:14:53.790 --> 01:14:58.950
+model, plus two
+low-rank matrices.
+
+01:14:58.950 --> 01:15:01.310
+And the reason why it's
+called low-rank adaptation
+
+01:15:01.310 --> 01:15:05.910
+is because it leads to A
+times B, that is low rank.
+
+01:15:05.910 --> 01:15:07.990
+And so when you do
+that, it turns out
+
+01:15:07.990 --> 01:15:11.110
+that you can preserve
+most of the performance
+
+01:15:11.110 --> 01:15:14.950
+but train that with a
+fraction of the cost.
+
+01:15:14.950 --> 01:15:19.990
+So you will see methods that
+are called "DreamBooth + LoRA."
+
+01:15:19.990 --> 01:15:22.950
+And that is what it is about.
+
+01:15:22.950 --> 01:15:26.880
+And I want to talk
+about the pros
+
+01:15:26.880 --> 01:15:28.130
+and the cons of this approach.
+
+01:15:28.130 --> 01:15:30.510
+So the pro is--
+
+01:15:30.510 --> 01:15:32.710
+the good thing is if
+you want to generate
+
+01:15:32.710 --> 01:15:36.730
+thousands and thousands of
+images of your teddy bear, well,
+
+01:15:36.730 --> 01:15:38.350
+you can do that.
+
+01:15:38.350 --> 01:15:41.290
+And the results are
+pretty high fidelity.
+
+01:15:41.290 --> 01:15:43.170
+They match pretty
+well the details
+
+01:15:43.170 --> 01:15:46.210
+that are in the input images.
+
+01:15:46.210 --> 01:15:49.370
+But the con here
+is if you need--
+
+01:15:49.370 --> 01:15:54.050
+or if you need to do that
+for a lot of special cases,
+
+01:15:54.050 --> 01:15:59.170
+well, you need to absorb the
+training costs, which is pretty
+
+01:15:59.170 --> 01:16:01.570
+time consuming and costly.
+
+01:16:01.570 --> 01:16:05.690
+And also, it's something
+that you cannot really reuse
+
+01:16:05.690 --> 01:16:10.970
+if, for instance, you want
+something else in your images.
+
+01:16:10.970 --> 01:16:15.210
+And I would just conclude by
+saying that this approach is
+
+01:16:15.210 --> 01:16:18.530
+great if you're in
+a use case where
+
+01:16:18.530 --> 01:16:22.890
+you need to generate many,
+many, many, many images of one
+
+01:16:22.890 --> 01:16:31.170
+specific subject, or
+person, or object.
+
+01:16:31.170 --> 01:16:36.210
+And with that, I'll
+give it to Shervin.
+
+01:16:36.210 --> 01:16:37.850
+Thank you, Afshin.
+
+01:16:37.850 --> 01:16:39.730
+So we're going to
+continue together
+
+01:16:39.730 --> 01:16:42.600
+on that note of
+efficiency and looking
+
+01:16:42.600 --> 01:16:45.520
+at distillation
+techniques which aim
+
+01:16:45.520 --> 01:16:49.040
+at preserving some
+of the high quality
+
+01:16:49.040 --> 01:16:51.780
+that we were able to
+develop with these models,
+
+01:16:51.780 --> 01:16:54.880
+but at a lower cost.
+
+01:16:54.880 --> 01:17:00.500
+So all of these methods produce
+state-of-the-art images,
+
+01:17:00.500 --> 01:17:04.160
+but in real life, you might be a
+user that uses a service that is
+
+01:17:04.160 --> 01:17:05.360
+high volume.
+
+01:17:05.360 --> 01:17:08.080
+So the provider doesn't
+have an incentive
+
+01:17:08.080 --> 01:17:11.280
+to spend a lot of
+money on each query.
+
+01:17:11.280 --> 01:17:15.520
+So you don't want typically to
+have 1,000 steps to generate
+
+01:17:15.520 --> 01:17:17.040
+a single image.
+
+01:17:17.040 --> 01:17:19.840
+Similarly, if you're
+in a business setting,
+
+01:17:19.840 --> 01:17:22.720
+you want to achieve
+a given goal,
+
+01:17:22.720 --> 01:17:25.480
+and your goal is not
+necessarily to be
+
+01:17:25.480 --> 01:17:28.120
+the best, but just good enough.
+
+01:17:28.120 --> 01:17:31.160
+And then that
+trade-off between good
+
+01:17:31.160 --> 01:17:33.200
+in terms of quality
+and cost is something
+
+01:17:33.200 --> 01:17:36.200
+that you're going
+to be interested in.
+
+01:17:36.200 --> 01:17:38.870
+And then you can cite
+other applications
+
+01:17:38.870 --> 01:17:42.190
+where real-time
+properties are important.
+
+01:17:42.190 --> 01:17:45.150
+So this is why it's
+worth investigating
+
+01:17:45.150 --> 01:17:48.310
+techniques that are fast.
+
+01:17:48.310 --> 01:17:52.750
+And then all of these are, of
+course, linked to properties
+
+01:17:52.750 --> 01:17:54.650
+that we care about
+as everyday users.
+
+01:17:54.650 --> 01:17:56.910
+So we don't want to
+spend a lot, and we
+
+01:17:56.910 --> 01:18:01.390
+don't want to spend
+resources inefficiently.
+
+01:18:01.390 --> 01:18:06.750
+And if I was to tell
+you about distillation
+
+01:18:06.750 --> 01:18:11.510
+in the traditional world--
+
+01:18:11.510 --> 01:18:15.290
+so you would typically see
+something that looks like this.
+
+01:18:15.290 --> 01:18:19.270
+You have a teacher
+model that is big
+
+01:18:19.270 --> 01:18:23.590
+and a student model that is
+typically of a smaller size.
+
+01:18:23.590 --> 01:18:27.110
+And you both want to
+predict the same outputs.
+
+01:18:27.110 --> 01:18:32.550
+And here, for example, so
+I'm borrowing these slides
+
+01:18:32.550 --> 01:18:36.350
+from CME 295, where
+we wanted to distill
+
+01:18:36.350 --> 01:18:39.090
+some of the knowledge on
+next token prediction.
+
+01:18:39.090 --> 01:18:42.810
+So what is important in
+this distillation technique
+
+01:18:42.810 --> 01:18:47.250
+is truly the shape of the
+distribution that is learned.
+
+01:18:47.250 --> 01:18:52.170
+And you can see that you can
+get away with smaller models,
+
+01:18:52.170 --> 01:18:54.810
+directly anchoring
+on it and then
+
+01:18:54.810 --> 01:18:58.870
+producing a level of quality
+that is almost just as high.
+
+01:18:58.870 --> 01:19:01.650
+So just to give a
+quantitative example,
+
+01:19:01.650 --> 01:19:05.050
+you may think of a
+BERT and DistilBERT,
+
+01:19:05.050 --> 01:19:11.530
+where you save
+quite a bit, I think
+
+01:19:11.530 --> 01:19:14.450
+60%, half of the
+parameters, roughly,
+
+01:19:14.450 --> 01:19:17.283
+and you retain 97%
+of the performance.
+
+01:19:17.283 --> 01:19:19.450
+So this is something that
+we are interested in doing
+
+01:19:19.450 --> 01:19:20.810
+as well here.
+
+01:19:20.810 --> 01:19:22.790
+So in the LLM
+world, for example,
+
+01:19:22.790 --> 01:19:26.490
+you would do so with the KL
+divergence between the two.
+
+01:19:26.490 --> 01:19:30.250
+So here, the loss
+says if we assume
+
+01:19:30.250 --> 01:19:33.890
+that the teacher
+distribution is a true one,
+
+01:19:33.890 --> 01:19:38.060
+how bad is it to approximate
+it with a student one?
+
+01:19:38.060 --> 01:19:41.440
+And this is how you perform
+your loss optimization process
+
+01:19:41.440 --> 01:19:43.800
+with that kind of mindset.
+
+01:19:43.800 --> 01:19:46.840
+But here in the image
+world, well, you
+
+01:19:46.840 --> 01:19:51.460
+can try to reduce the
+size of the student model.
+
+01:19:51.460 --> 01:19:55.200
+And it typically leads
+to much worse quality.
+
+01:19:55.200 --> 01:19:57.960
+And then you have
+another knob that you
+
+01:19:57.960 --> 01:20:02.040
+have as a low-hanging fruit
+that people typically tune,
+
+01:20:02.040 --> 01:20:07.320
+which is not the model size
+but more the number of steps.
+
+01:20:07.320 --> 01:20:12.660
+So you might remember from the
+first lecture that, for example,
+
+01:20:12.660 --> 01:20:15.880
+in diffusion you have,
+let's say 1,000 steps.
+
+01:20:15.880 --> 01:20:19.460
+Similarly, in the flow matching
+setting that afshin mentioned,
+
+01:20:19.460 --> 01:20:24.320
+we were considering
+here, you typically
+
+01:20:24.320 --> 01:20:25.400
+have more than one step.
+
+01:20:25.400 --> 01:20:27.400
+And you would want
+to make it one,
+
+01:20:27.400 --> 01:20:32.080
+so that just a single pass
+gives you what you want.
+
+01:20:32.080 --> 01:20:35.390
+So here, we were not going
+to be doing typically
+
+01:20:35.390 --> 01:20:38.590
+KL divergence between
+distribution over tokens,
+
+01:20:38.590 --> 01:20:41.710
+but these kind of
+loss that regresses
+
+01:20:41.710 --> 01:20:44.870
+the output with respect
+to the teacher output
+
+01:20:44.870 --> 01:20:46.730
+is something that
+you are going to see.
+
+01:20:46.730 --> 01:20:50.330
+So one way of doing it is
+with the mean squared error.
+
+01:20:50.330 --> 01:20:54.190
+We're going to see other
+techniques as well.
+
+01:20:54.190 --> 01:20:58.790
+And I just want us
+to do this thought
+
+01:20:58.790 --> 01:21:04.950
+exercise of approximating in
+one step directly the teacher
+
+01:21:04.950 --> 01:21:07.270
+output.
+
+01:21:07.270 --> 01:21:12.990
+So the issue is that it's
+too hard because you can--
+
+01:21:12.990 --> 01:21:16.110
+so just to take the analogy
+that Afshin was taking
+
+01:21:16.110 --> 01:21:19.310
+last week regarding
+the painter, it's
+
+01:21:19.310 --> 01:21:25.550
+as if you ask a painter to
+paint a beautiful piece of art
+
+01:21:25.550 --> 01:21:28.190
+and then ask the
+students to do exactly
+
+01:21:28.190 --> 01:21:30.670
+the same with a single stroke.
+
+01:21:30.670 --> 01:21:35.450
+So it's way too much information
+packed for a single forward step
+
+01:21:35.450 --> 01:21:37.770
+to capture all at once.
+
+01:21:37.770 --> 01:21:41.130
+So you need a more granular
+subsequence of steps
+
+01:21:41.130 --> 01:21:42.850
+intuitively.
+
+01:21:42.850 --> 01:21:46.290
+And this is what the spirit
+of progressive distillation
+
+01:21:46.290 --> 01:21:55.530
+is, where we take steps and ask
+the students to work on problems
+
+01:21:55.530 --> 01:21:59.370
+that are of approximate
+constant difficulty,
+
+01:21:59.370 --> 01:22:05.730
+and we iterate until we have a
+model that does what we want.
+
+01:22:05.730 --> 01:22:09.010
+So in other words,
+the formulation
+
+01:22:09.010 --> 01:22:12.490
+here is that we want the number
+of total steps to go from big T
+
+01:22:12.490 --> 01:22:14.570
+to 1.
+
+01:22:14.570 --> 01:22:18.530
+So here the method
+is as follows,
+
+01:22:18.530 --> 01:22:21.810
+every time you try to
+do what you were doing
+
+01:22:21.810 --> 01:22:24.290
+in half the number of steps.
+
+01:22:24.290 --> 01:22:27.330
+So I want you to make
+a thought experiment
+
+01:22:27.330 --> 01:22:30.040
+for a second
+between Afshin and I
+
+01:22:30.040 --> 01:22:33.320
+and not suppose
+that we are twins,
+
+01:22:33.320 --> 01:22:36.280
+but instead, we
+are a tuple of size
+
+01:22:36.280 --> 01:22:42.840
+n of identical brothers, more
+precisely of size log2 of number
+
+01:22:42.840 --> 01:22:44.120
+of steps.
+
+01:22:44.120 --> 01:22:46.600
+And here progressive
+distillation
+
+01:22:46.600 --> 01:22:51.560
+would be Afshin, for
+example, being the master
+
+01:22:51.560 --> 01:22:53.960
+painter for the first step.
+
+01:22:53.960 --> 01:23:00.480
+And every two strokes I would
+paint one stroke, and so on.
+
+01:23:00.480 --> 01:23:02.960
+And then once the
+process finishes,
+
+01:23:02.960 --> 01:23:05.840
+I would be the master
+painter, and then
+
+01:23:05.840 --> 01:23:08.780
+the next identical brother
+would be the student.
+
+01:23:08.780 --> 01:23:11.240
+So every two strokes
+that I paint,
+
+01:23:11.240 --> 01:23:15.460
+he would paint one stroke,
+so that at the end,
+
+01:23:15.460 --> 01:23:18.940
+you reach what you
+want in a single step.
+
+01:23:21.480 --> 01:23:25.800
+So just to give a visual
+representation of what
+
+01:23:25.800 --> 01:23:27.280
+we have learned here--
+
+01:23:27.280 --> 01:23:32.630
+so you can see this
+as secant lines
+
+01:23:32.630 --> 01:23:37.110
+that you draw in the
+space at every halving
+
+01:23:37.110 --> 01:23:40.790
+of the number of steps,
+which is a simple problem
+
+01:23:40.790 --> 01:23:42.510
+to take in isolation.
+
+01:23:42.510 --> 01:23:44.710
+And then when you
+do that iteratively,
+
+01:23:44.710 --> 01:23:48.190
+you reach the end goal.
+
+01:23:48.190 --> 01:23:51.950
+So looking at the results
+here, the good thing
+
+01:23:51.950 --> 01:23:55.070
+about this technique
+is that you can select
+
+01:23:55.070 --> 01:23:57.670
+the number of
+function evaluations
+
+01:23:57.670 --> 01:24:00.990
+that you're ready
+to spend, and you
+
+01:24:00.990 --> 01:24:06.330
+have an association
+with the end result.
+
+01:24:06.330 --> 01:24:08.190
+So of course, if you
+spend more steps,
+
+01:24:08.190 --> 01:24:09.690
+you're going to
+have better quality,
+
+01:24:09.690 --> 01:24:11.990
+but you have this
+level of granularity.
+
+01:24:11.990 --> 01:24:15.430
+And you see that you typically
+have better performance
+
+01:24:15.430 --> 01:24:18.710
+if you were to compare
+an equal number of steps,
+
+01:24:18.710 --> 01:24:22.990
+for example, in a deterministic
+technique like DDIM,
+
+01:24:22.990 --> 01:24:27.110
+like we had seen in the
+first lecture, which is nice.
+
+01:24:29.650 --> 01:24:32.930
+But here, one thing
+that we're doing
+
+01:24:32.930 --> 01:24:36.290
+is that no matter
+how hard the path
+
+01:24:36.290 --> 01:24:38.770
+to getting to the
+clean image is,
+
+01:24:38.770 --> 01:24:41.250
+we're just taking it as a given.
+
+01:24:41.250 --> 01:24:45.110
+We're not saying, OK, let's
+to make the problem simpler.
+
+01:24:45.110 --> 01:24:47.450
+We're just taking the
+problem as hard as it is
+
+01:24:47.450 --> 01:24:50.010
+and we're trying
+to work around it.
+
+01:24:50.010 --> 01:24:55.370
+And if you recall the third
+lecture on flow matching,
+
+01:24:55.370 --> 01:24:57.890
+there is something that
+we wish for that we
+
+01:24:57.890 --> 01:25:01.290
+might be able to
+realize, which is
+
+01:25:01.290 --> 01:25:07.490
+the reflow technique that
+helps in straightening paths
+
+01:25:07.490 --> 01:25:08.930
+in the space.
+
+01:25:08.930 --> 01:25:11.450
+So maybe we could
+make use of it.
+
+01:25:11.450 --> 01:25:18.830
+And this is what the paper
+called "InstaFlow" does.
+
+01:25:18.830 --> 01:25:22.490
+So it follows up on this
+idea of rectified flow
+
+01:25:22.490 --> 01:25:25.640
+that we had seen at
+the third lecture.
+
+01:25:25.640 --> 01:25:28.840
+So it does apply this method.
+
+01:25:28.840 --> 01:25:33.760
+And then on top of it, it
+adds a layer of distillation
+
+01:25:33.760 --> 01:25:38.840
+to further solidify
+the fact that we
+
+01:25:38.840 --> 01:25:42.400
+can get to the results
+in a single step.
+
+01:25:42.400 --> 01:25:48.160
+So just to give you a recap on
+what reflow was, so you had--
+
+01:25:48.160 --> 01:25:51.800
+so let's say you sample
+from the easy distribution
+
+01:25:51.800 --> 01:25:55.380
+and then you integrate your
+ODE to get to the sample.
+
+01:25:55.380 --> 01:25:58.680
+Then you take these
+pairs of input-outputs
+
+01:25:58.680 --> 01:26:02.920
+and then you fit a new model,
+like a new model in it.
+
+01:26:02.920 --> 01:26:05.960
+And what you get is
+straighter path, typically,
+
+01:26:05.960 --> 01:26:08.680
+which allows you
+to take less Euler
+
+01:26:08.680 --> 01:26:11.640
+steps to get to the answer.
+
+01:26:11.640 --> 01:26:16.720
+But I have a question for you.
+
+01:26:16.720 --> 01:26:20.060
+Let's say the problem
+is not totally straight,
+
+01:26:20.060 --> 01:26:23.440
+would you be inclined
+to do more reflow steps?
+
+01:26:31.020 --> 01:26:32.420
+So it's a trick question.
+
+01:26:32.420 --> 01:26:35.580
+So the answer is if you
+do more reflow steps,
+
+01:26:35.580 --> 01:26:38.700
+then you introduce
+discretization errors
+
+01:26:38.700 --> 01:26:39.680
+in your pairs.
+
+01:26:39.680 --> 01:26:41.580
+So the answer is typically no.
+
+01:26:41.580 --> 01:26:46.820
+And this is why what is
+pretty convenient to do
+
+01:26:46.820 --> 01:26:49.740
+is to give the task
+of still integrating
+
+01:26:49.740 --> 01:26:53.780
+that ODE to some teacher model
+and then have a student fit
+
+01:26:53.780 --> 01:26:54.960
+directly on that output.
+
+01:26:54.960 --> 01:26:59.140
+So this is what the
+distillation step does.
+
+01:26:59.140 --> 01:27:03.700
+And then one interesting
+fact is that we use--
+
+01:27:03.700 --> 01:27:07.260
+so this concept of
+distance between what
+
+01:27:07.260 --> 01:27:10.660
+the teacher predicts and
+what the student gets to.
+
+01:27:10.660 --> 01:27:14.740
+So you have this
+concept of warm-up,
+
+01:27:14.740 --> 01:27:18.500
+of using a simple
+distance metric like MSE.
+
+01:27:18.500 --> 01:27:20.740
+But we have seen in
+the previous lecture
+
+01:27:20.740 --> 01:27:25.010
+that MSE is not great to give
+a meaningful interpretation
+
+01:27:25.010 --> 01:27:27.870
+into whether the quality
+of the image is good,
+
+01:27:27.870 --> 01:27:31.290
+because it focuses on the
+specific value of each pixel
+
+01:27:31.290 --> 01:27:34.650
+instead of the meaning
+of the feature,
+
+01:27:34.650 --> 01:27:40.530
+which is why this method
+uses the second loss
+
+01:27:40.530 --> 01:27:47.170
+formulation called LPIPS,
+Learned Perceptual Image Patch
+
+01:27:47.170 --> 01:27:49.330
+Similarity.
+
+01:27:49.330 --> 01:27:54.490
+And here, you make the image
+pass through a pre-trained model
+
+01:27:54.490 --> 01:27:56.570
+with frozen weights,
+and then you
+
+01:27:56.570 --> 01:27:59.010
+compare the L2 distance
+between the feature
+
+01:27:59.010 --> 01:28:01.510
+maps instead over L layers.
+
+01:28:04.690 --> 01:28:06.950
+And this is what we just said.
+
+01:28:06.950 --> 01:28:11.170
+And then you see in practice,
+that the first reflow step gives
+
+01:28:11.170 --> 01:28:15.370
+you most of the
+straightening behavior,
+
+01:28:15.370 --> 01:28:18.570
+so you meaningfully-- you
+do not have an incentive
+
+01:28:18.570 --> 01:28:21.560
+to do more of them.
+
+01:28:21.560 --> 01:28:26.680
+And in terms of results,
+you see that you exceed
+
+01:28:26.680 --> 01:28:29.960
+the performance of whether--
+
+01:28:29.960 --> 01:28:33.120
+of the fact that you add this
+additional distillation step
+
+01:28:33.120 --> 01:28:37.200
+is better than just doing a
+reflow and having a single step.
+
+01:28:37.200 --> 01:28:43.560
+So it's the InstaFlow 0.9B
+versus the line just above that
+
+01:28:43.560 --> 01:28:45.120
+shows that.
+
+01:28:45.120 --> 01:28:49.440
+And yeah.
+
+01:28:49.440 --> 01:28:52.600
+So one thing that is
+tough with InstaFlow
+
+01:28:52.600 --> 01:28:55.920
+is that every time
+you do a reflow,
+
+01:28:55.920 --> 01:28:58.180
+it's an expensive process.
+
+01:28:58.180 --> 01:29:01.100
+So you need to do some
+pre work, which is--
+
+01:29:01.100 --> 01:29:03.560
+like the cost you
+have to pay here.
+
+01:29:03.560 --> 01:29:07.800
+And we're wondering
+if there is something
+
+01:29:07.800 --> 01:29:13.400
+we could do better when it comes
+to the path that are drawn.
+
+01:29:13.400 --> 01:29:16.440
+Is there some information that
+we could give to the student
+
+01:29:16.440 --> 01:29:21.180
+instead of making the problem
+simpler from the first place?
+
+01:29:21.180 --> 01:29:24.638
+But before I move on
+to the next mindset
+
+01:29:24.638 --> 01:29:27.180
+that I wanted to mention, I just
+wanted to pause for a second
+
+01:29:27.180 --> 01:29:28.980
+and see if there
+is any questions.
+
+01:29:28.980 --> 01:29:30.340
+Yep.
+
+01:29:30.340 --> 01:29:33.300
+The question is, Why wouldn't
+you force straight path
+
+01:29:33.300 --> 01:29:34.200
+in the pre-training?
+
+01:29:34.200 --> 01:29:39.860
+You already do that, because you
+select a random noise at random
+
+01:29:39.860 --> 01:29:44.700
+and then a target point, and
+then you draw a straight line.
+
+01:29:44.700 --> 01:29:47.540
+But the thing is, these
+pairings, they're not optimal.
+
+01:29:47.540 --> 01:29:49.923
+So when you sample randomly--
+
+01:29:49.923 --> 01:29:52.340
+and then the fact that you
+don't have these straight lines
+
+01:29:52.340 --> 01:29:55.780
+is not an intended
+design, but it's
+
+01:29:55.780 --> 01:29:59.580
+a consequence of this MSE loss.
+
+01:29:59.580 --> 01:30:04.320
+So the reflow procedure
+is our way to remedy that,
+
+01:30:04.320 --> 01:30:08.920
+and there is no way to do that
+as early as the first train.
+
+01:30:12.620 --> 01:30:14.260
+OK, awesome.
+
+01:30:14.260 --> 01:30:17.970
+So I'm slightly late--
+
+01:30:17.970 --> 01:30:25.440
+so I'm going to go through
+this next idea of leveraging
+
+01:30:25.440 --> 01:30:28.970
+local properties
+to train a better
+
+01:30:28.970 --> 01:30:34.850
+student with this notion of
+consistency models, which
+
+01:30:34.850 --> 01:30:38.890
+has an interesting property
+of looking at paths that
+
+01:30:38.890 --> 01:30:43.130
+are deterministic with
+a mapping that maps
+
+01:30:43.130 --> 01:30:48.050
+every point of that path
+to the end goal, such that
+
+01:30:48.050 --> 01:30:50.650
+no matter where you
+are on that path,
+
+01:30:50.650 --> 01:30:54.210
+if you train your model
+to predict the end image,
+
+01:30:54.210 --> 01:30:56.010
+then you can make
+the jump as early
+
+01:30:56.010 --> 01:31:03.330
+as when you are in the noise
+in the noise distribution.
+
+01:31:03.330 --> 01:31:09.330
+So just putting a picture
+here with our teddy bears
+
+01:31:09.330 --> 01:31:14.660
+and the flow matching case,
+if you have such a property,
+
+01:31:14.660 --> 01:31:21.360
+then every point on a given
+green line would map to x1.
+
+01:31:21.360 --> 01:31:24.700
+And the way to do so is twofold.
+
+01:31:24.700 --> 01:31:29.960
+So you can either do it with
+so-called consistency training,
+
+01:31:29.960 --> 01:31:34.680
+where you sample a
+clean image and then you
+
+01:31:34.680 --> 01:31:38.080
+noise it at some level
+t, and you noise it
+
+01:31:38.080 --> 01:31:40.800
+at level t plus delta t.
+
+01:31:40.800 --> 01:31:44.120
+And what you do is that you
+pass it through your model
+
+01:31:44.120 --> 01:31:48.400
+and try to make them
+match to the same value.
+
+01:31:48.400 --> 01:31:49.900
+So this is one way of doing so.
+
+01:31:49.900 --> 01:31:52.040
+There is a second
+way that leverages
+
+01:31:52.040 --> 01:31:56.320
+this teacher-student
+relationship, where denoising
+
+01:31:56.320 --> 01:31:59.640
+is not something that you
+would artificially do,
+
+01:31:59.640 --> 01:32:02.160
+but you would ask
+a teacher model
+
+01:32:02.160 --> 01:32:05.680
+to do denoising, which
+reflects properties
+
+01:32:05.680 --> 01:32:09.600
+that it has learned
+in the feature space,
+
+01:32:09.600 --> 01:32:16.460
+and then you ask a student
+model to make predictions that
+
+01:32:16.460 --> 01:32:17.820
+are consistent to each other.
+
+01:32:21.020 --> 01:32:24.640
+So here, you might say,
+"OK, very well, Sherwin.
+
+01:32:24.640 --> 01:32:29.300
+But if you only force these
+representations to be consistent
+
+01:32:29.300 --> 01:32:32.500
+with each other, you could
+well have a student that says,
+
+01:32:32.500 --> 01:32:35.680
+OK, don't worry, I
+will always predict 0.
+
+01:32:35.680 --> 01:32:37.580
+That way, they're
+always consistent,
+
+01:32:37.580 --> 01:32:41.420
+and maybe my loss will
+not be looking very pretty
+
+01:32:41.420 --> 01:32:45.260
+at the boundaries,
+but it's fine."
+
+01:32:45.260 --> 01:32:51.180
+Well, you have a way to prevent
+that collapse with two tools.
+
+01:32:51.180 --> 01:32:55.780
+So one is this prediction
+that you get at every step,
+
+01:32:55.780 --> 01:33:01.420
+is a parameterized function of
+weights that we put as design.
+
+01:33:01.420 --> 01:33:03.420
+So we have it enforced.
+
+01:33:03.420 --> 01:33:07.700
+And then the second
+ingredient in this recipe
+
+01:33:07.700 --> 01:33:13.850
+is to not backpropagate through
+both students, where doing so
+
+01:33:13.850 --> 01:33:16.250
+could lead to
+symmetrical weights
+
+01:33:16.250 --> 01:33:19.330
+updates that might
+not be those that
+
+01:33:19.330 --> 01:33:21.690
+actually match a fixed target.
+
+01:33:21.690 --> 01:33:26.290
+So we do that by keeping
+one of the students
+
+01:33:26.290 --> 01:33:29.530
+a slow-moving average and
+the other one actually doing
+
+01:33:29.530 --> 01:33:33.770
+the consistency prediction task.
+
+01:33:33.770 --> 01:33:38.510
+And when you look at
+what results it gets,
+
+01:33:38.510 --> 01:33:40.130
+it's quite competitive.
+
+01:33:40.130 --> 01:33:45.090
+And you can do so
+in the latent space.
+
+01:33:45.090 --> 01:33:46.730
+It's called LCM.
+
+01:33:46.730 --> 01:33:49.250
+You might see in the literature.
+
+01:33:49.250 --> 01:33:51.410
+But all of these
+methods, what they did
+
+01:33:51.410 --> 01:33:55.210
+is that they focused on
+matching a given target.
+
+01:33:55.210 --> 01:33:59.410
+And one thing that you see
+when you have this L2-style
+
+01:33:59.410 --> 01:34:04.810
+regression loss is that you
+have a regression to the mean,
+
+01:34:04.810 --> 01:34:10.280
+where images don't look as
+crisp as you would like.
+
+01:34:10.280 --> 01:34:13.220
+And GAN solves this.
+
+01:34:13.220 --> 01:34:16.480
+So let's see if there is
+some adversarial objective
+
+01:34:16.480 --> 01:34:19.580
+that we can introduce
+here to make it better.
+
+01:34:26.360 --> 01:34:28.240
+So before we even do that--
+
+01:34:28.240 --> 01:34:30.660
+so we were looking
+at the sample level,
+
+01:34:30.660 --> 01:34:34.320
+maybe if we look at things from
+a distribution perspective,
+
+01:34:34.320 --> 01:34:38.600
+we could look at where we could
+go in the sample space that
+
+01:34:38.600 --> 01:34:43.240
+looks where we want to go rather
+than a straight single point.
+
+01:34:43.240 --> 01:34:49.600
+And so the mindset here is
+to give a piece of noise
+
+01:34:49.600 --> 01:34:53.400
+to both the teacher
+and student model,
+
+01:34:53.400 --> 01:34:56.320
+and then based on
+the student output,
+
+01:34:56.320 --> 01:35:01.320
+noise it again and ask the
+teacher model, and then a model
+
+01:35:01.320 --> 01:35:05.960
+that looks like the student
+to try to denoise it.
+
+01:35:05.960 --> 01:35:12.540
+And then use their results to
+infer what pieces of advice
+
+01:35:12.540 --> 01:35:15.840
+the teacher and student models
+would give, respectively,
+
+01:35:15.840 --> 01:35:20.420
+to give the clean image,
+and use that signal as a way
+
+01:35:20.420 --> 01:35:24.940
+to inform what the student
+prediction should be.
+
+01:35:24.940 --> 01:35:28.860
+So we're going to look at this
+loss in details in a second.
+
+01:35:28.860 --> 01:35:31.820
+And you complement
+that by ensuring
+
+01:35:31.820 --> 01:35:35.500
+that the student's
+predictions match roughly what
+
+01:35:35.500 --> 01:35:38.580
+the teacher predictions do.
+
+01:35:38.580 --> 01:35:45.540
+And we see empirically that this
+helps stabilize the training.
+
+01:35:45.540 --> 01:35:48.120
+So looking at this
+distribution loss--
+
+01:35:48.120 --> 01:35:51.220
+so what you're doing in
+practice is the KL divergence
+
+01:35:51.220 --> 01:35:56.740
+between the distribution of
+the fake image with respect
+
+01:35:56.740 --> 01:36:00.500
+to the real image
+based on a fake input.
+
+01:36:00.500 --> 01:36:03.580
+And when you take the
+gradient of it with respect
+
+01:36:03.580 --> 01:36:08.290
+to the parameters of
+the student model,
+
+01:36:08.290 --> 01:36:12.970
+you get this nice interpretation
+of a difference of scores
+
+01:36:12.970 --> 01:36:14.970
+that you could see as a
+difference of velocities
+
+01:36:14.970 --> 01:36:18.490
+in the field of flow matching.
+
+01:36:18.490 --> 01:36:22.170
+And these respectively
+means that we
+
+01:36:22.170 --> 01:36:25.290
+want to do more of
+what the teacher says
+
+01:36:25.290 --> 01:36:30.810
+we should do and less of what
+the student says we should do.
+
+01:36:30.810 --> 01:36:36.130
+And we multiply-- we do a dot
+product such that the parameter
+
+01:36:36.130 --> 01:36:38.990
+updates reflects that goal.
+
+01:36:42.370 --> 01:36:44.530
+OK, great.
+
+01:36:44.530 --> 01:36:46.410
+Yeah, I want to
+pause for one second
+
+01:36:46.410 --> 01:36:50.210
+just to check if
+that makes sense.
+
+01:36:50.210 --> 01:36:56.430
+Yeah, so here-- so the question
+is, What's real and fake?
+
+01:36:56.430 --> 01:37:00.690
+So here the paper uses
+standard denomination
+
+01:37:00.690 --> 01:37:05.270
+like used in GAN to
+denote respectively
+
+01:37:05.270 --> 01:37:06.670
+teacher and student.
+
+01:37:06.670 --> 01:37:09.550
+So "real" would be
+your true image,
+
+01:37:09.550 --> 01:37:12.550
+like what generates the true
+distribution that you want
+
+01:37:12.550 --> 01:37:13.050
+to reach.
+
+01:37:13.050 --> 01:37:16.390
+And then "fake" is corresponding
+to the distribution
+
+01:37:16.390 --> 01:37:20.070
+of the student that we want to
+make it as close to the real
+
+01:37:20.070 --> 01:37:21.910
+ones.
+
+01:37:21.910 --> 01:37:25.910
+So respectively,
+teacher and student.
+
+01:37:25.910 --> 01:37:28.010
+Yeah, great point.
+
+01:37:28.010 --> 01:37:32.110
+So the question, Is there
+a collapse here happening?
+
+01:37:32.110 --> 01:37:33.310
+So it might.
+
+01:37:33.310 --> 01:37:35.910
+So if you were not doing that
+comparison between teacher
+
+01:37:35.910 --> 01:37:39.990
+and student advices, you
+would collapse to the mode
+
+01:37:39.990 --> 01:37:42.370
+of the teacher advice.
+
+01:37:42.370 --> 01:37:46.070
+And then the paper does
+some ablation study on it.
+
+01:37:46.070 --> 01:37:49.210
+And then the second piece
+that I mentioned earlier on,
+
+01:37:49.210 --> 01:37:52.890
+if you do not regress
+with the teacher's output,
+
+01:37:52.890 --> 01:37:56.190
+you might see another--
+
+01:37:56.190 --> 01:37:59.830
+not really collapse, but you
+would not reach the desired
+
+01:37:59.830 --> 01:38:02.620
+teacher distribution.
+
+01:38:02.620 --> 01:38:08.380
+So yeah, the answer
+is the collapse
+
+01:38:08.380 --> 01:38:10.760
+is bad if you were not
+considering this setup.
+
+01:38:10.760 --> 01:38:12.900
+But based on this
+setup, I think there
+
+01:38:12.900 --> 01:38:17.340
+is some hyperparameter tuning
+on how to balance the regression
+
+01:38:17.340 --> 01:38:19.300
+and distribution loss.
+
+01:38:19.300 --> 01:38:21.660
+Yep.
+
+01:38:21.660 --> 01:38:22.280
+Awesome.
+
+01:38:22.280 --> 01:38:28.700
+So moving on-- so I'm going
+to make a series of complaints
+
+01:38:28.700 --> 01:38:29.760
+that are very targeted.
+
+01:38:29.760 --> 01:38:32.540
+So you're going to
+see where I'm going.
+
+01:38:32.540 --> 01:38:35.860
+So here we're comparing
+things with respect
+
+01:38:35.860 --> 01:38:41.593
+to the teacher output, which
+is not the ground truth.
+
+01:38:41.593 --> 01:38:42.760
+So what I've mentioned here.
+
+01:38:42.760 --> 01:38:44.820
+So I've hovered over it.
+
+01:38:44.820 --> 01:38:46.980
+But the teacher--
+the student advice
+
+01:38:46.980 --> 01:38:51.540
+is actually a diffusion
+loop that you're running,
+
+01:38:51.540 --> 01:38:53.740
+which is quite expensive.
+
+01:38:53.740 --> 01:38:57.260
+And it's a bit of a duplicate
+concept with respect
+
+01:38:57.260 --> 01:39:01.290
+to the student model that you're
+training in the first place.
+
+01:39:01.290 --> 01:39:05.770
+And this idea of providing
+signal with respect
+
+01:39:05.770 --> 01:39:10.310
+to teacher minus student advice
+might seem as a soft one.
+
+01:39:10.310 --> 01:39:12.690
+Is there a way to
+reframe it better?
+
+01:39:12.690 --> 01:39:17.950
+And yes, with GAN-like loss.
+
+01:39:17.950 --> 01:39:20.930
+So this is what ADD does.
+
+01:39:20.930 --> 01:39:25.250
+And to be mindful
+of your time, I just
+
+01:39:25.250 --> 01:39:27.770
+want to say the high-level
+is that it reframes
+
+01:39:27.770 --> 01:39:30.130
+as a classification
+problem that makes
+
+01:39:30.130 --> 01:39:35.170
+the problem harder in the sense
+that it will lead the student
+
+01:39:35.170 --> 01:39:38.490
+model to make
+predictions crisper.
+
+01:39:38.490 --> 01:39:41.650
+But the issue with
+all of this is
+
+01:39:41.650 --> 01:39:46.050
+that you have a lot of
+back-and-forth going
+
+01:39:46.050 --> 01:39:48.610
+from the pixel to
+the latent space
+
+01:39:48.610 --> 01:39:55.370
+that later techniques, such
+as LADD, tries to mitigate.
+
+01:39:55.370 --> 01:39:58.030
+And this is what you're
+going to be used quite a bit
+
+01:39:58.030 --> 01:40:03.710
+today, so you can reformulate
+that only in latent space.
+
+01:40:03.710 --> 01:40:07.710
+And just to give some
+final words here--
+
+01:40:07.710 --> 01:40:09.710
+so I want to say that
+all of these distillation
+
+01:40:09.710 --> 01:40:12.270
+techniques-- they offer
+some kind of trade-off.
+
+01:40:12.270 --> 01:40:14.950
+For example,
+consistency models--
+
+01:40:14.950 --> 01:40:16.910
+they might be very
+easily tunable
+
+01:40:16.910 --> 01:40:20.350
+with sets of LoRA weights,
+as Afshin mentioned,
+
+01:40:20.350 --> 01:40:23.170
+whereas, for example if
+you go into GAN territory,
+
+01:40:23.170 --> 01:40:25.270
+you have some dynamics
+in the training process
+
+01:40:25.270 --> 01:40:27.710
+that are hard to manage.
+
+01:40:27.710 --> 01:40:34.950
+And yet this duality between MSE
+and LPIPS loss for regression
+
+01:40:34.950 --> 01:40:38.510
+happens quite a bit, and
+switching the mindset
+
+01:40:38.510 --> 01:40:43.310
+to a distribution and
+GAN-based is great for quality.
+
+01:40:43.310 --> 01:40:44.490
+And yeah.
+
+01:40:44.490 --> 01:40:46.270
+And then trends are
+these days to do
+
+01:40:46.270 --> 01:40:48.710
+all of this in latent space.
+
+01:40:48.710 --> 01:40:50.430
+And that's all I had for you.
+
+01:40:50.430 --> 01:40:52.780
+Thanks, and have
+a great weekend.
+

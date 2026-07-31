@@ -1,0 +1,58 @@
+{
+  "slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+  "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026",
+  "kind": "playlist",
+  "seed_url": "https://www.youtube.com/watch?v=tr-CUpw--ck&list=PLoROMvodv4rNdy8rt2rZ4T2xM0OjADnfu",
+  "playlist_url": "https://www.youtube.com/playlist?list=PLoROMvodv4rNdy8rt2rZ4T2xM0OjADnfu",
+  "source_note": "Playlist supplied in the original URL.",
+  "videos": [
+    {
+      "index": 1,
+      "id": "tr-CUpw--ck",
+      "expected_title": "Lecture 1 - Diffusion",
+      "url": "https://www.youtube.com/watch?v=tr-CUpw--ck"
+    },
+    {
+      "index": 2,
+      "id": "_WaR2fjZpEQ",
+      "expected_title": "Lecture 2 - Score matching",
+      "url": "https://www.youtube.com/watch?v=_WaR2fjZpEQ"
+    },
+    {
+      "index": 3,
+      "id": "agN3AlfGFrk",
+      "expected_title": "Lecture 3 - Flow matching",
+      "url": "https://www.youtube.com/watch?v=agN3AlfGFrk"
+    },
+    {
+      "index": 4,
+      "id": "WUUq6TVAu8U",
+      "expected_title": "Lecture 4 - Latent Space & Guidance",
+      "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U"
+    },
+    {
+      "index": 5,
+      "id": "HpFdSlMeXzQ",
+      "expected_title": "Lecture 5 - Architectures",
+      "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ"
+    },
+    {
+      "index": 6,
+      "id": "IvXTl3yj-4Y",
+      "expected_title": "Lecture 6 - Model Training",
+      "url": "https://www.youtube.com/watch?v=IvXTl3yj-4Y"
+    },
+    {
+      "index": 7,
+      "id": "iNaRBp4T57Q",
+      "expected_title": "Lecture 7 - Evaluation",
+      "url": "https://www.youtube.com/watch?v=iNaRBp4T57Q"
+    },
+    {
+      "index": 8,
+      "id": "oyLUvz9nR6E",
+      "expected_title": "Lecture 8 - Trending Topics",
+      "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E"
+    }
+  ]
+}

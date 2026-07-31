@@ -1,0 +1,2256 @@
+All right, let's get started.
+Great.
+So for today, we're planning
+to finish offline reinforcement
+learning.
+And along the reward
+learning front,
+the key goals today
+are to figure out
+why is task specification hard.
+Why do naive methods for
+trying to specify rewards fail?
+And what are some methods
+for learning reward functions
+from human supervision?
+Cool.
+So to start off with finishing
+offline reinforcement learning,
+we talked about this
+problem on Wednesday
+where our goal is
+to learn a policy
+from a batch of existing
+data without any online data
+collection.
+And we assume that the
+batch of offline data
+is collected by
+some unknown policy
+that we refer to as the
+behavior policy or pi beta.
+And our goal is to maximize
+rewards under pi theta.
+And so we have this challenge
+of a distribution shift
+between this prior
+policy that collected
+the data and the policy
+that we're optimizing.
+One of the challenges
+that comes up,
+if you try to use traditional
+reinforcement learning
+algorithms in this setting, is
+that-- if, for example, you're
+trying to optimize a Q function
+to then improve your policy,
+then you might query your
+Q function on actions
+that were sampled from
+your learned policy,
+and those actions might
+not be covered in the data.
+And that can cause
+overestimation.
+And it can cause your Q
+function to be inaccurate.
+We talked about
+this picture where
+if we had randomly
+initialized some Q function,
+and the data only covers actions
+along this range for this given
+state, then we might--
+then when we try
+to actually learn
+a policy that optimizes
+the Q function,
+then it will start
+to query actions
+that are over here because they
+randomly have a higher Q value.
+And that's one of the key
+challenges in offline RL.
+Now we talked about
+one algorithm that--
+I talked about a
+couple algorithms.
+But the main algorithm that
+we talked about last time
+was this IQL algorithm.
+And IQL addresses the
+offline RL problem
+by actually avoiding
+any sort of queries,
+any sort of function queries
+beyond the data set actions
+altogether.
+And it did this by actually
+just learning a value function
+and a Q function using the
+states and actions in the data.
+Now if you just do that
+with the normal updates,
+then you'll learn V pi and Q
+pi for the behavior policy.
+So you'll learn a value function
+for the behavior policy.
+And that won't allow
+you to improve very much
+over the behavior policy.
+And so instead, when
+learning the value function,
+it used this
+asymmetric loss to try
+to learn a value function
+for a policy that's better
+than the behavior policy.
+And then it learns both the
+value function and a Q function.
+For the Q function, it
+uses a standard L2 loss.
+One thing I didn't quite
+go over with regard to IQL
+is why use an asymmetric
+loss for the value function,
+but not for the Q function.
+And one way to think
+about that is you
+can think about when
+you're taking actions--
+when you're rolling
+out a policy,
+there's two sources
+of variability.
+One is that the different
+actions that you might take.
+And one is given an action,
+the state that you end up in.
+And if you think
+about, for example,
+the Q function after taking
+an action and separately
+the value function of the
+state that comes after that,
+these might be different.
+So because you actually--
+because there's
+randomness in the
+environment, the value
+function for the next state,
+maybe it's something like 8,
+because maybe you
+got somewhat unlucky
+in terms of the next state.
+And it might be less
+than the Q function
+after taking this action.
+And likewise for these
+other states and actions,
+you might have some variability.
+So maybe Q of (s, a2).
+Maybe that's equal
+to 5, because this is
+an action that's worse than a1.
+Whereas perhaps
+when you actually
+rolled out a2 in
+the environment,
+the subsequent state
+after taking that action
+has a true value of--
+maybe a true value of 8.
+Maybe you got lucky this time.
+Maybe this action is really bad.
+In that case, then
+Q hat (s, a3).
+Maybe it was a
+very risky action,
+so it has a key
+value of negative 5.
+And then maybe when you
+actually took that risky action
+in the environment, maybe
+it wasn't quite as bad
+as what could have happened.
+And so in that case, the
+value for that next state
+maybe is something
+like 0 because it
+didn't turn out as bad.
+And the reason why I'm writing
+out these different numbers
+is that we can think about
+the asymmetric loss function
+when learning the value for IQL.
+And the first loss function
+when learning the value
+is trying to regress to
+the different Q values.
+And we could either
+learn the average Q value
+or try to lean towards
+the larger Q values.
+And if we lean towards
+the larger Q values,
+that corresponds to
+actions that are better.
+And so that
+corresponds to a policy
+that's better than
+the behavior policy.
+On the contrary, if we instead
+use an asymmetric loss function
+in the Q function, the
+targets for the Q function
+correspond to the next value.
+And if we instead--
+if we use this L2
+loss, we'll just
+be optimizing for the
+average value here.
+If we instead use
+an asymmetric loss,
+then we'd be trying to
+regress to the future state
+values that are higher,
+which would actually
+be optimizing for not a better
+policy, but a more lucky policy.
+And that's something that you
+can't control with your actions.
+Yeah, so in the IQL
+objective, we're
+actually training both the
+value function and a Q function.
+And the reason for that is
+because we want to be finding--
+the goal is to fit V
+hat pi for a pi that
+is better than the
+behavior policy
+or better than the policy
+that underlies the data set.
+And as we see
+here, if we do that
+by regressing to these Q
+values, then we will pick--
+we'll lean towards--
+instead of the average,
+lean towards the key values that
+correspond to better actions.
+And so that's learning
+a value function
+for a policy that's better.
+This takes better actions
+than the behavior policy.
+Now, we can't just use--
+it's useful to have a Q function
+and not just a value function,
+because the Q function is
+what helps us figure out
+which actions are
+better when we use
+advantage-weighted
+regression and so forth.
+And so we also learn
+a Q function as well.
+But for that, we
+use asymmetric loss
+so that we're not
+optimizing for being lucky.
+OK.
+So IQL was one way to learn a
+policy from an offline data set.
+There's also some
+other ways to do it.
+And in particular, we'll talk
+about one more way, one more
+algorithm.
+And in this case,
+we're still going
+to try to estimate the value.
+We're still going to actually
+query actions from our policy.
+And we want to think about how
+to discourage overestimation
+and discourage the RL
+algorithm from taking actions
+that you think might have high
+Q value because they're out
+of distribution.
+And so one idea is, what if we
+just outside of the data support
+try to minimize the Q values?
+Can we just basically
+take this part
+and try to push down
+on the Q values that
+are out of distribution?
+And if we did
+that, then we would
+be pessimistic or
+conservative with regard
+to everything that's out
+of distribution and not
+as conservative
+when we're actually
+in the support of the data.
+And so we could formulate some
+loss function that does this.
+And what this would
+look like is you're
+trying to fit a Q function.
+And you will have your
+standard loss for your critic,
+for your value function.
+I'll call this L critic.
+Then we could also
+add a loss function.
+This is for-- we're trying
+to fit the Q function.
+So maybe that Q function
+has parameters phi.
+And then we could add
+an additional term
+that is trying to
+additionally minimize
+the key values on actions
+that are out of distribution.
+So we would try to be
+minimizing our Q values.
+And in particular, we want
+to minimize key values
+for our distribution actions.
+And so this would
+be an expectation
+over states sampled from
+your data set and actions
+sampled from some other
+distribution that's
+not the data set.
+And ideally, this
+distribution would
+cover the
+out-of-distribution actions
+that your policy
+might be considering.
+So this is some
+other distribution.
+That distribution would probably
+be a function of [? f. ?]
+Now if you want to
+think about which
+out-of-distribution actions your
+policy might be considering,
+your policy is going
+to be considering
+the out-of-distribution
+actions that have high Q value.
+And so one initial version
+that we could do here
+is we could pick a mu,
+pick this distribution,
+such that it has high Q
+values, because our policy will
+be trying to take actions
+that have high Q values.
+And so what this would look
+like is minimizing our critic
+parameters and
+choosing a mu such
+that it's maximizing
+the Q values.
+So what this will
+do is it will have--
+it will try to optimize
+a critic and then
+minimize the Q
+values for actions
+that have a high Q value.
+Now this is version 1.
+We're going to be pushing
+down on large Q values.
+You can show with this
+version that if you have
+a large enough alpha, if you--
+you don't necessarily-- you
+want to have some sort of weight
+on this objective.
+This is going to be
+a hyperparameter.
+If you have a
+large enough alpha,
+you can show that the critic
+that you learned from this
+is going to be a lower bound
+on the true Q function.
+And so then what this
+would look like is
+if you have some plot
+of your Q functions
+for a different action, and
+if your data support is maybe
+something like this,
+something that you might learn
+is a lower bound on
+the true Q function,
+where this latter one
+is going to be Q hat.
+Now, one downside
+with this is that you
+might be a little
+bit too pessimistic,
+because this is actually
+going to be pushing down
+on all Q values.
+But we know that
+for the Q values,
+for the actions in the data
+set, for the part that's
+in the support of our
+data set, these actions
+we have more data for.
+And so we don't necessarily
+want to be pushing down
+on the key values
+for those actions.
+And so we could
+do is we could add
+a term that basically cancels
+out this term for the data
+sets in the actions.
+And so what that
+would do is just--
+what that would
+look like is simply
+taking this same exact
+term and subtracting it
+for states in the data set, but
+also actions in the data set.
+So we're going to be minimizing
+the Q values for actions
+from this distribution
+and maximizing
+for actions in the data set.
+And this will hopefully-- the
+goal of this would be to get a Q
+function that inside the
+support of the data--
+it's not a very good marker.
+That's inside the support of
+the data is maybe very accurate.
+And then for the things
+outside the support of the data
+has a low Q values,
+because we know
+that outside the
+support of the data,
+we aren't going to be able to
+learn an accurate Q function.
+Yeah, so the question
+is, does this
+affect your ability to
+generalize outside the support
+of the data?
+So certainly, it does.
+It's going to cause you
+to be basically more
+pessimistic outside of
+the support of the data.
+This hyperparameter
+alpha is going
+to control how
+pessimistic you are.
+And if you think that you're
+in a regime where you might
+be able to generalize
+better, then you
+could choose an
+alpha that is smaller
+so that you're using more of
+the original critic objective
+and less of this
+regularization term.
+Yeah.
+The question is, should
+it be Q or Q hat?
+Right.
+So it should be Q hat phi.
+So this is our--
+this is the Q function that
+we're learning right here.
+The notation on the slide
+is slightly different.
+Sorry for the difference there.
+So on the slides, we're
+treating Q as the thing
+that we're minimizing.
+And if we view it instead of
+minimizing these parameters,
+then this is how
+we would write it.
+Yeah, so the question
+is, what is mu?
+Is it this fake policy
+that's outside the support?
+You can think of mu as
+sort of as a policy.
+It's not actually the policy
+that we're going to be running,
+but it's essentially going to be
+something that is trying to seek
+out the Q values that have--
+the Q values that--
+or the actions
+that have high Q value so
+that if, for example, you're
+over here, you would minimize
+the key values there.
+And yeah, it's
+basically something
+that's trying to seek
+out large key values,
+either in or outside
+the distribution.
+Once it gets inside
+the distribution,
+you're then going to be
+canceling out with this term.
+And so then you'll have
+a more accurate estimate
+inside the support of the data.
+The question is, does it mop
+out the Q for the actions
+outside the support.
+And yeah, that's
+basically what it's doing.
+Oh, in terms of--
+the question is,
+what does it mean to maximize
+mu in terms of the distribution?
+It basically means that we're
+going to be picking a mu such
+that it has high Q values.
+In practice, we'll
+actually see in a minute.
+We can actually not have
+to explicitly represent
+mu for some choices, but we'll
+talk about that in a second.
+The question is, if
+our goal is to minimize
+Q for things outside the
+training distribution,
+why not just do normal
+behavior cloning?
+So one of the things that's
+nice about this algorithm
+is it has the potential to do
+better than behavior cloning.
+So any sort of RL method
+will be leveraging the reward
+information to learn a policy
+that has high Q values.
+And so you can actually
+use this method
+to do considerably better
+than behavior cloning.
+And then we also
+talked on Wednesday
+about a method that can also do
+better by behavior cloning just
+by ranking things.
+Generally, methods that try
+to train the policy on only
+the actions in the
+distribution are generally
+a valid way to do offline RL.
+This is thinking about an
+alternative way to do it.
+OK.
+So in terms of--
+when we introduced
+this last term,
+we're actually no
+longer guaranteed
+to have a lower bound on the
+Q function for all states
+and actions.
+But we're actually
+guaranteed an expectation
+to have a lower bound for all
+the states in our data set.
+I'm not going to go through
+the derivation for this,
+but it's a nice property
+to have that you
+will get some sort of lower
+bound on the true Q function.
+And it suggests that it's a
+reasonable objective to use.
+[? If ?] alpha is 0,
+it does not hold--
+alpha does need to
+be large enough.
+I can't remember the
+exact conditions on alpha.
+But you could take a look at
+the CQL paper for the proof.
+Cool.
+So this is an algorithm called
+conservative Q-learning.
+In terms of the
+full algorithm, we
+will optimize this objective
+using our data set.
+And then we'll get a Q
+function as a result of this.
+And then after we
+optimize our Q function,
+we can then update
+our policy and then
+repeat that process to--
+and yeah.
+If the actions are discrete,
+then you can just in some ways
+read out the actions by
+picking the actions that
+have maximum probability.
+If they're continuous,
+then you'll
+need to use some sort of
+update to optimize your policy.
+And you'll be wanting to
+optimize your policy such
+that you are picking actions
+that have high Q value.
+Cool.
+So we talked about this mu term.
+And in practice, if we had
+to construct this mu term,
+that would be annoying, and
+it would add a moving part
+to the algorithm.
+And so in terms of thinking
+what this mu should be,
+you want to pick a mu that is
+going to actually have high Q
+values, because that would
+allow it to push down
+erroneously large Q values.
+And when you apply it on
+things with small Q values,
+it's not really going to
+have a meaningful effect.
+But you also don't want to--
+you want it to--
+you want it to be considering
+actions that are not just
+like exactly the
+one largest Q value.
+And as written, this
+mu term might actually
+collapse to be
+very deterministic
+and just pick the one action
+that has the largest Q value.
+And so you can think of--
+in this case, you can think of
+instead of just maximizing mu,
+you could think of
+adding a regularizer
+to mu that encourages
+it to consider
+a broader set of actions.
+And specifically,
+you can think of that
+as choosing a mu
+that's maximizing Q
+but also has some entropy to it.
+And so if you view this
+as adding a regularizer,
+then you could choose a
+mu that has high entropy,
+meaning that it is a
+broader distribution.
+And it turns out that if you--
+for this equation, if you're
+trying to choose large Qs
+and choose a distribution that
+has wider, larger entropy,
+then you can
+actually write down--
+you can write down what this
+looks like in closed form.
+And in particular, for
+maximizing Q and maximizing
+entropy, you can show
+that the optimal mu
+is proportional to the
+exponentiated Q values.
+Won't go into the
+derivation for this.
+We possibly will
+post something on Ed
+after lecture if
+you're interested.
+And then this term turns
+out to simply come out
+to a log [? sum ?] x over
+your Q values without having
+to construct an explicit mu.
+And so then the
+final objective is
+going to look something like--
+will look something like the
+loss function for the critic
+plus the log [? sum ?] x of Q of
+(s, a) with an alpha term here
+minus alpha times the expected
+Q values for states and actions
+in your data set.
+And you will-- this means
+that you don't actually
+need to construct mu directly.
+This was the only term
+that depended on mu.
+And we just replaced this
+with this term right here.
+Yeah, so if there's a
+continuous action space,
+then you'll want to
+sample to estimate this.
+OK.
+Cool.
+So for this algorithm called
+CQL or conservative Q-learning,
+I figured [INAUDIBLE]
+application
+of this just as an example.
+We've seen a lot of
+applications in robotics
+and talked about
+driving and so forth.
+It turns out that
+some folks at LinkedIn
+use this algorithm
+to optimize a policy
+for sending notifications,
+like email notifications,
+for example.
+And usually, when you
+send notifications,
+you want to optimize for
+things like how much people
+are clicking on it, because
+that means that it is something
+that they're potentially
+interested in,
+but also want to minimize
+the total number of times
+that you're sending
+them a notification
+so that you're not
+spamming the user.
+You might also care about
+weekly active users.
+And they took the
+double DQN algorithm.
+They also had their
+existing system,
+which is the baseline here.
+And they also tried applying the
+CQL terms to a DQN objective.
+And they found that when you
+added CQL using an offline data
+set and then ran that policy
+in an online A/B test,
+they were able to get a higher
+click-through rate, a lower
+number of total notifications,
+and also a slight increase
+in user usage.
+So yeah.
+This is one example
+of a scenario where
+offline RL and
+specifically this algorithm
+was used in a fairly
+real-world scenario.
+Yeah, so the question
+is, why do we
+want to be conservative
+in the first place?
+So this really comes down to
+the very initial motivation
+for offline RL, which is
+that outside of the support
+of the data, when you
+cannot collect online data,
+you can't really learn a policy
+that's far beyond the data.
+And one reason to
+be conservative
+is specifically trying
+to be conservative
+outside the support of
+the data, because those
+are the regimes where you
+don't have the ability
+to collect more data.
+And if you try to learn--
+if you assume that you can
+go far beyond the data,
+then you might learn an
+inaccurate Q function
+and, as a result, might
+learn a poor policy.
+OK.
+So to summarize, online
+data is expensive.
+Using offline data is useful.
+A key challenge that
+comes up in offline RL
+is overestimation because of
+the shift between the policy
+and the data and the policy
+that you're learning.
+And we talked about a
+few different approaches
+for doing this.
+And the one we
+talked about today
+was to try to explicitly
+penalize Q values.
+And offline RL
+methods are allowed--
+are able to improve over
+imitation learning, including
+filtered imitation learning,
+by stitching together
+good behaviors and leveraging
+reward information.
+Cool.
+So let's shift gears and
+talk about reward learning.
+So in everything that
+we've talked about so far--
+well, except for
+imitation learning--
+we've been trying to
+maximize the sum of rewards.
+And there's this
+question of, where
+do the rewards come
+from in the first place,
+and where do we get them?
+And some of the very initial use
+cases of reinforcement learning
+were with computer
+games, where you can just
+use the score of the game
+as your reward function,
+and then get a player that
+plays the game very well.
+But in real-world
+scenarios, you often
+don't get rewards as directly,
+especially when we're developing
+computers to do things.
+So if you wanted to develop
+a robot that could pour water
+from a pitcher into a cup is
+fairly complex for a robot
+to do, although young children
+are able to do it fairly well.
+Humans maybe get
+some kind of reward
+when they drink the water
+and some sort of satisfaction
+from that.
+But robots do not get
+that kind of satisfaction.
+And so if you were to
+try to get a reward
+function for this
+kind of pouring task,
+then you would need to
+think about how to represent
+where the water is.
+Did you spill any water?
+Did the water get into
+the cup and so forth?
+So it's pretty challenging to
+get a reward function for that.
+If you have some kind
+of dialogue situation,
+you're trying to
+develop a chatbot,
+people don't directly tell
+you that was a reward of 1.
+That was a reward of 10.
+And so you need
+to think about how
+to get a reward function that's
+informative for reinforcement
+learning.
+Likewise, in autonomous driving,
+the real world doesn't just
+give you reward functions, and
+you need to think about how--
+a number of different
+factors, like the rules
+of the road, how comfortable is
+it for the user, and so forth.
+So in some cases, we can use
+a proxy for the true reward.
+And you could have a
+human giving the rewards
+like maybe giving like 1 if that
+was successful, 0 otherwise.
+You might have some
+proxy in terms of things
+like click-through rate.
+That's a proxy.
+We don't necessarily care
+about humans clicking on things
+inherently, but it's a proxy
+for what we might care about.
+But even with proxies,
+there's a lot of downsides.
+And it's worth thinking
+about if there's other ways
+to provide supervision
+to reinforcement learning
+algorithms.
+We've seen one alternative
+approach so far,
+which is just to use
+imitation learning.
+And you don't need
+any reward function
+if you use imitation learning.
+But when you use
+imitation learning,
+you're not really thinking
+about outcomes and optimizing
+for a particular outcome.
+You're just optimizing
+for mimicking the actions.
+You might also have
+scenarios where
+it's hard to provide
+demonstrations,
+or where the expert has
+different degrees of freedom.
+That might make it hard
+to get good demonstration
+data for imitation.
+And so a lot of
+reward learning is
+to think about what is the
+underlying outcome that we
+want to see.
+What is the expert
+trying to achieve?
+What do humans want?
+So people are able
+to infer rewards.
+There's a few other examples.
+Lots of fun videos, where
+even very small kids are
+able to figure out what is
+the reward function, what
+is the objective, and
+be able to even optimize
+that to help the person.
+OK.
+So how do we learn rewards?
+We'll talk about two
+approaches for doing this.
+One is from examples of
+goals, and another one
+is from human preferences.
+So one of the simplest things
+we could consider doing
+is try to give examples of
+what success looks like,
+and then train a classifier to
+predict success versus failure.
+So, for example, if
+we wanted a robot
+to put a pencil case
+behind a notebook,
+we give it a few
+examples of what
+that looks like, give it a few
+negative examples of scenarios
+where it's not
+behind the notebook,
+and then train a
+binary classifier
+to be able to predict that
+the positive examples should
+be labeled with 1,
+the negative examples
+should be labeled with 0.
+And then you could use the
+output of this binary classifier
+as your reward signal.
+So specifically, what
+this would look like is
+you first collect examples
+of successful states,
+unsuccessful states.
+You can think of this as states
+within some sort of goal set
+and states outside
+of that goal set,
+and then train a
+binary classifier,
+and then run reinforcement
+learning with this classifier.
+Does anyone have thoughts
+on what could go wrong
+if you took this approach?
+Yeah, so one downside
+with this approach
+is that it's going to give
+you a very sparse reward.
+It's just going to
+tell you, are you
+within this set of goal states,
+or are you outside of it?
+And you would need
+to figure out how
+to make progress towards that.
+Is there any other challenges
+or any other things
+that might go wrong?
+Yeah, so a second
+thing that might happen
+is it might learn to
+fool the classifier,
+but not actually do the task
+that you're interested in.
+And in particular, when
+you train a classifier,
+it's trained on some
+distribution of examples
+that you provided.
+But the policy that
+you're learning
+has the ability to visit
+lots of different states,
+including states that are
+different from the initial data
+set.
+And in some ways, analogous
+to some of the challenges
+we saw in offline RL.
+When you're optimizing
+against this classifier,
+you can hack it or fool
+it and find states where
+that classifier is inaccurate.
+And when it's inaccurate,
+some of the times
+it might be optimistic
+about how to do the task.
+So the first answer
+was absolutely correct.
+It does provide a sparse signal.
+But one especially thing
+that can go extra wrong here
+is that the RL algorithm
+will seek out states
+that the classifier
+thinks are good.
+And it might simply find states
+that the classifier wasn't
+trained on, and
+essentially exploiting
+the classifier's weaknesses.
+So can we prevent the algorithm
+from exploiting the weaknesses?
+In some ways, it's
+actually nice that we had--
+we're talking about this at the
+same time in which we talked
+about CQL, because we can
+actually use an approach that's
+very similar to CQL for
+preventing the RL algorithm
+from exploiting the weaknesses.
+And in particular, say that you
+have some kind of positive goal
+states over here where--
+I don't know.
+In the pencil case
+example, maybe this
+is where the pencil
+case should be.
+You could also just
+generally think of it
+as some abstract space.
+And then you also have
+negative examples over here.
+Maybe this is a
+bad place to go to.
+And then your classifier, when
+you train a binary classifier,
+it will learn some sort of
+decision boundary like this.
+And then when you
+train a policy, when
+it sees that the stuff
+over here is positive
+and the stuff over
+here is negative,
+maybe we can also
+specify the direction
+of our binary classifier.
+Then your RL algorithm, it might
+learn to go somewhere over here.
+And maybe some of these
+states are good, but maybe
+also some of these
+states are not so good.
+And if we want to avoid
+exploiting the classifier,
+one simple thing
+that we could do
+is we could take these states
+that we visited with our policy,
+and we could then label them
+as additional data points
+for training our classifier.
+Now we don't necessarily-- if
+we don't have a good reward
+function and we don't
+want supervision online,
+then we don't know exactly
+what the labels should be.
+And one thing that we could do
+is simply to be conservative.
+We could label
+these as negatives
+and say that all of
+these were states
+that were failures, essentially,
+and then retrain our classifier.
+And if we retrain
+our classifier,
+we would then get a classifier
+that maybe looks like this.
+And then maybe our
+policy visits over here.
+And then you eventually
+learn a classifier
+that is more accurate
+around these states.
+Is there any--
+well, OK.
+So let's walk through what
+this would look explicitly.
+So we could add
+states that the RL
+algorithm visits as negative
+examples for the classifier.
+So specifically,
+we would collect
+some initial set of success
+states and unsuccessful states.
+And then we would
+update our classifier
+and train it to classify
+the success states
+and the unsuccessful states.
+Then we would collect some
+experience using our policy
+and update our policy using
+the classifier-based reward.
+And then we'd add the visited
+states to our negative examples,
+and then reupdate our classifier
+using those negative states.
+Does anyone have concerns
+about this algorithm?
+The concern there is
+that you might not
+learn a very robust
+classifier, and you
+might overfit to the
+positives in your data set.
+And in particular, if you have
+a small number of positives,
+then you might learn a decision
+boundary that is very--
+only contains each
+of these positives
+and doesn't contain the
+things right around them.
+And so one thing that
+you can do for that
+is to try to regularize
+your classifier
+to try to prevent
+that overfitting.
+And even standard regularizers
+can be helpful for that.
+You can encourage it
+to be more smooth.
+Any other concerns
+about this algorithm?
+Yeah, so one of
+the challenges that
+can come up with
+this algorithm is
+that you're going to be
+adding more and more negatives
+to your data set.
+And one really
+critical thing here
+is that if you keep on
+adding negatives to your data
+set and don't rebalance
+your data set,
+then it might just predict
+negative everywhere.
+And so one critical thing here
+is to balance the data set 50/50
+so that the negatives account
+for half of the data that
+you're sampling, and the
+positives account for the other
+half of the data
+that you're sampling.
+Yeah, so the question
+was that at some point
+your original negatives will
+be overwhelmed by the sample
+negatives.
+And does it make
+sense to balance them?
+Certainly, you could do that.
+It depends on how large
+your initial negatives are.
+And so that's
+something to consider.
+One of the things
+that will happen
+is that your policy
+will actually
+start visiting the states here.
+And it might visit
+like even exactly
+the same states
+as the positives.
+And you're then going to be
+labeling these as negatives.
+Now those labels are incorrect.
+Those states are
+actually true positives.
+And this also alludes to
+the overfitting comment
+at the beginning.
+But it actually turns out that
+if you balance your data set,
+this might actually be OK and
+if you use enough regularization
+or have a large enough
+positive and negative data set.
+And the reason why
+this might be OK
+is that when you
+use balancing, it
+will ensure that the half of
+the data set will be positives.
+And even if-- let's say that--
+OK, so we know that
+50% of the data set
+is going to be like
+true positives.
+And then for the other
+part of the data set,
+some proportion of it
+will be false negatives
+and some proportion of it
+will be true negatives.
+Let's say that we've
+gotten to the point where
+for the other 50%, 40% is
+a false negative, meaning
+that it's labeled as a negative,
+but it's actually a positive.
+And 10%, including our
+original negatives,
+corresponds to true negatives.
+Then in this case,
+as long as we're
+balancing our data set, for a
+positive, it will still output--
+it won't output
+like probability 1
+that something is a positive
+because of all these here.
+But it's still going to output
+a probability that something
+is positive that's higher
+than 50% and probability
+that's higher than the
+probability that it is negative.
+And so, yeah, specifically,
+with balancing,
+you can always expect
+that the probability
+of a true positive under
+our classifier, this
+will always be--
+if the classifier is
+training properly,
+this will always be
+greater than 50%,
+because as long as this
+data set is not like--
+if it's all the way like 50--
+like entirely false negatives,
+then it will be exactly 50%.
+But as long as you have
+some true negatives around,
+including your original
+set of negatives,
+then it'll be
+strictly above 0.5.
+And the probability of a true
+negative will be less than 0.5.
+The question is,
+would this be resolved
+if we use confidence
+intervals instead of 0 or 1?
+So you can also use this
+probability as the reward
+and not threshold it.
+And that is also fine.
+In terms of
+confidence intervals,
+that could also
+potentially be helpful,
+although I haven't
+thought too much about it.
+And you would need probably a
+slightly more sophisticated RL
+method.
+Yeah, so if you're in a scenario
+where you visit a state that's
+very hard to distinguish
+between them,
+then if you have
+regularization, it's
+likely to label
+it as a positive,
+because the regularization
+will encourage the function
+to be smooth.
+But it comes down a lot
+to how different it is.
+Yeah.
+So the question
+is, would this be
+solved if we use a generative
+adversarial network where
+the classifier is--
+the reward is the discriminator
+and the generator is the agent?
+It turns out that
+this actually--
+OK, I don't have-- this is
+like two slides from now.
+But it turns out
+that this actually
+is exactly a generative
+adversarial network.
+So you can think
+of this classifier
+as a discriminator that's
+trying to discriminate
+between the positive
+examples that we gave
+and everything that
+the policy is visiting.
+And the generator in a
+generative adversarial network
+is the policy.
+You don't necessarily
+need to know
+about exactly what generative
+adversarial networks or GANs
+are.
+But if you do know
+what they are,
+this is basically
+exactly a form of a GAN.
+Yeah, so the question is,
+after we run a trajectory,
+are we seeing what
+the true label is?
+And the answer to that is no.
+So we're assuming that we don't
+get any more human supervision
+other than the initial
+training data set.
+Now one other thing
+that you can do here
+that makes this a little bit
+potentially easier is you
+could also label some of the
+data as positives or negatives
+as well, and use
+that to continue
+to update your classifier.
+And so that's also a
+very valid approach.
+And there's ways to label
+only some of the data
+so that you don't have to
+label every single trajectory
+that the policy is doing.
+And that could also help
+stabilize the training.
+One example of using this
+kind of approach in robotics
+is a paper that took
+50 demonstrations.
+It used the final
+states as successes
+for training the classifier.
+It initializes a replay buffer
+with the demonstrations.
+And if you directly
+imitate the demonstrations,
+the success rate is around 26%,
+because 50 demonstrations is not
+that much.
+And even if you
+collect more, it would
+be hard to get to 100% success.
+And then if instead you use
+this initialization and run
+RL with a classifier
+learned in this way,
+then you get a policy that has,
+in this case, a 62% success
+rate.
+Not awesome yet,
+but something that's
+substantially higher
+than the success
+rate of imitation learning.
+And one thing that we found that
+we talked about that was also
+we found in this research
+is that it's actually
+very important to
+regularize the classifier
+to help it not overfit to
+just the positive, the 50
+positive examples that were
+provided at the beginning.
+OK.
+And as aside, this
+is how GANs work.
+The generative
+adversarial networks
+are a form of generative model.
+They've often been used
+for image generation.
+And the key idea is
+to train a classifier
+between the real examples,
+like the real positives,
+and the generated data, like the
+states that the policy visits.
+And you try to train a
+generator that this classifier--
+tried to generate such
+that it generates things
+that the classifier
+thinks is real.
+GANs have been used in
+a variety of places.
+Here are some examples of
+images generated by a GAN.
+Here's a cool video of an
+astronaut dancing on Mars,
+and later walking his dog
+on Mars that also uses
+generative adversarial network.
+Cool.
+Now as a recap, we talked
+about training classifiers.
+These classifiers
+can be exploited
+when you optimize against them.
+And the solution is that during
+the RL process, if we update
+the classifier using negatives
+visited by the policy, then
+you can avoid it
+being exploited.
+One of the things
+that didn't quite
+have-- that I wanted to skip
+today, because we don't have
+too much time and need to
+talk about preferences--
+but you can also actually learn
+not just goal classifiers.
+But you can actually learn
+full reward functions.
+If you use all of the states in
+the demo as positive examples
+and all of the states in your
+policy rollouts as negatives,
+then you can show
+that that's actually--
+we'll be trying
+to learn a reward
+function over
+state distributions
+rather than just goal states.
+Cool.
+On the upside, this is a
+very practical framework.
+Adversarial training, this
+adding these as negatives.
+It can be unstable.
+There are a variety of
+regularization tricks.
+You can actually take them just
+directly from the GAN literature
+and apply them.
+And that is quite helpful.
+And then one other
+big downside here
+is that this requires
+examples of what the goal is,
+like what the
+desired behavior is.
+And sometimes generating
+those examples
+can be challenging
+or time-consuming.
+OK.
+So that's learning
+from example goals.
+Now let's talk about
+learning from preferences.
+And this is
+specifically-- we're going
+to talk less about
+goal classifiers
+and talk more about
+scenarios where we don't just
+want to reach states
+within some goal set,
+but we actually want
+to potentially learn
+like good behavior
+versus bad behavior.
+And that might
+encapsulate something
+beyond just reaching
+a good state.
+And instead of requiring example
+demonstrations or example goals
+or in addition to that, we
+might want to provide feedback
+on the full rollout.
+Now one option
+that we could do is
+we could just ask how
+good is this trajectory.
+So say that you wanted to
+start at this blue dot,
+and you want to reach the star
+as efficiently as possible.
+So it's actually hard.
+Now another way to
+frame this question
+is, which trajectory is better?
+So who thinks the blue
+trajectory is better
+than the pink trajectory?
+OK, everyone thinks the blue.
+So that's a much easier
+question to answer, right?
+So these kind of
+relative preferences
+are often easier to provide than
+evaluating absolute performance
+of a trajectory.
+And this is true
+for lines in 2D,
+but it's also true
+in other use cases,
+many real-world
+use cases as well.
+So maybe we can use
+these kind of preferences
+to get a reward function.
+So say that we--
+human told us that one
+trajectory was better
+than another trajectory.
+Then probably one way to think
+about what they're saying
+is that the sum of rewards
+for the states in that
+trajectory-- so for the states
+and actions in the better
+trajectory.
+This should probably be
+larger than the sum of rewards
+for the states and actions
+in the trajectory that
+was said to be worse.
+And I'm using W and L to refer
+to the winning trajectory
+and the losing trajectory.
+And maybe we'll
+write this as the--
+when we say that the
+winning trajectory is better
+than the losing
+trajectory, we'll
+write this with this notation.
+So any individual preference
+label that's binary saying A
+is better than B tells us
+a little bit of information
+about the reward.
+And from there, we
+want to figure out
+how to aggregate a number
+of these preference labels
+to learn a reward function.
+And so we'll assume
+that we have some data
+set of these pairs where we
+have a pair of trajectories.
+We are told which one is the
+good one and which one is--
+or which one is better
+than the other one.
+And we want to be able
+to use this data set
+to learn a reward function.
+And one perhaps simple way to
+do this is we want to model--
+we need some way to write
+down an objective for a reward
+function.
+Let's also say that
+our reward function--
+let's model it as
+a neural network.
+So our reward function
+will have some parameters.
+And then you can
+think of it as taking
+as input a state and action
+and outputting a scalar reward
+value.
+So if you want to write down an
+objective for this, one thing
+we could do--
+let's say that this is
+used similar shorthand
+to what we've used before.
+This is the reward
+of the trajectory.
+This expression right here.
+Then maybe we could say that if
+we took the reward of the better
+trajectory and subtracted the
+reward of the trajectory that's
+worse, then we want this
+quantity to be positive.
+So that's one starting point.
+And from there, we could--
+we like to do
+maximum likelihood.
+We like to think
+about probabilities
+and do maximum likelihood
+training in machine learning,
+in general.
+So we could try to represent the
+probability that a trajectory is
+better than--
+one trajectory is better
+than another trajectory.
+And so we could do is
+we could take this.
+We could pass this into
+a sigmoid function, which
+will squash it between 0 and
+1, and then represent that
+as the probability that
+the winning trajectory is
+better than the trajectory
+that was marked as inferior.
+And then if we did
+this, then we could
+try to maximize the probability
+under our reward function.
+So we could try to
+then optimize a reward
+function such that the prob--
+such that you're maximizing
+this probability.
+So this would be then summed
+over the trajectory pairs
+in our data set.
+And so specifically, we
+would take each of the pairs,
+take the sum of rewards.
+For each of these, subtract
+them, take a sigmoid,
+and then try to maximize that
+by running gradient descent.
+It's also worth
+mentioning these taus.
+You could do it on
+a full trajectory,
+but in some scenarios,
+if a full trajectory
+is driving from Palo Alto to San
+Francisco or cleaning a kitchen,
+then there's many different
+subcomponents of that.
+And it might be hard.
+There might be some parts of
+that trajectory that are better
+and some parts that are worse.
+And so you could also do
+this on partial trajectories
+and say like this part
+of this trajectory
+is better than this part.
+So you don't have to do
+it on full trajectories.
+We want to reward such that the
+sum of rewards for the better
+trajectory is higher than the
+sum of the rewards for the worst
+trajectory.
+Humans are classifying
+which trajectory's better.
+We want the reward to be
+discriminative of which
+trajectory is better.
+And so we define
+this probability
+that one trajectory is better
+than another trajectory.
+And then with this
+probability, we
+can try to maximize the
+reward parameters such
+that this is true.
+Yeah, so the question
+was the human
+isn't telling us how much
+better a trajectory is.
+And you could have a scenario
+where maybe one trajectory is
+like this, one
+trajectory is like this,
+and then a third
+trajectory is like--
+I don't know-- going all the
+way over here or something.
+And this objective isn't
+taking into account
+the fact that the
+preference of this over this
+is a smaller preference than the
+preference of this over this.
+When you end up
+optimizing this objective,
+oftentimes, it will
+actually turn out
+that it will assign something.
+Well, so I guess a
+couple of things here.
+So if you have a
+lot of data, then it
+will also tell you that
+this, the solid green one,
+is better than this one.
+And so you could actually get
+lots of pairwise preferences
+on them.
+And so because of those
+pairwise preferences,
+you'll see a ranking, like
+this is better than this.
+This is better than this.
+This is better than this.
+And when you do that, that'll
+force the reward function
+to assign a much higher
+reward value to this one
+compared to this one.
+So it will already
+do what you want.
+You could also-- there's
+a couple other ways
+to get this information.
+Sometimes when you actually
+ask humans for preferences,
+sometimes you also
+just give them a batch
+and tell them to rank as well.
+And that would make
+this even more explicit.
+So the complete algorithm for
+what this looks like is you
+have some data set
+of trajectories.
+You're going to sample
+batches of k trajectories.
+And then ask a human to
+rank those k trajectories.
+For language models
+when you do this-- so
+this is actually a common
+way to learn reward functions
+for language models.
+And you'll often actually use
+the same prompt and sample k
+responses and then ask them
+to rank those k responses.
+And this is useful because
+these trajectories all
+start from some initial point.
+You can think of this as
+starting from the same prompt.
+But you might have
+other responses
+that are like starting from
+a different prompt over here.
+And for a different prompt or
+from a different starting place,
+it's a lot harder to talk
+about like, is this better--
+like, is this black one
+better than this green one?
+It got there-- maybe
+got here faster,
+but it also had-- it was
+an easier starting point.
+And so oftentimes,
+we'll try to sample
+a batch of
+trajectories that have
+a similar starting position.
+Then we will compute the rewards
+under our current reward model,
+essentially do a
+forward pass, and sum
+over the states and actions.
+And then we can
+compute the gradient,
+do a backward pass
+using our objective,
+where this is for
+every pair of--
+for each pair
+within the ranking.
+So there's k choose 2 different
+combinations of pairs.
+And if you have a ranking, then
+you'll have a full set of k
+choose 2 labels.
+Then you can update theta
+using the computed gradient.
+And then you can also
+repeat this process.
+And repeating this just
+corresponds to doing
+gradient descent on your
+objective on a single data set.
+Now one thing that
+you can also do
+is you can also do this in the
+loop of reinforcement learning.
+So you have your samples
+from your policy.
+And then you can ask for humans
+to rank them and then update
+your rewards.
+And then after you have
+your updated reward model,
+then maybe your reward
+model is more accurate.
+And maybe you want to be going
+like here, for example, instead
+of going here.
+Then you could then reupdate
+your reward function
+and then update your policy
+again, and then get new rollouts
+for your policy.
+Ask a human to label
+those rollouts,
+reupdate your reward
+function, and repeat.
+OK.
+So that's how we can
+learn from preferences.
+There's a few examples of this.
+So the first time--
+or some of the
+first times people
+have learned from preferences
+were in some simulated settings.
+So in this case, if you want
+to get this simulated thing
+to do a backflip.
+It's very hard to write a reward
+function for doing a backflip.
+And so they used 900 queries.
+They asked humans 900 times
+like, is this better than this?
+They actually did it in the
+loop of reinforcement learning.
+And they got a policy
+that is able to learn
+how to do a backflip,
+and in the process also
+learn a reward function for
+a human-preferred backflip.
+Also, in driving, it's very
+hard to get reward functions.
+And so there was work that
+used this kind of approach
+to learn things
+like how much does
+it matter to stay
+within your lane,
+keep a certain speed,
+collision avoidance,
+those sorts of things.
+And you would imagine
+that collision avoidance
+is much, much more important
+than keeping a certain speed,
+for example.
+And you can learn a
+reward function that way.
+Cool.
+And then there's
+also language models.
+So this has been
+a very popular way
+to learn rewards
+for language models.
+And you can have some prompt
+like, how do I cook an omelet?
+Then you can sample
+from your language model
+two different responses
+for that prompt.
+Then we ask a person
+which response is better.
+When we're doing training,
+we might actually
+pay people to label our data.
+You might have also--
+if you've interacted
+with ChatGPT,
+sometimes it might have asked
+you these sorts of things.
+You're providing labels
+to give OpenAI the ability
+to learn a reward function that
+is better for your preferences.
+And then once you have the
+things that are better,
+then you can train
+a reward model
+that judges how good a response
+y is for a given prompt.
+And so then in terms of what
+the kind of full language model
+pipeline is, if you wanted to
+train something like ChatGPT,
+first, you'll do some
+large-scale pre-training
+on very, very large
+mixed quality data.
+With just predicting
+the next token,
+then you typically
+have a second stage,
+which is to fine-tune
+on higher quality data.
+And in particular,
+after step one,
+before you do any kind
+of supervised fine-tuning
+or reinforcement
+learning, you'll
+get a reward, a language model
+that knows a lot of things,
+but is not easy to
+control or to get it
+to do what you want it to do.
+And it might not
+answer questions.
+It might not do
+what you requested.
+It might just predict
+reasonable next tokens
+that come after that.
+Whereas in supervised
+fine-tuning,
+we can generate a
+higher quality data
+set that has for a given prompt,
+this is how you should reply.
+And so we do some
+kind of imitation
+learning on that data set.
+And then there's a
+third step, which
+is to use the human
+feedback and then fine-tune
+the model that you got
+from supervised fine-tuning
+on higher quality
+preference data.
+And what this third
+step looks like is first
+you gather the preference data.
+There are also actually
+existing preference data
+sets that you can use as well.
+You don't have to necessarily--
+you don't necessarily
+have to collect it
+on using your model.
+Second, you'll
+train a reward model
+that is judging how
+good a response is.
+And then lastly,
+you'll do reinforcement
+learning to maximize
+that reward function.
+We will talk more about
+preference learning on Wednesday
+next week.
+But one somewhat
+common approach is
+to use PPO to
+maximize the reward.
+The question is, is
+x just the prompt,
+or is it the whole history?
+Oftentimes, it's
+the whole history.
+And you can sort of--
+yeah, oftentimes,
+when you-- generally,
+also when you formulate RL
+problems for language models,
+you will have--
+you can model it as
+a sequential problem.
+But you can also--
+there's a way to--
+a simpler but more
+crude way to model
+it, which is to use all
+the history and just
+treat the next
+response as the thing
+that you're optimizing over.
+So the question is, how do we
+go from preference rankings
+to this probability right here?
+So in our preferences,
+we're saying
+that we might have
+a ranking saying
+like A is better than B
+which is better than C.
+If we have a ranking
+of k trajectories,
+then we can formulate k
+choose 2 pairs where--
+and within each pair we'll
+have an A is better than B,
+or B is better than A.
+We're using tau w to represent
+the response or the trajectory
+that was preferred,
+and tau l to represent
+the one that was dispreferred.
+And then we sample one of
+those pairs, one of those k
+choose pairs.
+And then we plug it into
+this equation right here.
+So you're asking, what is
+the sigma function or--?
+yeah, so the sigma
+function here--
+this is a sigmoid.
+So it is basically a
+function that squashes
+the values between 0 and 1.
+And so it's just a very
+simple function that--
+I can't remember.
+I think it looks something
+like this, where this is 1.
+So yeah, I'm just using sigma.
+This is sigma right here.
+So it's just this
+function right here.
+OK.
+One other thing you can do is
+instead of using human feedback,
+you could also have an AI model.
+You could ask a strong model
+like, is this better than this?
+One thing that I'll
+note is when you
+are thinking about what is
+preferred and dispreferred,
+there are a variety
+of different axes
+in which something might be
+preferred or dispreferred.
+And so you could--
+in some cases, you might be
+able to ask for certain things
+that you care about
+from the model.
+This is often referred to
+as reinforcement learning
+with AI feedback.
+As one example of a
+use case, the people
+have used this to
+try to prevent models
+from producing harmful content.
+And so they will feed two
+responses into the model
+and ask the model which
+response is less harmful.
+One insight here
+is that critique is
+often easier than generation.
+And so this is
+one of the reasons
+why you might be able to get a
+stronger model with AI feedback
+than otherwise.
+And there have been
+some works that
+show that if you use this kind
+of feedback, this AI feedback,
+you can get an improvement
+in model performance
+on different axes.
+OK.
+So a summary of
+reward learning--
+rewards cannot be
+taken for granted.
+We've talked about
+learning from goals.
+We talked about learning
+from human preferences.
+For goals, it's quite practical.
+Adversarial training can be a
+little bit tricky to optimize,
+and it requires examples
+of desired behavior.
+With preferences,
+pairwise preferences
+are really easy to provide.
+It doesn't require example
+goals or example demonstrations.
+It has been deployed at
+really, really large scales
+with language models.
+It may require some
+supervision in the loop
+of reinforcement learning.
+One other thing that I encourage
+everyone to think about
+is goals and human preferences,
+those are some form of feedback,
+but there's a lot of
+other ways that we
+might be able to provide
+supervision to agents
+that are trying to learn.
+You could even verbally
+tell it some information
+like, that was good,
+or that was helpful,
+or that was helpful but
+mean, or something like that.
+And you could think of other
+ways of providing supervision.
+And I think that this is
+an area of research that--
+yeah-- where I
+think that there's
+more things that could be done.
+One other thing
+that I'll mention
+is there's also some cool work
+in the reinforcement learning
+research landscape,
+where you can potentially
+have reinforcement
+learning agents propose
+their own goals rather than
+having a human provide a goal.
+This is often referred
+to as this area
+of unsupervised reinforcement
+learning, where human is not
+telling the agent
+what it should do.
+Instead, the agent should have
+its own sort of curiosity.
+One example of this
+is you can have
+one agent setting a goal,
+another agent trying
+to reach the goal.
+And you can formulate this
+as a game between these two
+different agents.
+And there's, yeah,
+some cool work that
+shows that you can have that--
+if you have these two
+different agents that
+are trying to play against each
+other, where one is the goal
+setter, one is trying
+to reach the goals,
+you can get some kind of
+cool behavior as a result.

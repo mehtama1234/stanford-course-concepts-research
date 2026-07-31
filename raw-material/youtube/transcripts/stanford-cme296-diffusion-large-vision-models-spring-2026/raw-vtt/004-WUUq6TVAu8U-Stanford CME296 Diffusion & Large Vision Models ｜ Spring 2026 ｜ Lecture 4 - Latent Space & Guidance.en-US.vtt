@@ -1,0 +1,5939 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:05.800 --> 00:00:07.480
+Hello, everyone.
+
+00:00:07.480 --> 00:00:13.000
+And welcome to
+lecture 4 of CME 296.
+
+00:00:13.000 --> 00:00:17.320
+So before we start, I just want
+to say that those first three
+
+00:00:17.320 --> 00:00:20.200
+lectures were really
+the most technical
+
+00:00:20.200 --> 00:00:22.440
+and mathematically challenging.
+
+00:00:22.440 --> 00:00:25.720
+So in that sense, I'm
+still glad you're here.
+
+00:00:25.720 --> 00:00:30.440
+And I really hope that those
+three lectures gave you
+
+00:00:30.440 --> 00:00:34.440
+the intuition as to why we were
+going to use this generation
+
+00:00:34.440 --> 00:00:35.520
+paradigm.
+
+00:00:35.520 --> 00:00:38.040
+Because there are going
+to be used as building
+
+00:00:38.040 --> 00:00:42.680
+blocks for everything that
+we're going to see from now on.
+
+00:00:42.680 --> 00:00:47.120
+In particular, during
+the first three lectures,
+
+00:00:47.120 --> 00:00:51.960
+we focused on
+unconditional generation.
+
+00:00:51.960 --> 00:00:54.600
+And now, what we're
+going to see is
+
+00:00:54.600 --> 00:00:58.640
+how we can generate images
+with a condition which
+
+00:00:58.640 --> 00:01:05.950
+can be a user prompt, like
+input text, or an input image.
+
+00:01:05.950 --> 00:01:09.390
+And so in that sense, the
+title of today's lecture
+
+00:01:09.390 --> 00:01:13.870
+is multi-modal
+guided generation.
+
+00:01:13.870 --> 00:01:17.310
+With that, we're going to start.
+
+00:01:17.310 --> 00:01:20.110
+And as usual, I'm
+going to just recap
+
+00:01:20.110 --> 00:01:22.910
+what we did the previous times.
+
+00:01:22.910 --> 00:01:26.190
+So as I mentioned, the
+first three lectures
+
+00:01:26.190 --> 00:01:28.390
+were mathematically
+challenging, and they
+
+00:01:28.390 --> 00:01:31.750
+were about seeing
+how we could generate
+
+00:01:31.750 --> 00:01:35.550
+images, what were the
+paradigms that we could use.
+
+00:01:35.550 --> 00:01:39.830
+So the first lecture was focused
+on the diffusion paradigm
+
+00:01:39.830 --> 00:01:44.750
+with DDPM, where we saw that
+we were taking clean images,
+
+00:01:44.750 --> 00:01:48.950
+that we were noising
+in a discrete way.
+
+00:01:48.950 --> 00:01:51.210
+And so here, we
+had this formula,
+
+00:01:51.210 --> 00:01:56.190
+which was a combination of a
+clean image and Gaussian noise
+
+00:01:56.190 --> 00:02:00.860
+that we weighted with
+those coefficients.
+
+00:02:00.860 --> 00:02:03.380
+And what we saw
+with a bunch of math
+
+00:02:03.380 --> 00:02:08.060
+was that we could
+derive an expression
+
+00:02:08.060 --> 00:02:11.820
+that we could optimize
+in order to reconstruct
+
+00:02:11.820 --> 00:02:15.380
+those clean images
+that we've noised.
+
+00:02:15.380 --> 00:02:21.540
+And we ended up with a very
+nice expression, an L2 loss
+
+00:02:21.540 --> 00:02:23.780
+on the noise that was added.
+
+00:02:23.780 --> 00:02:27.140
+And in particular, if
+we wanted to denoise,
+
+00:02:27.140 --> 00:02:30.860
+we had the following
+formula that allowed you
+
+00:02:30.860 --> 00:02:37.300
+to go from a step t to step
+t minus 1 using this model e
+
+00:02:37.300 --> 00:02:41.380
+theta, which was the predicted
+noise that was added.
+
+00:02:41.380 --> 00:02:45.020
+And so in that sense, it was
+parameterized with respect
+
+00:02:45.020 --> 00:02:47.700
+to the noise epsilon.
+
+00:02:47.700 --> 00:02:50.660
+Then in lecture
+2, what we did was
+
+00:02:50.660 --> 00:02:57.250
+that we derived the continuous
+version of what we derived
+
+00:02:57.250 --> 00:02:59.650
+in a discrete way in lecture 1.
+
+00:02:59.650 --> 00:03:01.750
+And we also saw a
+second paradigm,
+
+00:03:01.750 --> 00:03:06.250
+a second way of seeing things,
+which was score matching.
+
+00:03:06.250 --> 00:03:10.010
+And we saw that when
+we looked at these two
+
+00:03:10.010 --> 00:03:18.610
+ways of doing things, if we were
+to take the increment of time
+
+00:03:18.610 --> 00:03:23.650
+from t to t plus 1
+and tend it to 0,
+
+00:03:23.650 --> 00:03:28.090
+we had a general
+expression of the increment
+
+00:03:28.090 --> 00:03:32.190
+in x, which would be
+as a function of dt,
+
+00:03:32.190 --> 00:03:35.770
+the increment in
+time, and dw, which
+
+00:03:35.770 --> 00:03:38.890
+is the continuous
+version of adding noise.
+
+00:03:38.890 --> 00:03:41.230
+And in particular, you
+had these two terms.
+
+00:03:41.230 --> 00:03:47.450
+So on the left side, the drift
+term, and then on the right side
+
+00:03:47.450 --> 00:03:50.090
+was the diffusion term.
+
+00:03:50.090 --> 00:03:54.000
+And we saw that in order
+to reverse the noise that
+
+00:03:54.000 --> 00:03:57.200
+was added, so a.k.a.
+reverse process,
+
+00:03:57.200 --> 00:04:01.440
+we could use a
+result from theories
+
+00:04:01.440 --> 00:04:05.000
+on stochastic
+differential equations,
+
+00:04:05.000 --> 00:04:11.160
+where we saw that we could
+derive the reverse process if we
+
+00:04:11.160 --> 00:04:15.080
+knew the score, which is
+why this formulation was
+
+00:04:15.080 --> 00:04:18.600
+parameterized as a
+function of the score.
+
+00:04:18.600 --> 00:04:22.040
+So here it's noted S of theta.
+
+00:04:22.040 --> 00:04:26.200
+And in lecture three,
+we saw that actually, we
+
+00:04:26.200 --> 00:04:29.240
+could think of this whole
+thing as a completely--
+
+00:04:29.240 --> 00:04:31.200
+in a completely different way.
+
+00:04:31.200 --> 00:04:35.400
+And we can think of it as
+transporting a probability
+
+00:04:35.400 --> 00:04:38.160
+mass from an
+initial distribution
+
+00:04:38.160 --> 00:04:40.160
+up to a target distribution.
+
+00:04:40.160 --> 00:04:45.680
+And in that sense, we
+could express a noisy image
+
+00:04:45.680 --> 00:04:50.160
+as a combination
+of noise and sample
+
+00:04:50.160 --> 00:04:52.230
+from the target distribution.
+
+00:04:52.230 --> 00:04:56.470
+And all of what we had
+to do was to just predict
+
+00:04:56.470 --> 00:04:58.630
+the vector field, a.k.a.
+
+00:04:58.630 --> 00:05:04.110
+The velocity, which
+was noted u of theta.
+
+00:05:04.110 --> 00:05:09.790
+But one thing that
+we kept silent
+
+00:05:09.790 --> 00:05:13.870
+was how we could
+actually represent
+
+00:05:13.870 --> 00:05:17.830
+all of these quantities,
+in particular xt,
+
+00:05:17.830 --> 00:05:22.750
+the representation of the image
+when it's noised at a given
+
+00:05:22.750 --> 00:05:28.510
+level, the noise itself.
+
+00:05:28.510 --> 00:05:31.110
+All of these, we just
+assumed that there
+
+00:05:31.110 --> 00:05:35.230
+was some way of
+representing these in some n
+
+00:05:35.230 --> 00:05:37.790
+or d dimensional space.
+
+00:05:37.790 --> 00:05:39.830
+So one thing that
+we will do today
+
+00:05:39.830 --> 00:05:43.470
+is to see what
+space could actually
+
+00:05:43.470 --> 00:05:48.430
+be more appropriate
+for this kind of work.
+
+00:05:48.430 --> 00:05:52.140
+And then the second
+thing is, as you can see,
+
+00:05:52.140 --> 00:05:58.260
+the models that we need to
+estimate-- so epsilon theta, s
+
+00:05:58.260 --> 00:05:59.560
+of theta, you have theta.
+
+00:05:59.560 --> 00:06:05.900
+There are only a function of
+denoised image and the time,
+
+00:06:05.900 --> 00:06:11.500
+but they're not a function of
+any condition, any user input.
+
+00:06:11.500 --> 00:06:15.300
+So this is also something that
+we're going to see, a.k.a.
+
+00:06:15.300 --> 00:06:18.180
+How can we incorporate
+a condition
+
+00:06:18.180 --> 00:06:24.220
+that could guide the generation
+towards what we want.
+
+00:06:24.220 --> 00:06:26.740
+So this is the menu for today.
+
+00:06:26.740 --> 00:06:30.900
+So to recap, we're going
+to see three things.
+
+00:06:30.900 --> 00:06:36.140
+The first one is how can we
+represent those noisy images.
+
+00:06:36.140 --> 00:06:37.860
+The second thing that
+we're going to see
+
+00:06:37.860 --> 00:06:40.860
+is how to represent
+the conditions
+
+00:06:40.860 --> 00:06:42.840
+that we want as inputs.
+
+00:06:42.840 --> 00:06:45.880
+So for instance,
+the input text here,
+
+00:06:45.880 --> 00:06:49.690
+a Teddy bear reading a book that
+we want to generate an image for
+
+00:06:49.690 --> 00:06:52.850
+or an input image that
+you want to condition
+
+00:06:52.850 --> 00:06:54.970
+your generation for.
+
+00:06:54.970 --> 00:06:59.170
+And then the third thing is
+how we can guide the generation
+
+00:06:59.170 --> 00:07:04.850
+process using that as an input.
+
+00:07:04.850 --> 00:07:07.550
+So we're going to
+start with number one,
+
+00:07:07.550 --> 00:07:12.730
+how to represent
+these noisy images.
+
+00:07:12.730 --> 00:07:17.170
+And I'm going to start with
+the most natural approach
+
+00:07:17.170 --> 00:07:21.410
+that you could have when
+you see those images.
+
+00:07:21.410 --> 00:07:26.170
+We, as humans, we are very
+accustomed to seeing things
+
+00:07:26.170 --> 00:07:28.210
+in the pixel space.
+
+00:07:28.210 --> 00:07:31.330
+So here, if you take
+this image as an example,
+
+00:07:31.330 --> 00:07:37.530
+this image has a certain
+height H, certain width, W.
+
+00:07:37.530 --> 00:07:42.810
+So what you can do is
+to represent each pixel
+
+00:07:42.810 --> 00:07:49.320
+as a function of the intensity
+of the color that composes it.
+
+00:07:49.320 --> 00:07:53.200
+And in particular, a very
+common representation
+
+00:07:53.200 --> 00:07:58.680
+is using R, so red,
+green, and blue.
+
+00:07:58.680 --> 00:08:02.080
+So in other words,
+you would have
+
+00:08:02.080 --> 00:08:05.280
+each pixel that would
+have three values, which
+
+00:08:05.280 --> 00:08:07.360
+would make up the color.
+
+00:08:07.360 --> 00:08:12.600
+And you would have these values
+cover all pixels of the image.
+
+00:08:12.600 --> 00:08:15.280
+So you would have
+a dimension n that
+
+00:08:15.280 --> 00:08:20.180
+would be equal to 3 times the
+size, the number of pixels,
+
+00:08:20.180 --> 00:08:24.800
+which is h times w.
+
+00:08:24.800 --> 00:08:27.760
+And so you could
+represent your image
+
+00:08:27.760 --> 00:08:33.640
+as a tensor along the axis,
+the height, the width,
+
+00:08:33.640 --> 00:08:37.120
+and the number of
+channels here, which
+
+00:08:37.120 --> 00:08:40.760
+are three, which
+represents R, G, and B.
+
+00:08:40.760 --> 00:08:42.640
+So this could be one way.
+
+00:08:42.640 --> 00:08:49.630
+But the big problem with that is
+that it's very high dimension.
+
+00:08:49.630 --> 00:08:54.570
+So if we take the example of a,
+quote, unquote, "regular image,"
+
+00:08:54.570 --> 00:09:01.270
+so 1,024 times 1,024 pixels,
+then we would end up with
+
+00:09:01.270 --> 00:09:04.870
+a number of dimensions,
+which would be on the order
+
+00:09:04.870 --> 00:09:06.270
+of a million.
+
+00:09:06.270 --> 00:09:09.190
+So 10 to the power of 6.
+
+00:09:09.190 --> 00:09:12.510
+And if you think
+about it, this is just
+
+00:09:12.510 --> 00:09:17.150
+a lot of dimensions to consider
+in our training generation
+
+00:09:17.150 --> 00:09:20.290
+paradigm algorithms,
+which are, of course,
+
+00:09:20.290 --> 00:09:24.830
+a function of the dimension
+in which you operate.
+
+00:09:24.830 --> 00:09:28.870
+So that's one very big drawback.
+
+00:09:28.870 --> 00:09:32.830
+The second drawback is if
+you look at your image,
+
+00:09:32.830 --> 00:09:37.190
+you actually see that you
+have a lot of redundancies.
+
+00:09:37.190 --> 00:09:41.470
+So if you see, for instance, in
+a given neighborhood of pixels,
+
+00:09:41.470 --> 00:09:44.420
+you have a lot of
+very similar values.
+
+00:09:44.420 --> 00:09:51.120
+So in a sense, you can consider
+this as a waste of dimensions.
+
+00:09:51.120 --> 00:09:54.340
+So it's not very compact.
+
+00:09:54.340 --> 00:09:57.140
+And then the third
+thing is if you
+
+00:09:57.140 --> 00:10:00.660
+remember our whole
+first three lectures
+
+00:10:00.660 --> 00:10:03.740
+were about taking the
+image, and adding noise,
+
+00:10:03.740 --> 00:10:07.220
+and then just moving it
+in the space with respect
+
+00:10:07.220 --> 00:10:09.660
+to added noise.
+
+00:10:09.660 --> 00:10:12.580
+Well, here, if
+you take an image,
+
+00:10:12.580 --> 00:10:15.100
+and you were to move it
+slightly in that space
+
+00:10:15.100 --> 00:10:17.700
+by adding some noise,
+you would actually
+
+00:10:17.700 --> 00:10:21.420
+obtain an image, a noisy
+image that would actually not
+
+00:10:21.420 --> 00:10:24.340
+be very meaningful.
+
+00:10:24.340 --> 00:10:27.860
+It would not mean anything.
+
+00:10:27.860 --> 00:10:29.860
+So in particular, so
+I'm not sure if you
+
+00:10:29.860 --> 00:10:34.860
+recall this nice
+graphs or charts, where
+
+00:10:34.860 --> 00:10:40.580
+you would see the areas of
+high density of your target
+
+00:10:40.580 --> 00:10:42.610
+desired distribution.
+
+00:10:42.610 --> 00:10:49.450
+So here, what we want is
+clusters of observations
+
+00:10:49.450 --> 00:10:51.250
+that are likely to occur.
+
+00:10:51.250 --> 00:10:53.530
+But what we get is
+actually the thing
+
+00:10:53.530 --> 00:10:58.930
+on the right, which is a space
+with very spiky regions, where
+
+00:10:58.930 --> 00:11:04.370
+each spike represents
+an actual valid image.
+
+00:11:04.370 --> 00:11:07.490
+And that's not good.
+
+00:11:07.490 --> 00:11:10.530
+So for all these
+reasons, we're going
+
+00:11:10.530 --> 00:11:15.330
+to just come up with
+a wish list of a space
+
+00:11:15.330 --> 00:11:17.410
+that we would like to have.
+
+00:11:17.410 --> 00:11:21.010
+So I'm going to go
+through that step by step.
+
+00:11:21.010 --> 00:11:24.610
+So the first one is the high
+dimensionality observation
+
+00:11:24.610 --> 00:11:25.770
+that I made.
+
+00:11:25.770 --> 00:11:29.290
+So here, what we want is a
+dimension that's more, quote,
+
+00:11:29.290 --> 00:11:31.410
+unquote, "tractable."
+
+00:11:31.410 --> 00:11:33.370
+So that's number one.
+
+00:11:33.370 --> 00:11:37.210
+Number two of our wish list is
+to have a representation that
+
+00:11:37.210 --> 00:11:40.480
+does not have a lot of
+redundancies, that has
+
+00:11:40.480 --> 00:11:44.520
+some way of compacting things.
+
+00:11:44.520 --> 00:11:49.800
+So number 2 is compact
+representation.
+
+00:11:49.800 --> 00:11:52.560
+Number 3, regarding
+the representation
+
+00:11:52.560 --> 00:11:54.520
+not being meaningful,
+so here, we
+
+00:11:54.520 --> 00:11:58.040
+want a representation
+that is meaningful.
+
+00:11:58.040 --> 00:12:04.160
+And you can think of this when
+I say what meaningful means.
+
+00:12:04.160 --> 00:12:06.800
+It's when you look at
+the space, and you're
+
+00:12:06.800 --> 00:12:14.800
+able to have clusters of regions
+where valid images happen.
+
+00:12:14.800 --> 00:12:19.120
+That's what I mean
+by meaningful space.
+
+00:12:19.120 --> 00:12:22.240
+So this is our wish list.
+
+00:12:22.240 --> 00:12:27.280
+So before we move ahead,
+I want to take the time
+
+00:12:27.280 --> 00:12:31.800
+to introduce two
+terminologies that are widely
+
+00:12:31.800 --> 00:12:33.680
+used in those papers.
+
+00:12:33.680 --> 00:12:36.760
+So I prefer to define
+them now and clearly
+
+00:12:36.760 --> 00:12:40.070
+so that you what they refer to.
+
+00:12:40.070 --> 00:12:42.070
+So you will see
+that there is a lot
+
+00:12:42.070 --> 00:12:46.170
+talk about semantic similarity.
+
+00:12:46.170 --> 00:12:49.110
+So what does semantic
+similarity mean?
+
+00:12:49.110 --> 00:12:52.950
+So semantic
+similarity of an image
+
+00:12:52.950 --> 00:12:57.230
+is something that refers
+to its global geometry
+
+00:12:57.230 --> 00:12:59.590
+to its overall structure.
+
+00:12:59.590 --> 00:13:01.910
+And in particular,
+what that means
+
+00:13:01.910 --> 00:13:07.710
+is if two images are
+semantically similar,
+
+00:13:07.710 --> 00:13:10.510
+what that means is
+that they roughly
+
+00:13:10.510 --> 00:13:13.310
+represent the same thing.
+
+00:13:13.310 --> 00:13:15.350
+So here on the slide,
+you have on the left
+
+00:13:15.350 --> 00:13:17.710
+a Teddy bear that
+is reading a book.
+
+00:13:17.710 --> 00:13:19.510
+On the right, you
+have also a Teddy bear
+
+00:13:19.510 --> 00:13:20.610
+that is reading a book.
+
+00:13:20.610 --> 00:13:24.310
+They're not exactly
+aligned pixel wise,
+
+00:13:24.310 --> 00:13:27.950
+but they're
+semantically similar.
+
+00:13:27.950 --> 00:13:31.070
+So that's for
+semantic similarity.
+
+00:13:31.070 --> 00:13:38.340
+Now, you have another notation,
+which is perceptual similarity.
+
+00:13:38.340 --> 00:13:45.940
+So this one refers to more of
+the local details of an image.
+
+00:13:45.940 --> 00:13:49.540
+More to the lower level
+texture of an image.
+
+00:13:49.540 --> 00:13:55.100
+And when you say that two images
+are perceptually similar, what
+
+00:13:55.100 --> 00:14:00.780
+that means is that to the
+human eye, they look the same.
+
+00:14:00.780 --> 00:14:02.800
+So for instance,
+you have, again,
+
+00:14:02.800 --> 00:14:04.640
+two pictures of a Teddy bear.
+
+00:14:04.640 --> 00:14:06.940
+So I'm not sure if you
+see the one on the right
+
+00:14:06.940 --> 00:14:09.220
+has some little glasses.
+
+00:14:09.220 --> 00:14:12.080
+But it's perceptually
+very similar.
+
+00:14:15.220 --> 00:14:19.020
+Does that make sense,
+that distinction?
+
+00:14:19.020 --> 00:14:19.900
+Yeah.
+
+00:14:19.900 --> 00:14:21.700
+The reason why I say
+that is I'm going
+
+00:14:21.700 --> 00:14:23.560
+to use that terminology
+going forward,
+
+00:14:23.560 --> 00:14:28.420
+so I just want to make
+sure we all what these are.
+
+00:14:28.420 --> 00:14:31.340
+So what are we doing?
+
+00:14:31.340 --> 00:14:35.690
+What we want is to come
+up with a space that
+
+00:14:35.690 --> 00:14:41.690
+fulfills our wish list
+that we established before.
+
+00:14:41.690 --> 00:14:44.370
+So here is our first attempt.
+
+00:14:44.370 --> 00:14:50.690
+So how about we take an
+image in the pixel space,
+
+00:14:50.690 --> 00:14:56.250
+and what we try to do
+is find a representation
+
+00:14:56.250 --> 00:15:02.130
+that's meaningful using
+the following architecture.
+
+00:15:02.130 --> 00:15:05.130
+So let's assume we
+take that image,
+
+00:15:05.130 --> 00:15:08.170
+and we put it into some model.
+
+00:15:08.170 --> 00:15:13.290
+Let's call it an encoder
+that encodes the image
+
+00:15:13.290 --> 00:15:17.650
+and produces an output
+that is of lower
+
+00:15:17.650 --> 00:15:20.650
+dimensionality as the input.
+
+00:15:20.650 --> 00:15:26.290
+So here, we go from an
+image of size HW and number
+
+00:15:26.290 --> 00:15:28.690
+of channels, which,
+as you know, is
+
+00:15:28.690 --> 00:15:32.320
+equal to 3 in the pixel
+space because in the RGB
+
+00:15:32.320 --> 00:15:34.720
+representation.
+
+00:15:34.720 --> 00:15:37.920
+And here, we end up with
+a latent representation
+
+00:15:37.920 --> 00:15:45.880
+of size lowercase h,
+lowercase w, and little c.
+
+00:15:45.880 --> 00:15:51.520
+And then what we do is we
+put that representation back
+
+00:15:51.520 --> 00:15:52.380
+to the decoder.
+
+00:15:52.380 --> 00:15:57.080
+So if we were to do
+that, our objective
+
+00:15:57.080 --> 00:16:02.800
+is to recover the
+original image.
+
+00:16:02.800 --> 00:16:05.240
+So we don't want to
+lose any information
+
+00:16:05.240 --> 00:16:09.060
+by encoding our image into
+a lower dimensional space.
+
+00:16:09.060 --> 00:16:16.640
+So here, such a setup is
+called an autoencoder.
+
+00:16:16.640 --> 00:16:19.880
+So the only job
+of an autoencoder
+
+00:16:19.880 --> 00:16:26.240
+is to find a lower dimension
+representation that's called
+
+00:16:26.240 --> 00:16:29.240
+the latent representation.
+
+00:16:29.240 --> 00:16:32.950
+And what it does
+us is take an image
+
+00:16:32.950 --> 00:16:40.190
+in the pixel space as input,
+compress it, and then decode it.
+
+00:16:40.190 --> 00:16:45.390
+And here, the task is making
+sure that what you get as output
+
+00:16:45.390 --> 00:16:47.490
+is the same as what
+you get as input.
+
+00:16:50.270 --> 00:16:55.270
+So you may think, OK, it's
+a very useless model, which
+
+00:16:55.270 --> 00:16:59.710
+I agree, unless you're
+interested in the latent
+
+00:16:59.710 --> 00:17:02.350
+space, which we are.
+
+00:17:02.350 --> 00:17:03.810
+This is what we're
+interested in.
+
+00:17:06.430 --> 00:17:08.050
+So does this setup make sense?
+
+00:17:11.510 --> 00:17:12.010
+Cool.
+
+00:17:12.010 --> 00:17:16.829
+And then terminology wise, the
+latent space, like that part,
+
+00:17:16.829 --> 00:17:20.190
+is called the bottleneck just
+because we're forcing the model
+
+00:17:20.190 --> 00:17:22.990
+to rely on fewer
+dimensions, and we
+
+00:17:22.990 --> 00:17:29.420
+want the model to still preserve
+the richness of the details that
+
+00:17:29.420 --> 00:17:32.860
+are present in the image.
+
+00:17:32.860 --> 00:17:34.760
+So let's see how we do that.
+
+00:17:34.760 --> 00:17:38.580
+But before we go, I want to
+introduce another notation
+
+00:17:38.580 --> 00:17:40.660
+that you also see a
+lot in papers, which
+
+00:17:40.660 --> 00:17:46.140
+is called the spatial
+compression ratio, which
+
+00:17:46.140 --> 00:17:52.300
+is defined by the amount
+by which you go from Big H
+
+00:17:52.300 --> 00:17:54.220
+to little h.
+
+00:17:54.220 --> 00:17:57.860
+So it's just the
+ratio between the two.
+
+00:17:57.860 --> 00:18:02.980
+And that ratio is typically
+on the order of 8.
+
+00:18:02.980 --> 00:18:08.420
+So that's the order of magnitude
+that you should have in mind.
+
+00:18:08.420 --> 00:18:08.960
+Cool.
+
+00:18:08.960 --> 00:18:12.620
+So let's see now based
+on what I told you
+
+00:18:12.620 --> 00:18:17.420
+how each component works.
+
+00:18:17.420 --> 00:18:23.120
+So in terms of what is input in
+the encoder, as we mentioned,
+
+00:18:23.120 --> 00:18:26.000
+we have our input image.
+
+00:18:26.000 --> 00:18:33.530
+Let's note it x that we put in
+our encoder, that we note E phi.
+
+00:18:33.530 --> 00:18:36.490
+And we get a latent
+representation z
+
+00:18:36.490 --> 00:18:40.810
+that is equal to E phi of x.
+
+00:18:40.810 --> 00:18:43.770
+And so the way we
+would do that would
+
+00:18:43.770 --> 00:18:49.130
+be to use a network that
+contains some downsampling
+
+00:18:49.130 --> 00:18:50.690
+operations.
+
+00:18:50.690 --> 00:18:54.570
+So what that means is it
+allows us to go from a bigger
+
+00:18:54.570 --> 00:18:58.050
+dimension to a lower dimension.
+
+00:18:58.050 --> 00:19:01.090
+We're not going to go
+into too much details
+
+00:19:01.090 --> 00:19:04.770
+into what that network is
+because we're going to talk more
+
+00:19:04.770 --> 00:19:07.250
+about this in the next lecture.
+
+00:19:07.250 --> 00:19:11.570
+But I just want to tell you
+roughly the two main operations
+
+00:19:11.570 --> 00:19:15.110
+that you can expect,
+which you may have seen.
+
+00:19:15.110 --> 00:19:18.090
+So the first one
+is convolutions.
+
+00:19:18.090 --> 00:19:20.810
+So who has heard of
+convolutions before?
+
+00:19:20.810 --> 00:19:21.750
+Yeah, everyone.
+
+00:19:21.750 --> 00:19:23.690
+So I can go fast.
+
+00:19:23.690 --> 00:19:28.760
+Convolutions is just a way to
+scan your image using a filter.
+
+00:19:28.760 --> 00:19:31.300
+So the image is in red,
+the filter is in blue.
+
+00:19:31.300 --> 00:19:36.040
+And what you get is what we call
+an activation map or a feature
+
+00:19:36.040 --> 00:19:41.120
+map that is in purple.
+
+00:19:41.120 --> 00:19:42.720
+And then the second
+operation that you
+
+00:19:42.720 --> 00:19:46.480
+see in these kinds of
+networks is pooling.
+
+00:19:46.480 --> 00:19:50.440
+So pooling is a
+downsampling operator
+
+00:19:50.440 --> 00:19:55.040
+that allows you to either take
+the maximum of a given square,
+
+00:19:55.040 --> 00:19:59.640
+or the average, or either max
+pooling or average pooling.
+
+00:19:59.640 --> 00:20:03.400
+And it allows you to introduce
+some spatial invariance
+
+00:20:03.400 --> 00:20:08.960
+just because you can aggregate
+the pixels to a higher
+
+00:20:08.960 --> 00:20:11.268
+granularity.
+
+00:20:11.268 --> 00:20:13.060
+We're not going to go
+into too much detail,
+
+00:20:13.060 --> 00:20:16.440
+but these are just
+for reference.
+
+00:20:16.440 --> 00:20:19.480
+So when it comes to the
+decoder, what you would do
+
+00:20:19.480 --> 00:20:22.480
+is take the latent
+representation
+
+00:20:22.480 --> 00:20:27.070
+z into the decoder d theta.
+
+00:20:27.070 --> 00:20:32.190
+And you would get your
+reconstructed output x hat.
+
+00:20:32.190 --> 00:20:36.030
+So here, you would use
+upsampling operations,
+
+00:20:36.030 --> 00:20:40.310
+for instance reverse
+convolutions.
+
+00:20:40.310 --> 00:20:45.590
+And the goal of this model
+is as much as possible,
+
+00:20:45.590 --> 00:20:49.990
+for your reconstructed
+output to be as close as
+
+00:20:49.990 --> 00:20:53.030
+possible to your input.
+
+00:20:53.030 --> 00:20:54.990
+So the loss function
+of such a model
+
+00:20:54.990 --> 00:20:59.910
+would be something along the
+lines of just an L2 regression
+
+00:20:59.910 --> 00:21:06.130
+between the input x and the
+reconstructed input x hat.
+
+00:21:08.750 --> 00:21:10.710
+So I have a question for you.
+
+00:21:10.710 --> 00:21:13.250
+Do you think this
+model is a good model?
+
+00:21:18.350 --> 00:21:20.630
+So this is what we're
+going to see now.
+
+00:21:20.630 --> 00:21:22.700
+So let's go through
+our checklist.
+
+00:21:22.700 --> 00:21:27.380
+First one is, OK., is the
+dimension more tractable?
+
+00:21:27.380 --> 00:21:29.580
+Yes, more tractable.
+
+00:21:29.580 --> 00:21:32.540
+Is the representation
+more compact?
+
+00:21:32.540 --> 00:21:35.380
+Yes, it's more compact.
+
+00:21:35.380 --> 00:21:38.400
+Is the representation
+meaningful?
+
+00:21:38.400 --> 00:21:42.980
+Meaning do you have a nice
+shape in your latent space
+
+00:21:42.980 --> 00:21:46.380
+in the way we represent it?
+
+00:21:46.380 --> 00:21:47.320
+Yes, exactly.
+
+00:21:47.320 --> 00:21:49.100
+Not necessarily.
+
+00:21:49.100 --> 00:21:52.460
+Well, the reason for
+that is we have not
+
+00:21:52.460 --> 00:21:55.340
+constrained our latent
+space to be structured
+
+00:21:55.340 --> 00:21:57.460
+in any particular way.
+
+00:21:57.460 --> 00:22:01.020
+So the model is just
+only incentivized
+
+00:22:01.020 --> 00:22:06.460
+to reconstruct the
+input as best as it can.
+
+00:22:06.460 --> 00:22:12.260
+And it really doesn't care
+what shape the latent space is.
+
+00:22:12.260 --> 00:22:14.780
+So you actually still
+end up with this kind
+
+00:22:14.780 --> 00:22:17.900
+of space, which is not good.
+
+00:22:17.900 --> 00:22:21.550
+This is not good because
+your flow matching model,
+
+00:22:21.550 --> 00:22:25.930
+your diffusion model is just
+not able to learn very well
+
+00:22:25.930 --> 00:22:28.810
+in those spaces
+because, first of all,
+
+00:22:28.810 --> 00:22:33.130
+the representations
+are all over the place.
+
+00:22:33.130 --> 00:22:36.490
+And if you remember,
+one common thing
+
+00:22:36.490 --> 00:22:39.410
+with all of these
+generation paradigms
+
+00:22:39.410 --> 00:22:43.490
+is that you start from
+a normal distribution,
+
+00:22:43.490 --> 00:22:45.970
+like a standard
+normal distribution.
+
+00:22:45.970 --> 00:22:49.770
+So you need a way for
+you to not get lost.
+
+00:22:49.770 --> 00:22:54.970
+So if everything is far
+apart, it just doesn't work.
+
+00:22:54.970 --> 00:22:57.010
+So that's not good.
+
+00:22:57.010 --> 00:22:59.650
+So let's go back to
+the drawing board,
+
+00:22:59.650 --> 00:23:02.850
+and let's see what
+we can change.
+
+00:23:02.850 --> 00:23:06.370
+So we take our image,
+we compress it,
+
+00:23:06.370 --> 00:23:08.370
+and then we decompress it.
+
+00:23:08.370 --> 00:23:10.090
+Everything's perfect.
+
+00:23:10.090 --> 00:23:15.650
+Well, let's see what we
+can do in the latent space.
+
+00:23:15.650 --> 00:23:21.120
+Our goal here would be to,
+quote, unquote, "enforce"
+
+00:23:21.120 --> 00:23:25.040
+the latent space to
+have some structure.
+
+00:23:25.040 --> 00:23:27.520
+So this is our goal.
+
+00:23:27.520 --> 00:23:29.900
+And we're going to see
+how we can do that.
+
+00:23:32.480 --> 00:23:35.140
+OK, let's go back
+to where we were.
+
+00:23:35.140 --> 00:23:39.240
+We take our input image x.
+
+00:23:39.240 --> 00:23:46.280
+But instead of just letting it
+through a standard encoder, what
+
+00:23:46.280 --> 00:23:53.480
+we will do is to actually
+not try to predict
+
+00:23:53.480 --> 00:23:59.320
+or generate the latent
+representation directly.
+
+00:23:59.320 --> 00:24:07.320
+We will actually predict
+two things, the mean
+
+00:24:07.320 --> 00:24:11.120
+and the standard deviation
+of the distribution
+
+00:24:11.120 --> 00:24:14.960
+that it can be drawn from.
+
+00:24:14.960 --> 00:24:20.110
+So in other words, what we're
+going to see to say is instead
+
+00:24:20.110 --> 00:24:26.270
+of saying that one x corresponds
+to one latent representation,
+
+00:24:26.270 --> 00:24:32.990
+we're going to say that 1x
+actually is mapped to some
+
+00:24:32.990 --> 00:24:39.190
+probability distribution, which
+sounds kind of weird, right?
+
+00:24:39.190 --> 00:24:41.830
+It's not very natural.
+
+00:24:41.830 --> 00:24:45.870
+But we're going to see why
+that mitigates the problem.
+
+00:24:45.870 --> 00:24:48.790
+So here, as a reminder, so
+the output of the encoder
+
+00:24:48.790 --> 00:24:53.430
+will not be just
+a latent vector.
+
+00:24:53.430 --> 00:24:58.410
+It will be-- so the mean mu phi.
+
+00:24:58.410 --> 00:25:03.070
+And the variance
+sigma squared phi.
+
+00:25:03.070 --> 00:25:06.910
+So these are the two
+outputs of the encoder.
+
+00:25:06.910 --> 00:25:10.750
+And what we will say is that
+the latent representation
+
+00:25:10.750 --> 00:25:16.732
+of this distribution,
+this latent representation
+
+00:25:16.732 --> 00:25:18.440
+is actually drawn from
+this distribution.
+
+00:25:18.440 --> 00:25:21.860
+That's what we're going to say.
+
+00:25:21.860 --> 00:25:25.180
+And we're going to
+say something else.
+
+00:25:25.180 --> 00:25:28.580
+So in a bit of an
+informal way, we're
+
+00:25:28.580 --> 00:25:34.100
+going to say that this
+distribution is going
+
+00:25:34.100 --> 00:25:39.260
+to be roughly forced to
+follow or to approximate
+
+00:25:39.260 --> 00:25:42.380
+another distribution.
+
+00:25:42.380 --> 00:25:44.400
+So it's not very
+mathematically rigorous.
+
+00:25:44.400 --> 00:25:48.220
+We were going to see exactly
+how we can express that.
+
+00:25:48.220 --> 00:25:49.820
+But in your mind,
+I want you to know
+
+00:25:49.820 --> 00:25:55.700
+that this is a condition for
+us to structure the latent
+
+00:25:55.700 --> 00:25:59.500
+space in a way where
+we say the latent
+
+00:25:59.500 --> 00:26:03.740
+representation of an
+input x will be roughly
+
+00:26:03.740 --> 00:26:05.480
+in a given region of the space.
+
+00:26:05.480 --> 00:26:07.100
+We're going to
+force that, or we're
+
+00:26:07.100 --> 00:26:11.820
+going to incentivize
+the model to learn that.
+
+00:26:11.820 --> 00:26:12.920
+So that's the idea.
+
+00:26:17.380 --> 00:26:17.980
+Cool.
+
+00:26:17.980 --> 00:26:21.340
+And yeah, this distribution is--
+
+00:26:21.340 --> 00:26:22.900
+OK, you may have guessed it.
+
+00:26:22.900 --> 00:26:26.660
+Again, standard normal
+distribution just because it's.
+
+00:26:26.660 --> 00:26:29.963
+It's a nice distribution
+with great properties.
+
+00:26:29.963 --> 00:26:31.380
+And by the way,
+this distribution,
+
+00:26:31.380 --> 00:26:36.860
+we're going to call it
+the prior distribution.
+
+00:26:36.860 --> 00:26:40.420
+So let's see how
+the decoder works.
+
+00:26:40.420 --> 00:26:47.120
+So let's assume we have put our
+input image into the encoder.
+
+00:26:47.120 --> 00:26:48.640
+We have predicted the mean.
+
+00:26:48.640 --> 00:26:50.960
+We have predicted the
+standard deviation.
+
+00:26:50.960 --> 00:26:54.420
+We have drawn a
+latent representation
+
+00:26:54.420 --> 00:26:57.380
+from the distribution.
+
+00:26:57.380 --> 00:26:59.020
+So now, the decoding
+stage will be
+
+00:26:59.020 --> 00:27:02.380
+around taking that
+representation
+
+00:27:02.380 --> 00:27:07.780
+and passing it through the
+decoder which again will output
+
+00:27:07.780 --> 00:27:14.570
+two things, the mean new theta
+of this latent representation
+
+00:27:14.570 --> 00:27:18.490
+z and standard deviation.
+
+00:27:18.490 --> 00:27:21.010
+And what we're going
+to say is, again,
+
+00:27:21.010 --> 00:27:25.450
+that the reconstructed
+image is going
+
+00:27:25.450 --> 00:27:30.530
+to be drawn from a probability
+distribution of these two
+
+00:27:30.530 --> 00:27:31.390
+parameters.
+
+00:27:34.530 --> 00:27:38.850
+Well, one thing that I
+want to say is actually,
+
+00:27:38.850 --> 00:27:41.050
+we're going to
+simplify this part
+
+00:27:41.050 --> 00:27:42.770
+of the problem a little bit.
+
+00:27:42.770 --> 00:27:46.810
+We're actually going to say that
+the variance is not something
+
+00:27:46.810 --> 00:27:47.950
+we're going to predict.
+
+00:27:47.950 --> 00:27:53.850
+We're just going to fix it to
+be constant just because there
+
+00:27:53.850 --> 00:27:59.210
+is less impact in you
+making sure to introduce
+
+00:27:59.210 --> 00:28:01.390
+some variation in the output.
+
+00:28:01.390 --> 00:28:04.130
+Because in the pixel
+space, even if you
+
+00:28:04.130 --> 00:28:07.130
+add a little bit
+of noise, it's not
+
+00:28:07.130 --> 00:28:10.840
+going to change the
+image a whole lot.
+
+00:28:10.840 --> 00:28:13.800
+So that's why people
+just say, OK, we're
+
+00:28:13.800 --> 00:28:17.620
+going to take some variants
+that's constant fixed,
+
+00:28:17.620 --> 00:28:19.560
+and we're not going
+to predict that.
+
+00:28:19.560 --> 00:28:21.600
+We're only going to
+predict the mean.
+
+00:28:21.600 --> 00:28:24.200
+We can draw from
+this distribution.
+
+00:28:24.200 --> 00:28:30.000
+But sometimes, people also just
+take the mean as the output.
+
+00:28:30.000 --> 00:28:32.080
+So this part is
+more of a detail.
+
+00:28:32.080 --> 00:28:32.760
+Yeah.
+
+00:28:32.760 --> 00:28:37.160
+So the question here is
+that whether the latency
+
+00:28:37.160 --> 00:28:41.680
+is drawn from the Gaussian
+or is drawn from the q--
+
+00:28:41.680 --> 00:28:45.740
+the encoder here
+q phi z given x.
+
+00:28:45.740 --> 00:28:47.120
+So it's a great question.
+
+00:28:47.120 --> 00:28:53.040
+So this model, which we're
+going to see what the name is,
+
+00:28:53.040 --> 00:28:57.480
+is both a model that we can
+use to learn the latent space,
+
+00:28:57.480 --> 00:29:00.442
+And so have a
+reconstruction task.
+
+00:29:00.442 --> 00:29:02.400
+But it's also something
+that can be interpreted
+
+00:29:02.400 --> 00:29:04.520
+as a generative model.
+
+00:29:04.520 --> 00:29:08.830
+So if your goal is to
+reconstruct the input,
+
+00:29:08.830 --> 00:29:13.990
+then your input here is
+going to be the z that you
+
+00:29:13.990 --> 00:29:16.330
+drew from that distribution.
+
+00:29:16.330 --> 00:29:20.550
+So it's going to be the
+latent representation of x.
+
+00:29:20.550 --> 00:29:26.990
+But if your goal is to
+generate just a new image,
+
+00:29:26.990 --> 00:29:29.150
+then you would
+actually draw that z
+
+00:29:29.150 --> 00:29:30.890
+from the prior distribution.
+
+00:29:30.890 --> 00:29:34.410
+So the question is the encoder
+gives you a mean and a variance.
+
+00:29:34.410 --> 00:29:37.070
+It does not give you something
+deterministic exactly.
+
+00:29:37.070 --> 00:29:40.430
+It gives you a mean
+and a variance.
+
+00:29:40.430 --> 00:29:43.010
+And what you're doing is
+just drawing from that.
+
+00:29:43.010 --> 00:29:45.990
+So you-- yes, you
+draw from that.
+
+00:29:45.990 --> 00:29:47.290
+So great question.
+
+00:29:47.290 --> 00:29:50.870
+So the question is, well, if you
+have a generative model here,
+
+00:29:50.870 --> 00:29:52.130
+why would you bother.
+
+00:29:52.130 --> 00:29:55.790
+And just use diffusion, use flow
+matching, use all these things?
+
+00:29:55.790 --> 00:29:57.130
+It's a great question.
+
+00:29:57.130 --> 00:30:00.070
+You have a number of
+differences between the two
+
+00:30:00.070 --> 00:30:03.710
+which makes diffusion flow
+matching and score actually
+
+00:30:03.710 --> 00:30:05.620
+perform better than VAE.
+
+00:30:05.620 --> 00:30:12.020
+One of the differences is
+here, you only go from latent
+
+00:30:12.020 --> 00:30:15.540
+to pixel in just one step,
+whereas the other ones,
+
+00:30:15.540 --> 00:30:18.020
+you have several steps
+that just allows you
+
+00:30:18.020 --> 00:30:20.440
+to put more compute in there.
+
+00:30:20.440 --> 00:30:21.600
+That's one reason.
+
+00:30:21.600 --> 00:30:23.460
+But there are some
+others that I hope we
+
+00:30:23.460 --> 00:30:25.800
+can get to if we get some time.
+
+00:30:25.800 --> 00:30:29.240
+But we're going to see the
+relationship between the two.
+
+00:30:29.240 --> 00:30:30.080
+Another question?
+
+00:30:30.080 --> 00:30:30.740
+Yeah.
+
+00:30:30.740 --> 00:30:33.380
+The question is,
+does the latent space
+
+00:30:33.380 --> 00:30:35.340
+look like a normal distribution?
+
+00:30:35.340 --> 00:30:45.418
+So there is something that makes
+it be "regularized," quote,
+
+00:30:45.418 --> 00:30:46.960
+unquote, to be a
+normal distribution.
+
+00:30:46.960 --> 00:30:49.540
+It depends on a
+term that you can
+
+00:30:49.540 --> 00:30:52.180
+tweak with respect
+to a coefficient
+
+00:30:52.180 --> 00:30:53.620
+that we're going to see.
+
+00:30:53.620 --> 00:30:57.020
+And depending on the
+value of that coefficient,
+
+00:30:57.020 --> 00:31:01.980
+it may look more or less
+than a normal distribution.
+
+00:31:01.980 --> 00:31:03.280
+But we're going to see that.
+
+00:31:06.970 --> 00:31:07.510
+Cool.
+
+00:31:07.510 --> 00:31:10.270
+So the first time I saw
+this model, I was confused.
+
+00:31:10.270 --> 00:31:13.090
+You may be confused
+now, and I hope
+
+00:31:13.090 --> 00:31:18.170
+what we're going to see will
+make you a bit less confused.
+
+00:31:18.170 --> 00:31:21.130
+So here, one thing
+that I want to say
+
+00:31:21.130 --> 00:31:29.930
+is in the autoencoder case, the
+loss function was pretty clear.
+
+00:31:29.930 --> 00:31:38.570
+You would just try to estimate
+the reconstructed output
+
+00:31:38.570 --> 00:31:45.410
+in such a way that it's as
+close as possible to your input.
+
+00:31:45.410 --> 00:31:48.970
+But here, you have a bunch
+of distributions everywhere.
+
+00:31:48.970 --> 00:31:51.690
+There's not like an obvious
+way of expressing that
+
+00:31:51.690 --> 00:31:54.010
+without doing some math.
+
+00:31:54.010 --> 00:31:59.410
+So what I propose is that
+we derive the loss function
+
+00:31:59.410 --> 00:32:03.778
+for this model, which I'm not
+sure if I can tell it now,
+
+00:32:03.778 --> 00:32:04.820
+but I'm going to tell it.
+
+00:32:04.820 --> 00:32:08.280
+It's called the
+variational autoencoder.
+
+00:32:08.280 --> 00:32:12.920
+And we're going to see
+what makes it variational.
+
+00:32:12.920 --> 00:32:20.680
+So if you remember,
+in a lot of cases,
+
+00:32:20.680 --> 00:32:23.680
+the way you derive
+a loss function
+
+00:32:23.680 --> 00:32:28.080
+is by doing maximum
+likelihood estimation.
+
+00:32:28.080 --> 00:32:29.520
+So what does that mean?
+
+00:32:29.520 --> 00:32:34.600
+That means that you have some
+model of parameters theta.
+
+00:32:34.600 --> 00:32:40.520
+And what you want is to find
+the parameters theta that
+
+00:32:40.520 --> 00:32:48.000
+maximize the probability of
+your model seeing the data.
+
+00:32:48.000 --> 00:32:49.680
+That's what ML is.
+
+00:32:49.680 --> 00:32:52.280
+And that's what
+we're going to use
+
+00:32:52.280 --> 00:32:55.680
+to see how we can derive
+a loss function that
+
+00:32:55.680 --> 00:32:58.960
+can help us learn theta.
+
+00:32:58.960 --> 00:33:03.950
+So in particular, what
+we want is to maximize
+
+00:33:03.950 --> 00:33:06.310
+the log of p theta of x.
+
+00:33:06.310 --> 00:33:07.910
+So I'm going to write it down.
+
+00:33:07.910 --> 00:33:15.550
+So what we want is to express
+log p theta of x with respect
+
+00:33:15.550 --> 00:33:20.430
+to something that
+we can compute.
+
+00:33:20.430 --> 00:33:24.470
+Because this, we cannot
+really compute something just
+
+00:33:24.470 --> 00:33:27.430
+by looking at it.
+
+00:33:27.430 --> 00:33:29.310
+So let's see how we can do that.
+
+00:33:29.310 --> 00:33:34.070
+So I'm going to just start
+with expressing p theta of x
+
+00:33:34.070 --> 00:33:37.190
+as a function of something.
+
+00:33:37.190 --> 00:33:44.350
+So this model can be seen
+as a generative model that
+
+00:33:44.350 --> 00:33:50.190
+starts from a latent variable
+that you draw from what
+
+00:33:50.190 --> 00:33:53.710
+we call a prior distribution.
+
+00:33:53.710 --> 00:33:58.070
+So one idea of
+expressing p theta
+
+00:33:58.070 --> 00:34:04.700
+of x, if you remember
+lecture 1, we can consider
+
+00:34:04.700 --> 00:34:09.219
+the joint probability
+distribution of p theta
+
+00:34:09.219 --> 00:34:21.580
+of z, a latent, and x, and
+sum across all latent z
+
+00:34:21.580 --> 00:34:24.699
+that led to x.
+
+00:34:24.699 --> 00:34:27.340
+We can do that, right?
+
+00:34:27.340 --> 00:34:30.139
+So what we say is
+that p theta of x
+
+00:34:30.139 --> 00:34:33.179
+is equal to this
+joint probability
+
+00:34:33.179 --> 00:34:41.020
+distribution of x, your image in
+pixel space, and z, your latent.
+
+00:34:41.020 --> 00:34:44.380
+And you're just going
+to integrate over
+
+00:34:44.380 --> 00:34:50.420
+all possible latent
+representations.
+
+00:34:50.420 --> 00:34:58.810
+So this quantity is
+nothing else than you're
+
+00:34:58.810 --> 00:35:10.130
+drawing from a prior, so p of
+z, and then using your decoder
+
+00:35:10.130 --> 00:35:15.090
+to estimate x given z.
+
+00:35:15.090 --> 00:35:21.770
+So this quantity is the
+integral of your prior times
+
+00:35:21.770 --> 00:35:26.850
+p theta of x given z, dz.
+
+00:35:26.850 --> 00:35:30.330
+P of z.
+
+00:35:30.330 --> 00:35:30.990
+Yeah, exactly.
+
+00:35:30.990 --> 00:35:33.720
+So the Gaussian.
+
+00:35:33.720 --> 00:35:37.850
+p theta x given z.
+
+00:35:37.850 --> 00:35:42.210
+Well, it's your model, your
+model that you want to find.
+
+00:35:42.210 --> 00:35:46.810
+The problem is that
+you need to compute
+
+00:35:46.810 --> 00:35:53.570
+this for all possible latent z.
+
+00:35:53.570 --> 00:35:56.760
+And z is still
+high dimensional--
+
+00:35:56.760 --> 00:35:59.720
+high dimensional vector.
+
+00:35:59.720 --> 00:36:05.160
+So this, if you were to compute
+this quantity for all z,
+
+00:36:05.160 --> 00:36:08.040
+it's actually not
+something that you can do.
+
+00:36:08.040 --> 00:36:13.600
+Because you would have to
+compute a lot of such quantities
+
+00:36:13.600 --> 00:36:16.460
+with given zs in order
+to get a good estimate.
+
+00:36:16.460 --> 00:36:20.360
+And it's just not
+something that you can do.
+
+00:36:20.360 --> 00:36:29.000
+So do you remember a similar
+setting we had in lecture 1,
+
+00:36:29.000 --> 00:36:31.560
+which is the reason
+why we're going
+
+00:36:31.560 --> 00:36:36.080
+to see how we can find
+a convenient bound that
+
+00:36:36.080 --> 00:36:38.200
+could be maybe more tractable?
+
+00:36:38.200 --> 00:36:41.480
+Because so far, I
+have not used the fact
+
+00:36:41.480 --> 00:36:46.760
+that we also have a way to
+encode the input in order
+
+00:36:46.760 --> 00:36:50.720
+to get latents that are
+more likely to be the ones
+
+00:36:50.720 --> 00:36:54.150
+that I want to consider here.
+
+00:36:54.150 --> 00:37:00.390
+So what I'm going to
+do now is to find--
+
+00:37:00.390 --> 00:37:04.530
+so what I want to do first
+is to maximize this quantity.
+
+00:37:04.530 --> 00:37:09.390
+So I want to find theta that
+maximizes this quantity.
+
+00:37:09.390 --> 00:37:12.590
+So we saw just now that this
+quantity is not something
+
+00:37:12.590 --> 00:37:15.990
+that I can actually compute.
+
+00:37:15.990 --> 00:37:20.110
+So what we're going
+to do is to find
+
+00:37:20.110 --> 00:37:23.550
+a lower bound that
+could be something
+
+00:37:23.550 --> 00:37:26.150
+that you could compute.
+
+00:37:26.150 --> 00:37:28.910
+And what we want to do is
+to maximize that lower bound
+
+00:37:28.910 --> 00:37:32.750
+in the hope that it will
+also maximize this in order
+
+00:37:32.750 --> 00:37:37.630
+to find our parameters theta.
+
+00:37:37.630 --> 00:37:39.470
+So let's do it.
+
+00:37:39.470 --> 00:37:42.090
+So you would have the following.
+
+00:37:42.090 --> 00:37:44.230
+So I'm going to just come here.
+
+00:37:44.230 --> 00:37:50.510
+I would just say that p of x
+is equal to the integral of p
+
+00:37:50.510 --> 00:37:58.000
+of z times p theta of x given
+z, which is just at that point,
+
+00:37:58.000 --> 00:37:59.780
+I'm going to use the
+same trick that we
+
+00:37:59.780 --> 00:38:09.940
+did in lecture 1,
+which is to involve
+
+00:38:09.940 --> 00:38:12.180
+the output of the encoder.
+
+00:38:12.180 --> 00:38:22.440
+And here, it is q phi of z given
+x times q phi of z given x.
+
+00:38:25.540 --> 00:38:27.320
+So what does this represent?
+
+00:38:27.320 --> 00:38:35.940
+So this represents the
+probability distribution
+
+00:38:35.940 --> 00:38:42.460
+of the zs that are likely
+to occur for this given x.
+
+00:38:42.460 --> 00:38:47.420
+Because here, in the original
+form, what you were doing
+
+00:38:47.420 --> 00:38:52.610
+was to just sum across all
+possible latent representations
+
+00:38:52.610 --> 00:38:57.090
+out there, but there
+are many of them.
+
+00:38:57.090 --> 00:38:59.130
+So it's like,
+you're in the ocean,
+
+00:38:59.130 --> 00:39:04.570
+and someone tells you, OK, just
+look through the whole ocean.
+
+00:39:04.570 --> 00:39:10.970
+But the thing is, only
+a small subset of the zs
+
+00:39:10.970 --> 00:39:13.450
+are actually the
+ones that you want.
+
+00:39:13.450 --> 00:39:17.410
+They're actually only
+a subset of the zs that
+
+00:39:17.410 --> 00:39:19.970
+are the ones that are
+responsible for your x
+
+00:39:19.970 --> 00:39:25.730
+to appear, which is the reason
+why we're letting these q
+
+00:39:25.730 --> 00:39:29.730
+phi of z given x pop up.
+
+00:39:29.730 --> 00:39:35.530
+And this expression, so
+this is equal to this.
+
+00:39:35.530 --> 00:39:41.250
+And this gets equal to just
+the expectation of p of z times
+
+00:39:41.250 --> 00:39:48.880
+p theta of x given
+z over q phi of z
+
+00:39:48.880 --> 00:40:00.040
+given x, where your z is
+drawn from q phi of z given x.
+
+00:40:00.040 --> 00:40:05.200
+So why am I doing
+this whole thing?
+
+00:40:05.200 --> 00:40:11.320
+Because what I want
+to do is to take
+
+00:40:11.320 --> 00:40:13.100
+the log of this whole thing.
+
+00:40:17.200 --> 00:40:23.440
+I want to take the log
+of this whole thing
+
+00:40:23.440 --> 00:40:26.880
+and do the same trick as
+we did for the DPM, which
+
+00:40:26.880 --> 00:40:31.800
+is the Jensen's inequality.
+
+00:40:31.800 --> 00:40:35.680
+And I'm going to say
+that it's the expectation
+
+00:40:35.680 --> 00:40:38.740
+of the log of this whole thing.
+
+00:40:46.200 --> 00:40:51.910
+So I'm taking the log of this
+quantity, which I expressed
+
+00:40:51.910 --> 00:40:58.590
+as a function of the output
+given by the encoder for which I
+
+00:40:58.590 --> 00:41:02.350
+can find a lower bound.
+
+00:41:02.350 --> 00:41:07.070
+And now, we're going to see that
+this lower bound is actually
+
+00:41:07.070 --> 00:41:08.530
+something that is tractable.
+
+00:41:12.510 --> 00:41:16.190
+We're going to see it now.
+
+00:41:16.190 --> 00:41:21.810
+So what I'm going to do is to
+just rewrite this expression.
+
+00:41:21.810 --> 00:41:32.390
+So we have-- so the expectation
+of the log of the whole thing,
+
+00:41:32.390 --> 00:41:39.110
+which is equal to the
+expectation of the log of p
+
+00:41:39.110 --> 00:41:49.620
+theta of x given z plus
+the expectation of--
+
+00:41:49.620 --> 00:41:51.600
+so I'm going to be
+a little bit smart.
+
+00:41:51.600 --> 00:42:01.220
+I will say minus the expectation
+of the log of q phi of z
+
+00:42:01.220 --> 00:42:08.320
+given x over your
+prior distribution.
+
+00:42:12.660 --> 00:42:15.100
+So here, what I
+just did was I take
+
+00:42:15.100 --> 00:42:22.620
+the log of pz times p theta of x
+given z over q phi of z given x.
+
+00:42:22.620 --> 00:42:25.340
+And what I did is I just--
+
+00:42:25.340 --> 00:42:27.180
+I used the property
+of the log, which
+
+00:42:27.180 --> 00:42:31.260
+is logarithm of the
+product, is the sum
+
+00:42:31.260 --> 00:42:35.100
+of the logarithm of the terms.
+
+00:42:35.100 --> 00:42:37.820
+So I had this one pop up.
+
+00:42:37.820 --> 00:42:39.840
+And this one, I just rearranged.
+
+00:42:39.840 --> 00:42:42.140
+I put the denominator
+in the numerator,
+
+00:42:42.140 --> 00:42:44.890
+and I added the minus.
+
+00:42:44.890 --> 00:42:48.170
+And given that it's an
+expectation for both
+
+00:42:48.170 --> 00:42:55.210
+of these that are over z drawn
+from your encoder output, which
+
+00:42:55.210 --> 00:43:04.050
+is q phi of z given x,
+this term is actually
+
+00:43:04.050 --> 00:43:13.350
+the KL divergence of q phi
+of z given x and your prior.
+
+00:43:19.290 --> 00:43:25.450
+So what does this all mean?
+
+00:43:25.450 --> 00:43:30.410
+What this all means
+is in order to find
+
+00:43:30.410 --> 00:43:33.530
+the theta that
+maximizes this quantity,
+
+00:43:33.530 --> 00:43:37.130
+we derived a lower bound.
+
+00:43:37.130 --> 00:43:39.870
+That is something that
+will see is tractable.
+
+00:43:39.870 --> 00:43:46.760
+So it's this expression, which
+we have divided into two terms.
+
+00:43:46.760 --> 00:43:49.960
+So the first one is
+expectation of the logarithm
+
+00:43:49.960 --> 00:43:52.440
+of p theta of x given z.
+
+00:43:52.440 --> 00:43:54.980
+And the other one
+is a KL divergence.
+
+00:43:57.880 --> 00:44:00.360
+So we're going to see that
+these two terms are actually
+
+00:44:00.360 --> 00:44:03.400
+quite interpretable.
+
+00:44:03.400 --> 00:44:09.920
+The first one is actually
+a reconstruction term.
+
+00:44:09.920 --> 00:44:15.120
+Because if you remember,
+p theta of x given z
+
+00:44:15.120 --> 00:44:20.360
+is a normal distribution
+with fixed variance.
+
+00:44:20.360 --> 00:44:24.200
+So we know the probability
+density analytically.
+
+00:44:24.200 --> 00:44:28.200
+So if you take the
+log of the probability
+
+00:44:28.200 --> 00:44:32.080
+density of a Gaussian,
+you actually end up
+
+00:44:32.080 --> 00:44:37.420
+with something super simple,
+which is the norm of x.
+
+00:44:37.420 --> 00:44:42.590
+So the input and the
+reconstructed outputs.
+
+00:44:42.590 --> 00:44:46.170
+And then the second
+term is actually a term.
+
+00:44:46.170 --> 00:44:47.910
+So back to your question.
+
+00:44:47.910 --> 00:44:53.230
+It is a term that penalizes
+the distribution coming
+
+00:44:53.230 --> 00:45:00.670
+from your encoder being far from
+this fixed prior distribution.
+
+00:45:00.670 --> 00:45:04.270
+So loss functions usually
+have a coefficient
+
+00:45:04.270 --> 00:45:06.990
+in front of this
+term to penalize
+
+00:45:06.990 --> 00:45:11.990
+more or less the fact
+of being far or close
+
+00:45:11.990 --> 00:45:14.030
+from this prior distribution.
+
+00:45:14.030 --> 00:45:17.390
+And depending on the
+coefficient there,
+
+00:45:17.390 --> 00:45:21.230
+you're going to have
+either something that
+
+00:45:21.230 --> 00:45:26.270
+will look like a normal
+distribution or not.
+
+00:45:26.270 --> 00:45:30.050
+So that is the part of your loss
+that will allow you to do that.
+
+00:45:32.830 --> 00:45:34.630
+I'm looking at the time.
+
+00:45:34.630 --> 00:45:36.790
+I'm not super in
+advance, but I'm
+
+00:45:36.790 --> 00:45:38.340
+going to just pause
+for one minute
+
+00:45:38.340 --> 00:45:40.940
+if you have any questions.
+
+00:45:40.940 --> 00:45:44.060
+So the question is we're pushing
+the distribution of the encoder
+
+00:45:44.060 --> 00:45:46.560
+to be more of the
+normal distribution.
+
+00:45:46.560 --> 00:45:51.160
+So we want to do that to
+normalize the latent space,
+
+00:45:51.160 --> 00:45:53.580
+but we don't want
+to do that too much.
+
+00:45:53.580 --> 00:45:58.300
+Otherwise, so the prior
+distribution is p of z.
+
+00:45:58.300 --> 00:46:01.140
+It doesn't care what x is.
+
+00:46:01.140 --> 00:46:05.340
+And in other words, if you push
+it too much towards something
+
+00:46:05.340 --> 00:46:11.660
+that is just static,
+it will just not
+
+00:46:11.660 --> 00:46:14.052
+consider the input at all.
+
+00:46:14.052 --> 00:46:14.760
+It will collapse.
+
+00:46:14.760 --> 00:46:18.140
+Yeah, so it's called
+posterior collapse.
+
+00:46:18.140 --> 00:46:20.760
+So just one other question,
+and then I'll move on.
+
+00:46:20.760 --> 00:46:21.260
+Yeah.
+
+00:46:21.260 --> 00:46:23.940
+So the question is--
+so we had this image
+
+00:46:23.940 --> 00:46:27.020
+with the little
+spikiness and that
+
+00:46:27.020 --> 00:46:29.840
+was the autoencoder, the
+standard autoencoder part.
+
+00:46:29.840 --> 00:46:33.420
+This one is actually structured
+in the latent space in a way
+
+00:46:33.420 --> 00:46:37.590
+that makes it more smooth, more
+well put together, and yes.
+
+00:46:40.370 --> 00:46:43.890
+So I'm going to speed
+up a little bit.
+
+00:46:43.890 --> 00:46:46.370
+Let's go through our checklist.
+
+00:46:46.370 --> 00:46:49.970
+Tractable dimension, yes.
+
+00:46:49.970 --> 00:46:53.730
+Compact representation, yes.
+
+00:46:53.730 --> 00:46:59.050
+Meaningful representation, yes.
+
+00:46:59.050 --> 00:47:02.650
+Oops, truthful representation.
+
+00:47:02.650 --> 00:47:03.970
+No.
+
+00:47:03.970 --> 00:47:04.470
+Wait.
+
+00:47:04.470 --> 00:47:06.250
+Why is that?
+
+00:47:06.250 --> 00:47:13.290
+So these models, they actually
+end up reconstructing the image
+
+00:47:13.290 --> 00:47:15.850
+in an imperfect way.
+
+00:47:15.850 --> 00:47:21.770
+And what we actually obtain
+are more blurry images.
+
+00:47:21.770 --> 00:47:24.890
+And so I'm hoping that
+in the next nine minutes,
+
+00:47:24.890 --> 00:47:28.050
+we're going to see
+why that is the case
+
+00:47:28.050 --> 00:47:32.050
+and how we can solve it.
+
+00:47:32.050 --> 00:47:35.820
+So first of all,
+let's look at the loss
+
+00:47:35.820 --> 00:47:37.320
+function that we
+have derived, which
+
+00:47:37.320 --> 00:47:44.640
+is composed of a reconstruction
+loss and a regularization loss.
+
+00:47:44.640 --> 00:47:45.920
+So the reconstruction loss.
+
+00:47:45.920 --> 00:47:48.200
+What is it?
+
+00:47:48.200 --> 00:47:49.900
+We have not derived it here.
+
+00:47:49.900 --> 00:47:53.840
+But I am telling you
+that if you derive it,
+
+00:47:53.840 --> 00:48:00.800
+it is the pixel wise
+L2 between the input
+
+00:48:00.800 --> 00:48:05.880
+and the reconstructed output,
+the reconstructed input, sorry.
+
+00:48:05.880 --> 00:48:12.040
+And so what that means is if the
+generation is a little bit off
+
+00:48:12.040 --> 00:48:18.560
+by a few pixels, it will
+actually get very penalized.
+
+00:48:18.560 --> 00:48:20.940
+Because the distance
+is pixel wise.
+
+00:48:23.520 --> 00:48:27.400
+So what ends up
+happening is the model
+
+00:48:27.400 --> 00:48:32.550
+tends to produce values
+that are more averaged,
+
+00:48:32.550 --> 00:48:37.310
+which produces this blurriness
+sensation that you're seeing.
+
+00:48:37.310 --> 00:48:42.350
+But then you will tell me, well,
+Afshin, the standard autoencoder
+
+00:48:42.350 --> 00:48:44.930
+also had that loss.
+
+00:48:44.930 --> 00:48:47.590
+So why didn't it happen there?
+
+00:48:47.590 --> 00:48:49.890
+Well, the fact is, it
+also happened there,
+
+00:48:49.890 --> 00:48:53.950
+but it's even more
+pronounced here
+
+00:48:53.950 --> 00:49:00.010
+because of the structure of
+the model that we have defined,
+
+00:49:00.010 --> 00:49:04.590
+which is that the latent
+representation is not
+
+00:49:04.590 --> 00:49:10.030
+a one to one mapping with
+the input x, it is not.
+
+00:49:10.030 --> 00:49:14.870
+Instead, what we have
+said is a given input x
+
+00:49:14.870 --> 00:49:17.470
+maps to a probability
+distribution,
+
+00:49:17.470 --> 00:49:19.670
+like a set of
+probable points that
+
+00:49:19.670 --> 00:49:25.510
+could be actually latent
+representations of this x.
+
+00:49:25.510 --> 00:49:27.990
+So the model will
+introduce this uncertainty
+
+00:49:27.990 --> 00:49:33.860
+even more in the reconstruction
+that it will output.
+
+00:49:33.860 --> 00:49:40.700
+And here, what we want
+to do is to combat
+
+00:49:40.700 --> 00:49:43.400
+that blurriness sensation.
+
+00:49:43.400 --> 00:49:48.820
+Because here, if we were to
+perform diffusion in the latent
+
+00:49:48.820 --> 00:49:55.900
+space, and if we were to decode
+the final output in the latent
+
+00:49:55.900 --> 00:49:59.140
+space, the last
+thing that we want
+
+00:49:59.140 --> 00:50:01.860
+is for our output to be blurry.
+
+00:50:01.860 --> 00:50:05.380
+We do not want that.
+
+00:50:05.380 --> 00:50:09.860
+So now, we're going to
+see a couple of strategies
+
+00:50:09.860 --> 00:50:15.340
+that will allow us to combat
+that blurriness artifact
+
+00:50:15.340 --> 00:50:17.700
+that we're seeing.
+
+00:50:17.700 --> 00:50:22.700
+And the first one is going to
+be about a kind of loss that's
+
+00:50:22.700 --> 00:50:25.420
+called the perceptual loss.
+
+00:50:25.420 --> 00:50:28.380
+I'm going to say
+exactly what that means.
+
+00:50:28.380 --> 00:50:32.030
+So let's imagine you
+have your image x.
+
+00:50:34.610 --> 00:50:39.810
+The intuition here is we don't
+want the reconstructed output
+
+00:50:39.810 --> 00:50:42.610
+to be compared with
+the input pixel
+
+00:50:42.610 --> 00:50:47.210
+to pixel because it does not
+allow for little shifting
+
+00:50:47.210 --> 00:50:49.570
+here and there.
+
+00:50:49.570 --> 00:50:55.170
+So what we want instead is to
+be able to compare the input
+
+00:50:55.170 --> 00:50:58.610
+and the reconstruction
+more in terms
+
+00:50:58.610 --> 00:51:03.250
+of similarity, that something
+that looks similar to you
+
+00:51:03.250 --> 00:51:08.450
+as a human,
+perceptually similar.
+
+00:51:08.450 --> 00:51:10.170
+So how can you do that?
+
+00:51:10.170 --> 00:51:14.890
+Well, there are some
+models out there
+
+00:51:14.890 --> 00:51:19.890
+that there are convolutional
+based, for instance,
+
+00:51:19.890 --> 00:51:24.730
+that actually extract
+features from these images
+
+00:51:24.730 --> 00:51:26.960
+in their layers.
+
+00:51:26.960 --> 00:51:32.120
+And here, we refer
+them as feature maps.
+
+00:51:32.120 --> 00:51:35.280
+And one good thing-- one good
+thing about these feature maps
+
+00:51:35.280 --> 00:51:41.960
+is that they represent
+things from this image that
+
+00:51:41.960 --> 00:51:44.760
+have more of a
+spatial invariance
+
+00:51:44.760 --> 00:51:48.400
+compared to the original image.
+
+00:51:48.400 --> 00:51:50.480
+So what does that mean?
+
+00:51:50.480 --> 00:51:55.680
+That means that if you have
+two images that are slightly
+
+00:51:55.680 --> 00:51:58.880
+shifted, slightly
+different, then
+
+00:51:58.880 --> 00:52:04.160
+their feature maps will
+actually not be that different.
+
+00:52:04.160 --> 00:52:10.160
+So the idea here is instead
+of comparing the pixel based
+
+00:52:10.160 --> 00:52:13.720
+images one to the
+other, we're going
+
+00:52:13.720 --> 00:52:18.800
+to compare their representation,
+their feature maps
+
+00:52:18.800 --> 00:52:21.520
+one to another.
+
+00:52:21.520 --> 00:52:23.520
+And I'm not sure if
+you've heard that loss,
+
+00:52:23.520 --> 00:52:27.030
+but there is a loss
+that's called LPIPS, so
+
+00:52:27.030 --> 00:52:31.630
+Learn Perceptual Image
+Patch Similarity.
+
+00:52:31.630 --> 00:52:35.990
+So it is a loss or it is
+a metric I should say,
+
+00:52:35.990 --> 00:52:40.070
+that is composed of the
+difference between the feature
+
+00:52:40.070 --> 00:52:46.430
+maps of two images, and that are
+weighted by a coefficient, which
+
+00:52:46.430 --> 00:52:49.630
+is here WL.
+
+00:52:49.630 --> 00:52:52.390
+There are coefficients
+that are tuned
+
+00:52:52.390 --> 00:52:54.870
+by the authors of
+this paper in order
+
+00:52:54.870 --> 00:53:02.070
+to match what humans consider
+as being perceptually similar.
+
+00:53:02.070 --> 00:53:05.450
+So long story short-- so by
+the way, the formula is scary,
+
+00:53:05.450 --> 00:53:07.210
+but it's not that big of a deal.
+
+00:53:07.210 --> 00:53:10.410
+We don't care about
+the whole thing.
+
+00:53:10.410 --> 00:53:13.790
+What we care about is
+that we're not comparing
+
+00:53:13.790 --> 00:53:16.530
+images in the pixel space.
+
+00:53:16.530 --> 00:53:22.590
+We're comparing images
+between their feature maps.
+
+00:53:22.590 --> 00:53:24.940
+And what we're saying here
+is that the feature maps
+
+00:53:24.940 --> 00:53:31.860
+of two images better reflect
+their structure, their details,
+
+00:53:31.860 --> 00:53:37.220
+and are less sensitive
+to spatial differences.
+
+00:53:37.220 --> 00:53:38.920
+So that is one strategy.
+
+00:53:41.700 --> 00:53:46.700
+So one thing to note is that
+we would weight this loss
+
+00:53:46.700 --> 00:53:48.460
+by some coefficients.
+
+00:53:48.460 --> 00:53:51.960
+You could think, OK, this loss
+is answering all our needs.
+
+00:53:51.960 --> 00:53:55.900
+Let's have the weight for this
+part of the loss be super high.
+
+00:53:55.900 --> 00:53:57.580
+Well, if you do
+that, actually, there
+
+00:53:57.580 --> 00:53:59.940
+are some bad things
+that also happen.
+
+00:53:59.940 --> 00:54:04.380
+So we have what we call
+checkerboard artifacts, which
+
+00:54:04.380 --> 00:54:07.540
+as you can tell is like
+a grid like artifact
+
+00:54:07.540 --> 00:54:11.120
+in the image that is
+similar to this one.
+
+00:54:11.120 --> 00:54:15.480
+So you don't want to have
+too big of a weight either.
+
+00:54:18.860 --> 00:54:20.100
+So that's one.
+
+00:54:20.100 --> 00:54:24.090
+And then a second strategy
+to combat blurriness
+
+00:54:24.090 --> 00:54:27.410
+is what we're going to see now.
+
+00:54:27.410 --> 00:54:33.730
+So the problem that we have
+is that the decoder of the VA
+
+00:54:33.730 --> 00:54:38.290
+is outputting an
+image that is blurry.
+
+00:54:38.290 --> 00:54:43.890
+So one idea could be
+to ask another model
+
+00:54:43.890 --> 00:54:46.210
+to tell you whether
+the input image, so
+
+00:54:46.210 --> 00:54:50.070
+in this case, the blurry
+image is a real image or not?
+
+00:54:52.650 --> 00:54:55.970
+And based on that,
+what we would do
+
+00:54:55.970 --> 00:55:00.730
+is incentivize this
+other network called
+
+00:55:00.730 --> 00:55:04.850
+the discriminator, to
+distinguish outputs coming
+
+00:55:04.850 --> 00:55:09.450
+from the decoder compared to
+real images, which would then
+
+00:55:09.450 --> 00:55:14.130
+flag blurry images
+as being fake.
+
+00:55:14.130 --> 00:55:18.650
+And we would
+penalize the decoder
+
+00:55:18.650 --> 00:55:22.000
+for generating images
+that would be flagged
+
+00:55:22.000 --> 00:55:25.920
+as fake by the discriminator.
+
+00:55:25.920 --> 00:55:29.040
+So have you heard
+of GANs before?
+
+00:55:29.040 --> 00:55:31.580
+So we don't have time to
+talk about them in detail,
+
+00:55:31.580 --> 00:55:35.260
+but I think this slide is
+summing up what is happening.
+
+00:55:35.260 --> 00:55:40.840
+So you have two models that
+are competing with one another.
+
+00:55:40.840 --> 00:55:45.200
+The decoder that wants
+to produce images that
+
+00:55:45.200 --> 00:55:49.720
+the discriminator cannot
+distinguish from being fake,
+
+00:55:49.720 --> 00:55:53.400
+and the discriminator that wants
+to distinguish the output from
+
+00:55:53.400 --> 00:56:00.920
+the decoder compared to
+images from real life.
+
+00:56:00.920 --> 00:56:05.000
+And what this will
+do is incentivize
+
+00:56:05.000 --> 00:56:09.680
+the decoder to produce
+more realistic images.
+
+00:56:09.680 --> 00:56:16.280
+And in doing so, it will help
+with removing that blurriness.
+
+00:56:16.280 --> 00:56:20.430
+So that is called
+adversarial loss.
+
+00:56:20.430 --> 00:56:25.810
+So what we saw was that the
+original loss of the VA,
+
+00:56:25.810 --> 00:56:33.610
+which we derived here, led to
+outputs that were too blurry.
+
+00:56:33.610 --> 00:56:36.410
+It was fulfilling all the
+wish list that we had,
+
+00:56:36.410 --> 00:56:41.510
+but it was not leading to a
+truthful reconstruction, which
+
+00:56:41.510 --> 00:56:47.070
+is the reason why we saw
+two different strategies
+
+00:56:47.070 --> 00:56:50.750
+to add to our loss,
+to counterbalance
+
+00:56:50.750 --> 00:56:55.110
+the tendency for the model
+to produce blurry outputs.
+
+00:56:55.110 --> 00:57:01.110
+So these are the perceptual
+loss and the adversarial loss.
+
+00:57:01.110 --> 00:57:04.430
+So before giving
+it to Sherwin, I
+
+00:57:04.430 --> 00:57:06.830
+could not let you
+without telling you
+
+00:57:06.830 --> 00:57:10.630
+how this fits together
+with the diffusion models.
+
+00:57:10.630 --> 00:57:15.750
+So in particular, the reason
+why we did this whole thing
+
+00:57:15.750 --> 00:57:20.420
+is for us to use our
+diffusion flow matching
+
+00:57:20.420 --> 00:57:25.380
+model not in the pixel space,
+but in the latent space.
+
+00:57:25.380 --> 00:57:29.060
+Because computationally
+it's just cheaper
+
+00:57:29.060 --> 00:57:31.740
+and it's able to scale.
+
+00:57:31.740 --> 00:57:35.060
+So now, we're going to see
+what our strategy for training
+
+00:57:35.060 --> 00:57:37.620
+and inference is.
+
+00:57:37.620 --> 00:57:40.660
+So for training, what
+we do is we first train
+
+00:57:40.660 --> 00:57:45.900
+the VA exactly like we saw.
+
+00:57:45.900 --> 00:57:50.220
+And then what we're going to do
+is to train our image generation
+
+00:57:50.220 --> 00:57:53.020
+model, like using for
+instance flow matching,
+
+00:57:53.020 --> 00:57:57.620
+in the latent space of the VA.
+
+00:57:57.620 --> 00:58:00.300
+And we're going to
+see how we do that.
+
+00:58:00.300 --> 00:58:04.060
+So let's suppose we have an
+image from our target data
+
+00:58:04.060 --> 00:58:06.940
+distribution.
+
+00:58:06.940 --> 00:58:09.740
+We pass it through the encoder.
+
+00:58:09.740 --> 00:58:13.280
+Our encoder gives
+us two quantities.
+
+00:58:13.280 --> 00:58:16.090
+So the mean and the
+standard deviation.
+
+00:58:16.090 --> 00:58:20.170
+And what we do is we sample
+from that distribution
+
+00:58:20.170 --> 00:58:23.770
+to get our latent
+representation.
+
+00:58:23.770 --> 00:58:27.810
+And then what happens
+is in our latent space,
+
+00:58:27.810 --> 00:58:31.530
+so we hopefully have a
+smoother latent space.
+
+00:58:31.530 --> 00:58:36.170
+We have our z1, which
+corresponds to the clean image.
+
+00:58:36.170 --> 00:58:41.970
+We sample from the
+noisy data distribution.
+
+00:58:41.970 --> 00:58:45.110
+And here, I'm just illustrating
+the case of flow matching,
+
+00:58:45.110 --> 00:58:49.970
+we have zt, which is a weighted
+combination of the two.
+
+00:58:49.970 --> 00:58:52.650
+And what we do is we
+optimize for, let's say,
+
+00:58:52.650 --> 00:58:56.190
+our velocity like the l2 loss.
+
+00:58:56.190 --> 00:58:58.410
+We'll do that.
+
+00:58:58.410 --> 00:59:00.850
+This is for training.
+
+00:59:00.850 --> 00:59:03.570
+So how about inference?
+
+00:59:03.570 --> 00:59:08.930
+Well, let's assume that you
+have trained your model.
+
+00:59:08.930 --> 00:59:13.560
+Then now, what you want to
+do is to generate new images.
+
+00:59:13.560 --> 00:59:18.840
+So what you're going to
+do is to first sample
+
+00:59:18.840 --> 00:59:21.940
+from an easy distribution
+in the latent space.
+
+00:59:21.940 --> 00:59:25.000
+So for instance, Gaussian noise.
+
+00:59:25.000 --> 00:59:29.680
+And you're going to
+use, for instance flow
+
+00:59:29.680 --> 00:59:32.880
+matching, the velocity
+that you have learned
+
+00:59:32.880 --> 00:59:37.880
+to solve it numerically and
+arrive, at let's say a point
+
+00:59:37.880 --> 00:59:43.680
+z1, which is the latent
+representation of your end
+
+00:59:43.680 --> 00:59:45.800
+trajectory.
+
+00:59:45.800 --> 00:59:47.640
+And what we're going
+to do is to use
+
+00:59:47.640 --> 00:59:53.848
+the VAE decoder to decode that
+output back to pixel space.
+
+00:59:53.848 --> 00:59:55.140
+So let's see how it looks like.
+
+00:59:55.140 --> 00:59:58.360
+So this is your latent
+space that you have learned.
+
+00:59:58.360 --> 01:00:00.940
+You sample from the
+noisy distribution
+
+01:00:00.940 --> 01:00:03.280
+in that latent space.
+
+01:00:03.280 --> 01:00:08.400
+You solve numerically the ODE
+using the learned vector fields
+
+01:00:08.400 --> 01:00:10.600
+that we've trained right before.
+
+01:00:10.600 --> 01:00:12.710
+You obtain z1.
+
+01:00:12.710 --> 01:00:16.430
+The problem is, z1 to us,
+it doesn't mean anything
+
+01:00:16.430 --> 01:00:19.990
+because it's not
+in a pixel space.
+
+01:00:19.990 --> 01:00:22.350
+So what you do is
+you take that z1,
+
+01:00:22.350 --> 01:00:26.790
+you pass it through the
+decoder, and you obtain
+
+01:00:26.790 --> 01:00:31.310
+the image in pixel space.
+
+01:00:31.310 --> 01:00:36.350
+So to conclude, what
+we've seen is a way
+
+01:00:36.350 --> 01:00:42.190
+to find a latent space that
+is of lower dimension, that
+
+01:00:42.190 --> 01:00:49.670
+is smoother, and that
+is also able to preserve
+
+01:00:49.670 --> 01:00:52.550
+the details of your image.
+
+01:00:52.550 --> 01:00:55.630
+And so in particular,
+we say that the encoder
+
+01:00:55.630 --> 01:00:59.790
+acts as a low pass filter.
+
+01:00:59.790 --> 01:01:06.910
+Because what it does represents
+those images mostly based
+
+01:01:06.910 --> 01:01:10.780
+on their semantic similarity.
+
+01:01:10.780 --> 01:01:12.840
+So this is actually
+something we have not seen.
+
+01:01:12.840 --> 01:01:20.140
+But for a diffusion model
+to find all the details
+
+01:01:20.140 --> 01:01:22.180
+in its exploration
+is much harder
+
+01:01:22.180 --> 01:01:25.100
+than finding something
+that is semantically
+
+01:01:25.100 --> 01:01:27.780
+what it wants to generate.
+
+01:01:27.780 --> 01:01:32.020
+So this is the reason why
+we're giving the decoder
+
+01:01:32.020 --> 01:01:36.860
+the task of conveying all
+the low level details, all
+
+01:01:36.860 --> 01:01:40.540
+the perceptual elements.
+
+01:01:40.540 --> 01:01:43.940
+And the role of the decoder
+is to take that latent
+
+01:01:43.940 --> 01:01:48.300
+representation and to
+make it an output that
+
+01:01:48.300 --> 01:01:51.100
+is full of details,
+that is realistic,
+
+01:01:51.100 --> 01:01:54.420
+and that is matching
+what we want.
+
+01:01:54.420 --> 01:01:57.420
+And for that reason,
+you have the encoder
+
+01:01:57.420 --> 01:02:02.180
+and the decoder, which you
+would think is symmetric.
+
+01:02:02.180 --> 01:02:07.260
+But in practice, the VAEs
+that are used in conjunction
+
+01:02:07.260 --> 01:02:12.130
+with diffusion models are such
+that the decoder is actually
+
+01:02:12.130 --> 01:02:14.870
+bigger than the encoder.
+
+01:02:20.435 --> 01:02:21.310
+Does that make sense?
+
+01:02:21.310 --> 01:02:23.670
+So we don't have a lot of time.
+
+01:02:23.670 --> 01:02:27.010
+So one thing that
+I put down there
+
+01:02:27.010 --> 01:02:30.570
+is a longer form
+version of everything
+
+01:02:30.570 --> 01:02:35.130
+I mentioned in some very
+interesting articles, which
+
+01:02:35.130 --> 01:02:38.730
+I recommend reading,
+but not mandatory
+
+01:02:38.730 --> 01:02:44.410
+as part of this class, which is
+some results from flux 2, which
+
+01:02:44.410 --> 01:02:49.610
+is a text to image model,
+and the LDM paper, the Latent
+
+01:02:49.610 --> 01:02:54.730
+Diffusion Model paper that is
+at the bottom of the slide.
+
+01:02:54.730 --> 01:02:56.890
+Yeah.
+
+01:02:56.890 --> 01:02:59.970
+So the question
+is, what should we
+
+01:02:59.970 --> 01:03:02.690
+think of the role of the
+encoder and the decoder?
+
+01:03:02.690 --> 01:03:05.250
+So at the end of
+the day, what you
+
+01:03:05.250 --> 01:03:09.400
+want is to have an easy
+time generating images,
+
+01:03:09.400 --> 01:03:10.920
+at the end of the day.
+
+01:03:10.920 --> 01:03:14.480
+And what you want is
+to not have too high
+
+01:03:14.480 --> 01:03:18.600
+of a computational burden for
+your diffusion model to operate.
+
+01:03:18.600 --> 01:03:21.800
+So what you want
+is a latent space
+
+01:03:21.800 --> 01:03:27.240
+that is low in dimensionality,
+and that is easy for you
+
+01:03:27.240 --> 01:03:29.360
+to learn.
+
+01:03:29.360 --> 01:03:31.980
+So what does easy for
+you to learn mean?
+
+01:03:31.980 --> 01:03:35.940
+It means having a space
+that is not super spiky,
+
+01:03:35.940 --> 01:03:39.000
+but that is more smooth.
+
+01:03:39.000 --> 01:03:45.760
+And in particular, in order
+for you to obtain such a space,
+
+01:03:45.760 --> 01:03:50.120
+it is actually something
+that in practice, something
+
+01:03:50.120 --> 01:03:54.720
+that you can obtain if you
+focus on the semantic meaning
+
+01:03:54.720 --> 01:03:59.200
+of these images, as opposed
+to capturing all the low level
+
+01:03:59.200 --> 01:03:59.700
+details.
+
+01:03:59.700 --> 01:04:02.160
+So in other words,
+what I'm saying
+
+01:04:02.160 --> 01:04:08.210
+is, even if two images are
+perceptually not very similar,
+
+01:04:08.210 --> 01:04:10.750
+but if they represent
+the same thing,
+
+01:04:10.750 --> 01:04:15.030
+what we want for these images
+is to be located not too
+
+01:04:15.030 --> 01:04:18.030
+far from one another
+in the latent space.
+
+01:04:18.030 --> 01:04:23.830
+So we want the encoder to mostly
+capture the semantic meaning.
+
+01:04:23.830 --> 01:04:27.870
+So the encoder, what we want is
+to make the job of the diffusion
+
+01:04:27.870 --> 01:04:29.550
+model easy.
+
+01:04:29.550 --> 01:04:31.470
+And so this is the learnability.
+
+01:04:31.470 --> 01:04:34.910
+You will see in those
+paper, learnability.
+
+01:04:34.910 --> 01:04:39.150
+So once you have images that
+are semantically similar,
+
+01:04:39.150 --> 01:04:44.470
+that are close to one another,
+you do your diffusion process.
+
+01:04:44.470 --> 01:04:46.890
+You obtain, let's say
+a point that you say,
+
+01:04:46.890 --> 01:04:49.510
+OK, this is the
+latent representation
+
+01:04:49.510 --> 01:04:53.750
+that I want to have
+in the pixel space.
+
+01:04:53.750 --> 01:04:56.510
+So now, the job
+of your decoder is
+
+01:04:56.510 --> 01:05:00.550
+to make sure that all the
+details that you want to have
+
+01:05:00.550 --> 01:05:03.620
+in this final image are there.
+
+01:05:03.620 --> 01:05:07.820
+So in that sense, in
+contrast to the encoder,
+
+01:05:07.820 --> 01:05:13.660
+the decoders job is to make sure
+all the perceptual details are
+
+01:05:13.660 --> 01:05:18.420
+present in the final decoded
+image in the pixel space.
+
+01:05:18.420 --> 01:05:21.740
+So in that sense, you have
+these two different roles
+
+01:05:21.740 --> 01:05:23.360
+of the encoder and the decoder.
+
+01:05:23.360 --> 01:05:27.900
+So you want your diffusion model
+to have an easy time learning
+
+01:05:27.900 --> 01:05:30.660
+this thing, and you
+want a space that
+
+01:05:30.660 --> 01:05:34.180
+has some semantic
+information, which is what
+
+01:05:34.180 --> 01:05:36.780
+I mentioned the encoder can do.
+
+01:05:36.780 --> 01:05:38.540
+But what you want, at
+the end of the day,
+
+01:05:38.540 --> 01:05:42.860
+is to have an image that
+contains the details that you
+
+01:05:42.860 --> 01:05:46.300
+want, and that part
+is mostly something
+
+01:05:46.300 --> 01:05:52.380
+that decoder can help with
+in the decoding stage.
+
+01:05:52.380 --> 01:05:55.540
+OK, I'm 10 minutes over
+time, but with that, I'll
+
+01:05:55.540 --> 01:05:58.060
+give it to Sherwin.
+
+01:05:58.060 --> 01:05:59.860
+Thank you, Afshin.
+
+01:05:59.860 --> 01:06:02.490
+So now, we're going
+to see together
+
+01:06:02.490 --> 01:06:05.530
+how to represent the
+conditions that we
+
+01:06:05.530 --> 01:06:08.610
+have at the input of
+this generation models.
+
+01:06:08.610 --> 01:06:11.090
+So the first kind of
+condition that we can have
+
+01:06:11.090 --> 01:06:13.810
+is the text one.
+
+01:06:13.810 --> 01:06:18.530
+So the text world, when it
+comes to representing embeddings
+
+01:06:18.530 --> 01:06:20.370
+has a long history.
+
+01:06:20.370 --> 01:06:23.170
+And I'm not going to go through
+the whole history of how
+
+01:06:23.170 --> 01:06:24.310
+we represent embeddings.
+
+01:06:24.310 --> 01:06:27.090
+I'm just going to focus
+on how people do it today.
+
+01:06:27.090 --> 01:06:33.210
+And the way they do it is with
+transformer-based architectures.
+
+01:06:33.210 --> 01:06:40.770
+So let's first see how we can
+decompose the input sentence.
+
+01:06:40.770 --> 01:06:43.810
+So we have this concept
+called tokenization,
+
+01:06:43.810 --> 01:06:48.370
+which is the practice of
+decomposing any piece of text
+
+01:06:48.370 --> 01:06:51.490
+into atomic components.
+
+01:06:51.490 --> 01:06:53.490
+So you can have
+something that operates
+
+01:06:53.490 --> 01:06:58.610
+at an arbitrary level,
+word level, subword level
+
+01:06:58.610 --> 01:07:00.440
+or character level.
+
+01:07:00.440 --> 01:07:05.000
+And a software level
+is usually algorithms
+
+01:07:05.000 --> 01:07:09.880
+that learn how to best decompose
+the tokens with respect
+
+01:07:09.880 --> 01:07:14.520
+to the data by
+focusing a vocabulary
+
+01:07:14.520 --> 01:07:19.080
+budget on those tokens
+that most frequently occur.
+
+01:07:19.080 --> 01:07:23.080
+And the tokenization technique
+that's most used these days
+
+01:07:23.080 --> 01:07:24.720
+is subword.
+
+01:07:24.720 --> 01:07:28.120
+But for simplicity,
+the one that you're
+
+01:07:28.120 --> 01:07:30.900
+going to see in the slides
+is more towards arbitrary,
+
+01:07:30.900 --> 01:07:34.320
+but it's just for
+representation purposes.
+
+01:07:34.320 --> 01:07:38.760
+So who knows about transformers?
+
+01:07:38.760 --> 01:07:40.360
+OK, so most of you.
+
+01:07:40.360 --> 01:07:42.120
+So there is a sister
+course that talks
+
+01:07:42.120 --> 01:07:44.180
+about transformers at length.
+
+01:07:44.180 --> 01:07:46.340
+I'm not going to talk about
+transformers at length,
+
+01:07:46.340 --> 01:07:49.200
+but just give the main
+pieces of information
+
+01:07:49.200 --> 01:07:50.840
+that you should know.
+
+01:07:50.840 --> 01:07:56.680
+So it is an encoder,
+decoder architecture
+
+01:07:56.680 --> 01:08:00.750
+that is centered on the
+concept of extension.
+
+01:08:00.750 --> 01:08:03.530
+And it came out in 2017.
+
+01:08:03.530 --> 01:08:06.230
+And most of the language
+models that you see today
+
+01:08:06.230 --> 01:08:08.470
+are based off of it.
+
+01:08:08.470 --> 01:08:11.070
+Even vision models,
+you have many of them
+
+01:08:11.070 --> 01:08:14.470
+that are based on
+the transformer.
+
+01:08:14.470 --> 01:08:18.510
+And the good thing about
+it that made it work well
+
+01:08:18.510 --> 01:08:20.910
+is that it's
+inductive biases are
+
+01:08:20.910 --> 01:08:22.910
+based on the concept
+of attention that
+
+01:08:22.910 --> 01:08:25.630
+proved to be generalizable.
+
+01:08:25.630 --> 01:08:30.830
+And let's focus now on
+this concept of attention.
+
+01:08:30.830 --> 01:08:35.710
+So if we had to summarize in
+a single sentence what it is,
+
+01:08:35.710 --> 01:08:38.750
+it is the practice
+of representing
+
+01:08:38.750 --> 01:08:44.590
+a given piece of input as a
+function of all the others.
+
+01:08:44.590 --> 01:08:47.550
+And here, with the
+example, a cute Teddy bear
+
+01:08:47.550 --> 01:08:50.510
+is reading, if we
+want to represent
+
+01:08:50.510 --> 01:08:53.870
+in the space of
+attention the token Teddy
+
+01:08:53.870 --> 01:08:58.340
+bear, what we do is that we have
+embeddings for all these tokens.
+
+01:08:58.340 --> 01:09:01.700
+You have learnable matrices
+that will turn them
+
+01:09:01.700 --> 01:09:08.100
+into the space of queries,
+q, keys, k, and values, v.
+
+01:09:08.100 --> 01:09:13.899
+And what you're going to learn
+is a distribution of keys--
+
+01:09:13.899 --> 01:09:17.220
+of this key over keys.
+
+01:09:17.220 --> 01:09:19.340
+And the weights
+that you obtain are
+
+01:09:19.340 --> 01:09:23.620
+going to be those that you place
+on the corresponding values.
+
+01:09:23.620 --> 01:09:27.540
+So in summary, you're able to
+represent the embedding of Teddy
+
+01:09:27.540 --> 01:09:33.460
+bear with respect to the others
+in this sentence in that way.
+
+01:09:33.460 --> 01:09:37.819
+And you can write this
+down in matrix form, which
+
+01:09:37.819 --> 01:09:42.580
+is this softmax term that
+represents this probability
+
+01:09:42.580 --> 01:09:43.939
+distribution.
+
+01:09:43.939 --> 01:09:46.380
+So the square root of
+DK is just a normalizing
+
+01:09:46.380 --> 01:09:51.080
+constant that prevents the
+sum from becoming too large.
+
+01:09:51.080 --> 01:09:55.290
+So the dimension of
+these queries and keys.
+
+01:09:55.290 --> 01:09:58.490
+And multiplied by the
+value, which carries
+
+01:09:58.490 --> 01:10:02.690
+the embedding of the values.
+
+01:10:02.690 --> 01:10:05.850
+So you can find
+this attention layer
+
+01:10:05.850 --> 01:10:07.910
+at three different locations.
+
+01:10:07.910 --> 01:10:12.550
+So two of them are
+self-attention layers.
+
+01:10:12.550 --> 01:10:14.530
+So in the encoder
+and another one
+
+01:10:14.530 --> 01:10:18.410
+masked self-attention,
+which conveys the fact
+
+01:10:18.410 --> 01:10:21.210
+that tokens can
+attend only on those
+
+01:10:21.210 --> 01:10:23.290
+that were predicted before.
+
+01:10:23.290 --> 01:10:27.830
+And then you have another
+layer, where attention occurs,
+
+01:10:27.830 --> 01:10:30.410
+which is called cross
+attention, which
+
+01:10:30.410 --> 01:10:37.090
+will make these queries
+attend on other encoded keys
+
+01:10:37.090 --> 01:10:39.050
+and values.
+
+01:10:39.050 --> 01:10:41.450
+So this is the high level.
+
+01:10:41.450 --> 01:10:45.050
+And in just a few words,
+the main components
+
+01:10:45.050 --> 01:10:50.570
+is that your input tokens
+are converted into embeddings
+
+01:10:50.570 --> 01:10:52.200
+with a learnable layer.
+
+01:10:52.200 --> 01:10:55.280
+You add some
+information regarding
+
+01:10:55.280 --> 01:10:57.320
+the position of your tokens.
+
+01:10:57.320 --> 01:11:00.880
+Then you make it through or
+go through an encoder that
+
+01:11:00.880 --> 01:11:03.560
+will apply this
+concept of attention
+
+01:11:03.560 --> 01:11:08.200
+and also add on top of it
+some learnable mechanism
+
+01:11:08.200 --> 01:11:15.280
+to add some complexity for each
+tokens representation, which
+
+01:11:15.280 --> 01:11:19.920
+is those feedforward network.
+
+01:11:19.920 --> 01:11:22.520
+And then the decoder level,
+when you want to generate,
+
+01:11:22.520 --> 01:11:28.240
+let's say a sentence, you start
+with some placeholder token
+
+01:11:28.240 --> 01:11:30.280
+that you--
+
+01:11:30.280 --> 01:11:32.800
+for which you add position
+embeddings as well,
+
+01:11:32.800 --> 01:11:34.920
+that you self-attention
+and then perform
+
+01:11:34.920 --> 01:11:38.880
+cross-attention with respect
+to your encoders tokens.
+
+01:11:38.880 --> 01:11:42.360
+And then you also
+have feedforward there
+
+01:11:42.360 --> 01:11:46.920
+to finally obtain your output.
+
+01:11:46.920 --> 01:11:50.550
+So I'm telling you
+all that to mention
+
+01:11:50.550 --> 01:11:55.710
+that there are locations where
+embeddings can be extracted out
+
+01:11:55.710 --> 01:11:56.450
+of all of these.
+
+01:11:56.450 --> 01:11:59.230
+So if you use the encoder
+part of the network,
+
+01:11:59.230 --> 01:12:05.230
+you can find the ends of the
+encoders, a location where
+
+01:12:05.230 --> 01:12:11.150
+you have an encoded meaning
+of your inputs tokens.
+
+01:12:11.150 --> 01:12:13.390
+And this is typically
+one of those locations,
+
+01:12:13.390 --> 01:12:19.990
+where you could say these are
+the embeddings of my input.
+
+01:12:19.990 --> 01:12:21.010
+OK, great.
+
+01:12:21.010 --> 01:12:24.530
+So now, doing the
+same for images.
+
+01:12:24.530 --> 01:12:28.270
+Let's say you have a condition
+that is based on images.
+
+01:12:28.270 --> 01:12:31.190
+One thing that is pretty
+nice is that everything
+
+01:12:31.190 --> 01:12:36.150
+that we mentioned just now
+can be reproduced with images.
+
+01:12:36.150 --> 01:12:38.950
+So all these token
+representations
+
+01:12:38.950 --> 01:12:40.510
+are just numbers.
+
+01:12:40.510 --> 01:12:46.470
+And you could well
+represent these numbers.
+
+01:12:46.470 --> 01:12:49.540
+You can associate them
+with patches of images.
+
+01:12:49.540 --> 01:12:57.580
+And this is what the ViT vision
+transformer paper does, which
+
+01:12:57.580 --> 01:12:59.420
+follows the same principle.
+
+01:12:59.420 --> 01:13:03.280
+But instead of learning
+embeddings on tokens,
+
+01:13:03.280 --> 01:13:07.660
+you learn embeddings of
+on patches of images.
+
+01:13:07.660 --> 01:13:10.020
+So everything stays the same.
+
+01:13:10.020 --> 01:13:19.180
+And you can perform tasks, such
+as image classification with it.
+
+01:13:19.180 --> 01:13:21.980
+And something that I haven't
+done in the tech space
+
+01:13:21.980 --> 01:13:25.000
+that we can do here together
+in this image world,
+
+01:13:25.000 --> 01:13:27.900
+is to see how these
+pieces come together
+
+01:13:27.900 --> 01:13:32.500
+in this example of a
+Teddy bear reading a book.
+
+01:13:32.500 --> 01:13:36.260
+So here, you decompose your
+image into these patches
+
+01:13:36.260 --> 01:13:38.460
+that we mentioned.
+
+01:13:38.460 --> 01:13:42.300
+Each of these patches,
+you have a learnable layer
+
+01:13:42.300 --> 01:13:44.820
+that gives you an initial
+representation of what
+
+01:13:44.820 --> 01:13:45.860
+they mean.
+
+01:13:45.860 --> 01:13:48.410
+So in the case of
+text, you would
+
+01:13:48.410 --> 01:13:53.270
+have a dictionary of tokens
+that are mapped to embeddings.
+
+01:13:53.270 --> 01:13:56.930
+But here, you have something
+that is more continuous.
+
+01:13:56.930 --> 01:13:58.470
+So you can have a linear layer.
+
+01:13:58.470 --> 01:14:00.110
+You can have a
+convolutional layer.
+
+01:14:00.110 --> 01:14:01.810
+You can have
+everything you want.
+
+01:14:01.810 --> 01:14:04.970
+So you have something
+at that stage
+
+01:14:04.970 --> 01:14:07.730
+that gives a representation
+of these patches.
+
+01:14:07.730 --> 01:14:13.170
+And then in a classification
+setting, you have a token.
+
+01:14:13.170 --> 01:14:17.970
+So for example here, CLS
+that will carry information
+
+01:14:17.970 --> 01:14:22.810
+regarding the class of your
+image that you want to predict.
+
+01:14:22.810 --> 01:14:28.050
+So each of these can be
+represented by embeddings.
+
+01:14:28.050 --> 01:14:31.490
+And we mentioned that we have
+position information encoded
+
+01:14:31.490 --> 01:14:32.770
+in them.
+
+01:14:32.770 --> 01:14:39.370
+And next class, we're going to
+see more about position encoding
+
+01:14:39.370 --> 01:14:40.750
+and all of this.
+
+01:14:40.750 --> 01:14:43.310
+So I'm not going
+to expand too much.
+
+01:14:46.160 --> 01:14:48.320
+So you have a
+representation for each
+
+01:14:48.320 --> 01:14:53.680
+of these patches of your input
+that you then feed your VIT.
+
+01:14:53.680 --> 01:14:58.360
+And exactly, as we mentioned,
+at the output of the encoder,
+
+01:14:58.360 --> 01:15:02.120
+you can locate one
+specific embedding
+
+01:15:02.120 --> 01:15:06.620
+that carries the semantic
+information of your input image.
+
+01:15:06.620 --> 01:15:13.320
+So here, it would be the output
+corresponding to the CLS token
+
+01:15:13.320 --> 01:15:16.520
+that here, you project
+to learn a classification
+
+01:15:16.520 --> 01:15:17.740
+task for example.
+
+01:15:17.740 --> 01:15:21.280
+But let's say you are
+at a representation
+
+01:15:21.280 --> 01:15:24.540
+stage of your workflow.
+
+01:15:24.540 --> 01:15:26.640
+You would just
+take the embedding
+
+01:15:26.640 --> 01:15:31.040
+that you see in orange at the
+top as your representation
+
+01:15:31.040 --> 01:15:31.940
+of the image.
+
+01:15:35.360 --> 01:15:36.720
+OK, great.
+
+01:15:36.720 --> 01:15:41.960
+So something that I didn't
+tell you is that for texts,
+
+01:15:41.960 --> 01:15:45.870
+doing that process
+is cheap in data
+
+01:15:45.870 --> 01:15:50.270
+because the task that we
+use to learn these models
+
+01:15:50.270 --> 01:15:52.650
+is self-supervised by nature.
+
+01:15:52.650 --> 01:15:57.010
+We anchor on next token
+prediction in the world of text,
+
+01:15:57.010 --> 01:15:59.770
+and you have a bunch of
+text in the internet.
+
+01:15:59.770 --> 01:16:06.030
+It's easy to have such data,
+and it's easy to learn.
+
+01:16:06.030 --> 01:16:08.230
+But in the image
+world, if you want
+
+01:16:08.230 --> 01:16:11.790
+to handcraft a similar task
+that is as meaningful as what
+
+01:16:11.790 --> 01:16:15.830
+we have in the text world,
+we have a bit more trouble.
+
+01:16:15.830 --> 01:16:18.870
+One of these candidates
+that I just shown
+
+01:16:18.870 --> 01:16:22.550
+is the classification task,
+for example, for which you
+
+01:16:22.550 --> 01:16:24.830
+need to gather labels.
+
+01:16:24.830 --> 01:16:27.070
+So it's quite expensive.
+
+01:16:27.070 --> 01:16:33.150
+And I just want to say
+that one follow up work
+
+01:16:33.150 --> 01:16:36.510
+that works on embedding
+of images that we're not
+
+01:16:36.510 --> 01:16:42.790
+going to see in details today
+is Dino self-distillation
+
+01:16:42.790 --> 01:16:46.590
+with no Labels for
+which the concept is
+
+01:16:46.590 --> 01:16:52.390
+to have a teacher and a
+student model that receive
+
+01:16:52.390 --> 01:16:55.070
+the different kinds of inputs.
+
+01:16:55.070 --> 01:16:59.950
+And they aim at learning
+similar probability distribution
+
+01:16:59.950 --> 01:17:02.590
+in the output that
+are prototypes.
+
+01:17:02.590 --> 01:17:05.830
+So I think it's a
+very interesting paper
+
+01:17:05.830 --> 01:17:09.590
+to see how we can
+build representations
+
+01:17:09.590 --> 01:17:12.530
+out of no labels, just out
+of the images themselves.
+
+01:17:15.830 --> 01:17:17.810
+So OK.
+
+01:17:17.810 --> 01:17:18.310
+Great.
+
+01:17:18.310 --> 01:17:24.990
+So now, we went through how we
+can represent text and images.
+
+01:17:24.990 --> 01:17:27.690
+So did everything
+make sense so far?
+
+01:17:27.690 --> 01:17:29.590
+So we went slightly
+fast, but I just
+
+01:17:29.590 --> 01:17:35.270
+want to make sure we
+got the gist out of it.
+
+01:17:35.270 --> 01:17:38.530
+Yeah, the comment is
+in the image world.
+
+01:17:38.530 --> 01:17:41.740
+Do these images
+become tokenized?
+
+01:17:41.740 --> 01:17:44.180
+So you can think
+of them that way.
+
+01:17:44.180 --> 01:17:46.100
+The only difference
+is that we don't
+
+01:17:46.100 --> 01:17:49.380
+have a dictionary of tokens,
+but rather we look at them
+
+01:17:49.380 --> 01:17:50.707
+in a continuous manner.
+
+01:17:50.707 --> 01:17:53.040
+Because in the text world,
+you would just have a lookup.
+
+01:17:53.040 --> 01:17:54.440
+But here, a learnable.
+
+01:17:54.440 --> 01:17:57.860
+So that's exactly right.
+
+01:17:57.860 --> 01:17:58.700
+Yeah.
+
+01:17:58.700 --> 01:18:03.100
+So the comment is depending
+on how you cut your image,
+
+01:18:03.100 --> 01:18:04.240
+you can have errors.
+
+01:18:04.240 --> 01:18:05.280
+Yeah, totally right.
+
+01:18:05.280 --> 01:18:07.280
+And this is why it's
+a hyperparameter.
+
+01:18:07.280 --> 01:18:10.220
+This ViT model comes with
+different batch sizes,
+
+01:18:10.220 --> 01:18:12.260
+and this is one
+of the trade offs.
+
+01:18:12.260 --> 01:18:15.740
+Yeah, so I mean, absolutely.
+
+01:18:15.740 --> 01:18:17.260
+OK, awesome.
+
+01:18:17.260 --> 01:18:20.780
+So now that we have seen how
+to represent text and images
+
+01:18:20.780 --> 01:18:23.580
+separately, you might
+wonder, OK, hey,
+
+01:18:23.580 --> 01:18:26.480
+I want to generate a new
+image with conditioning.
+
+01:18:26.480 --> 01:18:28.660
+That depends on
+both, let's say, were
+
+01:18:28.660 --> 01:18:31.820
+I want to condition
+on either, but I
+
+01:18:31.820 --> 01:18:34.820
+don't want to have to
+deal with two spaces.
+
+01:18:34.820 --> 01:18:39.610
+So how would you
+bring them together?
+
+01:18:39.610 --> 01:18:45.970
+So what we want is to learn
+a relationship between text
+
+01:18:45.970 --> 01:18:51.690
+and image that has this nice
+property of when you look
+
+01:18:51.690 --> 01:18:57.490
+at the embedding space,
+you want similar concepts,
+
+01:18:57.490 --> 01:19:00.490
+either image text to
+be grouped together,
+
+01:19:00.490 --> 01:19:03.290
+and dissimilar ones
+to be pushed away
+
+01:19:03.290 --> 01:19:08.250
+from each other with
+respect to some metric.
+
+01:19:08.250 --> 01:19:11.330
+So let's take the
+example of our Teddy bear
+
+01:19:11.330 --> 01:19:13.510
+and something totally unrelated.
+
+01:19:13.510 --> 01:19:15.730
+Let's say a water polo ball.
+
+01:19:15.730 --> 01:19:23.650
+So the Teddy bear with the text
+token, Teddy bear is similar.
+
+01:19:23.650 --> 01:19:26.970
+Same with the water polo ball
+image and the water polo ball
+
+01:19:26.970 --> 01:19:28.770
+token.
+
+01:19:28.770 --> 01:19:32.050
+But the opposite pairs are nuts.
+
+01:19:32.050 --> 01:19:35.880
+And we want a way to
+quantify each situation
+
+01:19:35.880 --> 01:19:38.160
+and learn it automatically.
+
+01:19:38.160 --> 01:19:41.000
+So how can we do that?
+
+01:19:41.000 --> 01:19:44.180
+So let's build a
+matrix of these two.
+
+01:19:44.180 --> 01:19:46.880
+So this is just phrasing
+in a different way What.
+
+01:19:46.880 --> 01:19:48.840
+I've just said.
+
+01:19:48.840 --> 01:19:52.280
+And what we want is Teddy
+bear and the image of Teddy
+
+01:19:52.280 --> 01:19:55.120
+bear to be of high similarity.
+
+01:19:55.120 --> 01:20:01.040
+So what we're going to do
+is project these embeddings
+
+01:20:01.040 --> 01:20:04.480
+that we talked about
+in the same space.
+
+01:20:04.480 --> 01:20:09.000
+So we're going to build these
+vectors with the representations
+
+01:20:09.000 --> 01:20:11.520
+that we just saw before.
+
+01:20:11.520 --> 01:20:13.860
+So what we're doing
+here is the same.
+
+01:20:13.860 --> 01:20:18.240
+So we have our patches of
+images alongside the CLS token
+
+01:20:18.240 --> 01:20:21.920
+that you pass through
+the VIT architecture.
+
+01:20:21.920 --> 01:20:28.120
+And then once you get the
+last embedding representation,
+
+01:20:28.120 --> 01:20:31.880
+what we're going to do is
+to project it in a space
+
+01:20:31.880 --> 01:20:35.350
+that we're going to have it
+shared with the tech space.
+
+01:20:35.350 --> 01:20:39.150
+So the property of that
+projection layer that we built
+
+01:20:39.150 --> 01:20:43.750
+is that it's going to output
+a vector of same dimension
+
+01:20:43.750 --> 01:20:47.110
+by construction as
+the one for text.
+
+01:20:47.110 --> 01:20:49.150
+So we do that here.
+
+01:20:49.150 --> 01:20:54.390
+And then we do the same
+for the text world.
+
+01:20:54.390 --> 01:20:56.590
+So by the way, I
+mentioned to you
+
+01:20:56.590 --> 01:21:00.450
+that we would look at embeddings
+at the end of the encoder layer.
+
+01:21:00.450 --> 01:21:04.190
+And here, I'm showing
+another procedure
+
+01:21:04.190 --> 01:21:10.150
+to get embeddings of text, which
+is to pass all of these tokens
+
+01:21:10.150 --> 01:21:14.830
+to the decoder and decode
+the one corresponding
+
+01:21:14.830 --> 01:21:16.630
+to the last token.
+
+01:21:16.630 --> 01:21:19.390
+And by construction of
+the attention mechanism
+
+01:21:19.390 --> 01:21:22.070
+and the transformer,
+these embedding
+
+01:21:22.070 --> 01:21:24.590
+coming out of the
+last token is going
+
+01:21:24.590 --> 01:21:26.770
+to represent the whole sentence.
+
+01:21:26.770 --> 01:21:29.590
+So it's another
+equivalent way of showing
+
+01:21:29.590 --> 01:21:31.950
+the representation of tokens.
+
+01:21:31.950 --> 01:21:36.060
+And we're going to take that
+representation and project it,
+
+01:21:36.060 --> 01:21:39.820
+as we said, in that
+same shared space.
+
+01:21:39.820 --> 01:21:46.460
+And by construction, these
+u and v are now comparable.
+
+01:21:46.460 --> 01:21:47.840
+You can do dot products.
+
+01:21:47.840 --> 01:21:49.980
+You can compute similarities.
+
+01:21:49.980 --> 01:21:55.420
+And we define these
+similarity S variable
+
+01:21:55.420 --> 01:21:59.980
+that is the scaled dot product.
+
+01:21:59.980 --> 01:22:04.980
+And one thing that
+we can do now is
+
+01:22:04.980 --> 01:22:08.820
+to transform this
+notion of similarity
+
+01:22:08.820 --> 01:22:13.580
+into some score that can be seen
+as a probability distribution
+
+01:22:13.580 --> 01:22:16.860
+through the softmax operator.
+
+01:22:16.860 --> 01:22:19.860
+So if you compute the
+exponential of the similarity
+
+01:22:19.860 --> 01:22:22.220
+between image Teddy
+bear and Teddy
+
+01:22:22.220 --> 01:22:26.460
+bear over the sum of the
+exponentials of this image Teddy
+
+01:22:26.460 --> 01:22:29.940
+bear and all the
+other text tokens,
+
+01:22:29.940 --> 01:22:32.290
+you find the
+probability distribution
+
+01:22:32.290 --> 01:22:37.970
+that this image corresponds
+to that piece of text.
+
+01:22:37.970 --> 01:22:43.210
+So you can do that from a fixed
+image to the set of texts.
+
+01:22:43.210 --> 01:22:46.870
+And you can do that
+on the other hand,
+
+01:22:46.870 --> 01:22:52.610
+with a fixed piece of text
+token to all the images.
+
+01:22:52.610 --> 01:22:54.570
+So you can have both ways.
+
+01:22:54.570 --> 01:23:00.650
+And what we do is that we
+can define two losses that
+
+01:23:00.650 --> 01:23:06.970
+look symmetric, that represents
+respectively, how similar,
+
+01:23:06.970 --> 01:23:11.810
+like the penalization of any
+error of a fixed image based
+
+01:23:11.810 --> 01:23:15.650
+on all pieces of
+text and similarity
+
+01:23:15.650 --> 01:23:19.530
+error of a piece of text with
+respect to all the images.
+
+01:23:19.530 --> 01:23:22.490
+So it's symmetric cross entropy.
+
+01:23:22.490 --> 01:23:25.450
+And then when we sum
+these two losses,
+
+01:23:25.450 --> 01:23:29.160
+we can obtain a final
+formulation that
+
+01:23:29.160 --> 01:23:31.600
+represents what we care about.
+
+01:23:34.920 --> 01:23:40.120
+So that is the key
+of the CLIP model
+
+01:23:40.120 --> 01:23:46.640
+that trains the representations
+of both image and text worlds
+
+01:23:46.640 --> 01:23:51.400
+into, like with this
+way of training things.
+
+01:23:51.400 --> 01:23:56.560
+So what we do is that we
+scrape a bunch of images
+
+01:23:56.560 --> 01:23:58.640
+and captions off
+of the internet.
+
+01:23:58.640 --> 01:24:01.240
+And then for a
+given batch, we say
+
+01:24:01.240 --> 01:24:04.760
+that a given image
+has its associated
+
+01:24:04.760 --> 01:24:08.200
+caption as the true
+label, and then
+
+01:24:08.200 --> 01:24:11.940
+all the other captions in
+that batch are negatives.
+
+01:24:11.940 --> 01:24:14.280
+So it's called in
+batch negatives.
+
+01:24:14.280 --> 01:24:18.440
+And you do the same thing
+of captions with respect
+
+01:24:18.440 --> 01:24:21.520
+to all the images.
+
+01:24:21.520 --> 01:24:27.550
+And you obtain that way final
+embeddings in the text and image
+
+01:24:27.550 --> 01:24:31.390
+encoders here that will generate
+the representation that you're
+
+01:24:31.390 --> 01:24:33.870
+looking for.
+
+01:24:33.870 --> 01:24:38.850
+So here, just to give
+some order of magnitude,
+
+01:24:38.850 --> 01:24:45.470
+the paper talked about
+400M pairs of data.
+
+01:24:45.470 --> 01:24:48.710
+And it's great
+reach great accuracy
+
+01:24:48.710 --> 01:24:51.510
+even unsupervised tasks.
+
+01:24:51.510 --> 01:24:55.870
+But the issue here
+is this softmax.
+
+01:24:55.870 --> 01:24:59.130
+So every time you have
+a huge batch of data,
+
+01:24:59.130 --> 01:25:04.950
+you need to build a similarity
+matrix of a fixed image
+
+01:25:04.950 --> 01:25:07.850
+with respect to all the
+captions and symmetrically.
+
+01:25:07.850 --> 01:25:12.350
+And this is not a
+great computationally.
+
+01:25:12.350 --> 01:25:15.590
+And also, from a
+mining standpoint,
+
+01:25:15.590 --> 01:25:18.190
+what you're truly
+saying in your loss is
+
+01:25:18.190 --> 01:25:22.790
+that you want to maximize the
+similarity of your true image
+
+01:25:22.790 --> 01:25:27.860
+caption pair, but you don't
+it's truly enforce the fact
+
+01:25:27.860 --> 01:25:32.660
+that all the other similarities
+should be each very small.
+
+01:25:32.660 --> 01:25:39.820
+So some follow up work reframes
+this problem into a sigmoid loss
+
+01:25:39.820 --> 01:25:40.320
+one.
+
+01:25:40.320 --> 01:25:47.500
+So instead of saying I want this
+one image to have a probability
+
+01:25:47.500 --> 01:25:51.740
+distribution that matches
+that of the true caption,
+
+01:25:51.740 --> 01:25:55.660
+we take one caption and
+one image separately,
+
+01:25:55.660 --> 01:26:00.020
+and we ask ourselves the
+question, do they match or not?
+
+01:26:00.020 --> 01:26:04.180
+And by doing so you don't have
+all this similarity matrix
+
+01:26:04.180 --> 01:26:05.540
+complexities.
+
+01:26:05.540 --> 01:26:10.700
+And also, you have a stronger
+statement at your loss level
+
+01:26:10.700 --> 01:26:14.980
+that's pushes the positives
+together and the negatives
+
+01:26:14.980 --> 01:26:17.300
+further apart.
+
+01:26:17.300 --> 01:26:25.210
+OK, so any questions on this
+contrastive learning part?
+
+01:26:25.210 --> 01:26:25.890
+Yep?
+
+01:26:25.890 --> 01:26:28.690
+The question is, do you start
+from a pre-trained encoder,
+
+01:26:28.690 --> 01:26:30.470
+and what weights do you change?
+
+01:26:30.470 --> 01:26:32.930
+So I think in the paper,
+they start from scratch.
+
+01:26:32.930 --> 01:26:35.530
+And they train both
+encoders from scratch.
+
+01:26:35.530 --> 01:26:38.850
+You could very well
+freeze or start
+
+01:26:38.850 --> 01:26:40.970
+with some pre-trained encoder.
+
+01:26:40.970 --> 01:26:42.550
+Freeze all the layers.
+
+01:26:42.550 --> 01:26:43.550
+Let the last layer.
+
+01:26:43.550 --> 01:26:46.690
+I think typically, you
+would just train everything.
+
+01:26:46.690 --> 01:26:51.590
+And in real life, I think you
+just wouldn't train anything.
+
+01:26:51.590 --> 01:26:54.410
+You would just pick something
+out of Hugging Face.
+
+01:26:54.410 --> 01:26:57.730
+But yeah, in
+practice, since it's
+
+01:26:57.730 --> 01:27:00.090
+easy to get all this
+data-- so typically,
+
+01:27:00.090 --> 01:27:02.050
+you would scrape the internet.
+
+01:27:02.050 --> 01:27:06.310
+Look at images, and look
+at all tags in HTML.
+
+01:27:06.310 --> 01:27:07.630
+So you can get all these pairs.
+
+01:27:07.630 --> 01:27:10.730
+So I think you're
+in such a setup,
+
+01:27:10.730 --> 01:27:13.150
+where doing it from
+scratch makes sense,
+
+01:27:13.150 --> 01:27:15.370
+but what you suggested
+makes sense as well.
+
+01:27:15.370 --> 01:27:16.130
+Yeah.
+
+01:27:16.130 --> 01:27:20.010
+So I think it depends
+on what works best.
+
+01:27:20.010 --> 01:27:20.730
+Yeah.
+
+01:27:20.730 --> 01:27:23.200
+So the question is the
+transformer architecture
+
+01:27:23.200 --> 01:27:25.700
+a prerequisite for this task.
+
+01:27:25.700 --> 01:27:26.380
+Not at all.
+
+01:27:26.380 --> 01:27:28.560
+So you can do it
+with any encoders.
+
+01:27:28.560 --> 01:27:30.720
+And the reason why I
+talked about transformers
+
+01:27:30.720 --> 01:27:34.920
+is to ground the way of encoding
+into what people do in practice.
+
+01:27:34.920 --> 01:27:38.560
+But you don't have to have this
+architecture as a prerequisite.
+
+01:27:38.560 --> 01:27:41.200
+Yeah.
+
+01:27:41.200 --> 01:27:42.660
+OK, awesome.
+
+01:27:42.660 --> 01:27:45.360
+So now, we're going to
+reach the most exciting part
+
+01:27:45.360 --> 01:27:50.800
+of the class, which is finally,
+how do you guide our generation
+
+01:27:50.800 --> 01:27:53.400
+model with the condition.
+
+01:27:53.400 --> 01:27:59.760
+And we're going to go back to
+thinking about what we discussed
+
+01:27:59.760 --> 01:28:01.600
+these past lectures.
+
+01:28:01.600 --> 01:28:04.360
+So we had this
+diffusion mechanism,
+
+01:28:04.360 --> 01:28:08.360
+where you are at a given
+step here, xt plus 1.
+
+01:28:08.360 --> 01:28:14.400
+And you want to find the less
+noisy version of the image xt.
+
+01:28:14.400 --> 01:28:17.480
+And the thing that
+we want to do now
+
+01:28:17.480 --> 01:28:21.730
+is to do that with a
+condition that I called y,
+
+01:28:21.730 --> 01:28:25.350
+but that you might see
+called c in papers.
+
+01:28:25.350 --> 01:28:28.750
+So you want to guide the
+generation towards generating
+
+01:28:28.750 --> 01:28:31.450
+a sample that follows y.
+
+01:28:34.390 --> 01:28:37.630
+So a first idea that
+you might have is OK,
+
+01:28:37.630 --> 01:28:39.510
+it's a classification.
+
+01:28:39.510 --> 01:28:41.650
+There is a concept
+of classification.
+
+01:28:41.650 --> 01:28:46.470
+I can come up with a
+classifier of weights phi
+
+01:28:46.470 --> 01:28:48.230
+and try to make it work.
+
+01:28:48.230 --> 01:28:50.350
+So how could you make it work?
+
+01:28:50.350 --> 01:28:53.270
+You start from this
+probability distribution
+
+01:28:53.270 --> 01:28:55.430
+that you want to sample from.
+
+01:28:55.430 --> 01:28:59.270
+And then by applying
+Bayes' rule,
+
+01:28:59.270 --> 01:29:03.310
+like the conditional version
+with the right arguments
+
+01:29:03.310 --> 01:29:09.110
+for A, B, and C, you obtain
+this product of two probability
+
+01:29:09.110 --> 01:29:12.470
+distributions that you
+can see on the left
+
+01:29:12.470 --> 01:29:18.340
+represents the one step
+generation process that we know.
+
+01:29:18.340 --> 01:29:22.580
+And on the right side, you have
+the probability distribution
+
+01:29:22.580 --> 01:29:26.100
+of y given xt, which
+would typically be what
+
+01:29:26.100 --> 01:29:29.500
+the classifier would give you.
+
+01:29:29.500 --> 01:29:33.380
+So now, let's see how we
+could sample from this.
+
+01:29:33.380 --> 01:29:36.700
+So taking a look at the
+probability distribution
+
+01:29:36.700 --> 01:29:37.520
+on the left.
+
+01:29:37.520 --> 01:29:39.940
+So if we recall
+the first lecture,
+
+01:29:39.940 --> 01:29:45.060
+let's say in the DDPM world,
+you know that this probability
+
+01:29:45.060 --> 01:29:48.860
+distribution follows a
+normal distribution of a mean
+
+01:29:48.860 --> 01:29:52.820
+that we learn and
+of variance that
+
+01:29:52.820 --> 01:29:54.320
+is following a noise schedule.
+
+01:29:54.320 --> 01:29:56.280
+So we don't learn it.
+
+01:29:56.280 --> 01:29:59.180
+It's something that we have.
+
+01:29:59.180 --> 01:30:01.580
+So we know the
+expression of this.
+
+01:30:01.580 --> 01:30:07.060
+If you look at the probability
+distribution of this,
+
+01:30:07.060 --> 01:30:11.380
+it's something that we know.
+
+01:30:11.380 --> 01:30:13.340
+So we have that on one hand.
+
+01:30:13.340 --> 01:30:19.370
+And on the other, we look at
+our probability distribution
+
+01:30:19.370 --> 01:30:21.930
+at the end of the classifier.
+
+01:30:21.930 --> 01:30:27.710
+So here, why are we
+not happy with that--
+
+01:30:27.710 --> 01:30:30.830
+I mean, we have the data of
+the probability distribution.
+
+01:30:30.830 --> 01:30:34.290
+You just have to put the noisy
+image to your classifier,
+
+01:30:34.290 --> 01:30:35.510
+and then you have it.
+
+01:30:35.510 --> 01:30:37.110
+You have a probability
+distribution.
+
+01:30:37.110 --> 01:30:39.210
+Why are we not happy with that?
+
+01:30:39.210 --> 01:30:44.810
+It's because we cannot plug it
+into that product equation that
+
+01:30:44.810 --> 01:30:47.950
+we saw and then
+easily sample from it.
+
+01:30:47.950 --> 01:30:50.810
+We want to reframe
+it in a way that we
+
+01:30:50.810 --> 01:30:55.410
+can have this nice Gaussian
+distribution that we
+
+01:30:55.410 --> 01:30:59.650
+had, for example, at the
+unconditioned generation step.
+
+01:30:59.650 --> 01:31:03.570
+So what we do is that
+we have a trick that
+
+01:31:03.570 --> 01:31:07.690
+expands this probability
+distribution with a Taylor
+
+01:31:07.690 --> 01:31:08.970
+expansion.
+
+01:31:08.970 --> 01:31:13.090
+And then you come
+up with a first term
+
+01:31:13.090 --> 01:31:16.960
+that is a function of xt.
+
+01:31:16.960 --> 01:31:22.780
+And when you plug
+the probability,
+
+01:31:22.780 --> 01:31:27.400
+I mean the log of p phi that we
+just found into this product,
+
+01:31:27.400 --> 01:31:29.720
+you see that the
+probability distribution
+
+01:31:29.720 --> 01:31:33.780
+that you want to learn is simply
+the same one that you had,
+
+01:31:33.780 --> 01:31:35.100
+but with a shifted mean.
+
+01:31:39.160 --> 01:31:41.260
+So I just want to take
+a pause for a second.
+
+01:31:41.260 --> 01:31:45.440
+So we went through
+a process that where
+
+01:31:45.440 --> 01:31:47.680
+we tried to find
+an easy probability
+
+01:31:47.680 --> 01:31:49.280
+distribution to sample from.
+
+01:31:49.280 --> 01:31:51.180
+So we went through a
+series of equations.
+
+01:31:51.180 --> 01:31:54.320
+But all I want you to
+know from all of that
+
+01:31:54.320 --> 01:31:59.440
+is that we tried to get
+to this state, where
+
+01:31:59.440 --> 01:32:02.260
+we can sample from
+an easy distribution,
+
+01:32:02.260 --> 01:32:03.460
+and that's what we reached.
+
+01:32:03.460 --> 01:32:05.560
+So in some way, we're happy.
+
+01:32:05.560 --> 01:32:07.800
+And then here,
+what's good about it
+
+01:32:07.800 --> 01:32:10.040
+is that you don't
+need to retrain
+
+01:32:10.040 --> 01:32:11.620
+your unconditioned model.
+
+01:32:11.620 --> 01:32:15.430
+So your theta and your
+sigma t are things that.
+
+01:32:15.430 --> 01:32:19.970
+And there is a downside to it.
+
+01:32:19.970 --> 01:32:21.850
+Now, I mentioned classifiers.
+
+01:32:21.850 --> 01:32:26.990
+You need to learn a classifier
+that operates on noisy images.
+
+01:32:26.990 --> 01:32:30.830
+And the process here
+is that you need
+
+01:32:30.830 --> 01:32:34.350
+to have that classifier that
+predicts some probability
+
+01:32:34.350 --> 01:32:38.910
+distribution, and then you
+need to take the backward pass
+
+01:32:38.910 --> 01:32:42.030
+on the network in order
+to find the gradient.
+
+01:32:42.030 --> 01:32:43.370
+Did that make sense so far?
+
+01:32:49.030 --> 01:32:50.130
+OK, great.
+
+01:32:50.130 --> 01:32:52.710
+So when we sample
+from the distribution
+
+01:32:52.710 --> 01:32:56.510
+that I mentioned in practice,
+one thing that people see
+
+01:32:56.510 --> 01:32:59.310
+is that it doesn't
+produce samples that
+
+01:32:59.310 --> 01:33:02.710
+follow the y condition enough.
+
+01:33:02.710 --> 01:33:08.030
+So this is why you see that
+W factor being introduced
+
+01:33:08.030 --> 01:33:11.500
+that can be tuned to
+force the generation
+
+01:33:11.500 --> 01:33:16.540
+process to follow the
+classifier's gradients more.
+
+01:33:16.540 --> 01:33:21.180
+And this is what we
+call the guidance part.
+
+01:33:21.180 --> 01:33:23.780
+So we saw that we
+don't have to retrain
+
+01:33:23.780 --> 01:33:26.620
+the unconditioned model
+in order to sample
+
+01:33:26.620 --> 01:33:28.360
+from this distribution.
+
+01:33:28.360 --> 01:33:31.660
+But on the other hand, you
+need to have a classifier that
+
+01:33:31.660 --> 01:33:37.100
+operates on top of a domain that
+can be composed of noisy images.
+
+01:33:37.100 --> 01:33:39.500
+And the bad thing about
+it is that you typically
+
+01:33:39.500 --> 01:33:41.300
+don't have that out of the box.
+
+01:33:41.300 --> 01:33:43.540
+So it's typically
+something that you
+
+01:33:43.540 --> 01:33:47.620
+have to train as part of
+your training process,
+
+01:33:47.620 --> 01:33:49.820
+which is a downside.
+
+01:33:49.820 --> 01:33:55.500
+And also, the fact that you need
+to compute the backwards pass
+
+01:33:55.500 --> 01:33:58.660
+of your classifier
+is quite expensive,
+
+01:33:58.660 --> 01:34:01.260
+which is also not great.
+
+01:34:01.260 --> 01:34:04.260
+And something else
+that I will mention
+
+01:34:04.260 --> 01:34:08.780
+is that you not only need to
+have that extra classifier
+
+01:34:08.780 --> 01:34:12.730
+and spend all these budgets
+to compute the gradients,
+
+01:34:12.730 --> 01:34:20.330
+but you need to make sure that
+the signal of your gradients
+
+01:34:20.330 --> 01:34:26.670
+scales well with the coefficient
+w that you introduce.
+
+01:34:26.670 --> 01:34:28.650
+So you need some
+hyperparameter tuning
+
+01:34:28.650 --> 01:34:35.690
+to make sure that the operation
+that you're doing is meaningful.
+
+01:34:35.690 --> 01:34:39.170
+So one question that
+you might ask yourself,
+
+01:34:39.170 --> 01:34:43.690
+is it possible to do this guided
+generation without the needs
+
+01:34:43.690 --> 01:34:45.610
+of a classifier?
+
+01:34:45.610 --> 01:34:49.010
+And the answer is yes.
+
+01:34:49.010 --> 01:34:52.770
+So if you use
+Bayes' formula, you
+
+01:34:52.770 --> 01:34:57.650
+can see that you can define
+an implicit classifier,
+
+01:34:57.650 --> 01:35:06.810
+so called p of y given x
+based on the generation,
+
+01:35:06.810 --> 01:35:10.920
+like the unconditioned
+generation of your image
+
+01:35:10.920 --> 01:35:13.720
+and the conditioned
+generation of your image,
+
+01:35:13.720 --> 01:35:16.120
+so conditioned on y.
+
+01:35:16.120 --> 01:35:19.320
+Which means that if
+you have a network that
+
+01:35:19.320 --> 01:35:23.320
+can generate an image
+without any conditions
+
+01:35:23.320 --> 01:35:27.080
+and that can generate an
+image with a given condition,
+
+01:35:27.080 --> 01:35:31.360
+then you can solve this problem
+by plugging this equation
+
+01:35:31.360 --> 01:35:35.640
+back into what we had,
+which is what we do here.
+
+01:35:35.640 --> 01:35:40.680
+So the equation that
+I showed regarding
+
+01:35:40.680 --> 01:35:46.080
+the distribution of
+the next sampling step
+
+01:35:46.080 --> 01:35:49.200
+can be written in epsilon space.
+
+01:35:49.200 --> 01:35:53.380
+So I mentioned this Gaussian
+distribution of shifted mean.
+
+01:35:53.380 --> 01:35:55.600
+You can rewrite
+the noise that you
+
+01:35:55.600 --> 01:36:00.600
+want to predict into one
+that takes into account
+
+01:36:00.600 --> 01:36:03.520
+that classifier signal.
+
+01:36:03.520 --> 01:36:06.510
+And what the
+authors of the paper
+
+01:36:06.510 --> 01:36:09.670
+of the classifier free
+guidance paper did
+
+01:36:09.670 --> 01:36:14.270
+is that they plugged
+in the P phi.
+
+01:36:14.270 --> 01:36:18.230
+Expression with the
+implicit classifier,
+
+01:36:18.230 --> 01:36:21.990
+the expression that I
+just mentioned before.
+
+01:36:21.990 --> 01:36:25.110
+And they obtained this
+very nice expression
+
+01:36:25.110 --> 01:36:28.110
+that is a function
+of the noise that we
+
+01:36:28.110 --> 01:36:34.070
+want to remove based on a model
+that isn't fed any condition,
+
+01:36:34.070 --> 01:36:38.950
+and one for which a
+condition is provided.
+
+01:36:38.950 --> 01:36:41.070
+And what you can
+see is that there
+
+01:36:41.070 --> 01:36:44.830
+is this w term in
+the middle that
+
+01:36:44.830 --> 01:36:46.750
+has about the same
+interpretation as the one
+
+01:36:46.750 --> 01:36:53.030
+that we saw before that
+will tweak the generation
+
+01:36:53.030 --> 01:36:58.310
+to be more or less towards
+the condition that you bring.
+
+01:36:58.310 --> 01:36:59.370
+So there's that.
+
+01:36:59.370 --> 01:37:02.390
+And then now, we are
+happy because we no longer
+
+01:37:02.390 --> 01:37:05.520
+have to train separate
+classifier phi.
+
+01:37:05.520 --> 01:37:11.720
+We can just rely on the
+generation network's weights.
+
+01:37:11.720 --> 01:37:15.980
+So how does that look
+like in practice?
+
+01:37:15.980 --> 01:37:18.820
+So with a certain
+probability called
+
+01:37:18.820 --> 01:37:21.860
+the unconditional
+probability, what
+
+01:37:21.860 --> 01:37:26.660
+you can do is sample an image
+from your training set, and time
+
+01:37:26.660 --> 01:37:30.440
+step, and noise, and try to
+predict the noise from it,
+
+01:37:30.440 --> 01:37:33.620
+which is what we
+saw in the past.
+
+01:37:33.620 --> 01:37:40.300
+And with probability 1 minus p
+unconditional, what you can do
+
+01:37:40.300 --> 01:37:42.700
+is do the same.
+
+01:37:42.700 --> 01:37:46.260
+But then use the embeddings
+that we saw in the parts
+
+01:37:46.260 --> 01:37:51.820
+just before to feed that network
+with this additional information
+
+01:37:51.820 --> 01:37:54.260
+and predict the
+quantity of noise
+
+01:37:54.260 --> 01:37:58.340
+to remove with the condition y.
+
+01:37:58.340 --> 01:38:05.370
+So you do that 1 minus
+p and conditional times.
+
+01:38:05.370 --> 01:38:10.850
+And what you get is
+something interesting,
+
+01:38:10.850 --> 01:38:17.950
+which is if you look at how
+your predictions look like,
+
+01:38:17.950 --> 01:38:20.650
+so let's say the noise
+that you want to remove
+
+01:38:20.650 --> 01:38:23.810
+is the points top left,
+and then the noise that you
+
+01:38:23.810 --> 01:38:25.530
+want to remove when
+you have a condition
+
+01:38:25.530 --> 01:38:27.250
+is the one in the middle.
+
+01:38:27.250 --> 01:38:31.130
+Then the guidance
+hyperparameter w
+
+01:38:31.130 --> 01:38:35.530
+will push the
+prediction of the noise
+
+01:38:35.530 --> 01:38:40.370
+more towards the noise
+of the condition sample.
+
+01:38:40.370 --> 01:38:43.010
+And the reason why we
+do that is that because
+
+01:38:43.010 --> 01:38:49.110
+in practice, if you don't have
+this hyperparameter, you tend.
+
+01:38:49.110 --> 01:38:53.130
+And if you just use the
+condition sample noise
+
+01:38:53.130 --> 01:38:57.530
+as the one that you use to
+denoise your noisy latents,
+
+01:38:57.530 --> 01:39:03.400
+you might obtain images that
+do not follow your prompts very
+
+01:39:03.400 --> 01:39:04.005
+closely.
+
+01:39:04.005 --> 01:39:05.880
+And this is why we have
+such a hyperparameter
+
+01:39:05.880 --> 01:39:08.920
+in the first place.
+
+01:39:08.920 --> 01:39:13.440
+In terms of numbers, the
+guidance parameter is typically
+
+01:39:13.440 --> 01:39:18.200
+set to just a few,
+I think three.
+
+01:39:18.200 --> 01:39:21.560
+In the paper, so
+typically more than one.
+
+01:39:21.560 --> 01:39:24.080
+And I just want to
+put a disclaimer here
+
+01:39:24.080 --> 01:39:29.920
+that the equations that I showed
+with the classifier guidance
+
+01:39:29.920 --> 01:39:33.100
+hyperparameter might
+have several definitions.
+
+01:39:33.100 --> 01:39:38.840
+So you might see formulas
+with w in there, w plus 1.
+
+01:39:38.840 --> 01:39:41.720
+So all these values
+of w that you take
+
+01:39:41.720 --> 01:39:46.120
+are dependent on the equation
+that you operate from.
+
+01:39:46.120 --> 01:39:47.200
+So this is 1.
+
+01:39:47.200 --> 01:39:49.360
+And then the other thing
+is that in practice
+
+01:39:49.360 --> 01:39:53.960
+at training time, the
+proportion of time for which you
+
+01:39:53.960 --> 01:40:01.070
+show unconditioned generation
+is typically 10%, 20% of time.
+
+01:40:01.070 --> 01:40:05.790
+And this time, you
+do not need to have
+
+01:40:05.790 --> 01:40:08.430
+an additional classifier
+at hand and to do
+
+01:40:08.430 --> 01:40:10.910
+an expensive backward pass.
+
+01:40:10.910 --> 01:40:15.330
+But you still need to
+do two inference steps.
+
+01:40:15.330 --> 01:40:19.230
+Because we saw that the
+equation has this epsilon
+
+01:40:19.230 --> 01:40:23.790
+theta of xt and no condition,
+and the one with the condition
+
+01:40:23.790 --> 01:40:25.590
+which is 2 forward passes.
+
+01:40:25.590 --> 01:40:27.410
+So you still have
+some extra cost,
+
+01:40:27.410 --> 01:40:31.070
+although it's better
+than the other technique.
+
+01:40:31.070 --> 01:40:38.230
+And this technique, CFG is the
+one that's most used today.
+
+01:40:38.230 --> 01:40:39.730
+OK.
+
+01:40:39.730 --> 01:40:40.970
+So any questions?
+
+01:40:47.070 --> 01:40:48.230
+OK, great.
+
+01:40:48.230 --> 01:40:50.810
+With that, I hope you
+have a great weekend.
+
+01:40:50.810 --> 01:40:54.460
+[APPLAUSE]
+

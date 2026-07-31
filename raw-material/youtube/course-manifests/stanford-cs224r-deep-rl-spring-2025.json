@@ -1,0 +1,124 @@
+{
+  "slug": "stanford-cs224r-deep-rl-spring-2025",
+  "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025",
+  "kind": "video-list",
+  "seed_url": "https://www.youtube.com/watch?v=EvHRQhMX7_w&t=1830s",
+  "playlist_url": null,
+  "source_note": "YouTube search for Stanford CS224R lectures; original seed URL had no playlist parameter.",
+  "videos": [
+    {
+      "index": 1,
+      "id": "EvHRQhMX7_w",
+      "expected_title": "Lecture 1: Class Intro",
+      "url": "https://www.youtube.com/watch?v=EvHRQhMX7_w"
+    },
+    {
+      "index": 2,
+      "id": "WxRDyObrm_M",
+      "expected_title": "Lecture 2: Imitation Learning",
+      "url": "https://www.youtube.com/watch?v=WxRDyObrm_M"
+    },
+    {
+      "index": 3,
+      "id": "KCAOXd4IO9o",
+      "expected_title": "Lecture 3: Policy Gradients",
+      "url": "https://www.youtube.com/watch?v=KCAOXd4IO9o"
+    },
+    {
+      "index": 4,
+      "id": "oejFZShW9hU",
+      "expected_title": "Lecture 4: Actor-Critic Methods",
+      "url": "https://www.youtube.com/watch?v=oejFZShW9hU"
+    },
+    {
+      "index": 5,
+      "id": "cRGKc-nAWho",
+      "expected_title": "Lecture 5: Off-Policy Actor Critic",
+      "url": "https://www.youtube.com/watch?v=cRGKc-nAWho"
+    },
+    {
+      "index": 6,
+      "id": "-7kv6jf0isQ",
+      "expected_title": "Lecture 6: Q-Learning",
+      "url": "https://www.youtube.com/watch?v=-7kv6jf0isQ"
+    },
+    {
+      "index": 7,
+      "id": "lRDaXnPIzks",
+      "expected_title": "Lecture 7: Offline RL",
+      "url": "https://www.youtube.com/watch?v=lRDaXnPIzks"
+    },
+    {
+      "index": 8,
+      "id": "PDIxDhA9Z6Y",
+      "expected_title": "Lecture 8: Reward Learning",
+      "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y"
+    },
+    {
+      "index": 9,
+      "id": "XKLGuwvSKvI",
+      "expected_title": "Lecture 9: RL for LLMs",
+      "url": "https://www.youtube.com/watch?v=XKLGuwvSKvI"
+    },
+    {
+      "index": 10,
+      "id": "O2VpNnwB4lM",
+      "expected_title": "Lecture 10: RL for LLM Reasoning",
+      "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM"
+    },
+    {
+      "index": 11,
+      "id": "PvqyGnOirgA",
+      "expected_title": "Lecture 11: Model-Based RL",
+      "url": "https://www.youtube.com/watch?v=PvqyGnOirgA"
+    },
+    {
+      "index": 12,
+      "id": "qNdsI_4AQJw",
+      "expected_title": "Lecture 12: Multi-Task RL",
+      "url": "https://www.youtube.com/watch?v=qNdsI_4AQJw"
+    },
+    {
+      "index": 13,
+      "id": "wSiyEpvoGkA",
+      "expected_title": "Lecture 13: Meta RL",
+      "url": "https://www.youtube.com/watch?v=wSiyEpvoGkA"
+    },
+    {
+      "index": 14,
+      "id": "4tlSKdi8teU",
+      "expected_title": "Lecture 14: Exploration",
+      "url": "https://www.youtube.com/watch?v=4tlSKdi8teU"
+    },
+    {
+      "index": 15,
+      "id": "iKWYLSVAtfM",
+      "expected_title": "Lecture 15: Hierarchical RL and IL",
+      "url": "https://www.youtube.com/watch?v=iKWYLSVAtfM"
+    },
+    {
+      "index": 16,
+      "id": "rbaWQQLrzl0",
+      "expected_title": "Lecture 16: RL for Robots",
+      "url": "https://www.youtube.com/watch?v=rbaWQQLrzl0"
+    },
+    {
+      "index": 17,
+      "id": "Hp1WBWghrak",
+      "expected_title": "Lecture 17: Advancing Robot Intelligence",
+      "url": "https://www.youtube.com/watch?v=Hp1WBWghrak"
+    },
+    {
+      "index": 18,
+      "id": "FacJ_1tTSx4",
+      "expected_title": "Lecture 18: Frontiers",
+      "url": "https://www.youtube.com/watch?v=FacJ_1tTSx4"
+    },
+    {
+      "index": 19,
+      "id": "07MQNMcxhZU",
+      "expected_title": "Tutorial Session: Review of Q-Learning",
+      "url": "https://www.youtube.com/watch?v=07MQNMcxhZU"
+    }
+  ]
+}

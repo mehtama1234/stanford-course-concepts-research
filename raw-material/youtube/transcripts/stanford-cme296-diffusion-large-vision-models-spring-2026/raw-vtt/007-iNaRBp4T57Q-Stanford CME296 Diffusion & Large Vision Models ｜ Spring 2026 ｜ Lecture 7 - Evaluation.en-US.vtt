@@ -1,0 +1,6009 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:05.560 --> 00:00:12.400
+Hello, everyone, and welcome
+to lecture 7 of CME 286.
+
+00:00:12.400 --> 00:00:15.000
+So today is a very
+exciting day because we'll
+
+00:00:15.000 --> 00:00:19.960
+be talking about how to evaluate
+the quality of the output
+
+00:00:19.960 --> 00:00:22.000
+of the text-to-image
+generation models
+
+00:00:22.000 --> 00:00:24.760
+that we've been seeing so far.
+
+00:00:24.760 --> 00:00:28.440
+And in particular, if you
+think about it, in order
+
+00:00:28.440 --> 00:00:32.040
+for you to know what
+to improve, you first
+
+00:00:32.040 --> 00:00:35.440
+need to know how
+good your output is.
+
+00:00:35.440 --> 00:00:39.800
+So that's why this lecture is
+going to be quite important.
+
+00:00:39.800 --> 00:00:42.320
+But before we start,
+as usual, we're
+
+00:00:42.320 --> 00:00:46.520
+going to recap what
+we saw last time.
+
+00:00:46.520 --> 00:00:49.040
+So if you remember,
+last time we focused
+
+00:00:49.040 --> 00:00:54.880
+on the training lifecycle of
+text-to-image generation models.
+
+00:00:54.880 --> 00:00:58.560
+And we first started
+by focusing on the loss
+
+00:00:58.560 --> 00:01:02.640
+that we're using for training,
+and in particular, we
+
+00:01:02.640 --> 00:01:08.480
+looked at the time step
+t that up until then
+
+00:01:08.480 --> 00:01:12.640
+we assume to be drawn from
+a uniform distribution.
+
+00:01:12.640 --> 00:01:17.280
+And we saw that it was actually
+not fair to treat all time
+
+00:01:17.280 --> 00:01:19.200
+steps equally.
+
+00:01:19.200 --> 00:01:21.600
+And we saw that there
+was a distribution that
+
+00:01:21.600 --> 00:01:25.040
+was quite nice in
+this case, which
+
+00:01:25.040 --> 00:01:28.880
+was the logit normal
+distribution, which emphasized
+
+00:01:28.880 --> 00:01:31.680
+on the middle steps,
+which are harder
+
+00:01:31.680 --> 00:01:35.680
+to learn compared to the
+earlier and the later steps.
+
+00:01:35.680 --> 00:01:40.640
+And this is mainly because
+early on, you have basically
+
+00:01:40.640 --> 00:01:44.740
+no information on which for
+you to base your prediction,
+
+00:01:44.740 --> 00:01:48.600
+so you just predict the mean of
+where all the observations are.
+
+00:01:48.600 --> 00:01:51.640
+And then towards the
+end, you have almost
+
+00:01:51.640 --> 00:01:55.080
+denoised your whole
+image, but in the middle,
+
+00:01:55.080 --> 00:01:59.280
+you're figuring out where
+to go and how you want
+
+00:01:59.280 --> 00:02:02.040
+to take those big decisions.
+
+00:02:02.040 --> 00:02:05.240
+So we not only saw
+this, but we also
+
+00:02:05.240 --> 00:02:10.520
+saw that for a given noise
+level, if you have a higher
+
+00:02:10.520 --> 00:02:13.960
+resolution image,
+then you perceived
+
+00:02:13.960 --> 00:02:19.400
+noise is going to be less than
+a lower resolution image, which
+
+00:02:19.400 --> 00:02:23.880
+is the reason why you need to
+do what we call a timeout step
+
+00:02:23.880 --> 00:02:25.200
+shift.
+
+00:02:25.200 --> 00:02:29.000
+And we saw this formula, which
+hopefully is not that haunting
+
+00:02:29.000 --> 00:02:30.760
+right now, which
+is something that
+
+00:02:30.760 --> 00:02:34.600
+is derived by our
+uncertainty of what
+
+00:02:34.600 --> 00:02:39.400
+the underlying pixel value is.
+
+00:02:39.400 --> 00:02:44.520
+And then what we did was go
+through the whole training life
+
+00:02:44.520 --> 00:02:47.600
+cycle of text-to-image
+generation models,
+
+00:02:47.600 --> 00:02:49.960
+and we started
+with pre-training,
+
+00:02:49.960 --> 00:02:54.840
+where our goal was to teach our
+model how to generate images.
+
+00:02:54.840 --> 00:02:58.040
+So we saw curriculum
+learning, where
+
+00:02:58.040 --> 00:03:00.740
+the goal was to teach
+our model first,
+
+00:03:00.740 --> 00:03:04.600
+how to do the easy things
+before doing the harder things.
+
+00:03:04.600 --> 00:03:09.200
+And then what we
+did was also look
+
+00:03:09.200 --> 00:03:12.760
+at how we can handle
+different resolutions.
+
+00:03:12.760 --> 00:03:17.240
+And we saw that given that
+we have a DIT-based model,
+
+00:03:17.240 --> 00:03:19.880
+it's only a matter
+of having a longer
+
+00:03:19.880 --> 00:03:22.760
+input at the end of the day.
+
+00:03:22.760 --> 00:03:26.760
+Then we looked at
+post-training approaches
+
+00:03:26.760 --> 00:03:32.520
+aimed at getting you to
+generate more beautiful images.
+
+00:03:32.520 --> 00:03:35.680
+And here, we saw
+two main strategies
+
+00:03:35.680 --> 00:03:41.080
+on the supervised side, which
+was continued training, focusing
+
+00:03:41.080 --> 00:03:43.720
+on acquiring more
+knowledge, which
+
+00:03:43.720 --> 00:03:47.520
+is more relevant to the domain
+you want to use your model.
+
+00:03:47.520 --> 00:03:49.480
+And then supervised
+fine tuning, which
+
+00:03:49.480 --> 00:03:54.640
+is aimed at just improving
+the aesthetics of the images
+
+00:03:54.640 --> 00:03:57.040
+that you produce.
+
+00:03:57.040 --> 00:04:00.720
+And we also saw some
+preference tuning methods,
+
+00:04:00.720 --> 00:04:06.760
+which were aimed at capturing
+negative user signals because up
+
+00:04:06.760 --> 00:04:11.440
+until then, we only taught
+our model what to do,
+
+00:04:11.440 --> 00:04:14.240
+but not what to not do.
+
+00:04:14.240 --> 00:04:17.279
+So this is the goal of
+techniques that are derived
+
+00:04:17.279 --> 00:04:21.880
+from JRPO, DPO, and so on.
+
+00:04:21.880 --> 00:04:26.320
+And after that, we saw how
+we could personalize our text
+
+00:04:26.320 --> 00:04:28.680
+to image generation model.
+
+00:04:28.680 --> 00:04:34.600
+And we looked at DreamBooth,
+which is one such method, which
+
+00:04:34.600 --> 00:04:40.080
+aims at relying on a
+rare token and training
+
+00:04:40.080 --> 00:04:43.920
+your model on the
+specific object or person
+
+00:04:43.920 --> 00:04:46.600
+that you want to
+capture, and then
+
+00:04:46.600 --> 00:04:49.960
+use that tuned model
+at inference time
+
+00:04:49.960 --> 00:04:55.320
+to be able to leverage what you
+have learned at training time.
+
+00:04:55.320 --> 00:05:02.400
+And then finally, we saw a range
+of distillation methods, which
+
+00:05:02.400 --> 00:05:09.200
+were aimed at shortening
+the number of steps that
+
+00:05:09.200 --> 00:05:12.360
+were needed at
+inference time, so we
+
+00:05:12.360 --> 00:05:14.140
+saw progressive distillation.
+
+00:05:14.140 --> 00:05:22.240
+We saw distribution matching
+distillation, and here we are.
+
+00:05:22.240 --> 00:05:25.400
+Today, we're going to
+focus on evaluation,
+
+00:05:25.400 --> 00:05:27.360
+which as I mentioned,
+is going to be
+
+00:05:27.360 --> 00:05:32.440
+about assessing how
+good of a quality
+
+00:05:32.440 --> 00:05:37.320
+the output generated image is.
+
+00:05:37.320 --> 00:05:42.960
+So as you can maybe
+think, judging
+
+00:05:42.960 --> 00:05:47.240
+of the quality of an image
+can be quite subjective,
+
+00:05:47.240 --> 00:05:54.120
+so I want us to start
+with a motivating example.
+
+00:05:54.120 --> 00:05:58.240
+And I would like to ask
+you, based on an input
+
+00:05:58.240 --> 00:06:00.960
+prompt that I'm going to
+read, which hopefully,
+
+00:06:00.960 --> 00:06:05.360
+is familiar by now, whether you
+think that image is a good image
+
+00:06:05.360 --> 00:06:06.840
+or not.
+
+00:06:06.840 --> 00:06:11.480
+So the input prompt is a
+teddy bear reading a book.
+
+00:06:11.480 --> 00:06:14.360
+And here is the generated image.
+
+00:06:14.360 --> 00:06:17.840
+So the question is, do you
+think that this generated
+
+00:06:17.840 --> 00:06:25.520
+image is a good, or bad output?
+
+00:06:25.520 --> 00:06:28.240
+So who says good?
+
+00:06:28.240 --> 00:06:31.240
+Who says bad?
+
+00:06:31.240 --> 00:06:36.700
+We agree it's an output that
+is not very pleasing to see,
+
+00:06:36.700 --> 00:06:39.480
+and the main reason
+here is well,
+
+00:06:39.480 --> 00:06:41.360
+the aesthetics are not great.
+
+00:06:41.360 --> 00:06:46.920
+You look at the image,
+it doesn't look great.
+
+00:06:46.920 --> 00:06:48.420
+OK, so how about this one?
+
+00:06:51.120 --> 00:06:56.680
+Do you think that this
+image is a good image?
+
+00:06:56.680 --> 00:06:59.920
+Who says it's a good image?
+
+00:06:59.920 --> 00:07:01.520
+Bad image?
+
+00:07:01.520 --> 00:07:05.840
+Yeah, so why is it a bad image?
+
+00:07:05.840 --> 00:07:09.120
+Yeah, so it's indeed not
+representing the prompt.
+
+00:07:09.120 --> 00:07:11.600
+I agree with you,
+so it's something
+
+00:07:11.600 --> 00:07:13.920
+that we call prompt
+adherence, where
+
+00:07:13.920 --> 00:07:17.840
+we want the output to follow
+what we have it as input.
+
+00:07:17.840 --> 00:07:23.200
+And so here, although this
+image is great to look at,
+
+00:07:23.200 --> 00:07:28.400
+well, it's not about a
+teddy bear reading a book.
+
+00:07:28.400 --> 00:07:30.280
+Last one.
+
+00:07:30.280 --> 00:07:35.320
+Is this image a
+good image or not?
+
+00:07:35.320 --> 00:07:39.640
+So who says good image?
+
+00:07:39.640 --> 00:07:42.000
+Bad image?
+
+00:07:42.000 --> 00:07:43.780
+So why is it a bad image?
+
+00:07:48.480 --> 00:07:53.760
+So you have a very refined
+taste, which is great.
+
+00:07:53.760 --> 00:07:57.960
+So let's suppose that this
+images is good enough for us
+
+00:07:57.960 --> 00:08:01.380
+because here, first it's
+following the prompt,
+
+00:08:01.380 --> 00:08:03.400
+so it's a teddy
+bear reading a book.
+
+00:08:03.400 --> 00:08:08.760
+And then second, let's say it's
+more aesthetically pleasing
+
+00:08:08.760 --> 00:08:11.640
+compared to the other ones.
+
+00:08:11.640 --> 00:08:16.760
+So from this small
+scale exercise,
+
+00:08:16.760 --> 00:08:19.240
+what I wanted to point
+out was that when
+
+00:08:19.240 --> 00:08:25.280
+we look at the outputs of a
+text-to-image generation model,
+
+00:08:25.280 --> 00:08:31.500
+we typically look at things with
+respect to two main buckets.
+
+00:08:31.500 --> 00:08:33.840
+Not exhaustive, but
+two main buckets.
+
+00:08:33.840 --> 00:08:39.440
+The first one is, if you
+take this picture on its own,
+
+00:08:39.440 --> 00:08:42.539
+does this look like
+a good picture?
+
+00:08:42.539 --> 00:08:45.560
+An aesthetically
+pleasing picture?
+
+00:08:45.560 --> 00:08:48.440
+So here, you think
+about whether what
+
+00:08:48.440 --> 00:08:50.260
+is in there is
+physically plausible.
+
+00:08:50.260 --> 00:08:53.120
+So for instance, if the book
+that your teddy bear is reading
+
+00:08:53.120 --> 00:08:56.760
+is on the table
+and not floating,
+
+00:08:56.760 --> 00:09:01.680
+if it's realistic, if a
+perceptual quality is there.
+
+00:09:01.680 --> 00:09:05.280
+And then the second
+big bucket is
+
+00:09:05.280 --> 00:09:11.160
+whether the produced output is
+indeed following your inputs.
+
+00:09:11.160 --> 00:09:15.520
+So here, it's called
+prompt adherence.
+
+00:09:15.520 --> 00:09:21.020
+And what we want to see is
+whether the objects, the people,
+
+00:09:21.020 --> 00:09:26.320
+the locations are indeed
+present in the image,
+
+00:09:26.320 --> 00:09:30.840
+and we want the image
+to be of a given style.
+
+00:09:30.840 --> 00:09:32.840
+And if, for
+instance, I say, it's
+
+00:09:32.840 --> 00:09:36.580
+reading a book about
+the CME 296 class,
+
+00:09:36.580 --> 00:09:40.080
+I want CME 296 to be on
+the book, so all of that
+
+00:09:40.080 --> 00:09:44.320
+would be within that bucket.
+
+00:09:44.320 --> 00:09:47.660
+But I mentioned that these two
+categories are not exhaustive.
+
+00:09:47.660 --> 00:09:52.200
+Of course, you have a
+bunch of other criteria
+
+00:09:52.200 --> 00:09:55.720
+that you can think of,
+so I'll just name a few.
+
+00:09:55.720 --> 00:09:57.840
+So the first one
+is safety, so you
+
+00:09:57.840 --> 00:10:01.920
+want to make sure you're not
+depicting things that are
+
+00:10:01.920 --> 00:10:06.120
+interpreted in a unsafe way.
+
+00:10:06.120 --> 00:10:10.240
+You want to make sure that
+if you generate something
+
+00:10:10.240 --> 00:10:13.280
+based on a prompt,
+you're not always
+
+00:10:13.280 --> 00:10:15.320
+generating the same thing,
+so you want something
+
+00:10:15.320 --> 00:10:18.840
+that is a bit diverse.
+
+00:10:18.840 --> 00:10:22.160
+You don't want to memorize
+the things that you
+
+00:10:22.160 --> 00:10:27.480
+have seen as inputs,
+and so here, it's
+
+00:10:27.480 --> 00:10:30.760
+trying to have
+some generalization
+
+00:10:30.760 --> 00:10:33.840
+capabilities for your model.
+
+00:10:33.840 --> 00:10:35.987
+And then you have a bunch
+of other dimensions,
+
+00:10:35.987 --> 00:10:37.320
+so here, for instance, the bias.
+
+00:10:37.320 --> 00:10:40.480
+You don't want your
+model to always output
+
+00:10:40.480 --> 00:10:47.720
+the same outputs, which could
+be, again, misinterpreted.
+
+00:10:47.720 --> 00:10:51.600
+So for all these
+reasons, what I propose
+
+00:10:51.600 --> 00:10:57.280
+is that this image
+evaluation problem,
+
+00:10:57.280 --> 00:11:03.800
+we can think of it as us trying
+to think if the image that we're
+
+00:11:03.800 --> 00:11:09.360
+getting as output is
+mainly good along these two
+
+00:11:09.360 --> 00:11:14.320
+dimensions, which are
+aesthetics and prompt adherence.
+
+00:11:14.320 --> 00:11:18.240
+So let's assume that these are
+our two main categories that we
+
+00:11:18.240 --> 00:11:20.280
+care about.
+
+00:11:20.280 --> 00:11:23.680
+And with that, I
+would like to start
+
+00:11:23.680 --> 00:11:29.960
+with a very simple and natural
+way of evaluating your output,
+
+00:11:29.960 --> 00:11:34.840
+which is to leverage humans.
+
+00:11:34.840 --> 00:11:39.440
+So here, the idea is
+you have your model, you
+
+00:11:39.440 --> 00:11:43.640
+have some input prompt that
+is having your model generate
+
+00:11:43.640 --> 00:11:48.860
+an image, and what
+you're saying is OK,
+
+00:11:48.860 --> 00:11:51.080
+given this prompt,
+given this image,
+
+00:11:51.080 --> 00:11:55.400
+how would you rate this image?
+
+00:11:55.400 --> 00:12:02.800
+So here, one possible option
+is to have a scale from 1 to 5,
+
+00:12:02.800 --> 00:12:06.880
+where 1 is very bad
+and 5 is very good.
+
+00:12:06.880 --> 00:12:13.280
+And the idea is to figure out
+where your image falls into.
+
+00:12:13.280 --> 00:12:17.800
+So in this case, let's
+assume it's very good.
+
+00:12:17.800 --> 00:12:22.200
+Then what you would
+do is in order
+
+00:12:22.200 --> 00:12:27.920
+to measure the performance of
+your model across a data set,
+
+00:12:27.920 --> 00:12:31.060
+you would take the
+average of the ratings,
+
+00:12:31.060 --> 00:12:33.280
+so you would do
+sum of the ratings,
+
+00:12:33.280 --> 00:12:36.800
+over the number
+of ratings, which
+
+00:12:36.800 --> 00:12:39.830
+you can call average rating.
+
+00:12:39.830 --> 00:12:43.150
+So the good thing
+with this score
+
+00:12:43.150 --> 00:12:47.230
+is it is nuanced,
+because you have a way
+
+00:12:47.230 --> 00:12:51.390
+to distinguish a very good image
+versus a good image, but not
+
+00:12:51.390 --> 00:12:54.390
+a great image and so on.
+
+00:12:54.390 --> 00:12:58.470
+But the main drawback
+there is, given
+
+00:12:58.470 --> 00:13:02.310
+that you're letting
+more degrees of freedom
+
+00:13:02.310 --> 00:13:07.790
+for humans to decide on which
+rating that is, it can introduce
+
+00:13:07.790 --> 00:13:13.910
+some noise in the ratings that
+you're getting, because humans
+
+00:13:13.910 --> 00:13:18.510
+may think that an image is a 5,
+but someone else can think it's
+
+00:13:18.510 --> 00:13:19.010
+a 4.
+
+00:13:19.010 --> 00:13:21.830
+Someone else can
+think it's a three.
+
+00:13:21.830 --> 00:13:26.070
+So everyone has their own way
+of interpreting the scale,
+
+00:13:26.070 --> 00:13:31.230
+and so this can introduce
+some noise in the ratings.
+
+00:13:31.230 --> 00:13:35.330
+And also, if you think about
+it for a lot of problems,
+
+00:13:35.330 --> 00:13:39.670
+it's actually very
+hard as a person
+
+00:13:39.670 --> 00:13:41.970
+to say if something
+is a 4 versus a 5.
+
+00:13:41.970 --> 00:13:45.390
+It's just a hard problem.
+
+00:13:45.390 --> 00:13:50.350
+And so for that
+reason, a second method
+
+00:13:50.350 --> 00:13:56.550
+of digging into this issue
+is instead of having a 1 to 5
+
+00:13:56.550 --> 00:14:01.590
+scale, to reduce this problem
+into a binary problem, which
+
+00:14:01.590 --> 00:14:04.250
+is much easier for
+humans to handle,
+
+00:14:04.250 --> 00:14:06.430
+because here, you
+are given an image,
+
+00:14:06.430 --> 00:14:10.670
+and you just need to say
+whether it's good or bad.
+
+00:14:10.670 --> 00:14:16.110
+So here, we assume that
+the answer is good.
+
+00:14:16.110 --> 00:14:20.230
+And so the score that we
+can think of in this setting
+
+00:14:20.230 --> 00:14:22.790
+is, again, taking the
+sum of the ratings,
+
+00:14:22.790 --> 00:14:24.670
+over the number of ratings.
+
+00:14:24.670 --> 00:14:28.510
+And here, it would
+be the pass rate.
+
+00:14:28.510 --> 00:14:31.950
+So how many of your
+images are what
+
+00:14:31.950 --> 00:14:33.510
+is the proportion
+of your images that
+
+00:14:33.510 --> 00:14:36.390
+is actually passing the bar?
+
+00:14:36.390 --> 00:14:40.750
+So the good thing here
+is, it is an easier
+
+00:14:40.750 --> 00:14:46.630
+task for humans to
+work on, so the ratings
+
+00:14:46.630 --> 00:14:49.590
+are less noisy in that sense.
+
+00:14:49.590 --> 00:14:56.470
+But one problem is humans,
+although it's on a binary scale,
+
+00:14:56.470 --> 00:15:03.510
+they have a hard time evaluating
+things on an absolute scale.
+
+00:15:03.510 --> 00:15:06.950
+So it's easier for
+you to, let's say,
+
+00:15:06.950 --> 00:15:09.070
+compare two things,
+as opposed to saying
+
+00:15:09.070 --> 00:15:10.910
+whether that something
+is passing the bar
+
+00:15:10.910 --> 00:15:13.490
+or not because you need
+to have some reference.
+
+00:15:16.030 --> 00:15:19.990
+So for that reason, I want
+to propose a third method
+
+00:15:19.990 --> 00:15:26.870
+of going about doing this,
+which is trying to rate
+
+00:15:26.870 --> 00:15:32.350
+those images by comparing
+them to some other images.
+
+00:15:32.350 --> 00:15:36.830
+So here, it's the pairwise
+comparison setting.
+
+00:15:36.830 --> 00:15:41.870
+And the setup would be you
+have your input prompts,
+
+00:15:41.870 --> 00:15:46.310
+and what you do is you
+generate two images.
+
+00:15:46.310 --> 00:15:50.070
+And your task is to say
+which one of these images
+
+00:15:50.070 --> 00:15:52.950
+is better than the other one?
+
+00:15:52.950 --> 00:15:56.110
+So do you agree with me
+that this task is easier
+
+00:15:56.110 --> 00:15:58.890
+than the absolute scale task?
+
+00:16:03.150 --> 00:16:07.590
+So in this case, you agree
+that the left one is a better
+
+00:16:07.590 --> 00:16:09.310
+image than the right one?
+
+00:16:09.310 --> 00:16:11.990
+So I'm glad you said
+no for the other one,
+
+00:16:11.990 --> 00:16:16.470
+because this illustrates the
+point that on an absolute scale,
+
+00:16:16.470 --> 00:16:19.630
+people have different
+expectations.
+
+00:16:19.630 --> 00:16:23.470
+So they may think that the left
+one may not be above the bar,
+
+00:16:23.470 --> 00:16:26.390
+but when you compare
+these two images,
+
+00:16:26.390 --> 00:16:27.950
+it is just obvious
+that the left one
+
+00:16:27.950 --> 00:16:30.430
+is better than the right one.
+
+00:16:30.430 --> 00:16:33.670
+And so in that sense, the
+ratings that you're getting
+
+00:16:33.670 --> 00:16:38.810
+are going to be even less noisy
+compared to the absolute scale,
+
+00:16:38.810 --> 00:16:42.070
+binary one.
+
+00:16:42.070 --> 00:16:45.790
+So how about the metric?
+
+00:16:45.790 --> 00:16:49.910
+So very naively,
+a very natural way
+
+00:16:49.910 --> 00:16:57.350
+would be to just, for a given
+model, count the number of wins,
+
+00:16:57.350 --> 00:16:59.470
+and divide it by the
+number of times it
+
+00:16:59.470 --> 00:17:04.750
+was compared to something else.
+
+00:17:04.750 --> 00:17:08.950
+So this one is the win rate.
+
+00:17:08.950 --> 00:17:11.730
+Do you think that's
+a good metric?
+
+00:17:14.670 --> 00:17:19.710
+So here, what we're
+doing is for each model,
+
+00:17:19.710 --> 00:17:22.910
+we're generating
+outputs, and we're
+
+00:17:22.910 --> 00:17:24.310
+comparing these
+outputs to, let's
+
+00:17:24.310 --> 00:17:25.650
+say, outputs of another model.
+
+00:17:25.650 --> 00:17:28.910
+What we're saying is,
+in order to quantify
+
+00:17:28.910 --> 00:17:33.030
+the performance of that
+first model, the model a,
+
+00:17:33.030 --> 00:17:34.830
+what we're doing
+is, we're counting
+
+00:17:34.830 --> 00:17:40.470
+the number of times images
+produced by this model won
+
+00:17:40.470 --> 00:17:44.790
+over the opponent,
+and we divide that
+
+00:17:44.790 --> 00:17:47.990
+by the number of comparisons.
+
+00:17:47.990 --> 00:17:50.430
+So the question is,
+do you think that is
+
+00:17:50.430 --> 00:17:52.630
+a good way of doing things?
+
+00:17:52.630 --> 00:18:00.190
+So the answer is, so for one
+reference OK, but for many
+
+00:18:00.190 --> 00:18:01.310
+not sure.
+
+00:18:01.310 --> 00:18:04.030
+Well, you have the
+right intuition here.
+
+00:18:04.030 --> 00:18:08.230
+So what I want to
+say here is winning
+
+00:18:08.230 --> 00:18:11.270
+against a model
+that is known to be
+
+00:18:11.270 --> 00:18:15.790
+excellent is much harder than
+winning against a model that
+
+00:18:15.790 --> 00:18:18.670
+is known to be bad.
+
+00:18:18.670 --> 00:18:25.590
+So our intuition here
+is your win proportion
+
+00:18:25.590 --> 00:18:27.530
+should not be the
+only factor here.
+
+00:18:27.530 --> 00:18:32.030
+You should also consider who
+you are comparing yourself with,
+
+00:18:32.030 --> 00:18:34.430
+and it's exactly
+what you mentioned.
+
+00:18:34.430 --> 00:18:37.590
+And I'm not sure
+if you're tracking
+
+00:18:37.590 --> 00:18:40.537
+the performance of
+text-to-image generation models,
+
+00:18:40.537 --> 00:18:42.370
+but typically, you have
+something like this.
+
+00:18:42.370 --> 00:18:48.350
+You have a leaderboard, where
+you have models that are ranked.
+
+00:18:48.350 --> 00:18:52.110
+And one challenge
+with this setting
+
+00:18:52.110 --> 00:18:57.630
+is that models they come,
+but also they can go.
+
+00:18:57.630 --> 00:19:00.670
+So when a model
+comes, let's suppose
+
+00:19:00.670 --> 00:19:02.750
+you want to have
+a win rate that is
+
+00:19:02.750 --> 00:19:06.910
+reflective of the
+performance of that model,
+
+00:19:06.910 --> 00:19:11.630
+you will need to have
+the same model be
+
+00:19:11.630 --> 00:19:17.190
+evaluated against all
+models of that list.
+
+00:19:17.190 --> 00:19:20.510
+And you want all
+models of that list
+
+00:19:20.510 --> 00:19:25.950
+to be also evaluated against
+all other models of that list
+
+00:19:25.950 --> 00:19:29.550
+every time the
+list gets updated,
+
+00:19:29.550 --> 00:19:32.350
+so this is a lot of evaluations.
+
+00:19:32.350 --> 00:19:35.670
+So you don't want to always
+have to evaluate everyone
+
+00:19:35.670 --> 00:19:38.110
+against everyone every
+time something gets
+
+00:19:38.110 --> 00:19:43.150
+updated on the list to
+make things apple to apple.
+
+00:19:43.150 --> 00:19:48.150
+So for that reason, well,
+something that we can think of
+
+00:19:48.150 --> 00:19:53.390
+is to adjust that
+win rate metric
+
+00:19:53.390 --> 00:19:59.070
+by taking into consideration
+how strong your opponent is
+
+00:19:59.070 --> 00:20:01.910
+within the metric.
+
+00:20:01.910 --> 00:20:04.350
+So how do we want to do that?
+
+00:20:04.350 --> 00:20:08.230
+Well, before we go
+into exactly how we
+
+00:20:08.230 --> 00:20:10.150
+do that, I just want
+to illustrate the point
+
+00:20:10.150 --> 00:20:11.590
+I mentioned.
+
+00:20:11.590 --> 00:20:15.150
+So here, let's imagine we have
+our model, let's say model A,
+
+00:20:15.150 --> 00:20:19.590
+that we want to evaluate
+against other models.
+
+00:20:19.590 --> 00:20:25.310
+Well, if our model wins
+against a bad model,
+
+00:20:25.310 --> 00:20:27.870
+your reaction is
+OK, and so what?
+
+00:20:27.870 --> 00:20:32.530
+You already that it's better
+than that very basic model,
+
+00:20:32.530 --> 00:20:34.990
+so there's nothing to
+be surprised about.
+
+00:20:34.990 --> 00:20:39.270
+But if the human says
+your model is winning
+
+00:20:39.270 --> 00:20:41.650
+against another model that
+is much, much stronger,
+
+00:20:41.650 --> 00:20:45.750
+then your reaction
+will be different.
+
+00:20:45.750 --> 00:20:51.630
+So the idea is to capture
+that within the metric,
+
+00:20:51.630 --> 00:20:54.750
+so let's see how
+we want to do that.
+
+00:20:54.750 --> 00:21:01.150
+So first of all, let's assume
+that we have a metric per model
+
+00:21:01.150 --> 00:21:05.670
+that we note R. R as in rating.
+
+00:21:05.670 --> 00:21:09.070
+And let's assume that our model,
+model A starts with a rating
+
+00:21:09.070 --> 00:21:12.030
+of, let's say, 1,000.
+
+00:21:12.030 --> 00:21:15.030
+And we're a newcomer,
+and in that leaderboard,
+
+00:21:15.030 --> 00:21:17.010
+it just happens that
+there is a model,
+
+00:21:17.010 --> 00:21:23.230
+let's suppose it's a bad model,
+that has a worse rating, which
+
+00:21:23.230 --> 00:21:26.710
+is 600, let's say.
+
+00:21:26.710 --> 00:21:34.750
+So let's have our model A be
+compared against that bad model.
+
+00:21:34.750 --> 00:21:38.790
+How would we want
+to update the score?
+
+00:21:38.790 --> 00:21:44.110
+So one idea could be
+to compute the score
+
+00:21:44.110 --> 00:21:50.870
+that we think would happen,
+if those models that perform
+
+00:21:50.870 --> 00:21:53.830
+like they did in the past.
+
+00:21:53.830 --> 00:21:55.730
+So let's compute
+the expected score,
+
+00:21:55.730 --> 00:22:00.390
+and for that, let's just
+use this formula, which
+
+00:22:00.390 --> 00:22:02.090
+gives us the expected score.
+
+00:22:02.090 --> 00:22:04.990
+And so here the formula
+would be 1 over 1
+
+00:22:04.990 --> 00:22:08.230
+plus 10 to the power of
+the rating of the model
+
+00:22:08.230 --> 00:22:13.550
+that you're competing
+against, minus your rating,
+
+00:22:13.550 --> 00:22:16.030
+over some arbitrary constants.
+
+00:22:16.030 --> 00:22:20.190
+And let's assume
+that constant is 400.
+
+00:22:20.190 --> 00:22:27.350
+Then this quantity would be
+your expected winning chance.
+
+00:22:27.350 --> 00:22:32.910
+And so here, it's 0.9,
+so 90% chance of winning.
+
+00:22:32.910 --> 00:22:37.750
+So now that you have your
+baseline, what you want to do
+
+00:22:37.750 --> 00:22:40.170
+is compute your actual score.
+
+00:22:40.170 --> 00:22:43.350
+So actually, compare
+the two models.
+
+00:22:43.350 --> 00:22:47.330
+So here, the outcome can
+be one of three things,
+
+00:22:47.330 --> 00:22:56.150
+so you can either lose, be
+tied, or win over the bad model.
+
+00:22:56.150 --> 00:22:59.590
+And the idea is to use
+these two quantities, so
+
+00:22:59.590 --> 00:23:03.790
+the expected score
+and the actual score
+
+00:23:03.790 --> 00:23:07.530
+to compute your
+element of surprise,
+
+00:23:07.530 --> 00:23:11.670
+how much you went above,
+or how much you went below.
+
+00:23:11.670 --> 00:23:15.670
+And here, it would be delta
+equal to the actual score
+
+00:23:15.670 --> 00:23:18.750
+that you obtained,
+minus the score
+
+00:23:18.750 --> 00:23:24.910
+that you think you would
+have obtained on average.
+
+00:23:24.910 --> 00:23:32.870
+And here, in this case, if model
+A wins, it would be plus 0.1.
+
+00:23:32.870 --> 00:23:37.030
+If it loses, then
+it's minus 0.9,
+
+00:23:37.030 --> 00:23:42.350
+and if there's a tie it's
+also a minus, minus 0.4.
+
+00:23:42.350 --> 00:23:47.230
+So here, by the way, the numbers
+they just come from this formula
+
+00:23:47.230 --> 00:23:49.450
+that we just plug
+the ratings into that
+
+00:23:49.450 --> 00:23:52.190
+and then we compute delta.
+
+00:23:52.190 --> 00:23:54.910
+So the good thing
+with this observation
+
+00:23:54.910 --> 00:24:01.790
+is we see that if we have our
+model win against the bad model,
+
+00:24:01.790 --> 00:24:05.990
+well, there is not a
+lot of gains, which
+
+00:24:05.990 --> 00:24:08.390
+is aligned with our intuition.
+
+00:24:08.390 --> 00:24:13.390
+And if the model loses, then it
+means it's really, really bad,
+
+00:24:13.390 --> 00:24:16.910
+so there is a big
+downward contribution.
+
+00:24:16.910 --> 00:24:18.990
+And even if there
+is a tie, we know
+
+00:24:18.990 --> 00:24:21.710
+that if we're tied
+with a very bad model,
+
+00:24:21.710 --> 00:24:26.510
+then that's also a bad
+contribution for our rating,
+
+00:24:26.510 --> 00:24:32.230
+so the first step would be to
+just update our rating by adding
+
+00:24:32.230 --> 00:24:35.910
+k times delta.
+
+00:24:35.910 --> 00:24:38.510
+So that would be the recipe.
+
+00:24:38.510 --> 00:24:44.910
+And so the image that I
+showed you a few slides ago
+
+00:24:44.910 --> 00:24:49.550
+was actually this slide, where
+I masked the middle columns.
+
+00:24:49.550 --> 00:24:53.130
+So this is how the
+leaderboards do it.
+
+00:24:53.130 --> 00:24:54.905
+In practice, they
+compute the score.
+
+00:24:54.905 --> 00:24:56.530
+So maybe you may have
+heard this score.
+
+00:24:56.530 --> 00:25:00.710
+It's called the
+Elo rating, and it
+
+00:25:00.710 --> 00:25:05.230
+allows you to track the
+performance of a model
+
+00:25:05.230 --> 00:25:11.590
+by computing the score
+as a function of how
+
+00:25:11.590 --> 00:25:13.670
+strong your opponent is.
+
+00:25:13.670 --> 00:25:18.630
+And this allows you to avoid
+having everyone be evaluated
+
+00:25:18.630 --> 00:25:20.630
+against everyone
+every time there
+
+00:25:20.630 --> 00:25:25.470
+is a change in who's
+in the leaderboard.
+
+00:25:25.470 --> 00:25:27.950
+And by the way, Elo
+is actually the name
+
+00:25:27.950 --> 00:25:29.890
+of the person who came
+up with the method.
+
+00:25:29.890 --> 00:25:31.950
+It's not an acronym.
+
+00:25:31.950 --> 00:25:33.370
+So that's good to note.
+
+00:25:36.070 --> 00:25:39.910
+But what are the problems
+with this approach?
+
+00:25:39.910 --> 00:25:44.270
+Well, every time we want
+to evaluate our model,
+
+00:25:44.270 --> 00:25:47.910
+if we had to always
+involve humans,
+
+00:25:47.910 --> 00:25:50.670
+well, it will be a
+very expensive task.
+
+00:25:50.670 --> 00:25:52.910
+So that's the first limitation.
+
+00:25:52.910 --> 00:25:57.630
+Also, humans, there's
+only 24 hours in a day.
+
+00:25:57.630 --> 00:26:00.270
+It's a slow method.
+
+00:26:00.270 --> 00:26:03.215
+It can also be
+subjective, so the example
+
+00:26:03.215 --> 00:26:04.590
+that we had in
+the very beginning
+
+00:26:04.590 --> 00:26:06.050
+is one example of that.
+
+00:26:06.050 --> 00:26:09.790
+Another example can
+be try to tell me
+
+00:26:09.790 --> 00:26:11.790
+if this image is well lit.
+
+00:26:11.790 --> 00:26:16.370
+There are several notions
+of something being well lit.
+
+00:26:16.370 --> 00:26:21.150
+So again, it's a subjective
+task, so answers can differ.
+
+00:26:21.150 --> 00:26:25.270
+And, of course, humans
+are not perfect either.
+
+00:26:25.270 --> 00:26:26.650
+Depending on the
+time of the day,
+
+00:26:26.650 --> 00:26:28.310
+you may have external
+circumstances
+
+00:26:28.310 --> 00:26:33.350
+that may also influence on
+the quality of your ratings.
+
+00:26:33.350 --> 00:26:38.190
+So all of that is I
+hope, a motivation for us
+
+00:26:38.190 --> 00:26:44.190
+to look at automated metrics
+that would allow us to quantify
+
+00:26:44.190 --> 00:26:48.190
+how good the outputs are.
+
+00:26:48.190 --> 00:26:50.750
+And we're going
+to start with what
+
+00:26:50.750 --> 00:26:53.270
+we call reference-free
+metrics, and I'm
+
+00:26:53.270 --> 00:26:57.870
+going to tell you in a second
+what reference-free means.
+
+00:26:57.870 --> 00:27:04.550
+So as I mentioned, we're in the
+text to image generation case.
+
+00:27:04.550 --> 00:27:08.590
+We have a text as
+input and we have
+
+00:27:08.590 --> 00:27:11.550
+a model that produces an image.
+
+00:27:11.550 --> 00:27:15.110
+So one thing that I want to
+tell you is there are they're
+
+00:27:15.110 --> 00:27:17.110
+just multiple ways
+you can produce
+
+00:27:17.110 --> 00:27:22.230
+an image for a same
+prompt like these ones.
+
+00:27:22.230 --> 00:27:33.190
+And for that reason, having
+a single image as reference
+
+00:27:33.190 --> 00:27:36.710
+is a little bit unfair
+because you would always
+
+00:27:36.710 --> 00:27:40.670
+try to compare against
+that same reference.
+
+00:27:40.670 --> 00:27:44.510
+That is not the only
+way you can do things,
+
+00:27:44.510 --> 00:27:48.150
+and so for that reasons, the
+metrics that we're going to see
+
+00:27:48.150 --> 00:27:50.710
+are called reference-free,
+as in they're not
+
+00:27:50.710 --> 00:27:55.530
+using a single output
+reference image as reference.
+
+00:27:55.530 --> 00:27:57.910
+They're not doing that.
+
+00:27:57.910 --> 00:28:01.390
+So that's the reference-free.
+
+00:28:01.390 --> 00:28:05.150
+And so let's go
+back to our problem.
+
+00:28:05.150 --> 00:28:09.330
+And so here, we have an
+input, which is a text prompt,
+
+00:28:09.330 --> 00:28:12.710
+and then we have
+an image as output.
+
+00:28:12.710 --> 00:28:16.990
+And I told you we could
+consider our problem
+
+00:28:16.990 --> 00:28:22.110
+as being us trying to
+quantify how good the image is
+
+00:28:22.110 --> 00:28:25.150
+with respect to aesthetics
+and with respect
+
+00:28:25.150 --> 00:28:27.110
+to prompt adherence.
+
+00:28:27.110 --> 00:28:31.870
+Well, here, let's
+start with aesthetics.
+
+00:28:31.870 --> 00:28:34.830
+And let's take our
+generated image,
+
+00:28:34.830 --> 00:28:39.830
+which is on the right and our
+real image that is on the left.
+
+00:28:39.830 --> 00:28:41.750
+So as I mentioned,
+it is not fair
+
+00:28:41.750 --> 00:28:47.230
+for us to compare our generated
+image with a single reference.
+
+00:28:47.230 --> 00:28:53.990
+So one idea can be to actually
+take many generated images
+
+00:28:53.990 --> 00:28:57.630
+and many real images.
+
+00:28:57.630 --> 00:29:00.870
+And instead of comparing
+your single generated image
+
+00:29:00.870 --> 00:29:04.590
+to the single real
+image, one idea
+
+00:29:04.590 --> 00:29:11.550
+could be to look at the
+distribution of both
+
+00:29:11.550 --> 00:29:15.430
+and see how the two compares.
+
+00:29:15.430 --> 00:29:16.870
+So let's do that.
+
+00:29:16.870 --> 00:29:18.630
+Well, how would you do it?
+
+00:29:18.630 --> 00:29:20.990
+Well, in the class,
+we've seen that we
+
+00:29:20.990 --> 00:29:26.350
+have methods to represent images
+in what we call a latent space,
+
+00:29:26.350 --> 00:29:29.230
+or some space.
+
+00:29:29.230 --> 00:29:35.430
+So here, one idea could be to
+take our, let's say, real images
+
+00:29:35.430 --> 00:29:41.150
+and have them be inputs
+into some encoder such
+
+00:29:41.150 --> 00:29:44.710
+that they can be
+represented in space.
+
+00:29:44.710 --> 00:29:49.270
+So we can do that with
+the sets of real images.
+
+00:29:49.270 --> 00:29:53.270
+And in parallel, we can also
+take our generated images,
+
+00:29:53.270 --> 00:29:58.630
+and also let them through
+that pre-trained encoder
+
+00:29:58.630 --> 00:30:02.830
+so that they can also be
+represented in that same space.
+
+00:30:02.830 --> 00:30:06.470
+So the idea that
+we can have here
+
+00:30:06.470 --> 00:30:11.510
+is to try to compare
+how these two resulting
+
+00:30:11.510 --> 00:30:17.670
+distributions in this space,
+how these two compare.
+
+00:30:17.670 --> 00:30:20.690
+So in order to characterize
+each distribution,
+
+00:30:20.690 --> 00:30:23.950
+you can have the mean, mu,
+and the covariance matrix
+
+00:30:23.950 --> 00:30:28.030
+sigma that can just tell you
+about how your distribution is
+
+00:30:28.030 --> 00:30:29.870
+shaped.
+
+00:30:29.870 --> 00:30:32.410
+And what you want to do
+is to compare the two.
+
+00:30:32.410 --> 00:30:34.970
+So you want to compare
+where they are located,
+
+00:30:34.970 --> 00:30:40.390
+so here, you can use the
+mean, and how they are shaped,
+
+00:30:40.390 --> 00:30:42.130
+you can use the
+covariance sigma.
+
+00:30:42.130 --> 00:30:45.630
+So the covariance
+matrix is a quantity
+
+00:30:45.630 --> 00:30:49.810
+that tells you how spread
+out your distribution is,
+
+00:30:49.810 --> 00:30:55.770
+and also what are the
+directions of that spread.
+
+00:30:58.510 --> 00:31:00.710
+So by the way, why
+would you also want
+
+00:31:00.710 --> 00:31:02.410
+to quantify the spread?
+
+00:31:02.410 --> 00:31:08.750
+Well, you also want your
+generated images to be diverse,
+
+00:31:08.750 --> 00:31:13.150
+and so here, the spread will be
+around quantifying how diverse
+
+00:31:13.150 --> 00:31:16.350
+your generated images are.
+
+00:31:16.350 --> 00:31:19.150
+And so, as I
+mentioned, what we want
+
+00:31:19.150 --> 00:31:25.230
+is to quantify the distance
+between these two distributions.
+
+00:31:25.230 --> 00:31:30.510
+And so we can come up
+with some formula, which
+
+00:31:30.510 --> 00:31:31.730
+I'm putting it on the slide.
+
+00:31:31.730 --> 00:31:36.350
+And we're going to go
+through each component, where
+
+00:31:36.350 --> 00:31:39.350
+the first term is
+around quantifying
+
+00:31:39.350 --> 00:31:42.890
+the difference in where these
+distributions are located,
+
+00:31:42.890 --> 00:31:48.030
+so comparing the means
+of each distribution,
+
+00:31:48.030 --> 00:31:53.590
+and also comparing the shape
+of each of these distributions.
+
+00:31:53.590 --> 00:31:57.830
+So here, so Tr stands
+for trace, so it's
+
+00:31:57.830 --> 00:32:01.070
+an operation on a matrix.
+
+00:32:01.070 --> 00:32:04.510
+And maybe it's the first time
+you're seeing this formula,
+
+00:32:04.510 --> 00:32:07.598
+your first reaction
+may be, well,
+
+00:32:07.598 --> 00:32:08.890
+where do you have this formula?
+
+00:32:08.890 --> 00:32:11.590
+What does it represent?
+
+00:32:11.590 --> 00:32:15.870
+So the truth is this metric,
+which is called the Fréchet
+
+00:32:15.870 --> 00:32:19.550
+Inception Distance,
+is a metric that
+
+00:32:19.550 --> 00:32:23.990
+is derived from a distance
+that is called the Wasserstein
+
+00:32:23.990 --> 00:32:28.910
+distance that aims at
+quantifying how much effort you
+
+00:32:28.910 --> 00:32:35.270
+would have to do to go from one
+distribution to another one.
+
+00:32:35.270 --> 00:32:39.030
+And it just turns
+out that if you
+
+00:32:39.030 --> 00:32:44.750
+assume that the
+distribution of real images
+
+00:32:44.750 --> 00:32:48.270
+and the distribution
+of generated images,
+
+00:32:48.270 --> 00:32:50.870
+they are each Gaussian.
+
+00:32:50.870 --> 00:32:54.350
+If you assume that,
+then it just happens
+
+00:32:54.350 --> 00:32:58.270
+that this Wasserstein
+distance, which
+
+00:32:58.270 --> 00:33:02.270
+is something that typically does
+not have a closed form solution,
+
+00:33:02.270 --> 00:33:06.430
+is something that you can
+express in a closed form.
+
+00:33:06.430 --> 00:33:10.190
+So that's where the
+formula comes from.
+
+00:33:10.190 --> 00:33:12.290
+But in terms of
+interpreting each term,
+
+00:33:12.290 --> 00:33:16.230
+you can think of the first term
+as being the difference in terms
+
+00:33:16.230 --> 00:33:21.330
+of location, and the second
+one is how the shapes differ.
+
+00:33:24.550 --> 00:33:25.370
+Cool.
+
+00:33:25.370 --> 00:33:28.510
+So it's a distance, so what
+you want is those distances
+
+00:33:28.510 --> 00:33:30.570
+to be as small as possible.
+
+00:33:30.570 --> 00:33:35.870
+So the lower your
+FID, the better it is.
+
+00:33:35.870 --> 00:33:39.090
+So the question is, can
+you use VLM to do that?
+
+00:33:39.090 --> 00:33:41.690
+So we're going to see that
+later in this lecture.
+
+00:33:45.310 --> 00:33:49.950
+So the question is, can
+you say a little bit
+
+00:33:49.950 --> 00:33:51.790
+about how to
+interpret these terms
+
+00:33:51.790 --> 00:33:53.970
+and how this relates to
+these [INAUDIBLE] Gaussians?
+
+00:33:53.970 --> 00:33:56.070
+So we're not going
+to go into that,
+
+00:33:56.070 --> 00:34:02.470
+but the underlying
+idea behind this metric
+
+00:34:02.470 --> 00:34:09.510
+is to quantify how much effort
+you would have to transport
+
+00:34:09.510 --> 00:34:11.909
+one distribution to another.
+
+00:34:11.909 --> 00:34:14.389
+And this is, you can think
+of it as some formula
+
+00:34:14.389 --> 00:34:16.510
+that has this interpretation.
+
+00:34:16.510 --> 00:34:21.429
+And what I was saying was,
+if you assume that the shape,
+
+00:34:21.429 --> 00:34:25.150
+or that your real
+image distribution,
+
+00:34:25.150 --> 00:34:28.090
+and if you assume that your
+generated image distribution,
+
+00:34:28.090 --> 00:34:31.830
+if you assume that each
+of them is Gaussian,
+
+00:34:31.830 --> 00:34:35.429
+then what we're saying is that
+the quantity that I mentioned
+
+00:34:35.429 --> 00:34:40.110
+can actually be computed with
+a rather nice formula that
+
+00:34:40.110 --> 00:34:41.790
+is closed form.
+
+00:34:41.790 --> 00:34:46.010
+So this goes into the broader
+theme of Gaussian distributions,
+
+00:34:46.010 --> 00:34:47.989
+just simplifying
+a lot of things,
+
+00:34:47.989 --> 00:34:50.050
+and this is one of
+those instances.
+
+00:34:52.949 --> 00:34:55.050
+So the question is the
+real here is the data?
+
+00:34:55.050 --> 00:35:00.390
+Yes, so you would take a set of
+real images, so non-generated
+
+00:35:00.390 --> 00:35:05.630
+images, and you would
+compute their representation
+
+00:35:05.630 --> 00:35:07.630
+using the pre-trained encoder.
+
+00:35:07.630 --> 00:35:09.710
+And you would use
+those representations
+
+00:35:09.710 --> 00:35:14.910
+to represent those real images.
+
+00:35:14.910 --> 00:35:17.250
+So the question is, can
+I use it in pixel space?
+
+00:35:17.250 --> 00:35:19.070
+So here's the thing.
+
+00:35:19.070 --> 00:35:23.830
+This metric is there for you to
+compare how well your model is
+
+00:35:23.830 --> 00:35:26.790
+doing compared to
+other models out there,
+
+00:35:26.790 --> 00:35:32.110
+so you need to have some
+space that is the same as what
+
+00:35:32.110 --> 00:35:34.010
+the other ones have mentioned.
+
+00:35:34.010 --> 00:35:37.630
+And so here this metric is
+called Fréchet Inception
+
+00:35:37.630 --> 00:35:41.470
+Distance because actually
+the pre-trained encoder is
+
+00:35:41.470 --> 00:35:44.550
+the Inception network.
+
+00:35:44.550 --> 00:35:47.910
+And so what you want is, if
+you want to compare yourself
+
+00:35:47.910 --> 00:35:51.910
+with someone else,
+you necessarily
+
+00:35:51.910 --> 00:35:55.070
+need to take the
+same representation
+
+00:35:55.070 --> 00:35:57.470
+to make things comparable.
+
+00:35:57.470 --> 00:36:00.290
+So the question is if your
+diffusion model is pixel space,
+
+00:36:00.290 --> 00:36:01.490
+is this still applicable?
+
+00:36:01.490 --> 00:36:06.790
+Yes, so what you would do is you
+have your real images that you
+
+00:36:06.790 --> 00:36:08.270
+go through a pre-trained model.
+
+00:36:08.270 --> 00:36:10.810
+Your Pixel space
+diffusion, no problem.
+
+00:36:10.810 --> 00:36:13.770
+You do your diffusion in
+pixel space and at the end,
+
+00:36:13.770 --> 00:36:17.590
+you get those generated
+images and you input them
+
+00:36:17.590 --> 00:36:19.210
+into that Inception model.
+
+00:36:19.210 --> 00:36:21.010
+And then you have
+your representation.
+
+00:36:24.110 --> 00:36:24.667
+Oh, yeah.
+
+00:36:24.667 --> 00:36:25.250
+Good question.
+
+00:36:25.250 --> 00:36:27.670
+So the question is,
+are these conditioned
+
+00:36:27.670 --> 00:36:28.930
+on a particular prompt?
+
+00:36:28.930 --> 00:36:30.430
+So it's a great question.
+
+00:36:30.430 --> 00:36:34.350
+Well, you touch a
+great point, which
+
+00:36:34.350 --> 00:36:39.150
+is that you want your
+model to perform well
+
+00:36:39.150 --> 00:36:40.590
+on what you care about.
+
+00:36:40.590 --> 00:36:44.790
+So, for instance, you
+may care about generating
+
+00:36:44.790 --> 00:36:52.110
+faces, let's say, or generating
+some nature, some indoor scenes.
+
+00:36:52.110 --> 00:36:56.310
+So depending on
+what your task is,
+
+00:36:56.310 --> 00:37:01.990
+you may want to compare your
+generated images with respect
+
+00:37:01.990 --> 00:37:06.550
+to a set of real images that
+are representative of the thing
+
+00:37:06.550 --> 00:37:07.650
+that you care about.
+
+00:37:07.650 --> 00:37:09.190
+So you have a
+number of data sets
+
+00:37:09.190 --> 00:37:14.230
+like ImageNet is
+one that's quite--
+
+00:37:14.230 --> 00:37:15.210
+it's a classic one.
+
+00:37:15.210 --> 00:37:20.110
+And then you have, I
+believe, MS COCO, and so on.
+
+00:37:20.110 --> 00:37:23.110
+And so you can
+think of the images
+
+00:37:23.110 --> 00:37:26.390
+that you generate
+as being conditioned
+
+00:37:26.390 --> 00:37:29.030
+by a set of prompts
+that are going
+
+00:37:29.030 --> 00:37:33.470
+to match what is there, so it
+can be either captions, or class
+
+00:37:33.470 --> 00:37:34.790
+conditions.
+
+00:37:34.790 --> 00:37:38.910
+So you have something that
+allows you to compare yourself
+
+00:37:38.910 --> 00:37:40.830
+to that distribution.
+
+00:37:40.830 --> 00:37:43.470
+And typically, you
+would use a data
+
+00:37:43.470 --> 00:37:46.570
+set that is aligned with
+your task of interest,
+
+00:37:46.570 --> 00:37:49.190
+and that data set would
+contain the thing that you
+
+00:37:49.190 --> 00:37:51.650
+would use as inputs.
+
+00:37:51.650 --> 00:37:54.530
+Great question.
+
+00:37:54.530 --> 00:37:56.010
+Great question.
+
+00:37:56.010 --> 00:37:58.420
+So the question is,
+in practice, how large
+
+00:37:58.420 --> 00:38:00.960
+is the set of real
+images that you take?
+
+00:38:00.960 --> 00:38:03.860
+So typically, 50k.
+
+00:38:03.860 --> 00:38:07.480
+And actually, speaking of
+that, we've seen in lecture 5,
+
+00:38:07.480 --> 00:38:13.980
+I'm not sure if you
+remember, we had DIT,
+
+00:38:13.980 --> 00:38:19.080
+which measured its performance
+on that FID 50k scale.
+
+00:38:19.080 --> 00:38:25.820
+So 50k here means that we have
+a set of 50,000 real images.
+
+00:38:25.820 --> 00:38:31.060
+So here, what you would do is
+generate 50,000 generated images
+
+00:38:31.060 --> 00:38:34.460
+and compare that distribution
+with the set of 50,000 real
+
+00:38:34.460 --> 00:38:36.100
+images.
+
+00:38:36.100 --> 00:38:38.840
+But I've also seen 30,000.
+
+00:38:38.840 --> 00:38:42.540
+Typically, in the order
+of tens of thousands.
+
+00:38:42.540 --> 00:38:49.100
+So the question is, is it
+fair to use variance and mean
+
+00:38:49.100 --> 00:38:50.880
+to characterize the
+whole distribution?
+
+00:38:50.880 --> 00:38:53.500
+Is that roughly your--
+
+00:38:53.500 --> 00:38:54.040
+oh yeah.
+
+00:38:54.040 --> 00:38:57.500
+So the question is,
+is it fair to assume
+
+00:38:57.500 --> 00:39:01.260
+that the shape and the distance
+is representative of quality?
+
+00:39:01.260 --> 00:39:03.140
+So it's a great question.
+
+00:39:03.140 --> 00:39:08.860
+Actually, one funny thing is,
+if you look at social media,
+
+00:39:08.860 --> 00:39:11.740
+I would say, every week, you
+would see a new paper coming up
+
+00:39:11.740 --> 00:39:13.980
+with a new metric.
+
+00:39:13.980 --> 00:39:17.740
+So this metric is by far
+not a perfect metric,
+
+00:39:17.740 --> 00:39:23.220
+and the community voices
+that out, for sure.
+
+00:39:23.220 --> 00:39:24.480
+So yeah, I agree with you.
+
+00:39:24.480 --> 00:39:27.340
+It is not necessarily
+indicative of the quality
+
+00:39:27.340 --> 00:39:30.480
+that you want to reach, but
+it's a good enough proxy,
+
+00:39:30.480 --> 00:39:33.580
+or, at least, that's what
+the community thinks.
+
+00:39:33.580 --> 00:39:36.340
+And I would say, so
+it's a personal take.
+
+00:39:36.340 --> 00:39:40.980
+One of the reasons why it's
+been hard to change the metric
+
+00:39:40.980 --> 00:39:45.140
+that people use is because when
+you want to publish a paper,
+
+00:39:45.140 --> 00:39:48.780
+typically you want to show
+that your method is good,
+
+00:39:48.780 --> 00:39:52.420
+so you want to compare yourself
+to some previous method.
+
+00:39:52.420 --> 00:39:56.020
+And its people have
+just been using FID.
+
+00:39:56.020 --> 00:40:00.300
+So that's why it's really
+hard to change from that.
+
+00:40:00.300 --> 00:40:02.580
+But I agree with your
+point, which it is not
+
+00:40:02.580 --> 00:40:06.860
+necessarily reflective of
+the quality of your images,
+
+00:40:06.860 --> 00:40:09.140
+which is why in
+papers, you would also
+
+00:40:09.140 --> 00:40:14.100
+see a bunch cherry picked or
+not cherry picked images that
+
+00:40:14.100 --> 00:40:18.440
+are shown in the paper just
+to show how good the model is.
+
+00:40:21.340 --> 00:40:23.100
+Cool.
+
+00:40:23.100 --> 00:40:23.600
+Great.
+
+00:40:23.600 --> 00:40:25.700
+So I'm looking at the time.
+
+00:40:25.700 --> 00:40:33.900
+I will move ahead, and
+just say that if there's
+
+00:40:33.900 --> 00:40:36.380
+a big gap in the
+location, you can
+
+00:40:36.380 --> 00:40:40.140
+think of it as maybe the quality
+or the style being different.
+
+00:40:40.140 --> 00:40:42.540
+And when it comes to the
+shape being different,
+
+00:40:42.540 --> 00:40:47.380
+for instance, the
+generated images
+
+00:40:47.380 --> 00:40:51.220
+is in a very constrained
+region, maybe
+
+00:40:51.220 --> 00:40:55.460
+your model is not
+generating diverse sets.
+
+00:40:55.460 --> 00:40:58.040
+So these are the points
+to watch out for.
+
+00:40:58.040 --> 00:41:02.020
+And in terms of the sample
+size, so as we mentioned,
+
+00:41:02.020 --> 00:41:08.780
+the typical reference is
+FID-50k of a given data set.
+
+00:41:08.780 --> 00:41:12.340
+And, of course, so
+we're looking at FID,
+
+00:41:12.340 --> 00:41:16.420
+which is part of this section
+of reference-free metrics,
+
+00:41:16.420 --> 00:41:19.940
+and here we're using a
+reference distribution.
+
+00:41:19.940 --> 00:41:23.260
+So I know that it
+may sound confusing,
+
+00:41:23.260 --> 00:41:26.780
+but I just want you to
+know that reference-free,
+
+00:41:26.780 --> 00:41:28.260
+the title of this
+section, refers
+
+00:41:28.260 --> 00:41:34.620
+to us not comparing one
+generated output with one
+
+00:41:34.620 --> 00:41:36.540
+real image.
+
+00:41:36.540 --> 00:41:40.500
+It is more about comparing
+the distribution.
+
+00:41:40.500 --> 00:41:44.980
+And then the last thing is, one
+of the main complaints of people
+
+00:41:44.980 --> 00:41:50.860
+is that the distribution of real
+images and the distribution of
+
+00:41:50.860 --> 00:41:55.300
+generated images, they are
+typically not Gaussian,
+
+00:41:55.300 --> 00:42:01.220
+so this formula is
+typically not 100% valid.
+
+00:42:01.220 --> 00:42:04.440
+So the question is this
+formula only for Gaussians?
+
+00:42:04.440 --> 00:42:06.540
+So the formula is
+actually derived
+
+00:42:06.540 --> 00:42:11.420
+from this other quantity that's
+called the Wasserstein distance.
+
+00:42:11.420 --> 00:42:14.220
+And so this formula
+is specifically
+
+00:42:14.220 --> 00:42:16.740
+when you compare two
+distributions that
+
+00:42:16.740 --> 00:42:19.220
+are Gaussians.
+
+00:42:19.220 --> 00:42:21.700
+And so that's
+another limitation,
+
+00:42:21.700 --> 00:42:26.700
+and a point that you will see
+in papers when they're OK,
+
+00:42:26.700 --> 00:42:30.780
+FID is not that
+great of a metric.
+
+00:42:30.780 --> 00:42:33.500
+Cool, so this is the aesthetics.
+
+00:42:33.500 --> 00:42:38.660
+So FID is the metric that most
+people use, for better or worse,
+
+00:42:38.660 --> 00:42:41.060
+to quantify how
+good of a quality
+
+00:42:41.060 --> 00:42:43.780
+your generated images are.
+
+00:42:43.780 --> 00:42:46.280
+And second, as
+previously mentioned,
+
+00:42:46.280 --> 00:42:48.860
+we're going to look
+at prompt adherence.
+
+00:42:48.860 --> 00:42:52.700
+How can we, or how
+can we quantify
+
+00:42:52.700 --> 00:42:55.540
+that the output image
+that we're getting
+
+00:42:55.540 --> 00:42:59.780
+is aligned with the input?
+
+00:42:59.780 --> 00:43:02.220
+And so for this,
+actually, you may
+
+00:43:02.220 --> 00:43:10.540
+have in mind a method we
+saw in lecture 4 CLIP, which
+
+00:43:10.540 --> 00:43:12.580
+stands for Contrastive
+Language-Image
+
+00:43:12.580 --> 00:43:19.460
+Pre-training, which aimed at
+comparing the text and an image
+
+00:43:19.460 --> 00:43:23.660
+by encoding each separately
+through their respective
+
+00:43:23.660 --> 00:43:29.660
+encoders and training the
+resulting system using
+
+00:43:29.660 --> 00:43:35.420
+a contrastive loss that
+incentivizes elements that are
+
+00:43:35.420 --> 00:43:38.780
+similar to have a higher score,
+and elements that are not
+
+00:43:38.780 --> 00:43:42.220
+similar to have a lower score.
+
+00:43:42.220 --> 00:43:47.300
+So you could very
+well use that model,
+
+00:43:47.300 --> 00:43:50.420
+where you would put
+the input text that you
+
+00:43:50.420 --> 00:43:54.420
+use to generate the image
+along with the generated image.
+
+00:43:54.420 --> 00:43:56.920
+And there is a model out there
+that's called the CLIP score.
+
+00:43:56.920 --> 00:43:59.540
+That is actually
+exactly that CLIP model,
+
+00:43:59.540 --> 00:44:06.580
+that allows you to get an actual
+score in terms of how aligned
+
+00:44:06.580 --> 00:44:10.860
+your text and your image are.
+
+00:44:10.860 --> 00:44:12.700
+That's called the CLIP score.
+
+00:44:12.700 --> 00:44:19.460
+And speaking of taking into
+consideration both the prompt
+
+00:44:19.460 --> 00:44:24.700
+and the image, you can
+also think of doing so
+
+00:44:24.700 --> 00:44:27.540
+using a CLIP like model.
+
+00:44:27.540 --> 00:44:33.020
+Not in order to predict how
+aligned the two are, but maybe
+
+00:44:33.020 --> 00:44:37.860
+to align, or maybe
+to predict how good
+
+00:44:37.860 --> 00:44:40.820
+the image is to the input text.
+
+00:44:40.820 --> 00:44:44.020
+So you could very
+well take such a model
+
+00:44:44.020 --> 00:44:51.900
+and train it on a data set that
+is around human preferences,
+
+00:44:51.900 --> 00:44:53.420
+and that's what people did.
+
+00:44:53.420 --> 00:44:55.060
+So this is the PickScore.
+
+00:44:55.060 --> 00:44:58.740
+So what they did was
+they took a CLIP model
+
+00:44:58.740 --> 00:45:01.860
+and they trained it
+on preference data,
+
+00:45:01.860 --> 00:45:07.700
+where you had image and text and
+the label was the preference.
+
+00:45:07.700 --> 00:45:10.740
+And here, you can
+get a PickScore,
+
+00:45:10.740 --> 00:45:14.620
+which is a holistic
+score that combines
+
+00:45:14.620 --> 00:45:18.880
+both the aesthetics and
+the prompt adherence,
+
+00:45:18.880 --> 00:45:21.100
+along with some other
+things to tell you
+
+00:45:21.100 --> 00:45:26.180
+about the overall satisfaction
+of the human with respect
+
+00:45:26.180 --> 00:45:29.860
+to the generated output.
+
+00:45:29.860 --> 00:45:35.620
+So this is the last metric I
+wanted to talk to you about.
+
+00:45:35.620 --> 00:45:40.740
+Now, I want us to
+take a step back.
+
+00:45:40.740 --> 00:45:47.260
+When we talk about evaluation,
+we may think about the image
+
+00:45:47.260 --> 00:45:52.180
+generation model, but as we saw,
+it's not actually the only model
+
+00:45:52.180 --> 00:45:54.500
+we're interested in.
+
+00:45:54.500 --> 00:46:00.780
+We've also seen other
+pieces that do matter.
+
+00:46:00.780 --> 00:46:04.060
+For instance, the
+VAE, which is tasked
+
+00:46:04.060 --> 00:46:08.180
+with reconstructing the input.
+
+00:46:08.180 --> 00:46:15.420
+And in this setting, well, your
+label is much, much clearer
+
+00:46:15.420 --> 00:46:18.260
+because what you want
+to do, your proxy task
+
+00:46:18.260 --> 00:46:23.180
+is to reconstruct
+the original input.
+
+00:46:23.180 --> 00:46:26.860
+And so in that sense,
+you do have a reference
+
+00:46:26.860 --> 00:46:30.660
+to base yourself on,
+so you could very well,
+
+00:46:30.660 --> 00:46:35.540
+in this setting, want to compare
+what you output with what
+
+00:46:35.540 --> 00:46:38.620
+you want it to output.
+
+00:46:38.620 --> 00:46:41.400
+And this is the reason
+why in this section,
+
+00:46:41.400 --> 00:46:45.620
+we're going to go through such
+metrics, which we're calling
+
+00:46:45.620 --> 00:46:49.780
+reference-based as
+opposed to reference-free,
+
+00:46:49.780 --> 00:46:53.940
+because reference-based
+metrics have something
+
+00:46:53.940 --> 00:47:00.380
+that you can use to compare
+your generated image against.
+
+00:47:00.380 --> 00:47:04.660
+So I mentioned the VAE, but you
+have actually other use cases
+
+00:47:04.660 --> 00:47:05.240
+as well.
+
+00:47:05.240 --> 00:47:13.180
+So we've not really gone
+into details about text image
+
+00:47:13.180 --> 00:47:17.060
+to image tasks, so image
+editing tasks, but you
+
+00:47:17.060 --> 00:47:22.673
+may also want to compare
+how your edited image is
+
+00:47:22.673 --> 00:47:24.340
+with respect to the
+input image, to make
+
+00:47:24.340 --> 00:47:25.757
+sure you're
+controlling for things
+
+00:47:25.757 --> 00:47:28.240
+that you don't want
+to edit, and so on.
+
+00:47:28.240 --> 00:47:30.420
+So this is not
+just something that
+
+00:47:30.420 --> 00:47:35.900
+is valid for VAEs, but for
+other use cases as well.
+
+00:47:35.900 --> 00:47:41.640
+Cool, so just getting a bit more
+rigorous about our notations.
+
+00:47:41.640 --> 00:47:45.340
+So the input is noted x.
+
+00:47:45.340 --> 00:47:49.220
+The outputs, which is an attempt
+at reconstructing the input
+
+00:47:49.220 --> 00:47:55.100
+is called, or is noted x hat.
+
+00:47:55.100 --> 00:47:59.660
+And what you want is to
+have a quantified metric
+
+00:47:59.660 --> 00:48:03.100
+to compare the two
+that hopefully,
+
+00:48:03.100 --> 00:48:08.340
+will align with the quality
+of your reconstruction.
+
+00:48:08.340 --> 00:48:10.820
+So the first metric that
+you may think about,
+
+00:48:10.820 --> 00:48:14.820
+I mean, the formula looks
+scary, but it's just
+
+00:48:14.820 --> 00:48:17.580
+about comparing pixels--
+
+00:48:17.580 --> 00:48:20.580
+just pixel-wise distance.
+
+00:48:20.580 --> 00:48:25.340
+And you may also that distance
+under the name MSE, which
+
+00:48:25.340 --> 00:48:28.900
+stands for Mean Squared Error.
+
+00:48:28.900 --> 00:48:35.180
+And so this metric, what it does
+is it takes these two images
+
+00:48:35.180 --> 00:48:41.140
+and it just computes the
+pixel-wise distance of a given
+
+00:48:41.140 --> 00:48:44.220
+pixel in the reference
+image and the pixel
+
+00:48:44.220 --> 00:48:46.780
+in your generated image.
+
+00:48:46.780 --> 00:48:49.340
+And it does that for all pixels.
+
+00:48:49.340 --> 00:48:56.660
+And one big drawback is it
+is very sensitive to exactly
+
+00:48:56.660 --> 00:48:59.160
+the alignment between
+these two images,
+
+00:48:59.160 --> 00:49:04.180
+and so if you have generated
+a perfect reconstruction,
+
+00:49:04.180 --> 00:49:07.760
+but that is slightly
+shifted a few pixels,
+
+00:49:07.760 --> 00:49:10.580
+let's say to the
+right, then your MSC
+
+00:49:10.580 --> 00:49:13.060
+will be actually terrible.
+
+00:49:13.060 --> 00:49:15.100
+So that's one drawback.
+
+00:49:15.100 --> 00:49:20.100
+The second drawback is if
+we tell you about an MSC,
+
+00:49:20.100 --> 00:49:22.540
+let's say it's 10, I don't know.
+
+00:49:22.540 --> 00:49:25.220
+Well, you don't what
+to do with that number
+
+00:49:25.220 --> 00:49:29.020
+because it depends how
+you encode your pixels.
+
+00:49:29.020 --> 00:49:31.040
+So sometimes it is
+between 0 and 1.
+
+00:49:31.040 --> 00:49:34.060
+Sometimes it is
+between 0 and 255.
+
+00:49:34.060 --> 00:49:40.060
+The scale varies,
+which is the reason why
+
+00:49:40.060 --> 00:49:42.480
+you have another metric
+that is still pixel-wise
+
+00:49:42.480 --> 00:49:49.340
+that is called the Peak
+Signal-to-Noise Ratio, PSNR,
+
+00:49:49.340 --> 00:49:54.100
+which normalizes MSE with
+respect to the maximum value
+
+00:49:54.100 --> 00:49:56.580
+that it can take.
+
+00:49:56.580 --> 00:50:00.220
+So this allows you to, at
+least, get a reference,
+
+00:50:00.220 --> 00:50:03.660
+or put things into context.
+
+00:50:03.660 --> 00:50:07.460
+So it not only does that,
+it also wraps the thing
+
+00:50:07.460 --> 00:50:10.300
+into a logarithm.
+
+00:50:10.300 --> 00:50:14.580
+And I just want to pause here
+for a second with an analogy
+
+00:50:14.580 --> 00:50:17.700
+that to me makes a lot of sense,
+and I hope it will make sense
+
+00:50:17.700 --> 00:50:19.300
+to you as well.
+
+00:50:19.300 --> 00:50:27.300
+So if we're in a room, where
+there is absolutely no light,
+
+00:50:27.300 --> 00:50:33.400
+and if I just turn on
+one light bulb, to you,
+
+00:50:33.400 --> 00:50:36.100
+the difference between
+the complete darkness
+
+00:50:36.100 --> 00:50:40.220
+and one light bulb is a lot.
+
+00:50:40.220 --> 00:50:45.580
+But if in this room we have all
+these light bulbs already on,
+
+00:50:45.580 --> 00:50:50.060
+and if I turn on yet
+another light bulb,
+
+00:50:50.060 --> 00:50:54.100
+the perceptual difference
+between having that extra light
+
+00:50:54.100 --> 00:50:58.260
+bulb in this setting
+and the one light
+
+00:50:58.260 --> 00:51:04.220
+bulb that is turned on versus
+darkness is very different.
+
+00:51:04.220 --> 00:51:09.900
+So this is what this
+log tries to do, so if--
+
+00:51:09.900 --> 00:51:12.140
+you almost don't
+have any errors.
+
+00:51:12.140 --> 00:51:15.300
+It's very, very small value.
+
+00:51:15.300 --> 00:51:18.980
+And you have just a
+little bit more error.
+
+00:51:18.980 --> 00:51:23.140
+From your perspective,
+it will be more something
+
+00:51:23.140 --> 00:51:25.900
+that you would want to notice
+in terms of the variation,
+
+00:51:25.900 --> 00:51:29.440
+as opposed to if you have an
+image that is quite wrong,
+
+00:51:29.440 --> 00:51:35.460
+that is yet again, a little bit
+more wrong with the same delta.
+
+00:51:35.460 --> 00:51:38.500
+So this is what the
+logarithm tries to do.
+
+00:51:38.500 --> 00:51:41.780
+Well, it's great,
+but it is still
+
+00:51:41.780 --> 00:51:45.140
+subject to this
+pixel position, so it
+
+00:51:45.140 --> 00:51:49.780
+is sensitive to any shifting.
+
+00:51:49.780 --> 00:51:52.540
+And this is the reason why
+these are not the only metrics
+
+00:51:52.540 --> 00:51:54.740
+that people use.
+
+00:51:54.740 --> 00:51:58.500
+And in particular,
+there is one metric
+
+00:51:58.500 --> 00:52:03.700
+that you may see in
+papers that looks at how
+
+00:52:03.700 --> 00:52:05.940
+these images are structured.
+
+00:52:05.940 --> 00:52:09.580
+So let me tell you a little
+bit about what I mean here.
+
+00:52:09.580 --> 00:52:16.300
+So here, let's imagine we take
+the original input and then
+
+00:52:16.300 --> 00:52:20.780
+the generated output, which
+is trying to be that input.
+
+00:52:20.780 --> 00:52:24.780
+So what we're trying to do
+is to see is, let's say,
+
+00:52:24.780 --> 00:52:30.500
+we take a given patch that
+is in the same location
+
+00:52:30.500 --> 00:52:33.180
+in both images.
+
+00:52:33.180 --> 00:52:36.180
+What we're trying to do
+is whether the two have
+
+00:52:36.180 --> 00:52:39.060
+the same overall structure.
+
+00:52:39.060 --> 00:52:44.380
+And what I mean by that
+is, do the colors have
+
+00:52:44.380 --> 00:52:45.640
+the same intensity?
+
+00:52:45.640 --> 00:52:48.460
+Does it have the
+same brightness?
+
+00:52:48.460 --> 00:52:52.240
+The second one can be, does
+it have the same contrast?
+
+00:52:52.240 --> 00:52:56.140
+And so here we can think of
+the variance in pixel values
+
+00:52:56.140 --> 00:52:59.460
+within that patch.
+
+00:52:59.460 --> 00:53:02.500
+And the third one
+is, do pixels vary
+
+00:53:02.500 --> 00:53:08.140
+in the same fashion in the first
+patch and in the second patch?
+
+00:53:08.140 --> 00:53:12.380
+So these are the three
+dimensions we care about.
+
+00:53:12.380 --> 00:53:15.500
+And for each of
+them, the first one
+
+00:53:15.500 --> 00:53:20.580
+would be around computing the
+mean of the pixels in the patch
+
+00:53:20.580 --> 00:53:23.780
+in order to quantify
+the brightness,
+
+00:53:23.780 --> 00:53:27.500
+or the color intensity
+of the patch.
+
+00:53:27.500 --> 00:53:28.980
+The second one,
+the contrast would
+
+00:53:28.980 --> 00:53:32.980
+be around quantifying how
+much these pixels vary,
+
+00:53:32.980 --> 00:53:37.220
+so you can very well take
+the variance of those pixels.
+
+00:53:37.220 --> 00:53:40.860
+And then the third one is
+regarding the structure,
+
+00:53:40.860 --> 00:53:49.540
+and here, you can very well take
+the covariance between these two
+
+00:53:49.540 --> 00:53:52.060
+patches.
+
+00:53:52.060 --> 00:53:58.100
+And what you will get when you
+compare the two is a similarity
+
+00:53:58.100 --> 00:54:02.300
+quantity that here in
+the luminance case,
+
+00:54:02.300 --> 00:54:05.100
+takes in the mean
+of the first patch
+
+00:54:05.100 --> 00:54:07.620
+and the mean of
+the second patch,
+
+00:54:07.620 --> 00:54:11.620
+and tries to make a
+number out of them.
+
+00:54:11.620 --> 00:54:15.140
+So is it the first time
+you're seeing this formula?
+
+00:54:15.140 --> 00:54:17.460
+Yeah?
+
+00:54:17.460 --> 00:54:22.900
+I don't want it for this
+to be looking scary.
+
+00:54:22.900 --> 00:54:28.360
+So if you're looking at
+the formula, what you see
+
+00:54:28.360 --> 00:54:34.180
+is there are two quantities,
+so let's note them A and B,
+
+00:54:34.180 --> 00:54:35.660
+in this case.
+
+00:54:35.660 --> 00:54:44.300
+And you have something 2AB
+over A squared plus B squared.
+
+00:54:44.300 --> 00:54:48.540
+So you also have a constant that
+is just for stability purposes,
+
+00:54:48.540 --> 00:54:52.260
+just in case both of them are 0.
+
+00:54:52.260 --> 00:55:01.140
+But in this case, you can assume
+that A and B are greater than 0.
+
+00:55:01.140 --> 00:55:04.940
+So what can you say
+about this quantity?
+
+00:55:04.940 --> 00:55:11.660
+So from high school, you may
+remember that you have this very
+
+00:55:11.660 --> 00:55:16.560
+general identity, which is as
+follows, so A minus B squared,
+
+00:55:16.560 --> 00:55:21.620
+which is a squared minus
+2AB plus B squared.
+
+00:55:21.620 --> 00:55:32.740
+Well, here you can rewrite this
+as A squared plus B squared,
+
+00:55:32.740 --> 00:55:40.840
+minus A minus B squared, over
+A squared plus B squared.
+
+00:55:43.620 --> 00:55:49.640
+So I'm going to
+replace in place.
+
+00:55:49.640 --> 00:55:52.560
+And so here what I'm going to
+say is that this is equal to 1.
+
+00:55:55.740 --> 00:56:03.980
+I need to say here this is
+equal to 1 minus this quantity.
+
+00:56:03.980 --> 00:56:11.980
+And here, this is positive,
+so this is bounded by 1.
+
+00:56:11.980 --> 00:56:14.200
+And A is positive,
+B is positive.
+
+00:56:14.200 --> 00:56:16.380
+This quantity is positive.
+
+00:56:16.380 --> 00:56:19.340
+This is bounded by 0.
+
+00:56:19.340 --> 00:56:21.980
+So this is a coefficient
+that is between 0 and 1.
+
+00:56:21.980 --> 00:56:24.620
+This is what I'm trying to say.
+
+00:56:24.620 --> 00:56:32.820
+So here, if A and B are
+similar, so if A is equal to B,
+
+00:56:32.820 --> 00:56:34.980
+this is equal to 0.
+
+00:56:34.980 --> 00:56:37.060
+It's equal to 1.
+
+00:56:37.060 --> 00:56:41.100
+So what I'm trying
+to say is this metric
+
+00:56:41.100 --> 00:56:48.500
+is a similarity metric that
+you may read on the papers.
+
+00:56:48.500 --> 00:56:51.140
+It's called the
+Dice coefficient.
+
+00:56:51.140 --> 00:56:54.340
+And the reason why
+it's a good metric
+
+00:56:54.340 --> 00:56:59.620
+is because it gives you the
+similarity of two quantities
+
+00:56:59.620 --> 00:57:04.540
+by considering also the
+values that they're at.
+
+00:57:04.540 --> 00:57:09.420
+So I'm going to illustrate
+it with an example.
+
+00:57:09.420 --> 00:57:15.500
+So this quantity, so if
+let's say, A is equal to 10
+
+00:57:15.500 --> 00:57:19.900
+and B is equal to 20, then
+let's say that quantity
+
+00:57:19.900 --> 00:57:25.560
+that I'm going to let's say d.
+
+00:57:25.560 --> 00:57:27.560
+d for Dice coefficient.
+
+00:57:27.560 --> 00:57:34.820
+So that d will be equal
+to 0.8, if you compute it.
+
+00:57:34.820 --> 00:57:39.500
+But if A is equal to
+100 and B is equal to,
+
+00:57:39.500 --> 00:57:46.580
+let's say, 110, then d is
+going to be much closer to 1.
+
+00:57:46.580 --> 00:57:50.900
+And B maybe something
+somewhere around 0.995.
+
+00:57:50.900 --> 00:57:53.620
+So I computed this before
+the lecture, so don't worry.
+
+00:57:53.620 --> 00:57:57.740
+I'm not hallucinating things.
+
+00:57:57.740 --> 00:58:03.300
+But here, what I want
+to say is that this idea
+
+00:58:03.300 --> 00:58:08.260
+of considering the
+level that you're at
+
+00:58:08.260 --> 00:58:11.780
+and considering the relative
+difference with respect
+
+00:58:11.780 --> 00:58:15.260
+to where you're at, which
+we saw with the logarithm
+
+00:58:15.260 --> 00:58:18.460
+and with the light bulb
+story, is also something
+
+00:58:18.460 --> 00:58:20.460
+that is captured here.
+
+00:58:20.460 --> 00:58:28.860
+So even though A and
+B are 10 apart, here,
+
+00:58:28.860 --> 00:58:31.480
+they are less similar than here.
+
+00:58:34.220 --> 00:58:38.820
+So all of that to say
+that I hope that when
+
+00:58:38.820 --> 00:58:42.500
+you look at this
+formula, it doesn't
+
+00:58:42.500 --> 00:58:46.420
+look as something that
+came out of the blue.
+
+00:58:46.420 --> 00:58:50.660
+So in this formula
+on the slide, we're
+
+00:58:50.660 --> 00:58:54.660
+using this way of
+computing similarity using
+
+00:58:54.660 --> 00:58:57.700
+the mean of the
+pixels, which gives you
+
+00:58:57.700 --> 00:59:00.540
+the luminance similarity.
+
+00:59:00.540 --> 00:59:02.280
+You can do the
+same for contrast,
+
+00:59:02.280 --> 00:59:06.820
+so here you use the variance
+and the standard deviation.
+
+00:59:06.820 --> 00:59:08.720
+And you also have one
+for the structure.
+
+00:59:08.720 --> 00:59:11.660
+Well, this one is a
+little bit different.
+
+00:59:11.660 --> 00:59:16.160
+You're actually using
+the Pearson correlation,
+
+00:59:16.160 --> 00:59:21.220
+which gives you a quantity
+that is between minus 1 and 1.
+
+00:59:21.220 --> 00:59:23.440
+So let's assume you've
+done that for luminance,
+
+00:59:23.440 --> 00:59:25.980
+for contrast, for structure.
+
+00:59:25.980 --> 00:59:29.180
+And just for simplicity,
+let's note them L, C,
+
+00:59:29.180 --> 00:59:36.380
+and S. What we're doing is we're
+just multiplying everything.
+
+00:59:36.380 --> 00:59:39.940
+So if things are similar,
+they're equal to 1.
+
+00:59:39.940 --> 00:59:44.840
+If things are not similar,
+then L is more equal to 0,
+
+00:59:44.840 --> 00:59:48.060
+C is tending to 0, and
+S, the correlation,
+
+00:59:48.060 --> 00:59:49.760
+is tending to minus 1.
+
+00:59:53.660 --> 00:59:56.300
+And so this is exactly
+what we mentioned.
+
+00:59:56.300 --> 01:00:00.460
+And as a result, you are
+getting this formula, which
+
+01:00:00.460 --> 01:00:02.980
+you may have seen in textbooks.
+
+01:00:02.980 --> 01:00:06.380
+It looks really scary when
+you just look at this formula
+
+01:00:06.380 --> 01:00:10.880
+firsthand, but with this
+way of looking at things,
+
+01:00:10.880 --> 01:00:15.300
+I hope it will not
+look scary anymore.
+
+01:00:15.300 --> 01:00:19.860
+And so if you do that
+operation for all patches,
+
+01:00:19.860 --> 01:00:22.620
+and the resulting
+metric that you obtain
+
+01:00:22.620 --> 01:00:28.300
+is the average of those
+scores across your patches.
+
+01:00:28.300 --> 01:00:31.540
+And you get a metric that
+is called the SSIM, so
+
+01:00:31.540 --> 01:00:37.260
+the Structural SIMilarity,
+which is a score between minus 1
+
+01:00:37.260 --> 01:00:44.100
+and 1, where the closer you
+are to 1, the more similar
+
+01:00:44.100 --> 01:00:47.320
+the images should be from
+a structural perspective.
+
+01:00:51.620 --> 01:00:53.840
+But you may tell me,
+well, it's on patches.
+
+01:00:53.840 --> 01:00:56.560
+What if your shift
+is beyond the patch?
+
+01:00:56.560 --> 01:00:58.940
+And I would say, yeah,
+you're completely right.
+
+01:00:58.940 --> 01:01:02.860
+This metric, although
+being less pixel-dependent
+
+01:01:02.860 --> 01:01:06.220
+than the MSC and
+the PSNR is still
+
+01:01:06.220 --> 01:01:09.020
+sensitive to that
+pixel shift, which
+
+01:01:09.020 --> 01:01:12.900
+is the reason why there
+is a final metric I want
+
+01:01:12.900 --> 01:01:16.380
+to talk to you about, which
+we actually have already
+
+01:01:16.380 --> 01:01:23.180
+seen in lecture, I believe,
+4, which is the LPIPS,
+
+01:01:23.180 --> 01:01:27.460
+the Learned Perceptual
+Image Patch Similarity.
+
+01:01:27.460 --> 01:01:31.340
+And that one is
+actually quite simple.
+
+01:01:31.340 --> 01:01:37.220
+Instead of comparing your x with
+your x hat in the pixel space,
+
+01:01:37.220 --> 01:01:42.540
+what you do is you
+take each quantity,
+
+01:01:42.540 --> 01:01:46.540
+and you let them through
+a pre-trained encoder.
+
+01:01:46.540 --> 01:01:49.260
+And you compute
+the representation
+
+01:01:49.260 --> 01:01:52.300
+that this encoder
+has, which tells
+
+01:01:52.300 --> 01:01:56.880
+you more about how
+perceptually similar they are,
+
+01:01:56.880 --> 01:01:59.380
+as opposed to exactly
+how aligned they
+
+01:01:59.380 --> 01:02:03.260
+are from a pixel perspective.
+
+01:02:03.260 --> 01:02:05.980
+And so here, you
+have this distance
+
+01:02:05.980 --> 01:02:09.520
+between phi Lx and phi Lx hat.
+
+01:02:09.520 --> 01:02:15.060
+So the L represents the layer
+of that pre-trained encoder.
+
+01:02:15.060 --> 01:02:18.980
+And you also have
+a coefficient w,
+
+01:02:18.980 --> 01:02:21.500
+which is actually
+a coefficient that
+
+01:02:21.500 --> 01:02:27.300
+was determined such that
+the resulting metric aligns
+
+01:02:27.300 --> 01:02:30.860
+with human perception.
+
+01:02:30.860 --> 01:02:33.460
+So I believe, these
+were tunes because there
+
+01:02:33.460 --> 01:02:36.480
+was a data set of images.
+
+01:02:36.480 --> 01:02:40.300
+And the idea was
+to tune this metric
+
+01:02:40.300 --> 01:02:42.620
+so that it's as aligned
+as possible with
+
+01:02:42.620 --> 01:02:46.900
+the human perception levels.
+
+01:02:46.900 --> 01:02:51.140
+And that metric is actually
+quite commonly used,
+
+01:02:51.140 --> 01:02:53.540
+and so you may see
+it quite often.
+
+01:02:53.540 --> 01:02:57.100
+The only problem to call
+out, only top of mind,
+
+01:02:57.100 --> 01:03:00.740
+is that it's not super
+interpretable in terms
+
+01:03:00.740 --> 01:03:03.180
+of what is going wrong.
+
+01:03:03.180 --> 01:03:08.400
+So if your metric
+is not doing great,
+
+01:03:08.400 --> 01:03:10.200
+you need to see what's going on.
+
+01:03:12.900 --> 01:03:15.140
+And that was it.
+
+01:03:15.140 --> 01:03:17.940
+Any questions before-- yep.
+
+01:03:17.940 --> 01:03:21.700
+So the question is for this last
+one, which pre-trained model is
+
+01:03:21.700 --> 01:03:22.700
+there to use?
+
+01:03:22.700 --> 01:03:26.400
+So I believe it is VGG.
+
+01:03:26.400 --> 01:03:29.620
+So there's AlexNet as well.
+
+01:03:29.620 --> 01:03:33.380
+The reason why we have
+some preset encoders
+
+01:03:33.380 --> 01:03:37.980
+is because the coefficients Wl
+are dependent on the encoder
+
+01:03:37.980 --> 01:03:40.820
+that you use.
+
+01:03:40.820 --> 01:03:44.740
+So you can use the
+libraries and mention
+
+01:03:44.740 --> 01:03:47.680
+which encoder you
+want to leverage,
+
+01:03:47.680 --> 01:03:50.900
+but typically, it's
+either VGG or AlexNet.
+
+01:03:50.900 --> 01:03:53.380
+So the question is, what
+does the formula mean?
+
+01:03:53.380 --> 01:03:58.580
+So within the distance,
+what you have is two terms.
+
+01:03:58.580 --> 01:04:02.420
+One is the difference
+between the feature map
+
+01:04:02.420 --> 01:04:06.580
+of x and feature map of x hat.
+
+01:04:06.580 --> 01:04:10.060
+And you multiply
+that elementwise
+
+01:04:10.060 --> 01:04:11.540
+with the coefficient Wl.
+
+01:04:15.490 --> 01:04:17.450
+Does that make sense?
+
+01:04:17.450 --> 01:04:20.490
+Perfect.
+
+01:04:20.490 --> 01:04:22.910
+So the question is this
+was for two images.
+
+01:04:22.910 --> 01:04:24.450
+How do you apply
+it to the batch?
+
+01:04:24.450 --> 01:04:28.010
+So just as a reminder,
+we're looking
+
+01:04:28.010 --> 01:04:33.770
+at cases where we care
+about how good of a job
+
+01:04:33.770 --> 01:04:37.850
+we did about
+reconstructing an input.
+
+01:04:37.850 --> 01:04:42.450
+So what you care about
+is how far off you are.
+
+01:04:42.450 --> 01:04:44.930
+And so this metric tells
+you how far off you
+
+01:04:44.930 --> 01:04:48.990
+are in trying to
+reconstruct an input,
+
+01:04:48.990 --> 01:04:50.490
+and so if you want
+to aggregate, you
+
+01:04:50.490 --> 01:04:52.770
+can use the traditional
+aggregations
+
+01:04:52.770 --> 01:04:55.270
+like mean and so on.
+
+01:04:58.370 --> 01:05:00.370
+Cool.
+
+01:05:00.370 --> 01:05:01.570
+Great.
+
+01:05:01.570 --> 01:05:04.250
+With that, I'll
+give it to Shervin.
+
+01:05:04.250 --> 01:05:06.050
+Thank you, Afshin.
+
+01:05:06.050 --> 01:05:10.150
+So exactly as we saw,
+all of these metrics,
+
+01:05:10.150 --> 01:05:13.610
+they're very mathematical,
+and what we want
+
+01:05:13.610 --> 01:05:18.730
+is have a way to interpret them
+from an intuition standpoint.
+
+01:05:18.730 --> 01:05:23.730
+So we saw that all
+these metrics, they
+
+01:05:23.730 --> 01:05:26.170
+were operating at
+different levels
+
+01:05:26.170 --> 01:05:27.810
+and there are many of them.
+
+01:05:27.810 --> 01:05:32.410
+So what I'm going to do is
+invite you to do a little detour
+
+01:05:32.410 --> 01:05:37.170
+and visit a class of models
+that we call multi-modal LLMs,
+
+01:05:37.170 --> 01:05:39.530
+because they have
+the nice property
+
+01:05:39.530 --> 01:05:45.610
+of being able to convert text
+and image data in a text.
+
+01:05:45.610 --> 01:05:49.690
+But before we do that,
+let's do a little summary
+
+01:05:49.690 --> 01:05:52.610
+of the kinds of models we've
+seen so far in the class.
+
+01:05:52.610 --> 01:05:55.690
+So we saw the
+transformer at some point
+
+01:05:55.690 --> 01:05:58.570
+that we know
+transforms bits of text
+
+01:05:58.570 --> 01:06:00.210
+to text, so this
+is not something
+
+01:06:00.210 --> 01:06:02.530
+that we can use out of the box.
+
+01:06:02.530 --> 01:06:08.090
+We saw DIT, where based on
+latent noise and potentially
+
+01:06:08.090 --> 01:06:10.930
+a condition, you could
+generate an image.
+
+01:06:10.930 --> 01:06:13.450
+So here, it's a
+generation of images.
+
+01:06:13.450 --> 01:06:17.770
+This is also a model that
+we cannot reuse as is.
+
+01:06:17.770 --> 01:06:22.250
+And same for MMDIT,
+where the input was
+
+01:06:22.250 --> 01:06:26.650
+guided by potentially
+texts, not just a condition.
+
+01:06:26.650 --> 01:06:30.130
+And here, we're in
+this sibling problem
+
+01:06:30.130 --> 01:06:32.610
+of dealing with both
+modalities, except that we
+
+01:06:32.610 --> 01:06:36.850
+want image and text
+at the input in order
+
+01:06:36.850 --> 01:06:43.370
+to find a way to judge them
+and get text as output.
+
+01:06:43.370 --> 01:06:48.190
+So this is typically the setup
+that we're interested in,
+
+01:06:48.190 --> 01:06:49.650
+so we have a model.
+
+01:06:49.650 --> 01:06:53.590
+We have a picture, let's
+say, here a teddy bear,
+
+01:06:53.590 --> 01:06:57.130
+and we ask a question that
+would guide the evaluation.
+
+01:06:57.130 --> 01:06:59.570
+So let's say, how cute
+is this teddy bear?
+
+01:06:59.570 --> 01:07:01.930
+And you would want such
+an evaluation model
+
+01:07:01.930 --> 01:07:04.610
+to give you the answer.
+
+01:07:04.610 --> 01:07:07.810
+So before starting
+all of this, I just
+
+01:07:07.810 --> 01:07:11.270
+want to make the problem
+a bit more concrete.
+
+01:07:11.270 --> 01:07:12.550
+What do we have at hand?
+
+01:07:12.550 --> 01:07:14.490
+So when we talk
+about images and when
+
+01:07:14.490 --> 01:07:19.730
+we talk about text, what we can
+do is convert them to tokens.
+
+01:07:19.730 --> 01:07:22.570
+And at the end of
+the day, tokens,
+
+01:07:22.570 --> 01:07:26.130
+they're just
+embeddings, so we're
+
+01:07:26.130 --> 01:07:30.130
+facing the problem of trying
+to find an architecture that
+
+01:07:30.130 --> 01:07:32.330
+can accept these
+embeddings and turn them
+
+01:07:32.330 --> 01:07:35.490
+into interpretable text.
+
+01:07:35.490 --> 01:07:40.090
+So one thing that comes
+to mind-- so if you recall
+
+01:07:40.090 --> 01:07:42.690
+the architecture
+of the transformer,
+
+01:07:42.690 --> 01:07:46.970
+let's say you have
+a text-based model.
+
+01:07:46.970 --> 01:07:51.290
+One natural choice
+could be to leverage
+
+01:07:51.290 --> 01:07:54.970
+that cross-attention
+layer that could
+
+01:07:54.970 --> 01:08:00.490
+enable you to make text tokens,
+attend to anything you want.
+
+01:08:00.490 --> 01:08:03.610
+And that anything you
+want, the keys and values
+
+01:08:03.610 --> 01:08:08.290
+of cross-attention could
+very well be images.
+
+01:08:08.290 --> 01:08:10.730
+So this is one
+possible direction,
+
+01:08:10.730 --> 01:08:17.450
+where you use text tokens
+as input of your decoder,
+
+01:08:17.450 --> 01:08:22.050
+and then you keep this cross
+attention mechanism in order
+
+01:08:22.050 --> 01:08:25.890
+to make it interact
+with encoded images.
+
+01:08:25.890 --> 01:08:29.490
+So this is something
+that people have
+
+01:08:29.490 --> 01:08:31.950
+done because it's a very
+natural thing to do,
+
+01:08:31.950 --> 01:08:36.050
+and it's also quite efficient
+computationally because you
+
+01:08:36.050 --> 01:08:40.670
+leverage a fixed context
+length only composed of texts,
+
+01:08:40.670 --> 01:08:43.890
+and then you make it
+interact with images.
+
+01:08:43.890 --> 01:08:46.490
+So there is one example
+here that we can
+
+01:08:46.490 --> 01:08:49.649
+cite of a model that did so.
+
+01:08:49.649 --> 01:08:53.450
+So Flamingo by
+Google, where images
+
+01:08:53.450 --> 01:08:58.490
+are given as keys and values,
+and you have some placeholder
+
+01:08:58.490 --> 01:09:05.250
+token that gates when it's
+fine to attend to these images.
+
+01:09:05.250 --> 01:09:07.569
+So this is one possibility.
+
+01:09:07.569 --> 01:09:14.210
+But one caveat of this mindset
+is that you cannot directly
+
+01:09:14.210 --> 01:09:18.250
+leverage the latest advances
+in large language models
+
+01:09:18.250 --> 01:09:23.149
+because as you know, these
+are decoder only models,
+
+01:09:23.149 --> 01:09:28.750
+and they have gotten rid of
+that cross-attention altogether,
+
+01:09:28.750 --> 01:09:31.490
+so you cannot use all these
+latest models that have been
+
+01:09:31.490 --> 01:09:35.529
+tuned and work great
+out of the box.
+
+01:09:35.529 --> 01:09:40.850
+You need to re-engineer that
+cross-attention layer in there.
+
+01:09:40.850 --> 01:09:45.609
+So this is why you
+see a second branch
+
+01:09:45.609 --> 01:09:48.770
+of dealing with
+multi-modal input, which
+
+01:09:48.770 --> 01:09:54.810
+is to directly feed this image
+and text tokens as input.
+
+01:09:54.810 --> 01:10:01.110
+And one example of
+such model is a LLaVA.
+
+01:10:01.110 --> 01:10:07.930
+So here, you use an encoder
+to find the right embedding
+
+01:10:07.930 --> 01:10:12.610
+for those tokens for image
+patches like a VAT model,
+
+01:10:12.610 --> 01:10:17.190
+and then you give it to
+that decoder-only structure.
+
+01:10:19.970 --> 01:10:20.610
+Great.
+
+01:10:20.610 --> 01:10:23.130
+And these days,
+exactly for the reason
+
+01:10:23.130 --> 01:10:27.290
+that I mentioned like
+quality, but also
+
+01:10:27.290 --> 01:10:31.050
+the fact of reusing wins,
+this latter technique
+
+01:10:31.050 --> 01:10:32.930
+is what people use in practice.
+
+01:10:32.930 --> 01:10:36.730
+So all the latest MLLM
+that you might see
+
+01:10:36.730 --> 01:10:41.930
+are based oftentimes
+on putting both images
+
+01:10:41.930 --> 01:10:43.950
+and text as input
+of the decoder,
+
+01:10:43.950 --> 01:10:47.450
+not doing cross attention.
+
+01:10:47.450 --> 01:10:52.750
+And they have some capabilities
+that I'm mentioning here.
+
+01:10:52.750 --> 01:10:56.410
+We're not going to go
+into details about them,
+
+01:10:56.410 --> 01:10:59.090
+but I want you to
+be aware of them
+
+01:10:59.090 --> 01:11:02.190
+because we're going to
+actively use them at the time
+
+01:11:02.190 --> 01:11:05.970
+we want to use these
+models for judging.
+
+01:11:05.970 --> 01:11:11.490
+So one is a working with
+all kinds of images.
+
+01:11:11.490 --> 01:11:14.050
+So there's a question here.
+
+01:11:14.050 --> 01:11:17.890
+So the question is, what do you
+mean by reuse existing wins?
+
+01:11:17.890 --> 01:11:22.490
+So it's an engineering question.
+
+01:11:22.490 --> 01:11:26.290
+You could definitely reuse
+something already trained
+
+01:11:26.290 --> 01:11:29.150
+like have weights frozen
+and start from there.
+
+01:11:29.150 --> 01:11:31.210
+This is one possibility.
+
+01:11:31.210 --> 01:11:35.930
+I was more thinking about an
+architectural standpoint, where
+
+01:11:35.930 --> 01:11:39.610
+you have a design that
+is proven to work.
+
+01:11:39.610 --> 01:11:43.450
+This is just another
+modality with a same input
+
+01:11:43.450 --> 01:11:45.770
+that you can just
+recycle, but then
+
+01:11:45.770 --> 01:11:48.370
+on how you actually come
+up with such a model,
+
+01:11:48.370 --> 01:11:51.330
+it's more of an
+engineering problem.
+
+01:11:51.330 --> 01:11:54.070
+So I don't give a
+specific opinion on it,
+
+01:11:54.070 --> 01:11:56.410
+but I do think you
+could definitely
+
+01:11:56.410 --> 01:12:02.350
+initialize weights and reuse it
+in the strict sense of the term.
+
+01:12:05.390 --> 01:12:09.730
+So we want these
+models to be working
+
+01:12:09.730 --> 01:12:11.850
+across all kinds of inputs.
+
+01:12:11.850 --> 01:12:14.570
+And in particular,
+one property that you
+
+01:12:14.570 --> 01:12:18.930
+want your generative
+models is to generate text
+
+01:12:18.930 --> 01:12:20.150
+as part of your images.
+
+01:12:20.150 --> 01:12:24.570
+So let's say if you want to
+generate the image of a sign,
+
+01:12:24.570 --> 01:12:27.570
+you want the text
+to be readable,
+
+01:12:27.570 --> 01:12:30.370
+so you would want
+models that do judge
+
+01:12:30.370 --> 01:12:35.750
+this kind of generated images
+to be aware of characters.
+
+01:12:35.750 --> 01:12:39.710
+So this is why I mentioned OCR.
+
+01:12:39.710 --> 01:12:43.930
+And then also one other thing
+which I think was mentioned here
+
+01:12:43.930 --> 01:12:47.970
+is we do not want to have a
+black box that just gives us
+
+01:12:47.970 --> 01:12:48.930
+a number.
+
+01:12:48.930 --> 01:12:54.750
+We want to have some rationale
+behind what grades that we give,
+
+01:12:54.750 --> 01:12:59.010
+so this is why leveraging
+reasoning abilities
+
+01:12:59.010 --> 01:13:01.910
+of such models is going to be
+something that we want to use.
+
+01:13:05.070 --> 01:13:07.250
+Great.
+
+01:13:07.250 --> 01:13:12.090
+So now, I want us to look
+at traditional metrics
+
+01:13:12.090 --> 01:13:16.130
+and then find some of
+the key concerns we had
+
+01:13:16.130 --> 01:13:19.810
+and see what could be
+ways to mitigate them.
+
+01:13:19.810 --> 01:13:24.010
+So one thing that
+we were concerned
+
+01:13:24.010 --> 01:13:29.090
+with with traditional metrics
+was that you get a number,
+
+01:13:29.090 --> 01:13:33.550
+but at the end of the day,
+you don't what to do with it.
+
+01:13:33.550 --> 01:13:37.570
+Let's say you have a prompt
+that gave a given image
+
+01:13:37.570 --> 01:13:39.610
+and you have a
+certain CLIP score.
+
+01:13:39.610 --> 01:13:41.930
+Now what do you do with it?
+
+01:13:41.930 --> 01:13:48.970
+So this is something that you
+could fix by taking the prompt
+
+01:13:48.970 --> 01:13:54.370
+and trying to reason
+about what properties
+
+01:13:54.370 --> 01:13:57.730
+in the generated image
+could make it such
+
+01:13:57.730 --> 01:14:02.450
+that the image would
+match the prompt?
+
+01:14:02.450 --> 01:14:05.570
+And this is something
+that you could
+
+01:14:05.570 --> 01:14:10.850
+do by decomposing what you care
+about into atomic properties.
+
+01:14:10.850 --> 01:14:14.350
+This is what the
+TIFA paper does,
+
+01:14:14.350 --> 01:14:17.970
+so Text-to-Image
+Faithfulness Evaluation,
+
+01:14:17.970 --> 01:14:23.810
+where they use few shot learning
+to show examples of what
+
+01:14:23.810 --> 01:14:27.010
+interesting decompositions of
+what you care about in an image
+
+01:14:27.010 --> 01:14:28.370
+might look like.
+
+01:14:28.370 --> 01:14:30.690
+And they apply it
+to a given prompt
+
+01:14:30.690 --> 01:14:34.530
+to generate a set of
+questions, and these questions
+
+01:14:34.530 --> 01:14:35.750
+are very simple.
+
+01:14:35.750 --> 01:14:40.690
+They're just yes or no, or
+things where the answer is
+
+01:14:40.690 --> 01:14:43.330
+obviously right or wrong.
+
+01:14:43.330 --> 01:14:48.970
+So that way you
+decompose the judging
+
+01:14:48.970 --> 01:14:54.890
+into dimensions that
+are quite quantitative.
+
+01:14:54.890 --> 01:14:59.210
+And what you do is that
+you take MLLM model
+
+01:14:59.210 --> 01:15:02.970
+to assess each of these
+dimensions independently.
+
+01:15:02.970 --> 01:15:06.490
+So for example here, this
+teddy bear reading a book.
+
+01:15:06.490 --> 01:15:07.590
+Is it a teddy bear?
+
+01:15:07.590 --> 01:15:08.670
+So yes.
+
+01:15:08.670 --> 01:15:09.330
+Is it cute?
+
+01:15:09.330 --> 01:15:09.850
+Yes.
+
+01:15:09.850 --> 01:15:10.930
+Is there a book?
+
+01:15:10.930 --> 01:15:11.490
+Yes.
+
+01:15:11.490 --> 01:15:13.115
+And is the Teddy bear
+reading the book?
+
+01:15:13.115 --> 01:15:14.250
+Yes as well.
+
+01:15:14.250 --> 01:15:17.690
+So such a metric
+would give you a score
+
+01:15:17.690 --> 01:15:23.810
+that matches the fact that all
+of these criteria were met.
+
+01:15:23.810 --> 01:15:29.570
+And it's quite
+interesting because
+
+01:15:29.570 --> 01:15:31.770
+in the case of CLIP
+score, even though you
+
+01:15:31.770 --> 01:15:36.530
+have an image that semantically
+matches your input prompt,
+
+01:15:36.530 --> 01:15:39.870
+you're not exactly sure what
+that remaining delta is about.
+
+01:15:39.870 --> 01:15:42.750
+And with the method that
+decomposes these concerns,
+
+01:15:42.750 --> 01:15:44.910
+you could pinpoint
+what goes wrong.
+
+01:15:48.070 --> 01:15:53.090
+So it's quite simple,
+and you could debug
+
+01:15:53.090 --> 01:15:54.470
+where the issue comes from.
+
+01:15:54.470 --> 01:15:57.130
+But on the other
+hand, this method
+
+01:15:57.130 --> 01:16:00.890
+of generating dimensions
+that you care about per image
+
+01:16:00.890 --> 01:16:03.770
+is quite bespoke
+because you're here.
+
+01:16:03.770 --> 01:16:08.650
+At every prompt that
+you input your data set,
+
+01:16:08.650 --> 01:16:14.450
+you need to have a
+grading rubric that
+
+01:16:14.450 --> 01:16:16.250
+is specific to that prompt.
+
+01:16:16.250 --> 01:16:19.170
+So the fact of generating
+that rubric in the first place
+
+01:16:19.170 --> 01:16:23.410
+is going to be expensive,
+and it might be error prone.
+
+01:16:23.410 --> 01:16:27.970
+And something else is that you
+have all of these questions that
+
+01:16:27.970 --> 01:16:31.610
+examine multiple
+sides of that prompt,
+
+01:16:31.610 --> 01:16:35.850
+but the weighing of
+each of these claims
+
+01:16:35.850 --> 01:16:40.130
+might not match the
+importance of what each
+
+01:16:40.130 --> 01:16:42.710
+claim to your point of view.
+
+01:16:42.710 --> 01:16:48.450
+So, for example, here, if
+you don't have a book at all,
+
+01:16:48.450 --> 01:16:52.050
+then you might have one
+or two that goes away.
+
+01:16:52.050 --> 01:16:57.690
+And you would have maybe
+half of the metric that--
+
+01:16:57.690 --> 01:17:00.110
+the metric would be about
+half of the max score,
+
+01:17:00.110 --> 01:17:03.930
+but it necessarily might
+not be what you want,
+
+01:17:03.930 --> 01:17:10.330
+so you might want a way
+to generate a rubric that
+
+01:17:10.330 --> 01:17:13.790
+is more robust to that.
+
+01:17:18.010 --> 01:17:20.410
+I'm going to take a
+pause for a few seconds
+
+01:17:20.410 --> 01:17:21.990
+and see if that makes sense.
+
+01:17:27.610 --> 01:17:29.090
+OK, awesome.
+
+01:17:29.090 --> 01:17:31.870
+So I'm going to state
+another complaint.
+
+01:17:34.430 --> 01:17:37.730
+So here we saw CLIP score.
+
+01:17:37.730 --> 01:17:40.610
+And one great thing
+about CLIP score
+
+01:17:40.610 --> 01:17:45.210
+is that it can try to convey
+whether the semantic meaning
+
+01:17:45.210 --> 01:17:48.010
+of a generated
+image was preserved.
+
+01:17:48.010 --> 01:17:53.810
+But one thing that we observe
+is that semantically encoding
+
+01:17:53.810 --> 01:17:56.510
+the meaning of a
+prompt within a vector,
+
+01:17:56.510 --> 01:17:59.290
+and then doing some dot products
+with respect to the embedding
+
+01:17:59.290 --> 01:18:04.410
+of the image, might not carry
+all the semantic subtleties
+
+01:18:04.410 --> 01:18:07.010
+that prompt variations
+might convey.
+
+01:18:07.010 --> 01:18:10.330
+So here, one thing that
+we observe in practice
+
+01:18:10.330 --> 01:18:16.290
+is that in the cute bear reading
+a book example, if you exchange
+
+01:18:16.290 --> 01:18:22.050
+book and teddy bear from
+a semantic perspective
+
+01:18:22.050 --> 01:18:25.290
+like to your intuition, it
+changes things quite a bit.
+
+01:18:25.290 --> 01:18:29.250
+You would have a totally
+another image in mind.
+
+01:18:29.250 --> 01:18:31.970
+But from a CLIP
+score standpoint,
+
+01:18:31.970 --> 01:18:35.690
+it turns out that the score
+doesn't change that much.
+
+01:18:35.690 --> 01:18:39.460
+So you could explain
+this by the fact
+
+01:18:39.460 --> 01:18:43.170
+that you're projecting
+all of the image
+
+01:18:43.170 --> 01:18:46.470
+and all of the content of
+the prompt into vectors,
+
+01:18:46.470 --> 01:18:53.130
+and these are not very richly
+conveying all these subtleties.
+
+01:18:53.130 --> 01:18:57.250
+But also one other explanation
+could reside in the way
+
+01:18:57.250 --> 01:19:03.490
+that CLIP is trained,
+because you are incentivized
+
+01:19:03.490 --> 01:19:09.130
+to match images and prompts in
+a way that matches those that
+
+01:19:09.130 --> 01:19:12.490
+correspond with respect
+to text image captions
+
+01:19:12.490 --> 01:19:15.010
+but you have this concept
+of in batch negatives
+
+01:19:15.010 --> 01:19:19.210
+that we saw at the time, where
+we introduced CLIP, where you
+
+01:19:19.210 --> 01:19:22.490
+try to make the
+distance between images
+
+01:19:22.490 --> 01:19:26.090
+and prompts that have
+nothing to do with that image
+
+01:19:26.090 --> 01:19:30.490
+further apart, so
+you don't really
+
+01:19:30.490 --> 01:19:33.410
+have an incentive to
+learn these subtleties.
+
+01:19:33.410 --> 01:19:39.050
+And these are the two main
+reasons why CLIP score is not
+
+01:19:39.050 --> 01:19:42.110
+that great.
+
+01:19:42.110 --> 01:19:43.430
+But you might tell me OK.
+
+01:19:43.430 --> 01:19:47.530
+Hey, Shervin, CLIP was
+generated with the embedding
+
+01:19:47.530 --> 01:19:52.290
+of the entire sentence
+because, as we remember,
+
+01:19:52.290 --> 01:19:58.550
+you would encode the meaning of
+a given sentence with a decoder,
+
+01:19:58.550 --> 01:20:01.210
+and then extract the
+last embedding, which
+
+01:20:01.210 --> 01:20:03.730
+contains the embedding
+of the whole sentence.
+
+01:20:03.730 --> 01:20:12.570
+So one thing we can do
+is have the same property
+
+01:20:12.570 --> 01:20:17.490
+with the trick, where you input
+both the image and the sentence
+
+01:20:17.490 --> 01:20:21.570
+in the same embedding, and
+then extract the probability
+
+01:20:21.570 --> 01:20:27.370
+of whether both image and
+sentence are supposed to match
+
+01:20:27.370 --> 01:20:27.870
+or not.
+
+01:20:27.870 --> 01:20:31.650
+So this is something that
+is called VQA score, where
+
+01:20:31.650 --> 01:20:33.870
+the template is very simple.
+
+01:20:33.870 --> 01:20:37.250
+So you always follow
+this same structure
+
+01:20:37.250 --> 01:20:38.930
+where you put the image.
+
+01:20:38.930 --> 01:20:41.770
+And then you ask
+yourself, does this figure
+
+01:20:41.770 --> 01:20:44.530
+show and the content
+of your prompt?
+
+01:20:44.530 --> 01:20:47.690
+And then what you do is that
+you look at your probability
+
+01:20:47.690 --> 01:20:52.050
+distribution of your
+next token, and you
+
+01:20:52.050 --> 01:20:56.210
+look at the one that
+corresponds to the token yes.
+
+01:20:56.210 --> 01:20:59.370
+And you say that
+that probability
+
+01:20:59.370 --> 01:21:05.210
+is going to be your score, which
+means that if the sentence is
+
+01:21:05.210 --> 01:21:10.030
+semantically similar or
+matching to the image,
+
+01:21:10.030 --> 01:21:15.290
+you're going to have a high
+probability and lower otherwise.
+
+01:21:15.290 --> 01:21:21.290
+So by doing so, you can
+alleviate this issue
+
+01:21:21.290 --> 01:21:24.250
+that we had seen at the CLIP
+score level, where you were
+
+01:21:24.250 --> 01:21:27.310
+comparing vectors
+in a coarse fashion,
+
+01:21:27.310 --> 01:21:30.290
+and now you're directly
+reusing the structure
+
+01:21:30.290 --> 01:21:35.450
+of the decoded output in
+order to embed both modalities
+
+01:21:35.450 --> 01:21:36.950
+in a way that makes sense.
+
+01:21:41.250 --> 01:21:43.730
+So the question, can
+a regular LLM do it?
+
+01:21:43.730 --> 01:21:46.010
+So very pedantically,
+no, because you
+
+01:21:46.010 --> 01:21:47.710
+have image modality in there.
+
+01:21:47.710 --> 01:21:49.970
+But let's say the
+question is for MLLM.
+
+01:21:49.970 --> 01:21:52.470
+Can a standard MLLM do it?
+
+01:21:52.470 --> 01:21:59.010
+So we advocate that yes,
+because it is trained yet
+
+01:21:59.010 --> 01:22:06.090
+to understand broader concepts,
+so its a zero shot task.
+
+01:22:06.090 --> 01:22:06.590
+So yeah.
+
+01:22:06.590 --> 01:22:07.630
+So that's a great point.
+
+01:22:07.630 --> 01:22:09.710
+It emphasizes one benefit
+of this technique.
+
+01:22:09.710 --> 01:22:12.870
+You do not need to train
+anything in a bespoke manner.
+
+01:22:12.870 --> 01:22:17.130
+You just take an
+off the shelf MLLM
+
+01:22:17.130 --> 01:22:21.430
+that does know how
+to understand things.
+
+01:22:25.050 --> 01:22:28.370
+OK great.
+
+01:22:28.370 --> 01:22:32.090
+But one drawback
+that you might notice
+
+01:22:32.090 --> 01:22:36.130
+is that this technique
+relies on you having access
+
+01:22:36.130 --> 01:22:40.370
+to the probability
+distribution of the next token.
+
+01:22:40.370 --> 01:22:44.170
+And if you take all the
+latest and best models
+
+01:22:44.170 --> 01:22:46.490
+out there that might
+be closed source,
+
+01:22:46.490 --> 01:22:49.890
+they do not disclose the
+probability distribution
+
+01:22:49.890 --> 01:22:50.669
+of the next token.
+
+01:22:50.669 --> 01:22:52.336
+If you are in the
+field of distillation,
+
+01:22:52.336 --> 01:22:54.410
+you know it's a
+very sensitive topic
+
+01:22:54.410 --> 01:22:56.930
+because you can learn a
+lot of things from it,
+
+01:22:56.930 --> 01:22:59.850
+so this is not something
+that you have access to.
+
+01:22:59.850 --> 01:23:03.210
+And something else
+that is wasteful
+
+01:23:03.210 --> 01:23:06.510
+is every time you
+ask such questions,
+
+01:23:06.510 --> 01:23:10.370
+you need to do a
+dedicated MLLM call,
+
+01:23:10.370 --> 01:23:12.510
+and these are quite expensive.
+
+01:23:12.510 --> 01:23:15.510
+So from a user standpoint,
+you could say, OK fine,
+
+01:23:15.510 --> 01:23:18.970
+I have a provider, I will
+do all of them in parallel
+
+01:23:18.970 --> 01:23:21.342
+and wait for the
+max of all of them
+
+01:23:21.342 --> 01:23:23.050
+to finish to have my
+result, which is not
+
+01:23:23.050 --> 01:23:25.890
+that bad oftentimes,
+but it's quite costly
+
+01:23:25.890 --> 01:23:31.130
+as it scales with the number
+of decomposed dimensions.
+
+01:23:31.130 --> 01:23:34.250
+And everything that
+I've mentioned here
+
+01:23:34.250 --> 01:23:38.750
+is focusing on the
+prompts of your data set.
+
+01:23:38.750 --> 01:23:41.850
+So you're inferring your
+conditions and dimensions
+
+01:23:41.850 --> 01:23:44.570
+above the prompt
+of the data set.
+
+01:23:44.570 --> 01:23:47.230
+There seems like a
+better way to do it.
+
+01:23:47.230 --> 01:23:51.330
+You're still stuck in
+these ancient worlds,
+
+01:23:51.330 --> 01:23:54.310
+where you try to engineer
+everything, even metrics.
+
+01:23:54.310 --> 01:23:58.250
+You try to engineer them in
+order to make sense of them
+
+01:23:58.250 --> 01:23:59.570
+afterwards.
+
+01:23:59.570 --> 01:24:05.530
+But one shift of paradigm
+that seems attractive here
+
+01:24:05.530 --> 01:24:09.090
+is instead of being
+prompt-centric,
+
+01:24:09.090 --> 01:24:14.890
+be concept-centric of what
+you consider to be good,
+
+01:24:14.890 --> 01:24:19.090
+and then describe that
+good in a generic way.
+
+01:24:19.090 --> 01:24:22.890
+And then leverage all of
+the reasoning capabilities
+
+01:24:22.890 --> 01:24:28.050
+of these MLLM models to do
+that reasoning on your behalf
+
+01:24:28.050 --> 01:24:31.170
+and come up with
+the final score.
+
+01:24:31.170 --> 01:24:35.910
+So does everyone agree that
+this strategy sounds attractive?
+
+01:24:39.490 --> 01:24:41.610
+Great.
+
+01:24:41.610 --> 01:24:46.770
+And this brings
+us to a paper that
+
+01:24:46.770 --> 01:24:49.530
+popularized this
+mindset called VIEScore,
+
+01:24:49.530 --> 01:24:54.730
+so Visual Instruction-guided
+Explainable Score, where
+
+01:24:54.730 --> 01:24:58.810
+you give your prompt, you
+give your generated image,
+
+01:24:58.810 --> 01:25:02.170
+and then you describe a rubric.
+
+01:25:02.170 --> 01:25:05.990
+And Afshin, if you remember at
+the beginning of the lecture,
+
+01:25:05.990 --> 01:25:11.890
+he mentioned two axes, where
+we broadly had an interest in.
+
+01:25:11.890 --> 01:25:14.530
+So one is semantic
+consistency, and the other one
+
+01:25:14.530 --> 01:25:16.650
+is perceptual quality.
+
+01:25:16.650 --> 01:25:22.770
+And these efforts formalizes
+how we could write rubrics
+
+01:25:22.770 --> 01:25:24.850
+and grades for both of them.
+
+01:25:24.850 --> 01:25:29.630
+So you would have such a rubric,
+and then ask an MLLM about it.
+
+01:25:29.630 --> 01:25:32.450
+And then since this
+task is about judging,
+
+01:25:32.450 --> 01:25:36.130
+you call such a model
+MLLM-as-a-Judge.
+
+01:25:36.130 --> 01:25:39.650
+And the good thing
+about these models
+
+01:25:39.650 --> 01:25:41.770
+is that they are
+interpretable, and you
+
+01:25:41.770 --> 01:25:47.690
+can ask them to output some
+reasoning before prompting them
+
+01:25:47.690 --> 01:25:52.090
+for a given score, which
+is what this paper does.
+
+01:25:52.090 --> 01:25:58.090
+And with our two dimensions
+that we care about, so
+
+01:25:58.090 --> 01:26:00.850
+semantic consistency
+and perceptual quality,
+
+01:26:00.850 --> 01:26:07.090
+respectively denoting whether
+the image follows the prompt
+
+01:26:07.090 --> 01:26:09.410
+and whether the
+image looks good.
+
+01:26:09.410 --> 01:26:12.850
+So you could have two different
+generations and you might smile
+
+01:26:12.850 --> 01:26:16.990
+at the second one because
+it's not very realistic,
+
+01:26:16.990 --> 01:26:20.970
+which is why you might-- so
+it's technically still reading
+
+01:26:20.970 --> 01:26:26.610
+the book on the right-hand side,
+but on the natural aspects,
+
+01:26:26.610 --> 01:26:32.210
+this is where an MLLM-as-a-Judge
+might come in and just keep us
+
+01:26:32.210 --> 01:26:32.870
+in check.
+
+01:26:36.250 --> 01:26:36.750
+Great.
+
+01:26:36.750 --> 01:26:41.930
+And just formalizing the fact of
+asking about an MLLM-as-a-Judge
+
+01:26:41.930 --> 01:26:46.290
+opinion regarding grading
+a given dimension.
+
+01:26:46.290 --> 01:26:47.690
+So typically, what
+you would have
+
+01:26:47.690 --> 01:26:50.650
+is that you first
+give your input
+
+01:26:50.650 --> 01:26:54.450
+and then you handcraft a set
+of guidelines with respect
+
+01:26:54.450 --> 01:26:58.010
+to each of the
+dimensions of interest.
+
+01:26:58.010 --> 01:27:02.810
+And then you ask your
+MLLM-as-a-Judge to output its
+
+01:27:02.810 --> 01:27:05.710
+decision in some given format.
+
+01:27:05.710 --> 01:27:09.450
+One that is popular is
+JSON, because you can then
+
+01:27:09.450 --> 01:27:13.010
+parse scores and rationales
+and anything else
+
+01:27:13.010 --> 01:27:15.130
+that you care about
+in a structured way
+
+01:27:15.130 --> 01:27:18.130
+by just accessing fields.
+
+01:27:18.130 --> 01:27:22.330
+And one question
+that comes to mind
+
+01:27:22.330 --> 01:27:27.250
+is how to ensure that the
+rationales and the scores
+
+01:27:27.250 --> 01:27:30.490
+actually do make sense.
+
+01:27:30.490 --> 01:27:33.810
+So here comes the
+most interesting part
+
+01:27:33.810 --> 01:27:37.530
+of the lecture, which is once
+you have a problem, where you
+
+01:27:37.530 --> 01:27:42.490
+have a judge that you want
+to use to grade your images,
+
+01:27:42.490 --> 01:27:46.810
+how are you going to make them
+aligned with what you as a human
+
+01:27:46.810 --> 01:27:48.850
+find good?
+
+01:27:48.850 --> 01:27:51.410
+So this is the first
+stage, where you
+
+01:27:51.410 --> 01:27:55.867
+would take in a true setting.
+
+01:27:55.867 --> 01:27:57.450
+You would take your
+prompts, you would
+
+01:27:57.450 --> 01:28:00.130
+take your generated images,
+and you would typically
+
+01:28:00.130 --> 01:28:04.490
+ask humans to grade them
+alongside the rubrics
+
+01:28:04.490 --> 01:28:05.030
+of interest.
+
+01:28:05.030 --> 01:28:07.970
+So let's say, you have
+perceptual quality and semantic
+
+01:28:07.970 --> 01:28:12.610
+consistency, you would first get
+a sense of what is good versus
+
+01:28:12.610 --> 01:28:15.290
+bad from a human standpoint.
+
+01:28:15.290 --> 01:28:21.730
+And the second step would
+be to handcraft rubrics that
+
+01:28:21.730 --> 01:28:24.290
+would match human intuition.
+
+01:28:24.290 --> 01:28:31.600
+So these days, handcraft
+it's a bit of a strong word
+
+01:28:31.600 --> 01:28:33.660
+because you wouldn't
+actually handcraft this.
+
+01:28:33.660 --> 01:28:39.720
+You would ask a model to
+handcraft instructions
+
+01:28:39.720 --> 01:28:43.680
+that would be such that
+the resulting ratings would
+
+01:28:43.680 --> 01:28:46.320
+match human intuition.
+
+01:28:46.320 --> 01:28:50.560
+And once you have that,
+then you can further
+
+01:28:50.560 --> 01:28:57.440
+judge other prompts image
+pairs with that trained judge.
+
+01:28:57.440 --> 01:29:01.820
+So this is a three stage
+way of solving this problem.
+
+01:29:01.820 --> 01:29:05.640
+So first, just
+asking your intuition
+
+01:29:05.640 --> 01:29:11.920
+about what is good, then tuning
+the MLLMs rubrics about it,
+
+01:29:11.920 --> 01:29:15.840
+and then third one
+would be directly asking
+
+01:29:15.840 --> 01:29:17.860
+the MLLM about new images.
+
+01:29:20.800 --> 01:29:26.240
+And so you might have
+multiple settings,
+
+01:29:26.240 --> 01:29:29.540
+where you would ask for advice.
+
+01:29:29.540 --> 01:29:32.440
+So you have a pointwise
+setting, where
+
+01:29:32.440 --> 01:29:34.620
+you have a given
+image, a given prompt,
+
+01:29:34.620 --> 01:29:37.560
+and you want to know
+if the result is good.
+
+01:29:37.560 --> 01:29:43.240
+You have the pairwise setting
+that Afshin also mentioned,
+
+01:29:43.240 --> 01:29:46.860
+and you have another one
+where you have a prompt,
+
+01:29:46.860 --> 01:29:53.120
+you have a list of images, and
+you want the model to rank them.
+
+01:29:53.120 --> 01:29:55.000
+So going one by one.
+
+01:29:55.000 --> 01:29:58.600
+In practice, pointwise
+is great when
+
+01:29:58.600 --> 01:30:02.700
+you want to do one-sided
+evaluation of your images.
+
+01:30:02.700 --> 01:30:07.040
+So just to have a rough idea,
+but also to debug what goes well
+
+01:30:07.040 --> 01:30:09.740
+versus doesn't go well,
+because as you remember,
+
+01:30:09.740 --> 01:30:14.960
+you have this rationale side of
+the MLLM-as-a-Judge output that
+
+01:30:14.960 --> 01:30:20.860
+can guide you towards
+understanding loss modes
+
+01:30:20.860 --> 01:30:22.720
+of your model.
+
+01:30:22.720 --> 01:30:26.000
+So it can either lead to
+you iterating on the image
+
+01:30:26.000 --> 01:30:30.200
+generation model, or coming back
+to the calibration of the judge
+
+01:30:30.200 --> 01:30:33.960
+itself, because it might not
+correspond to the intuition
+
+01:30:33.960 --> 01:30:38.080
+that you have in mind, so it's
+great for doing both of them.
+
+01:30:38.080 --> 01:30:40.880
+Another setting is
+the pairwise one,
+
+01:30:40.880 --> 01:30:45.780
+which is great when you want to
+compare models with each other.
+
+01:30:45.780 --> 01:30:49.480
+So typically, if you have a
+new iteration of the model
+
+01:30:49.480 --> 01:30:52.780
+and you want to know if it's
+fine to replace it altogether,
+
+01:30:52.780 --> 01:30:56.520
+you would use this kind of mode.
+
+01:30:56.520 --> 01:30:59.760
+And then regarding
+ranking, even though that's
+
+01:30:59.760 --> 01:31:01.680
+something that's
+studied in papers,
+
+01:31:01.680 --> 01:31:04.200
+it's typically not
+used in practice
+
+01:31:04.200 --> 01:31:09.200
+because the ordering
+might be too sensitive,
+
+01:31:09.200 --> 01:31:11.640
+and so you have a
+lot of variants.
+
+01:31:11.640 --> 01:31:15.320
+And oftentimes, the
+ranking of several outputs
+
+01:31:15.320 --> 01:31:19.160
+might not be something that you
+want to do as a one shot task,
+
+01:31:19.160 --> 01:31:25.200
+so it might not have as
+broad applications as the two
+
+01:31:25.200 --> 01:31:25.900
+other ones.
+
+01:31:28.680 --> 01:31:32.320
+So I just want to spend a few
+minutes to talk about best
+
+01:31:32.320 --> 01:31:37.200
+practices overall when you
+deal with MLLM-as-a-Judge.
+
+01:31:37.200 --> 01:31:41.160
+So here, we saw with VIEScore
+that you could decompose
+
+01:31:41.160 --> 01:31:44.740
+what you care about into two
+dimensions, but in real life,
+
+01:31:44.740 --> 01:31:52.440
+you might have use cases, where
+you have a task-specific rubric
+
+01:31:52.440 --> 01:31:55.235
+that is not general, but that
+might be specific to what
+
+01:31:55.235 --> 01:31:55.860
+you care about.
+
+01:31:55.860 --> 01:31:59.040
+So you would typically
+decompose and isolate
+
+01:31:59.040 --> 01:32:03.000
+that as a separate
+metric and make
+
+01:32:03.000 --> 01:32:07.900
+the judging be done on all
+these sets of criteria,
+
+01:32:07.900 --> 01:32:10.280
+including that
+other one that would
+
+01:32:10.280 --> 01:32:15.720
+be designed to be atomic and
+isolating what you care about.
+
+01:32:15.720 --> 01:32:21.200
+So another thing is that
+empirically, you typically want
+
+01:32:21.200 --> 01:32:25.360
+your model to output the
+rationale before outputting
+
+01:32:25.360 --> 01:32:28.660
+a score, because
+in the LLM space,
+
+01:32:28.660 --> 01:32:32.200
+you have all this research
+around concepts surrounding
+
+01:32:32.200 --> 01:32:38.860
+chains of thoughts and how
+it improves the performance.
+
+01:32:38.860 --> 01:32:42.120
+And the intuition
+for it is that even
+
+01:32:42.120 --> 01:32:46.820
+as a human, when you want to
+form an opinion on something,
+
+01:32:46.820 --> 01:32:50.700
+it's always good to
+enumerate facts about it.
+
+01:32:50.700 --> 01:32:54.840
+Just say out loud
+what you have in mind
+
+01:32:54.840 --> 01:32:58.160
+when you do a piece of
+judgment before actually
+
+01:32:58.160 --> 01:33:00.320
+doing the judgment.
+
+01:33:00.320 --> 01:33:03.720
+So this is a good practice.
+
+01:33:03.720 --> 01:33:05.920
+Something else is
+that with LLMs, you
+
+01:33:05.920 --> 01:33:12.000
+have this temperature parameter
+that controls how creative
+
+01:33:12.000 --> 01:33:16.360
+and how deterministic versus
+stochastic your output gets.
+
+01:33:16.360 --> 01:33:20.920
+And typically, when
+you use chatbots,
+
+01:33:20.920 --> 01:33:22.700
+these are not set to zero.
+
+01:33:22.700 --> 01:33:25.200
+So outputs are typically
+non-deterministic
+
+01:33:25.200 --> 01:33:29.000
+because quality is
+typically better when
+
+01:33:29.000 --> 01:33:32.100
+it's non-deterministic
+for a range of tasks,
+
+01:33:32.100 --> 01:33:37.640
+but for very precise
+tasks like judgments,
+
+01:33:37.640 --> 01:33:42.520
+where when you are grounded
+on the input that you're given
+
+01:33:42.520 --> 01:33:44.340
+and the rubrics
+that you're given,
+
+01:33:44.340 --> 01:33:49.520
+this is typically a use case
+where it's fine to make it set
+
+01:33:49.520 --> 01:33:53.280
+to zero, and also because
+you want determinism across
+
+01:33:53.280 --> 01:33:56.720
+your MLLM-as-a-Judge runs.
+
+01:33:56.720 --> 01:34:00.840
+Something else is that you
+might see position bias, if you
+
+01:34:00.840 --> 01:34:03.120
+are in a pairwise
+setting, so it's
+
+01:34:03.120 --> 01:34:05.520
+good to swap the ordering
+of the two samples
+
+01:34:05.520 --> 01:34:08.600
+that you want to compare.
+
+01:34:08.600 --> 01:34:12.760
+And the last point is something
+that we mentioned just before.
+
+01:34:12.760 --> 01:34:15.880
+We want to make sure it's
+aligned with human judgment
+
+01:34:15.880 --> 01:34:21.760
+before actually going ahead
+and then trusting it blindly.
+
+01:34:21.760 --> 01:34:25.560
+So I want to spend the
+last 5 minutes talking
+
+01:34:25.560 --> 01:34:28.400
+about the main
+benchmarks that cover
+
+01:34:28.400 --> 01:34:31.320
+some of the characteristics
+that we care about
+
+01:34:31.320 --> 01:34:33.360
+on image generation.
+
+01:34:33.360 --> 01:34:41.640
+So on benchmarks, I
+will go through points
+
+01:34:41.640 --> 01:34:45.400
+that cover overall areas
+that we care about.
+
+01:34:45.400 --> 01:34:48.400
+So one is, let's say
+you have a prompt.
+
+01:34:48.400 --> 01:34:51.200
+You want to make sure
+that whatever is generated
+
+01:34:51.200 --> 01:34:54.040
+contains the objects
+and some high level
+
+01:34:54.040 --> 01:34:56.560
+attributes that you
+mentioned in your prompt.
+
+01:34:56.560 --> 01:35:02.720
+So this is where GenEval,
+it's one possible benchmark,
+
+01:35:02.720 --> 01:35:08.400
+comes to mind, where you have
+a six tasks of increasing
+
+01:35:08.400 --> 01:35:12.080
+difficulty that
+talks about objects
+
+01:35:12.080 --> 01:35:15.040
+like counting of objects,
+colors of objects,
+
+01:35:15.040 --> 01:35:21.280
+and relative position, as
+well as attribution of colors.
+
+01:35:21.280 --> 01:35:28.120
+So the judges here are
+object detection models
+
+01:35:28.120 --> 01:35:30.200
+that will come in
+and then detect
+
+01:35:30.200 --> 01:35:34.940
+whether the right objects or
+the right colors were generated,
+
+01:35:34.940 --> 01:35:36.520
+so this is one example.
+
+01:35:36.520 --> 01:35:40.960
+So you have a photo of a purple
+backpack and a white umbrella,
+
+01:35:40.960 --> 01:35:45.280
+and you want to make sure that
+both objects and colors are
+
+01:35:45.280 --> 01:35:49.040
+correctly attributed.
+
+01:35:49.040 --> 01:35:51.040
+And something else that
+you care about that
+
+01:35:51.040 --> 01:35:55.360
+might touch on something
+that you mentioned.
+
+01:35:55.360 --> 01:35:58.780
+So when you deal
+with dense prompts,
+
+01:35:58.780 --> 01:36:01.000
+so typically, prompts
+that are very detailed,
+
+01:36:01.000 --> 01:36:03.920
+you want to make sure
+that all of the details
+
+01:36:03.920 --> 01:36:05.880
+are correctly rendered.
+
+01:36:05.880 --> 01:36:10.520
+And this is why these
+DPG bench benchmark
+
+01:36:10.520 --> 01:36:17.720
+has a mechanism that looks a bit
+like what we saw in TIFA, where
+
+01:36:17.720 --> 01:36:22.360
+you have this big chunk
+of text that you decompose
+
+01:36:22.360 --> 01:36:26.640
+into a set of atomic
+yes or no questions.
+
+01:36:26.640 --> 01:36:28.920
+And the interesting
+thing about this paper
+
+01:36:28.920 --> 01:36:33.680
+is that it groups all of
+these claims into a graph
+
+01:36:33.680 --> 01:36:34.840
+that is logical.
+
+01:36:34.840 --> 01:36:37.320
+So here, you have
+a big chunk of text
+
+01:36:37.320 --> 01:36:40.680
+and it decomposes
+into questions that
+
+01:36:40.680 --> 01:36:44.320
+are centered on
+attributes, relationships,
+
+01:36:44.320 --> 01:36:49.640
+and spatial location.
+
+01:36:49.640 --> 01:36:53.740
+And let's say you want to
+judge about a given attribute,
+
+01:36:53.740 --> 01:36:58.800
+so here, that's
+long bunch of texts
+
+01:36:58.800 --> 01:37:03.360
+mentions like an empty space,
+where an invisible man has
+
+01:37:03.360 --> 01:37:04.640
+this and that.
+
+01:37:04.640 --> 01:37:08.000
+So first, you need the
+empty space to exist.
+
+01:37:08.000 --> 01:37:13.940
+And this benchmark looks at it
+in a coarse to fine mindset.
+
+01:37:13.940 --> 01:37:17.240
+So if the prerequisite
+doesn't exist,
+
+01:37:17.240 --> 01:37:20.400
+then you don't even bother
+looking at the other conditions,
+
+01:37:20.400 --> 01:37:23.840
+so this is what makes this
+benchmark interestingly
+
+01:37:23.840 --> 01:37:25.600
+efficient.
+
+01:37:25.600 --> 01:37:30.180
+And conversely, if one
+precondition exists,
+
+01:37:30.180 --> 01:37:34.280
+then you move on to the
+next pieces of the graph.
+
+01:37:34.280 --> 01:37:37.080
+So this is another area.
+
+01:37:37.080 --> 01:37:41.480
+So something else that we had
+mentioned regarding capabilities
+
+01:37:41.480 --> 01:37:44.900
+that we were interested in
+was OCR as a capability.
+
+01:37:44.900 --> 01:37:46.860
+And on the image
+generation side,
+
+01:37:46.860 --> 01:37:49.720
+you might want to
+generate images
+
+01:37:49.720 --> 01:37:52.980
+that have walls
+of text in there,
+
+01:37:52.980 --> 01:37:55.960
+and you want to know how
+well they are rendered.
+
+01:37:55.960 --> 01:37:59.520
+So there is a long
+text bench that
+
+01:37:59.520 --> 01:38:04.200
+could be mentioned,
+where you have scenarios,
+
+01:38:04.200 --> 01:38:07.520
+where displaying
+text might be seen
+
+01:38:07.520 --> 01:38:11.120
+as interesting from an image
+generation perspective.
+
+01:38:11.120 --> 01:38:18.560
+And the paper uses a VLM,
+typically an OCR judge,
+
+01:38:18.560 --> 01:38:22.840
+that will try to render the
+text in the generated image,
+
+01:38:22.840 --> 01:38:26.040
+and it will match to the
+reference text that was
+
+01:38:26.040 --> 01:38:28.680
+used as a generation prompt.
+
+01:38:28.680 --> 01:38:32.760
+And if both match, then
+we say that the text
+
+01:38:32.760 --> 01:38:34.680
+was correctly
+generated, so it's one
+
+01:38:34.680 --> 01:38:38.720
+other interesting application.
+
+01:38:38.720 --> 01:38:40.280
+And then the last
+one I will mention
+
+01:38:40.280 --> 01:38:43.960
+is on another image
+generation mode
+
+01:38:43.960 --> 01:38:46.320
+that is of interest,
+typically, when
+
+01:38:46.320 --> 01:38:47.620
+you want to generate an image.
+
+01:38:47.620 --> 01:38:52.440
+So if you want to operate
+on top of a given image.
+
+01:38:52.440 --> 01:38:58.560
+So here, Grounded Edits Bench.
+
+01:38:58.560 --> 01:39:01.640
+So I put a question mark
+because it's not explicitly
+
+01:39:01.640 --> 01:39:07.580
+spelled out in the paper,
+but the abbreviation meaning,
+
+01:39:07.580 --> 01:39:12.140
+but the grounding part is on
+the input image that is given.
+
+01:39:12.140 --> 01:39:15.640
+So you ask a task
+about it, for example,
+
+01:39:15.640 --> 01:39:18.980
+replacing some background,
+changing colors, and so on.
+
+01:39:18.980 --> 01:39:27.760
+So you have 11 such tasks, and
+you use a MLLM-as-a-Judge model
+
+01:39:27.760 --> 01:39:31.920
+that operates on both perceptual
+quality and semantic consistency
+
+01:39:31.920 --> 01:39:33.420
+to judge the output.
+
+01:39:33.420 --> 01:39:40.680
+So here's a figure from their
+paper on what it looks like.
+
+01:39:40.680 --> 01:39:44.400
+And I just want to say one
+last word about all of this.
+
+01:39:44.400 --> 01:39:46.280
+Sometimes you might
+be overwhelmed
+
+01:39:46.280 --> 01:39:47.450
+with all these metrics.
+
+01:39:47.450 --> 01:39:49.200
+So we saw at the
+beginning of the lecture,
+
+01:39:49.200 --> 01:39:51.720
+a bunch of quantitative ones.
+
+01:39:51.720 --> 01:39:57.760
+We saw MLLM-as-a-Judge ones that
+are still imperfect because they
+
+01:39:57.760 --> 01:40:01.200
+depend on how well you tune
+it, so there is no absolute way
+
+01:40:01.200 --> 01:40:03.760
+of knowing how
+something performs.
+
+01:40:03.760 --> 01:40:10.360
+And you might be prone to only
+relying on a few sample images
+
+01:40:10.360 --> 01:40:16.760
+as a way to who have an opinion
+about a given image model,
+
+01:40:16.760 --> 01:40:20.200
+but I want to say that so
+let's do the following thought
+
+01:40:20.200 --> 01:40:21.680
+experiment.
+
+01:40:21.680 --> 01:40:25.120
+If you consider
+not the procedure
+
+01:40:25.120 --> 01:40:28.800
+of picking the next image that
+is generated by your model,
+
+01:40:28.800 --> 01:40:34.960
+but the best of three, versus
+the least well of three,
+
+01:40:34.960 --> 01:40:38.200
+then you see the
+corresponding distributions
+
+01:40:38.200 --> 01:40:39.680
+are quite different.
+
+01:40:39.680 --> 01:40:43.080
+So from the same image
+generation model,
+
+01:40:43.080 --> 01:40:46.000
+you could handcraft
+different distributions just
+
+01:40:46.000 --> 01:40:49.280
+by the way you go
+about sampling what
+
+01:40:49.280 --> 01:40:51.600
+you want to display to someone.
+
+01:40:51.600 --> 01:40:53.760
+So yeah, I just
+want to put a caveat
+
+01:40:53.760 --> 01:40:58.720
+on when you see images doesn't
+tell the whole story either.
+
+01:40:58.720 --> 01:41:02.640
+And with that, thank you
+very much for coming here,
+
+01:41:02.640 --> 01:41:03.893
+despite the long weekend.
+
+01:41:03.893 --> 01:41:05.060
+I hope you have a great one.
+
+01:41:05.060 --> 01:41:07.510
+[APPLAUSE]
+

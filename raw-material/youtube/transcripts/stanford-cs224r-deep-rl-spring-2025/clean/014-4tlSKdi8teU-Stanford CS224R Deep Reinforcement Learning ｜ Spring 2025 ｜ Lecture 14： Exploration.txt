@@ -1,0 +1,2475 @@
+Let's get started.
+Today we're going to be
+talking about exploration.
+We're going to be starting
+by talking about exploration
+in standard reinforcement
+learning settings,
+actually, primarily,
+in bandit settings,
+and then how that might
+translate to robotics
+and large language models.
+And then we're actually
+going to revisit
+some of the meta-learning
+topics that we talked about
+on Wednesday and revisit how
+we might effectively learn how
+to explore in meta-RL settings.
+So what is the
+exploration problem?
+If we apply reinforcement
+learning to some problems,
+we're able to solve
+them quite well.
+So for example, if we try to
+train a reinforcement learning
+agent to play Breakout,
+where the reward is
+the score of the game, you get a
+pretty performant player that's
+able to get a high score.
+But if you instead try to train
+a reinforcement learning agent
+to play a game like this
+one on the right, which
+is called Montezuma's
+Revenge, it's
+really, really hard for
+reinforcement learning systems
+to play.
+Now, why is there
+this difference?
+So in the second game, you can
+get a reward if you get a key.
+Kind of intuitively, if
+you're getting a key,
+that's useful for
+being able to progress.
+Opening a door is also useful.
+And there's this skull
+that's rolling around.
+And intuitively,
+we as humans know
+that that's probably something
+you might want to avoid.
+Likewise, falling off of
+a ledge might be something
+that you'd avoid.
+But these are things that the
+agent doesn't know itself.
+And in general, kind
+of completing the game,
+these are very sparse,
+discrete events.
+And completing the game
+only weakly correlates
+relates with those
+rewarding events.
+And so actually, each of those
+individual rewarding events
+are also kind of
+few and far between.
+So for example,
+at the beginning,
+the agent isn't getting
+any reward at all
+and it has to figure out
+how to even get to the key
+in the first place,
+which requires quite
+a long sequence of events.
+Now, as humans, we
+kind of know what
+to do because we
+understand what each
+of these sprites
+in the game mean.
+But the algorithm really
+doesn't know that.
+So if we instead try
+to imagine ourselves
+as reinforcement
+learning algorithms,
+let's think through
+that a little bit.
+And we can think through
+that with a game called Mao.
+It's like half a game,
+half a joke in some ways.
+You aren't told the rules
+of the game in advance.
+And if you break a rule,
+then you get a penalty.
+And you don't actually know.
+You get a penalty, but you don't
+actually know what the rule is,
+and you have to discover the
+rules through trial and error.
+And when you get a penalty,
+it's not always clear
+why you got a penalty.
+The rules don't actually
+necessarily make sense to you.
+And tasks like
+Montezuma's Revenge
+are difficult because
+reinforcement learning methods,
+they don't know about the rules.
+They know very little
+about what's good
+and what's bad, what they
+can do, what they can't do.
+And when tasks become
+longer and longer,
+this also makes the problem
+even more difficult,
+because you have to figure
+out an even longer sequence
+of actions that might
+lead to getting reward
+versus getting a penalty.
+And so if you think about what
+the reinforcement learning
+agent has to do,
+reinforcement learning agents
+are kind of analogous to
+imagining if your goal in life
+was to win 50 games of Mao,
+and you also didn't even
+know this in advance.
+You only kind of learned this
+from actually getting rewards,
+from winning games and getting
+penalties from losing games.
+So that's what the
+reinforcement learning system--
+that's the difficulty that
+these algorithms are faced with.
+It's really, really
+hard, especially
+in sparse-reward scenarios.
+Now, if we were to think about
+this exploration problem,
+there's a couple different
+ways of looking at it.
+One way of looking at it is,
+we want to discover high reward
+strategies.
+We want to basically seek out
+rewards and find sequences
+of actions that, individually,
+those actions may not
+be rewarding, but when
+we seek them together,
+we're able to find rewards.
+And another way to view
+the exploration problem
+is deciding whether to
+attempt a new behavior,
+or continuing to do the best
+thing that it knows so far.
+You're basically deciding,
+should I try something new,
+or should I do something that
+has been good in the past?
+These are actually part
+of a single problem,
+where you need to--
+there's this
+exploitation problem,
+which is doing what you know
+will yield the highest reward,
+doing the things that
+you've seen before that have
+high reward, acting
+according to your Q function,
+for example, and this
+exploration problem,
+which is doing things that you
+haven't done before in hopes
+of getting higher reward.
+And so that's how we can
+think about this reinforcement
+learning problem, where we
+need to balance these two
+objectives if our
+goal is to maximize
+a sum of rewards over time.
+As some examples, if
+you are in a new city,
+you move somewhere
+new, exploration
+would be trying new restaurants.
+Exploitation would be going
+to your favorite restaurant
+or restaurant that
+you like the best.
+One actually very common use
+of reinforcement learning
+is figuring out which
+ads to place and where.
+And exploitation would
+be taking the ad that
+has been the most successful and
+showing that one to the user.
+An exploration would
+be instead, trying
+to pick a different
+advertisement at random,
+and instead showing that
+advertisement to the user.
+Or as a kind of a final
+example, in oil drilling,
+you don't know where
+you're going to find--
+where you're going to find oil.
+And so exploitation would
+be taking the best location
+that you've found before
+that has yielded oil,
+versus exploration would be
+drilling at a new location.
+So exploration is quite hard.
+And if we want to design an
+algorithm for exploration,
+we might think about what is
+the best strategy for exploring
+and the best way to trade
+off between exploration
+and exploitation.
+And we also need to
+think about, what
+does optimality of
+exploration even mean?
+There's a range of
+reinforcement learning problems,
+ranging from more
+simple problems
+where you can actually
+analyze whether or not
+the strategy is optimal or not,
+to more complicated problems
+where it's intractable to
+analyze whether or it's optimal,
+and also intractable
+to develop algorithms
+that are able to do a
+good job at exploration.
+On the simple side, you start
+with multi-armed bandits,
+the kind of one-step RL problems
+that don't have any state.
+And then if you want to
+make that more complicated,
+you add context.
+You add some sort of features
+for each POS for the state
+that you're in.
+You could then move to
+small MDPs, to larger MDPs.
+And a lot of the
+kind of problems
+that we've been talking
+about in this course
+are large MDPs without
+any known structure,
+and those are the ones that are
+like the hardest for getting
+good exploration strategy,
+and also, theoretically,
+thinking about exploration.
+So before we talk
+about exploration
+in the large problems,
+let's talk a little bit
+about bandits for a minute,
+because they provide a nice way
+to think about exploration.
+And they're actually
+used in practice
+for a variety of problems.
+And specifically, the way
+that we can think about--
+what is a bandit?
+It's not the kind of someone
+that runs around and maybe tries
+to steal stuff or something.
+It's a formulation of
+reinforcement learning,
+where the horizon is just one
+time step for a single episode.
+There is no state.
+And unlike everything we've
+talked about in MDP so far,
+your reward is
+actually stochastic.
+And so if you go back
+to the examples before,
+you could think
+about the problem
+as selecting a restaurant
+as a bandit problem where
+you could, for example, select
+to go to one restaurant.
+You could select to go to
+a different restaurant.
+You could select to go to
+a different restaurant,
+and so forth.
+And depending on your
+experience in previous episodes
+of selecting restaurants,
+you could inform your choice
+about whether you want to pick
+a new restaurant where you know
+nothing about the reward,
+or go to a restaurant
+that you've received high
+reward for it in the future.
+And the reward is
+stochastic in the sense
+that your experience
+at that restaurant
+may not be the same
+every single time.
+And so yeah, this is what a
+bandit problem looks like.
+Now, if we want to think
+about how good is exploration
+and how good is
+our reinforcement
+learning algorithm,
+we want to think
+about how much reward we're
+getting relative to if we
+were acting optimally.
+And so far, we've been
+thinking about sums of rewards,
+oftentime averaged
+over episodes.
+In bandit problems,
+you actually are
+often thinking about, actually,
+the entire reinforcement
+learning process, and the
+optimality of the reinforcement
+learning process, and the
+optimality of exploration
+followed by exploitation.
+And so say that you have taken
+capital T episodes so far.
+Then the best you
+could have done
+is going to be something like
+the expected reward of taking
+the optimal action times T. And
+this is actually in some ways
+an oracle, because when you
+haven't taken any episodes
+at the beginning,
+then you are forced
+to take a random action
+because you don't know anything
+about the MDP so far.
+And so this is kind
+of, in retrospect,
+what is the best thing
+you could have done.
+And this is a upper bound
+on the sum of rewards
+that you could be
+getting after T episodes.
+And then if we want to think
+about how well we've been doing,
+we can think about this
+subtracted by the sum of rewards
+that we actually observed from
+the actions that we've taken.
+And so that would be
+something like a sum from T
+equals 1 to T of the
+action-- the actual action
+that we decided to take in
+each particular episode.
+And the gap between these
+two is going to be measuring,
+basically, a form
+of optimality gap.
+And this expression is
+something that's called regret.
+And it's measuring,
+basically, how much
+do we regret taking the
+action that we did compared
+to taking the optimal action.
+Now, if you were to think
+about regret over time,
+so here, actually, time
+is indexing over episodes
+because each episode is
+just a single time step.
+So if we think
+about as a function
+of the number of
+episodes, the regret
+after taking those
+number of episodes.
+If you were acting
+optimally, what sort of curve
+would you get on this plot?
+Yeah, so I see mostly
+going straight.
+So if you're acting
+optimally, this will be zero,
+and it will be zero even as you
+have more and more episodes.
+It'll be zero in expectation.
+There might be some randomness.
+And so you would get a
+curve that looks like this.
+And so this is sort of optimal.
+Now, in practice,
+actually achieving
+this is not really possible
+because at the first time step,
+like I mentioned, you have
+to take a random action.
+Now, does anyone have thoughts
+on what this curve would
+look like if you were just
+taking an episode at random.
+Yeah, it'll keep increasing.
+Yeah.
+So if you're taking
+an episode at random,
+there will now be a
+gap between these,
+and you would be
+getting a higher reward
+from taking the optimal
+action compared to taking
+that action at random.
+And if, for example, you
+were always picking A1,
+and A1 is not the best action,
+then after one episode,
+you would expect to have
+some kind of non-zero regret.
+So you would have a curve
+that looks like this.
+And then if you took A1
+again the next episode,
+then you would then
+incur the same difference
+in optimal rewards versus
+the rewards that you took.
+And so then this would
+increase, and you would actually
+get something that looks linear.
+And that means that,
+basically, every time you--
+basically, at every
+time step, there's
+a fixed difference between the
+optimal reward and the reward
+that you took.
+And so whenever you get a linear
+regret increasing linearly,
+that means that your algorithm
+is not actually improving.
+It's not actually
+using the exploration
+to get better rewards.
+If instead you were--
+the blue markers never worked
+that well, but we can see.
+If instead you were actually
+having an algorithm that
+is a bit smarter, then you would
+expect to have sublinear regret.
+And so you'd expect actually
+not just linearly increase
+your regret over
+time, but actually
+have this curve look
+something like this,
+where it starts looking
+something more like linear.
+And then eventually, if you
+then get to the optimal behavior
+after exploring,
+then it flattens out
+to something like this.
+And you could imagine that
+this portion is like you're now
+in the exploitation phase.
+And the phase
+before that is when
+you're exploring and gathering
+information about the problem.
+The question is, to
+make these curves,
+are we running the learning
+process a lot of different times
+and then averaging?
+So for these curves,
+this is actually--
+each of these curves is just one
+reinforcement learning process.
+And I guess they're
+very smooth here,
+and in practice, they'll
+be a little bit noisier.
+The optimal, I guess, this
+is kind of an expectation.
+And so this is
+going to be smooth.
+But you might have something
+where, for example, in reality,
+maybe you got unlucky
+one time step.
+And this went up
+because you got unlucky.
+Maybe at the next time step, you
+still took the optimal action
+but got lucky.
+And so this will actually have
+some noise in it in practice.
+Yeah, so the question is,
+we have an expectation
+on the first part.
+We don't have an
+expectation here.
+Why is that?
+This is basically some measure
+of the optimal expected
+reward after T time steps.
+This is actually just the
+actual reward that you observed.
+You could also have an
+expectation over this,
+over reinforcement
+learning runs.
+And that would then give you--
+as an example here, if you run
+this algorithm multiple times,
+these regret curves
+will actually
+look a little bit
+different depending
+on how unlucky you get.
+And then if you
+were to then measure
+this in terms of
+expectations, then that
+would be averaging
+over different runs
+of the reinforcement
+learning algorithm.
+Yeah, so the question is, if
+we're taking random actions,
+why is it linear, and why is it
+increasing by a fixed amount?
+So this will be noisy if you
+are taking random actions.
+I don't know how to say that.
+So yeah, it will be noisy.
+If you run it multiple times in
+expectation, it will be linear.
+And if you have a
+deterministic MDP
+and you always select
+action 1 through a very not
+smart strategy, and the rewards
+are a bit more deterministic,
+then you might actually get
+a curve that looks like this.
+So the question is, if
+we're always taking A1,
+then how do we actually know
+how to measure this formula?
+This is not actually
+a formula that--
+sorry.
+To back up a little bit,
+this is actually not--
+this is what we're aiming to--
+we're aiming to minimize regret.
+And we're aiming
+to get something
+that is able to flatten out.
+But this is more of an object
+that's used for analysis
+and not our
+optimization objective,
+because we actually
+can't measure this
+without knowledge of
+the bandit problem,
+or knowledge of the MDP.
+If you introduce an
+expectation here,
+then you would expect
+it to be monotonic.
+If not, then because the
+reward is stochastic,
+you could have
+scenarios where you
+say that the best action
+is A5, and the probability
+of getting good reward is--
+I don't know-- 90% of the
+time, and 10% of the time,
+you get a bad reward.
+Then you're going to see,
+when you get a good reward,
+it will actually relative to the
+expert which is averaging over
+that, it will go down.
+But if you write this
+as an expectation
+for the reinforcement
+learning algorithm,
+it would be monotonic.
+Cool.
+So this is the regret
+formula, regret
+after doing reinforcement
+learning for T episodes.
+Expected reward of
+the best action,
+basically, the best we can
+hope for in expectation,
+if we had knowledge
+of what the bandit is.
+And then this is the
+reward of the action
+that's actually taken.
+There's a variety of simple
+strategies for exploration,
+and including some that you
+can show that are optimal.
+And you can often
+analyze algorithms
+and provide theoretical
+guarantees on regret.
+And then also,
+even the algorithms
+that you can theoretically
+make some guarantees
+about in practice,
+performance can vary.
+And so to get a little bit
+more intuition-- actually, no.
+Before we do that-- we're going
+to play a game in a minute,
+but before we do
+that, let's talk
+about different strategies
+for exploration,
+so specifically in
+bandits, so not in MDPs.
+So one approach is when you're
+selecting different restaurants,
+for example, if you haven't
+explored a restaurant,
+then you could choose
+to be optimistic
+about that restaurant.
+And that will incentivize you
+to explore new restaurants,
+rather than always being greedy
+with respect to restaurants
+you've tried before.
+And so the way
+this could work is
+you could track
+the average reward
+that you have received in the
+past for each of the actions.
+And then if you
+were to exploit, you
+would just take
+the action that has
+the maximum average
+reward for the things
+that you've seen so far.
+But instead, if we want to
+actually encourage the algorithm
+to visit new things,
+then we could--
+we still want to
+visit actions that we
+think have high average
+rewards, so that if we
+go to a restaurant
+that's really bad,
+we maybe don't go to it again.
+But we're going to add a term
+that is some kind of variance
+of our reward estimate.
+This is basically like,
+if this variance is high,
+that means that we're
+uncertain about the reward
+for that action.
+And if we're
+uncertain, then we're
+going to basically give
+this sort of bonus,
+this sort of reward
+bonus, on top
+of our estimate of
+the average reward
+to encourage our
+algorithm to explore
+things that are uncertain, or
+things that have high variance.
+And so the intuition
+here is that we're
+assuming that unknown things
+are going to be good until we
+actually then observe them.
+And if we then observe them
+and they're really bad,
+then we'll act accordingly.
+In the future, the
+variance will go down,
+and the reward
+estimate will go down.
+And this is a way to balance
+exploration and exploitation.
+Yeah, so the question is, how
+would you choose in this case
+an action that you
+haven't seen before?
+So if you haven't
+seen an action before,
+then your variance estimate
+will be something like infinite,
+for example.
+And then this will encourage
+it to explore, basically,
+all of the actions that
+it hasn't explored first
+at least once.
+And then from
+there, your variance
+will go-- your variance
+estimate or your uncertainty
+about an action will
+go down over time.
+And yeah, so this is basically,
+if you haven't done anything
+before, it will incentivize
+it to visit that first.
+Cool.
+So this is a popular algorithm.
+You can actually derive
+guarantees for it.
+It's called upper confidence
+bound, or one version of it
+is called upper
+confidence bound.
+There's another
+approach that you
+can also take that is actually
+harder to show guarantees for,
+but can work pretty
+well in practice.
+And we actually saw something
+like this in the last lecture.
+And essentially, what
+you're trying to do
+is you're trying to estimate
+the probability of getting
+good rewards from each of
+the arms of the bandit.
+And so the way
+this would work is
+you assume that there's some
+sort of distribution of rewards
+for each of the actions.
+And this defines a
+partially observed MDP
+where you don't know the
+parameters of the reward
+function.
+You don't know if
+you're going to get
+a good reward or bad reward.
+And so you'll then actually
+try to model and form
+an estimate of the
+likelihood of getting rewards
+by trying to model these
+parameters in your uncertainty
+over it.
+So you'll form an
+estimate with any data
+that you've seen so far.
+Then you'll actually
+sample an MDP
+from your model of
+possible MDPs of the world,
+and then you'll take
+the optimal action,
+assuming that your
+sample was correct,
+and then repeat that process
+to update your beliefs again,
+and then sample a new MDP,
+and repeat the process.
+And we'll walk
+through an example.
+But the intuition here is
+that you can iteratively
+improve your model of the
+bandit and act according
+to one of the models
+that is covered
+by one of the potential
+sets of probabilities that's
+modeled by your MDP model.
+One last note,
+these are actually
+methods that are
+widely used and studied
+in industry for recommenders
+and ad placement.
+Everything we've been
+talking about so far
+is for these sorts of
+small bandit problems,
+but they are actually
+quite relevant for a number
+of practical problems, even when
+you don't have longer episodes
+or episodes with state.
+And now, let's
+play a little game
+to get some intuition
+for how this works.
+So here is a little simulation.
+Say that you are hired as
+the head of drug development
+at a prestigious
+research hospital.
+Things are going well, and now
+there's some sort of plague,
+and you need to
+figure out what drugs
+are going to be effective
+for addressing the plague.
+And you want to save
+people's lives by giving them
+the drug that's most effective.
+Now, you can recognize this as a
+bandit problem, where each drug,
+you don't know how
+capable it's going to be.
+And we can say that
+maybe there is--
+maybe there's somewhere
+around 5,000 patients,
+and there's maybe around
+10 different drugs that
+you're considering.
+And your goal is to try
+to understand-- well, try
+to save lives, try to save
+as many lives as possible,
+but also balancing saving lives
+right now versus saving lives
+in the future as you
+learn information
+about each of the drugs.
+Cool.
+So let's play.
+Who wants to suggest a drug?
+Drug one.
+OK.
+So we see that we
+prescribe drug one.
+The patient lived,
+so that's good.
+Who wants to pick a drug?
+Yeah?
+Four.
+Four.
+OK.
+We also see the patient lived.
+This is good, on a good track.
+Yeah.
+10.
+10?
+Died.
+OK.
+Yeah?
+Seven.
+Seven?
+Lived.
+OK.
+So one, four and seven
+are looking better than 10
+right now.
+Someone else?
+Yeah?
+Six?
+Six?
+Still exploring.
+Patient died.
+Five?
+Died.
+OK, not so good.
+Who else?
+Yeah.
+Seven again.
+Seven.
+OK, maybe we want
+to start exploiting.
+Patient lived again, so
+that seems pretty good.
+Who wants to suggest?
+Yeah.
+Two.
+Patient died.
+Not so good.
+Yeah.
+Seven.
+OK.
+Patient lived again.
+Pretty good.
+What do we want to do next?
+Seven?
+OK, do we want to
+keep doing seven?
+Patient died.
+Yeah?
+Eight?
+Patient died.
+Seven?
+Patient lived.
+All right, should we just keep
+on going seven at this point?
+Are we happy with seven?
+Try nine.
+Patient lived.
+Try one.
+Try one.
+Patient died.
+Four, patient lived.
+Four again.
+Patient died.
+Nine, patient lived.
+Three, patient died.
+Nine, patient lived.
+OK, we like nine?
+Cool.
+Maybe let's keep on doing nine.
+Patient is living a lot.
+Great.
+We have one patient died.
+So let's say that we kept on
+going with nine for a while.
+And then we can plot--
+actually, well, with 5,000,
+which I could just say keep
+on doing nine.
+Maybe we'll stop there and we
+can actually plot the regret.
+So this was the true
+efficacy of the drugs,
+and we can see that nine
+actually was the best one,
+so we actually found the
+best one, which is good.
+Seven was also pretty good.
+And then we could
+also plot the number
+of lives that are saved
+by different algorithms.
+And so higher here is better.
+And we see that the
+posterior sampling approach--
+And in this case, what posterior
+sampling would be doing
+is modeling the probability
+of the efficacy of each drug.
+And then based on
+this estimate of that,
+picking something that's better.
+And we can see that how well
+we did right here is in purple.
+It's a little bit hard
+to tell just because it's
+a little small, but we can
+see that, generally, it
+looks like we're doing pretty
+well relative to the algorithms.
+And then you can also
+plot regret over time.
+And actually, here we can see
+that we're actually doing better
+than all the algorithms.
+So you guys are pretty good.
+Nice.
+Maybe there's some
+luck involved there,
+so this is just a single run.
+And what these different
+algorithms are is you see greedy
+is showing green.
+Greedy is just picking the
+best thing you've seen so far.
+And over time, especially
+with more and more trials
+that you might be running,
+like more and more
+patients, more and
+more ad placements,
+whatever, it's
+getting a lot worse.
+In this case, we saw that
+posterior sampling, yellow,
+is by far the best algorithm.
+And then the other algorithms,
+red is showing epsilon greedy.
+Blue is showing UCB, so
+that's the first algorithm
+we talked about with
+being optimistic
+about uncertain actions.
+So this is basically
+showing the trade-off
+between different algorithms.
+One other thing to note
+that epsilon greedy,
+it's a bit more
+greedy, and so we
+see that with-- when
+you have fewer patients,
+it actually is doing
+better than UCB.
+But then in the long
+run, UCB is doing
+better because it's actually
+optimizing a bit more
+for making sure that you're
+exploring more actions.
+And so in the long run,
+it's able to take more
+optimal actions in the future.
+Is there a
+mathematical reason why
+posterior sampling does better
+than UCB and epsilon greedy?
+Yeah.
+So I don't want to go
+too much into the math.
+And actually, posterior
+sampling, for this MDP,
+you probably could analyze it.
+But in general, it
+can be hard to derive
+general theoretical
+guarantees for it.
+With regard to epsilon
+greedy, I guess some of it
+comes down to that
+value of epsilon,
+and then tuning it to be--
+and generally, with
+epsilon greedy,
+you often choose epsilon to be
+smaller and smaller over time.
+And that hyperparameter would
+probably drastically impact
+performance, because at
+this point in training,
+if epsilon is constant, you're
+going to be keeping on--
+you're going to be
+still occasionally
+taking random drugs.
+And at that point, you already
+know a lot about the drug,
+and prescribing a random
+drug is a very poor choice.
+Cool.
+So also, if you want
+to play more, you can--
+I'll put the website
+in the slides.
+So that's exploration
+in bandits.
+Now, what does this look like
+for robotics, language models
+and larger MDPs?
+Different people have
+different opinions on this.
+I have a somewhat
+pessimistic opinion on it.
+And in particular,
+there's actually
+a lot of research that try to
+translate these ideas to larger
+MDPs.
+For example, you
+can try to formulate
+some estimate of whether
+you've taken an action or not,
+and give reward
+bonuses for novelty,
+for visiting new states,
+for taking new actions.
+And similarly, like
+posterior sampling,
+you can try to figure out
+models of different dynamics
+and so forth and
+act accordingly.
+But at the end of the day, when
+you're in a very large MDP,
+exploration from scratch
+is generally intractable.
+So for example, if you randomly
+initialize a transformer
+language model and
+try to figure out
+how to make a user happy, or
+some other reward function,
+like upvotes or
+something like that,
+actually, just using
+upvotes to train a language
+model from scratch
+isn't going to work.
+The sheer vastness of the
+possible space of tokens
+is way too large, at least
+relative to the patients
+that most users will have.
+Likewise, in robotics,
+if you're trying
+to even just learn how to--
+I don't know-- pour water
+from one cup to another cup,
+you're going to be stuck in a
+realm where you're just randomly
+moving arms around,
+rather than actually
+doing things that are useful
+if you're starting completely
+from scratch.
+Instead, generally,
+what exploration
+looks like in these larger
+domains is to rely heavily
+on demonstrations, or on base
+models that were pre-trained
+on data and demonstrations.
+So for example,
+reinforcement learning
+has been quite successful
+in language models,
+because, and
+particularly in scenarios
+where you have a strong
+base model that already
+knows how to write
+coherent sentences,
+and already knows
+roughly how to approach
+certain kinds of prompts, or
+certain kinds of problems.
+And likewise, in robotics,
+if you have demonstrations
+of example behavior that
+achieve high reward,
+then using that as a starting
+point for reinforcement learning
+is very powerful.
+And generally, these models
+are providing an initialization
+that's really excellent
+for exploration
+and seeking out
+potential things.
+Wherever feasible,
+it's also quite useful
+to use shaped
+rewards, because that
+can guide any sort of
+exploration process, as well.
+And this could be if
+you're in simulations.
+You can hand code
+sparse, dense rewards,
+or if you're learning
+single-step rewards
+from preferences, that
+actually also provides
+a fairly dense reward signal.
+This isn't to say you could
+also combine some of these ideas
+with demonstrations
+and base models.
+But generally, you
+get a lot further
+from starting with this
+kind of initialization.
+That said, there is still
+potentially an exploration
+problem that we started
+to talk about last time.
+And I want to revisit that,
+now that we've actually
+started to learn about
+exploration in standard MDPs.
+Yeah, exactly.
+So the idea here is that if
+you're in these kinds of MDPs,
+the state space is enormous, and
+all of the possible actions you
+can take is enormous, as well.
+And this is a way
+to bias the model
+towards a part of
+the state space
+that is going to
+get high reward.
+Yeah, giving it bias of,
+these are the kinds of things
+I want you to do.
+So in particular, what
+I'd like to talk about is,
+say you have some model
+that has been trained,
+and it can do a
+variety of things.
+But there's scenarios
+where when you're actually
+deploying that
+policy, you actually,
+even if you have a lot
+of prior experience,
+you might need to
+explore at test time
+because you might not have
+all the information you
+need to get high reward.
+And so we talked about a
+couple examples on Wednesday
+where, for example, you might
+need to find ingredients
+in a kitchen.
+And to do that, you
+can't just start cooking.
+You need to open
+drawers, open cabinets,
+and so forth to try to
+seek out information.
+And second, in language
+models for reasoning,
+you might need to explore
+different strategies that
+might lead to a
+solution to a problem,
+rather than simply trying to
+start writing tokens that you
+think might lead
+to the solution.
+Now, we talked about this
+kind of meta-RL problem
+where we're optimizing a policy
+with history, or with memory.
+And generally,
+memory should allow
+agents to be able to
+explore and exploit,
+because they're able to
+try different actions,
+and remember what
+they did, and then use
+that information about
+where ingredients
+are to then solve the problem.
+But we talked about how
+if we optimize exploration
+and exploitation together
+with an end-to-end objective,
+this is hard.
+Because we have
+this chicken and egg
+problem, where if we haven't
+yet learned how to explore, then
+we can't actually get
+high rewards because we
+haven't found the ingredients.
+And likewise, if we don't yet
+know how to solve the task,
+then we get low reward for any
+sort of exploration behavior.
+So there's this
+coupling problem.
+And we also talked about
+some alternative exploration
+strategies that are
+easier to optimize,
+but can lead to
+suboptimal performance.
+And what I'd like
+to talk about is,
+there's actually a method that
+can both get optimal exploration
+and exploitation trade-off,
+and also be efficient to train.
+So it sort of gets the
+best of both worlds.
+And the idea for
+this is actually
+going to build upon this
+last alternative exploration
+strategy.
+Let's write this right here.
+So the idea here is
+that you can try to--
+for different environments
+or different tasks,
+you could try to fit a dynamics
+model and a reward model,
+and then try to explore
+in ways that tell us
+more information about our
+model of the environment.
+And this should incentivize
+the agent or the policy
+to actually seek out
+additional information
+to explore in a way
+that's decoupled
+from executing on the task.
+And so if you do this and
+you have different MDPs that
+correspond to navigating
+to different circles,
+and then you try to incentivize
+it to take trajectories that
+lead to a better
+model of reward,
+and better model of
+dynamics, you actually
+get a trajectory
+that looks something
+like the purple trajectory,
+where it's explicitly
+trying to visit
+states that allow
+it to learn where the reward
+function is going to be.
+Now, this can learn efficient
+exploration strategies,
+but it has its
+downsides and it can be
+suboptimal in some scenarios.
+For example, if
+there's distractors,
+like if there's pictures
+on the wall, for example,
+then it's going to be looking
+at all the pictures on the wall
+to learn a good model of
+those different environments.
+So we can build upon
+this idea and try
+to learn how to explore
+without learning a model.
+And in particular, instead
+of trying to learn a dynamics
+and reward model,
+we could instead
+try to be able to
+predict what the task is.
+So we're going to label each
+task with a identifier mu.
+This could be either like
+a one-hot like an index,
+or it could be a
+language description,
+or it could be some more
+continuous description
+of the task, like
+continuous vector.
+And then what we
+could do is we could
+try to explore in a way
+that allows us to predict
+what the task is at hand.
+So for example,
+we'll have our say
+that we have two policies,
+and exploration policy
+and exploitation policy.
+In practice you
+could combine these,
+but it's helpful to think
+about them as separate.
+So we'll have our exploration
+strategy or exploration policy.
+This is going to produce some
+experience in a particular task.
+And our goal is for it
+to be able to explore,
+to be able to discern
+different tasks.
+And so we could
+separately train a model
+that's going to be
+predicting the task
+identifier from the experience
+that we've collected so far.
+And if we do
+something like this,
+then this sort of
+exploration objective
+is completely separate from
+actually executing on the task.
+The goal here is to be able to
+predict the task identifier.
+And then separate
+from this, we could
+train a policy that's trying
+to execute on the task,
+just using the
+identifier for the task.
+And this is just
+multi-task learning
+or multi-task
+reinforcement learning,
+and this we can train just
+with optimizing reward.
+And it doesn't rely on
+having good exploration.
+So here, we're able to decouple
+the objective for execution
+so it doesn't rely
+on exploration,
+and have an exploration
+objective just based
+on identifying the task that
+isn't dependent on how well you
+do the task.
+So on the slides, we'll train a
+policy in a task identification
+model so that we collect data
+that allows for accurate task
+prediction.
+And then we'll
+also train a policy
+that's conditioned
+on the task ID,
+in order to maximize
+reward for each task.
+So which part of this
+is the exploration?
+Is it the model that
+predicts the identifier?
+So the exploration is really
+this policy right here.
+And this model is
+actually just going
+to be used for the
+reward for this.
+And so we're going to be--
+the reward for this
+policy will be, basically,
+how well this model is
+identifying the task,
+or basically, the negative error
+of this task identifier model.
+Good question.
+The question is,
+does this generalize
+to new unseen task categories?
+This can actually struggle
+with generalization,
+and we'll talk about that.
+Let's go through meta-testing,
+and then we'll talk about that.
+So this is roughly
+how training works.
+And then at test time
+if you've trained
+all of these different
+things, then you
+can take your
+exploration policy,
+run it to collect experience,
+then feed that experience
+into your task identifier
+model to get a task ID,
+and then take that task
+ID, and feed that as input
+to your execution policy
+to then execute the task.
+So you'll then explore and
+then identify the task,
+and then exploit.
+Now, getting back to that
+question, the upside of this
+is you don't need to
+model dynamics or rewards.
+You're just learning
+this model that's
+predicting the task identifier.
+But if the task
+identifier is just
+a one-hot vector, for
+example, this probably
+isn't going to generalize
+to new tasks very well.
+And we'll see a solution
+to that on the next slide.
+The question is, what
+is the main difference
+from black box meta-RL that
+we talked about before?
+So we are still
+sampling different MDPs.
+The main difference is
+simply the objective
+for the exploration part.
+So well, I guess there's
+two main differences.
+One is the objective or
+the exploration part,
+and then the second
+is that here we're
+going to be maximizing rewards,
+similar to black box meta-RL.
+But we're actually going to be
+giving it this task identifier
+so that it doesn't need
+to rely on exploration,
+or a good exploration
+strategy when trying
+to learn how to do the task.
+Now we have this
+generalization problem,
+and we actually also have
+a way to address this.
+So instead of using this
+task identifier directly,
+we can actually try to learn a
+more compressed representation
+of the task that will
+generalize more effectively
+than a one-hot vector.
+So as an example, when we
+learn the execution policy,
+we're also going to
+identify information that's
+needed for solving the task.
+And so say that our
+identifier consists
+of a few things
+that are relevant
+and a few things that
+are not relevant.
+So it contains things
+like wall color
+and decorations,
+but then it also
+contains information about
+where the ingredients are.
+Then we'd like to
+use-- and similar
+if you had a one-hot
+vector, it would also
+contain information that
+might be irrelevant,
+because you might have two
+Kitchens that have ingredients
+in the same place, but then have
+other things that are spurious.
+And we'll try to then
+bottleneck this representation
+to compress away
+the stuff that's not
+needed for solving the task.
+And if we can do this, then
+this sort of representation
+should generalize better.
+And then when we
+learn to explore,
+instead of learning
+to explore to be
+able to predict the
+identifier here,
+we'll learn to
+explore so that we
+can recover this compressed
+task representation.
+And so try to be able to
+explore so that you're
+able to predict what this z
+representation for the task is.
+Now, how do you actually
+compress representations
+in neural networks?
+So before we go into the
+details of this algorithm,
+let's talk about
+that a little bit.
+So we have our task
+identifier mu, mu i,
+and then we'd like to
+have a neural network that
+uses that to predict zi.
+And then, we'll
+then have a policy
+that takes this and the
+state and outputs the action.
+And if we train this whole
+thing end to end, it may not--
+it's not necessarily
+incentivized
+to actually compress
+information here,
+to actually remove information
+about decorations, for example.
+So one thing we could do is
+we could simply add noise
+to this representation.
+And so if you take
+this, and instead
+of feeding it directly here,
+you could take this output zi.
+And then right here, you could
+basically add some noise.
+So right here, what
+you're doing is
+you're adding some noise
+where the noise is sampled
+from a Gaussian distribution.
+And if you add noise, then this
+is going to discard information,
+because you're adding--
+you're kind of
+corrupting the signal.
+But you might discard
+some good information,
+especially if you do
+this only at test time.
+Now in principle,
+you could also train
+with this noise to encourage it
+to discard information from z.
+But if you train the policy
+with this noise as input,
+then what it could just
+do is it could just
+increase the
+magnitude of zi here,
+so that the magnitude
+of the noise
+is a lot smaller in comparison.
+And so if you just
+add noise, the model
+can compensate and still
+pass a lot of information
+through this task
+representation.
+So that's not a great
+solution, but what we can do
+is we can just also
+prevent the model
+from increasing the magnitude.
+And we can just
+add a loss that--
+we can modify our training
+loss for the policy
+to include a term that's going
+to minimize the magnitude of z.
+And if you do
+this, you're then--
+now if it kind of blows
+up the magnitude of z,
+then it will have
+a high loss here.
+And so it will be forced
+to keep that magnitude down
+to be lower, so that it is
+actually forced to remove
+information that isn't needed.
+And any sort of magnitude
+it does introduce,
+it will be incentivized to only
+have information that's needed
+for predicting the action.
+This is called a variational
+information bottleneck, which
+is a fancy term for saying
+that you're adding noise,
+and then also
+modifying your loss
+term to have this L2 penalty
+on your representation.
+One of the reasons why this is
+called a variational information
+bottleneck is that this
+objective is actually
+equivalent to minimizing the
+KL divergence between your--
+If you think about
+this as a distribution,
+because this is now kind
+of a Gaussian distribution
+with a mean of zi and
+a variance according
+to the variance
+of epsilon, that's
+equivalent to minimizing
+the KL divergence
+between that distribution and
+the unit Gaussian distribution.
+Yeah, so the question
+is, why are we
+creating a representation
+of a one-hot vector?
+So if we go back
+to the algorithm
+we talked about
+before, where we are
+exploring to
+generate experience,
+then trying to identify
+the task, and then
+condition on that task, if
+we then want to quickly solve
+a new task, then we'll be able
+to use our policy to explore.
+But then after we explore,
+if our representation is
+a one-hot vector here,
+if it's a new task,
+then that new task
+may not cleanly
+fit within one of the
+previous one-hot vectors.
+And so we'd like to have a
+more continuous space that's
+more compactly
+representing the task,
+and essentially learn this
+latent task representation that
+will generalize to new tasks.
+Yeah, so the
+question is, don't we
+need more information
+about the task,
+whether or not two tasks
+are related to each other?
+Though, I guess the--
+so when you think
+about a one-hot,
+it doesn't really seem like it
+is necessarily capturing that
+much information, but a
+one-hot vector is actually less
+compressed than
+something that is--
+something that's a
+more continuous or less
+discrete representation.
+So say, for example, let's see.
+Let's say, for example, that
+one of your tasks is to go here.
+This is task one.
+Task two is to go here.
+Task three is to go here,
+and task four is to go here.
+Then task one and task
+four are very similar,
+but when you use one-hot
+vectors to represent them,
+they are kind of represented
+completely separately.
+And if you try to learn a
+task representation that's
+compressing these,
+then it will actually
+learn a representation that puts
+these much closer to each other.
+The question is, do you need
+to add epsilon to the loss?
+So it doesn't end up
+coming into the loss,
+but you do need to add
+it when you're actually
+training the neural network.
+So you're adding the noise
+and you sample the noise
+every-- resample the
+noise every single time.
+And the epsilon is sampled
+from this distribution,
+and you can think
+about this distribution
+as coming into the loss.
+But yeah, you don't need to add
+epsilon anywhere into the loss.
+It just comes out to this.
+So let's walk through, actually,
+what this algorithm looks
+like more completely.
+So first, let's talk about
+just executing on the task
+separate from exploration.
+So our goal is to learn this
+task representation, this latent
+task representation, and
+how to solve the task.
+And to do this,
+we're going to have--
+we have our task identifier.
+And we're going to have a
+network that produces zi.
+We're going to add noise
+to get zi plus epsilon.
+And then we're going to pass
+this and the state into our--
+this is our execution
+policy that's
+going to produce an action.
+And we can think about
+this as having two parts,
+so we have the execution
+policy right here
+that takes as input the
+noisy zi and the state
+to produce the action.
+And then we also have
+this part right here.
+And we'll write this as some
+encoder F that maps from mu
+i to zi.
+We can write this
+as a distribution,
+because if you fold this noise
+into a distribution like this,
+this will be some
+distribution that is--
+let's now call this z bar.
+This is a distribution that
+is a Gaussian with mean
+of z bar i and some variance.
+Let's just write it as
+variance, like that.
+So these are the two things
+that have parameters, F and pi.
+And we're going to train
+both of these neural networks
+to maximize reward,
+so that we're actually
+learning a representation,
+such that we can solve the task
+and predict actions
+that maximize reward.
+And then we're also going to
+add the regularization on z.
+And so our objective
+here will be
+maximizing the sum
+of expected rewards
+under our execution policy.
+And since we're
+maximizing here, we're
+also going to be minimizing
+this term right here, which
+is equivalent to
+the KL divergence.
+So we'll be maximizing
+the negative KL
+divergence between
+F of zi, given mu i,
+and this unit Gaussian.
+So on the slides,
+there's the objective.
+And this is just trying
+to solve the task,
+and also learn a latent task
+representation based off
+of the task ID.
+It's going to be a vector,
+so z is going to be a vector.
+And so this should be an i.
+But yeah, it'll be a vector.
+And yeah, yeah.
+So the question is, why are
+we adding this information
+bottleneck or this
+KL divergence?
+The reason is that we
+want to learn a nice task
+representation that's
+throwing away information.
+And if we don't add that
+term, then this z right here,
+this representation of
+the task might still
+contain a lot of
+information that
+are irrelevant for
+actually solving the task.
+And so it might contain--
+if, for example, you
+have two tasks that
+have the ingredients in
+the same exact place,
+but something has changed about
+the environment, like the wall
+color is different, or different
+objects in different places,
+but those are irrelevant
+to solving the task,
+then z will include those
+things that are irrelevant.
+And then when you go
+to explore, you're
+then going to be
+exploring things that
+are irrelevant to the task.
+Yeah, so the question
+is, we are given
+the task ID during training.
+We actually don't
+need it at test time.
+So what does this look like
+to generalize to new tasks?
+When you are faced
+with a new task,
+you're going to use
+your exploration policy
+to explore and then predict a--
+instead of predicting
+mu i, you're
+actually going to predicting zi,
+your latent task representation,
+and then feeding that
+into your execution policy
+to then execute or
+exploit on the task.
+The question is, can you
+train the execution policy
+to attend to the relevant parts?
+So if you have a really good
+task representation that doesn't
+have irrelevant parts of the--
+irrelevant things in it,
+then you can skip this step
+and basically zero out
+those parts of the task
+representation.
+This would be in scenarios where
+you don't have a one-hot vector,
+but you already know
+maybe one task--
+Maybe if you have language
+strings, for example,
+and one task is turn left,
+one task is turn right.
+Another task maybe is
+the same as turn left.
+It's like you have the
+task string for it.
+It's basically the
+same exact task.
+Another task is to move forward.
+If these are your different
+tasks, you can get away with--
+this is probably already a
+very compact representation
+because it's telling
+you, are you turning?
+Are you moving?
+And so it's already telling
+you about the relationship
+between different tasks.
+And so if your
+task representation
+is telling you about those
+relationships, then--
+or, for example, if you have
+task representation that's,
+like, the coordinates of
+where you're trying to go,
+then you're going to
+have a task ID that's
+very similar between
+these two tasks.
+And that will already
+be quite compressed.
+In those cases, you
+can skip this step,
+because those
+representations will already
+exclude irrelevant information.
+But then if you instead have
+a task ID that says one-hot
+or that isn't very
+informative, then you
+need to compress that out.
+And otherwise, there isn't--
+this is one of the better
+mathematical frameworks for
+encouraging it to attend
+to the relevant parts.
+Yeah.
+I guess in principle,
+if you had a way
+to change the way that this is
+making decisions based on UI,
+you might also be
+able to do that.
+Yeah, so what's the advantage
+of outputting a distribution?
+So the distribution here is
+what allows us to compress.
+And so by adding noise, or by
+making this a stochastic neural
+network, we're able to
+remove information from it.
+Whereas if you are
+outputting-- if you're
+passing a continuous
+vector through,
+there are heuristic
+ways to try to compress,
+for example, like by
+compressing the dimensionality.
+But you can still pass
+infinite information
+through even a one dimensional
+continuous variable.
+And so this is one way
+that can, even in theory,
+reduce information.
+So now let's talk
+about exploration.
+So our goal in exploration is
+to be able to try to predict z.
+And I don't know
+what notation I used.
+So our goal is to try
+to be able to collect
+data that's predictive of z.
+In practice, by the way, you
+can train both of these policies
+at the same time.
+And we need to think about
+how we would formulate
+a reward function
+that encourages
+it to be predictive of z.
+I don't know if--
+I'll just pick some notation.
+So say that we have--
+we're going to be
+learning some model that's
+trying to be able to
+predict z from the data
+that we've collected.
+And if we have some exploration
+policy that's been exploring,
+then we need to figure out
+how to reward it accordingly.
+And one thing that you could do
+is you could collect some data,
+and then at the end
+of a trajectory,
+for example, see how well
+you can predict z and then
+have the reward be the negative
+prediction error for z.
+and then zero everywhere else.
+But if we did that, we'd
+have a very sparse reward.
+We'd only have it at the
+end of the trajectory.
+And what we can do is we
+could actually incrementally,
+at each time step, look
+at how much information
+we're gaining about z.
+And that's going to give
+us a more dense reward.
+And so specifically, when we're
+trying to train our exploration
+policy, pi exploration, you can
+think about the reward for St
+At.
+We could have it be the negative
+prediction error times step t.
+And that would be something
+that's fairly reasonable.
+But the action, like this
+particular time step,
+at this time step, we're
+actually gaining just one time
+step worth of information.
+And if we wanted to
+quantify that information,
+we could actually look at
+what was our prediction
+error at the previous
+time step, and look
+at the relative difference in
+the era of the previous time
+step versus the error at
+the current time step.
+And that's how
+much information we
+gained from taking this action.
+And so we could
+define the reward
+to be the prediction
+error at t minus 1,
+minus the prediction
+error at time t.
+And so how much?
+This is something that should
+be decreasing over time.
+And this is basically
+how better are we
+at predicting zi
+at the current time
+step relative to the previous
+time step, where prediction
+error is something like--
+is z hat minus the true zi.
+And so we're
+training this model.
+We want this to be per
+step information gain.
+And so if we look
+at all of the states
+up until the current time
+step versus all the time steps
+up to the previous time step,
+we can measure this notion
+of information gain.
+I guess maybe also to make
+this a little bit more
+clear, if this is
+prediction error at time t,
+then this means that z hat is
+the estimate from Predicting z
+from the data up until time t.
+So everything in the
+trajectory up until time t.
+Cool.
+So like many
+research algorithms,
+this has a somewhat
+mangled, forced acronym.
+So decoupled reward free
+exploration and execution
+in meta-RL, or DREAM.
+And you'll be implementing this
+algorithm in homework four.
+So we talked before about
+how if you train end-to-end,
+if you train meta-RL
+methods end-to-end,
+and you're trying to
+optimize for both exploration
+and execution, you have
+this coupling problem.
+And the benefit is that you
+can get optimal exploration.
+And the downside is that
+you're very, very inefficient.
+And you can show
+that this algorithm,
+under fairly mild
+assumptions, will actually
+recover optimal exploration
+and exploitation.
+And then if you look at
+the efficiency, which
+is where end-to-end
+optimization struggled,
+you can think about it.
+You can construct a simple
+bandit problem, where--
+a bandit-like problem, where
+you have these different arms.
+And arm zero, instead of
+being a typical action,
+is going to tell you what
+is the optimal action.
+And so if you, for
+example, learn the strategy
+of taking action zero, and
+then taking the optimal action,
+then that's like optimally
+exploring and then exploiting.
+And in an end-to-end
+optimization,
+you can actually quantify
+how many samples it needs
+for the meta learning process.
+You get something
+like A squared log
+A, where A is the number of
+arms or the number of actions,
+whereas the DREAM algorithm
+requires only A log A. There's
+some assumptions here in
+terms of using Q-learning,
+using uniform exploration in
+the outer loop of the algorithm.
+And you can look at,
+basically, the efficiency,
+like how efficient
+is the algorithm.
+You can see that
+DREAM is able to get--
+is able to reach the optimal
+behavior in many, many fewer
+samples than if you were to use
+end-to-end optimization, which
+is shown in orange as a
+function of the number of arms.
+So as the problem gets
+more and more complicated,
+DREAM is able to
+do far, far better
+than end-to-end optimization.
+We can also empirically
+look at things.
+So here's an example of
+a meta-RL problem where
+different tasks correspond
+to going to different objects
+with different colors.
+And the color of the object
+is written on the wall.
+And so and the agent
+starts over here
+and it needs to walk around
+the wall, walk around the wall,
+read the color, and then
+go to the correct object.
+So it's exploring and then--
+or seeking information,
+and then exploiting.
+It gets pixel rewards.
+And if you compare end-to-end
+algorithms that are shown here,
+they really, really struggle
+to do this end-to-end learning
+to explore problem.
+If you use one of the
+alternative strategies
+that we talked
+about on Wednesday,
+you can do better, in theory.
+But you still have a suboptimal
+exploration strategy.
+Whereas with this
+algorithm, you're
+able to actually learn how
+to explore, go find the sign,
+and then go to
+the correct object
+by actually trying to
+decouple exploration
+for identifying the task,
+and exploitation of solving
+the task.
+Cool.
+And then you can
+actually see this.
+So here's a video of
+the exploration episode
+where it's walking
+around and going
+to read the sign on the wall
+in this simple environment.
+And then after it
+reads the sign,
+it's able to go to the blue key.
+Yeah, that's a great question.
+So the question is,
+this is a setting where
+exploration and exploitation,
+you can first explore and then
+exploit.
+You might also have
+tasks where you
+need to interleave
+exploration and exploitation,
+where you first need to
+find some information,
+then use that to
+accomplish a subtask
+and then find an
+exploration again.
+We have done some work
+that tries to combine them.
+And you can, for example,
+train a single policy
+that uses the reward to identify
+the task combined with the task
+reward.
+And if you're interested, I can
+point you to a relevant work
+there.
+So to summarize
+learning to explore
+and learning policies
+that know how to explore,
+end-to-end can learn optimal
+exploration and exploitation.
+But if exploration is hard,
+it's pretty hard to optimize.
+And we saw an example of
+that, where all of the methods
+were kind of flatlining and
+not learning good exploration.
+Alternative strategies
+are easier to optimize
+and can be principled,
+but can also
+be suboptimal by large
+amounts, and be very
+inefficient about exploration.
+And this decoupled approach
+leads to the optimal strategy,
+is also easy to optimize.
+So it sort of gets the
+best of both worlds.
+It does require this
+task identifier.
+You need to at least be
+able to enumerate your tasks
+and know which of
+those tasks you're in.
+And that's the key thing
+that it's using in order
+to get the benefits.
+Cool.
+We have a little bit of time,
+and so you could actually--
+I wanted to briefly talk
+about one application.
+So you can take this
+algorithm and use it
+in a domain that's a little
+bit different from what
+we've seen before.
+And this domain is trying to
+find bugs in different computer
+programs, and in particular, in
+intro computer science courses,
+although this would probably
+apply to other programs,
+as well.
+It's really cool
+for students to be
+able to make computer programs.
+It's very rewarding for
+them to write a program
+as they're learning how to code.
+Then that creates a
+program like this.
+So on code.org, students
+code up this game
+called Bounce that looks a bit
+like Pong, or one side of Pong,
+where the goal is to hit
+a ball into the goal.
+In CS106A at Stanford,
+students code up Breakout,
+and so they might code
+up a program like this.
+This is an example of a buggy
+game, where the ball actually
+kind of gets skewered
+by the paddle.
+It kind of bounces
+off the paddle,
+rather than going and losing
+a point or losing a life.
+And we can basically treat
+different student programs
+as different tasks, where our
+goal is to explore and find
+the bugs that might exist.
+And our ultimate
+goal is to then be
+able to provide feedback to the
+student on the different bugs
+in their program.
+One of the other
+things about this
+is it's really time
+consuming for TAs
+or instructors to actually
+grade and give feedback
+on these assignments,
+because you often
+end up playing the game in order
+to figure out and find the bugs.
+Cool.
+So we can use meta-RL.
+We can actually use
+exactly the DREAM algorithm
+and train it to be
+able to identify
+different distinguishing
+factors from different students.
+And it can learn
+exploration strategies,
+like what happens if
+the ball hits the goal.
+So here, it's trying to actually
+play the game successfully.
+It can also check and
+act, so what happens
+if the ball hits the floor.
+So it's actually purposely
+trying to not hit the ball,
+or also try to hit the
+wall instead of the goal.
+And this is an example
+of a buggy program that
+creates lots of different
+balls as soon as the ball hits
+the wall.
+And then there was an
+experiment in 106A two years ago
+in the spring 2020 quarter,
+where TAs actually used
+the meta-RL algorithm in the
+policy to basically grade
+and pre-populate the
+rubric for grading.
+And then they just verified
+that the rubric answers
+were correct from watching the
+videos of the meta-RL agent
+playing the game.
+And it led to 44% faster
+grading, and also 6% more
+accurate grading, and the
+TAs generally liked using it.
+They also used it
+in at least one
+subsequent quarter because
+they liked using it so much.

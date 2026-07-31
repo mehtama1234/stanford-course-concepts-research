@@ -1,0 +1,1995 @@
+Let's get started for today.
+Let's start with a recap of
+what we covered last time
+because we're going to
+be building very heavily
+on Wednesday's concepts.
+So we talked about
+online reinforcement
+learning where we collect a
+batch of data with some policy
+by running that policy
+in the environment,
+and then we try to use that
+data to improve our policy,
+and then we repeat this
+process in order to continue
+to improve from practice.
+We talked about an online
+reinforcement learning algorithm
+called policy gradients.
+And the update for our
+policy looks something
+like this, where we first
+take samples from our policy.
+This will give us N
+different trajectories
+sampled from our policy.
+We will evaluate the log
+likelihood of the policy.
+And so this pi here is
+representing a distribution
+over actions given states.
+And so this is looking
+like the gradient
+of the log probability of
+the actions under the policy.
+And this log likelihood
+is weighted by the reward
+that the agent got.
+And so if you have
+higher rewards
+as an outcome of your
+actions in the future,
+then you're going to be
+encouraging the policy
+to increase the likelihood
+of those actions.
+And then lastly, we
+introduced a baseline,
+which we could define to
+be the average reward, such
+that we're increasing the
+likelihood on futures that
+were above average
+reward and decreasing
+the likelihood on actions
+that led to futures
+that were below average reward.
+So you can think of this
+as encouraging the policy
+to do more of the
+above average stuff,
+less of the below
+average stuff, and then
+repeating that process
+to get better and better.
+Cool.
+We also talked about how this
+algorithm is fully on-policy.
+So in order to evaluate
+this, we actually
+need to have samples from pi
+theta from our current policy.
+And this meant
+that we could only
+take one gradient step per batch
+of data, which is disappointing
+because then we'd have
+to collect ton of data
+in order to improve.
+This brings up this
+notion of having on-policy
+versus off-policy algorithms
+that can reuse data
+from other past policies.
+And we started to look at ways
+to make an algorithm off-policy.
+And in particular, we talked
+about using importance weights,
+where if we weight the
+objective by the probability
+of the actions of the
+new policy divided
+by the probability of the
+actions under the old policy,
+this is a way to get a
+estimate of the gradient
+for the new policy.
+I should also mention
+importance weights.
+The math behind it is
+very simple and very nice.
+But it's important to remember
+that this isn't a silver bullet.
+This approach is only
+suitable when the policies are
+very similar to one another.
+And if the policies
+are very different,
+then this ratio will get
+very large or very small,
+and you'll also just have a
+worse estimate of your gradient.
+So today we're
+going to be talking
+about a form of algorithms
+called actor-critic methods that
+build on policy gradients.
+As part of this,
+we'll be talking
+about how to estimate
+the value of a policy,
+and then we'll introduce
+an off-policy variant
+of the algorithm.
+And these actor-critic
+methods are the basis
+for algorithms
+like PPO, which are
+used to train language
+models, and that
+are used to train humanoids
+and simulation and so forth.
+So very, very useful
+RL algorithms.
+And then the key
+learning goals for today
+is how to estimate how
+good a state and action is
+for a policy.
+This is called
+policy evaluation.
+It's a critical aspect
+of actor-critic methods
+but also useful more broadly.
+And then also talk
+about how to use
+those estimates to form a
+better reinforcement learning
+algorithm.
+So let's get started.
+And to talk about
+these algorithms,
+we need to revisit some very
+useful objects that we talked
+about in the first lecture,
+and specifically, this
+is value functions.
+And so a value function
+is representing
+how good a state
+is if you're going
+to follow a policy
+starting from that state.
+And you can think
+of it as the sum
+of rewards used to
+writing gradients
+starting from some state.
+So we'll write
+this as V pi of S.
+This means that we're going
+to be starting at state S
+and then running pi.
+And for a given state, this
+is equal to the sum of rewards
+if we were to start
+at state t and go
+to the end of the trajectory.
+And here's the sum of rewards.
+Now, this sum of
+rewards is going
+to differ depending on
+what state we start at
+and depending on what
+policy that we're running.
+And so this is going to be an
+expectation under our policy.
+Actually maybe it's easier
+to write this as expectation
+on the inside.
+So this is an expectation
+over the states St prime
+and actions at prime that will
+be visited under our policy
+and conditioned on the fact
+that we're starting at state St.
+So we can think about the
+value function as this.
+Just in terms of math, what you
+can think about this as is--
+or just in terms of conceptually
+or in terms of intuition,
+if you have some
+trajectory, and you're
+thinking about the value of this
+state, you can think of it as--
+if we were to collect a lot
+of different trajectories
+starting from that state
+from our policy, and then
+we just summed up the rewards
+from this time step to the end,
+and then averaged over
+these trajectories,
+that would define the
+value of this state
+or how good the state
+is for the policy.
+Another useful quantity
+that will be making use of
+is called the Q function.
+And this is slightly different
+from the value function,
+but very closely related.
+And the difference is that
+instead of just thinking
+about the value
+of a given state,
+we're going to be thinking
+about a value of a given
+state and action.
+And what this is referring to
+is instead of starting at S
+and then running pi from
+there, if instead we
+were to start at S, take
+a particular action a,
+and then run the policy, what
+is our expected sum of rewards?
+And so then you can
+think of this as--
+instead of a picture
+like this, say
+we had some State s
+that we considered--
+first we're going to
+take some given action.
+This may or may not have
+been what the policy would
+have been likely to choose.
+This action could actually
+also lead to different states
+because the environment
+is stochastic,
+and then it's the sum of
+these rewards on average.
+So this is what V looks like.
+This is what Q looks
+like for a given action.
+So here are some
+pictures on the slide.
+So if we start from
+state s, run our policy,
+we compute the expected
+sum of the rewards
+along these
+trajectories, then that
+gets us the value of a state.
+And then if instead we take
+action a first and then run pi,
+then we get the Q values, and
+it's just the sum of the rewards
+if we had started with action a.
+Now, one thing that's useful
+to think about in terms
+of how these two
+relate to each other
+is you can think of the
+value of a state as--
+if you take an expectation
+over the actions
+that the policy
+would have taken,
+you can think of it as the
+average or the expectation
+of the Q values
+over all the actions
+that the policy
+would have taken.
+And then one last object
+that we'll use today
+is thinking about how good
+is a particular action
+relative to other actions
+that we might take.
+And for this, we
+can think about,
+if you consider the Q value
+minus the value function, that's
+going to tell you, how
+good is it to take action
+a versus following the
+policy at a given state.
+And this is what
+is the advantage
+of taking one action versus
+following the policy.
+Good question.
+So the question was, is there a
+normalization between V and Q?
+You can think of an
+expectation as an average.
+And so in that
+sense, there is going
+to be a normalization
+because if you were to,
+for example, try to estimate
+this expectation with samples,
+you would take some
+number of samples.
+If you only use these two
+samples to estimate Q,
+then you would divide
+by 2, versus here,
+if you're using five samples,
+you would divide by 5.
+Is there a way that you
+can get from this equation
+to the useful
+relation on the slide?
+Is that what you're asking?
+Yeah.
+We can write out first
+what Q pi looks like.
+So Q pi I of a given
+state and action.
+We're going to condition
+on St, at because that's
+where we're starting.
+And then this is the expected
+sum of rewards if we--
+So a sum over t
+prime equals t to T.
+And then we're going to have
+an expectation of running
+the policy here, and
+then a sum of rewards.
+And then in terms of seeing how
+to get between these two things,
+you can think of this
+as a sum of rewards
+under at future actions
+sampled from pi,
+whereas this one at is
+not sampled from pi,
+but all future actions
+are sampled from pi.
+In this case, we're
+conditioning on the action
+that's provided as input.
+And in this case, we're
+sampling from the policy.
+And so if instead you sample
+the action from the policy
+and then feed that in to here,
+then you'll get this right here.
+So to help you start thinking
+about some of these quantities,
+let's look at an example.
+And so say that you are
+this person right here.
+You really want to learn
+how to play the drums.
+And your reward is 1 if you can
+play the music in a month, and 0
+otherwise.
+So capital T is
+a month from now.
+And you have three
+different possible actions
+in your action space.
+One action is to
+sit on the beach.
+Another action is to watch TV.
+And another action is to
+practice playing the drums.
+And say that your current
+policy right now is just
+to sit on the beach, and
+you do that for all states.
+Now, my question for
+you to think about
+is, what are each of these
+quantities for the action of a1,
+for the action of a2,
+and for the action of a3.
+And so specifically you
+want to think about,
+what is the value function
+of your current state
+for this policy?
+What is your Q
+function if you were
+to follow each of these
+actions once and then follow
+this policy?
+And then what is your advantage
+function for the current state
+that you're in and for
+each of these actions?
+And you can assume that in the
+current state that you're in,
+you do not know how
+to play the drums.
+What was described as
+for the value function,
+for this particular
+policy that's always
+sitting on the
+beach, the value is 0
+because the person would
+not learn to play the drums,
+so that's the sum of expected
+rewards for this policy,
+for V pi.
+For the Q function, if you sit
+on the beach at the current time
+step or watch TV, the Q function
+will be 0 for those actions.
+The Q function for playing the
+drums at the current time step
+would be 1 if that amount
+of practicing is sufficient.
+It's also possible that it
+would be a bit lower than 1
+if you, for example,
+practice for an hour
+and then sit on the beach by
+following the policy afterwards,
+it depends a little bit on
+how long a given time step is.
+And then the advantage function
+is going to be Q minus V,
+and so it's going to
+be a positive number
+for the action of
+practicing, and it'll
+be 0 for the other two actions.
+So the question is,
+if practicing is not
+enough to actually
+learn, would it be 1?
+Would it be between 0 and 1?
+Would it be 0?
+It basically actually
+represents the probability
+in which you would be able to
+play this, given that you had
+practiced for that
+amount of time,
+and that probability
+it could be 0.
+Maybe this is really, really
+hard after just practicing once.
+It could also be
+maybe for someone
+who's extremely talented.
+They only need to practice once.
+And so that could be a
+bit higher for someone
+that's a bit more talented.
+It depends on various
+factors like that.
+Along those lines, if you
+think about the value function,
+if you're playing a game
+of chess, for example,
+the value function
+is the probability
+that you're going to
+win for a given person
+and for a given game state.
+So it's evaluating
+how good is the state
+for a particular person.
+That's another way
+to think about it.
+So those are the
+objects that we're going
+to be using quite a bit today.
+Now let's go back
+to policy gradients
+and see how we can
+use value functions
+to make this algorithm better.
+So we talked about
+a couple examples
+on Wednesday of some scenarios
+that we're dissatisfying
+about policy gradients.
+And the first was that if we
+are trying to learn how to walk
+and we have a policy that
+takes a small step forwards
+and then falls backwards,
+we will push down
+the likelihood of
+taking a step forward
+because we don't
+necessarily know that might
+have led it to fall backwards.
+Now, if we actually
+had some understanding
+that taking a small step
+forward was making progress,
+was actually good,
+was advantageous,
+then we might be able
+to actually increase
+the likelihood of
+that, and so this
+is starting to hint at
+some of the intuition
+behind actor-critic methods.
+And likewise, we talked
+about this example
+of trying to fold a jacket.
+And we found that if
+you have a sparse reward
+and you only do part of the
+task by folding only the sleeves
+or flattening the jacket
+but not folding it,
+you aren't really utilizing
+the trajectories that
+are getting zero reward.
+And similar to this
+case, if we instead
+understood that these actions
+are advantageous for making
+progress on the task,
+then we might actually
+be able to figure out how
+to use these trajectories
+in a positive way.
+And so to summarize
+here, policy gradients
+don't always make an
+efficient use of data
+that we've collected.
+And if we can try to figure out
+what actions are advantageous
+versus not
+advantageous, we might
+be able to make better
+use of that data.
+So the question was, if a step
+forward is helpful or not,
+is that going to be
+negative or neutral?
+In case of this policy gradient
+algorithm, the trajectory
+that we considered here in
+the context of the batch
+of trajectories, net
+negative was below average
+because the reward to
+go is quite negative.
+It's actually making backwards
+progress in this trajectory.
+And so it actually is
+going to be pushing down
+the likelihood of
+taking a step forward
+because the future
+reward to go is negative.
+And what we'll
+talk about today is
+algorithms that in
+principle could actually
+increase the likelihood
+for taking the step forward
+and decrease the likelihood
+for falling backwards.
+So how do we do that?
+A lot of what we'll focus on
+today is this piece right here.
+This is what's
+actually telling us
+that we should push down
+the likelihood if we have
+negative rewards in the future.
+And this quantity, it's
+estimating the future
+rewards if we take
+action a in state s.
+And so we can
+think about it as--
+in this picture right
+here, it looks a lot like,
+what is the sum of rewards
+if we started right
+here with state s and action a.
+And then if we think
+about this picture,
+we were looking at this
+quantity in terms of what
+we observed in trajectories.
+But what would be an even
+better version of this quantity
+would be to actually
+use the Q function.
+And if we could replace
+this with the Q function,
+then we would be able to get
+a much better estimate of
+whether or not we should
+push up the likelihood
+or push down the likelihood.
+And so looking at the
+slides right now, what we do
+is, for a single
+trajectory, we sum together
+the rewards that we saw, which
+was, in the case of the example
+before, the rewards
+were negative
+because we took a small step
+forward and then fell backwards.
+But if instead what we could
+do is actually run the policy
+many, many times and get a
+Q function for the state,
+that would be the
+true expected rewards
+to go under the
+expectation of our policy,
+and this would be way better.
+We'd be able to get a much
+better sense for how good it
+was to take that
+action in that state.
+So essentially the
+form of the gradient
+would be able to get
+a much better gradient
+if the form of the
+gradient looked
+like this, where we increase
+the likelihood of the actions
+for things that
+have high Q values,
+and we decrease the likelihood
+of the actions for things
+that have low Q values.
+So that's a first step.
+We also talked about baselines
+in the previous lecture
+where the baseline was
+the average reward.
+Should we use a baseline here?
+So before the baselines
+were the average reward.
+And so in this case, if we
+were to introduce baselines,
+we could think about
+what we might use.
+And if we use the same
+thing that we used before,
+we could use the average
+Q value, in this case.
+So we could use an average--
+maybe we sample some Si and
+ai, and we average over those.
+And what we had talked
+about a few slides ago
+is this is actually looking a
+lot like the value function.
+So we talked about the
+value of a given state
+is an expectation
+over actions sampled
+from the policy for that
+given state of the Q
+function for those actions.
+This is V pi.
+And so a natural
+baseline would actually
+be to use the value function.
+And so instead of
+having this be Q values,
+we could actually use Q
+minus V. And Q minus V
+is what the advantage
+function is.
+And so putting this
+together, we would
+be increasing the
+likelihood for actions
+that have a high
+advantage and decreasing
+the likelihood for actions
+that have a low advantage.
+And so then if you think back
+to the example of learning
+to practice playing the drums,
+the action of practicing
+had a high advantage relative
+to the current policy.
+And so then we would choose
+to increase the likelihood
+for practicing and
+decrease the likelihood
+for the other actions.
+Cool.
+Another way to
+think about this is
+that better estimates of
+this advantage function
+will lead to less
+noisy gradient.
+And if we knew the true
+advantage function,
+then we would be able to get
+a very, very good gradient.
+Unfortunately, we don't know
+the true advantage function,
+and so the next question
+that we'll talk about
+over the next several slides
+is how can we estimate
+the advantage function.
+So the question was, how
+is this different from how
+we're sampling in the
+original policy gradient?
+And so what we're using before
+is we would take of one sample,
+and then for a given state
+and action in that trajectory,
+we would sum the rewards just
+for that individual thing.
+And this is going to be a very
+noisy estimate because we just
+have one trajectory here.
+We just have one data point
+to estimate these rewards.
+And now what we're
+saying here is
+that we're going to try
+to get a sense for what
+the advantage of this action is.
+Now, one way we'll
+actually start
+to talk about how we
+do that in a minute.
+But if you want to
+think about what
+is the true advantage
+of this action,
+conceptually, if you were to
+take this state and action
+and then roll out the policy
+an infinite number of times
+for this action
+versus for following
+the policy in other
+scenarios, that's
+what would give
+us the advantage.
+So the question is,
+in policy gradient
+we got to where we
+were by optimizing
+the expected sum of rewards.
+Does this also optimize
+some objective?
+So this is also optimizing
+the expected sum of rewards,
+and it's actually optimizing
+the same exact function.
+We haven't talked
+about how to get A yet.
+But if you had a perfect
+A, this would be giving you
+the correct gradient for that
+objective, the sampling here
+being used to sample
+states and actions.
+Is the baseline and average
+over the current or an average
+over all trajectories?
+So if we set it to be
+the value function V,
+that would be an infinite
+number of samples.
+We haven't yet talked
+about how we're actually
+going to estimate a or
+estimate Q versus V,
+so we'll talk about
+that in a minute.
+But yeah, for V,
+conceptually, that
+would be over an
+infinite number.
+But I'm talking about, this
+is the true value so far.
+We haven't talked about how
+to estimate the value yet.
+So the question is,
+is this unbiased?
+It isn't biased.
+You can go through the math.
+I won't go through that
+today for the sake of time.
+But yeah, this is an unbiased
+estimate of the gradient
+if you have the true advantage.
+Now, we will see things
+that are biased later today.
+So let's actually talk
+about how do we use this.
+And actually just
+as a quick overview
+of what the algorithm will look
+like for this form of algorithm.
+Before we had this loop
+between running the policy
+and improving the
+policy, now we're
+going to have an
+additional step where
+we're going to fit a model
+that's going to estimate
+the expected return.
+And essentially
+it's going to try
+to estimate this a right here.
+And so our new algorithm will
+have a few different steps.
+One is to run the policy.
+One is to try to
+estimate values.
+And then the last
+will be then to use
+that estimate and the
+data that was collected
+to improve the policy.
+And so this step will involve
+estimating either V pi Q
+pi or A pi.
+And this step will
+be similar to before
+except it's going to use
+these estimates right here.
+So how do we actually
+estimate these values?
+So we want to estimate
+this quantity right here.
+And to start out, we
+need to think about how
+we want to get to A pi.
+And we could try to
+directly fit A pi,
+although it's actually
+a little bit challenging
+to get direct supervision
+for the advantages.
+And so we're actually
+going to try to fit V pi.
+And the way that we're
+going to get there is--
+let's see, where
+do we want to go?
+We know that A pi of
+St, at is equal to the Q
+value minus the value.
+And so one option is we could
+try to estimate these two,
+although then we'd still
+have to estimate two objects.
+And there's actually a way to
+turn this into an equation that
+actually only depends on V pi.
+And that would be nice because
+then we could just only fit V pi
+and then derive A pi from
+there to get the gradient.
+And so to do this, we can
+think about Q pi right here.
+And this Q function, this is the
+value of starting at S taking a
+and then summing the rewards.
+And so you can think of it as
+the reward at the current time
+step that you got
+plus the rewards that
+would come after that.
+And in terms of the rewards
+that would come after that,
+you'll have some next
+state, St plus 1.
+And so you can think of it as--
+there's some next state.
+This next state could be
+a few different things
+depending on your environment.
+So this would be sampled from
+the dynamics of the environment.
+And then after this
+state, it's essentially
+going to be the sum of
+rewards starting at St plus 1
+and following your policy.
+Sorry, this should be St plus 1.
+The sum of rewards
+starting at St plus 1,
+that's equal to the
+value of St plus 1.
+So we can write this Q value as
+the reward at the current time
+step plus the value at
+the time step after that.
+Now, we can't sample
+from these dynamics.
+But when we ran our
+policy to collect data,
+we did actually see one
+outcome, one St plus 1.
+And so we can approximate
+this as the reward
+at the current time step plus
+the value at the next time step.
+And then if we want to
+estimate the advantage,
+we can write it as the
+reward at the current time
+step plus the value
+at the next time
+step minus the value at
+the current time step.
+And so maybe I'll do
+this in a different color
+to differentiate it.
+So now A pi of St, at can be
+approximated as r, the reward,
+that you saw plus the
+value at the next time
+step minus the value at
+the current time step.
+And so if we then have an
+estimate of V for our policy,
+then we can estimate
+the advantage,
+and we can just try
+to directly fit V.
+And so on the slides,
+what this looks like,
+we have Q. Q can be written
+as the expected future rewards
+which is the reward
+at the current time
+step plus the future rewards.
+These future rewards can
+be written as the value.
+And so we can think of Q as
+the reward at the current time
+step plus the value
+at the next time step.
+So why is this an approximation?
+The reason for this is
+that there's actually
+multiple possible next states.
+And we're just going to use one
+sample from this expectation,
+which is the sample that
+we saw when we rolled out
+the trajectory in our data.
+And if you want an
+exact thing, you
+would need to estimate
+this expectation
+with infinite samples.
+How good of an
+approximation is this?
+So it is going to be a
+single sample approximation.
+The good news is
+that later on we'll
+see ways to use lots
+of data to do this.
+Well, so I guess
+the first thing is
+that if this is
+very deterministic,
+first, it's going to be a
+good estimate because there
+aren't that many futures.
+If it's more
+stochastic, then it's
+going to be a worse
+estimate, and then we'll
+see ways in which we
+can use data and take
+lots of gradient steps in a
+way that makes it not too bad.
+So the question is, is
+there any new interaction
+with the environment?
+So I guess we haven't yet
+talked about how to fit V pi.
+So we will talk about
+that in the next slide.
+So if you have some
+trajectory this
+will be like the St, at and St
+plus 1 from the same trajectory.
+So you need to use the
+same trajectory for this.
+And sometimes I forget
+to put the pi on here.
+And there is a lot of
+reinforcement learning work that
+drops the pis just
+for simplicity,
+but it is actually,
+in some ways,
+very important to have
+A pi there because it
+is estimating a value
+for a particular policy,
+not for any policy.
+So the question is, why
+are we choosing to estimate
+V versus Q versus A?
+It's just a little bit
+simpler in practice.
+But there are also ways
+to directly estimate Q.
+And actually we'll talk about
+some of those ways next week
+as well.
+So we're just going to fit V pi.
+And then once we fit V pi
+we can get the advantage,
+and then plug that into our
+gradient for our policy.
+We can represent V pi
+as a neural network.
+And what this will
+look like is we'll
+pass as input a
+state and then it
+will output a
+single scalar value
+that represents the value of
+that state for that policy.
+This neural network will
+have some parameters.
+So how do we do this?
+So there's a few different
+ways to estimate V pi.
+So in the very, very
+initial version,
+like a vanilla policy
+gradient, we just
+used a single trajectory,
+a single sample.
+And instead of actually
+learning a model
+we just used that sample.
+In principle, we could
+also use many samples.
+Unfortunately, if you were to
+try to go to a particular state
+and then take many
+samples from that state,
+that means that you
+would have to be
+able to reset the
+world to that state
+and see what happens if you
+took many different rollouts
+from that same state.
+And unfortunately,
+in many scenarios,
+it's very hard to
+reset the state.
+If you are in
+simulated settings,
+sometimes you can actually
+reset the simulator.
+So there is sometimes scenarios
+where you can do this,
+but in practice, we
+typically don't do this.
+So since we can't
+directly reset and take
+lots of samples,
+what we can do is
+we can use multiple
+trajectories that we had sampled
+and just train a single model
+on the original single sample
+estimate.
+And because the
+trajectories that we have,
+they will have some states
+in them that are similar.
+You'll be able to essentially
+learn how to amortize the data.
+So you'll see some examples
+in the environment that
+have very similar
+states and have
+corresponding future
+rewards in them.
+And with that
+repetition in your data,
+a neural network can have
+a little bit more density
+in terms of the rewards that
+you'll see for a given state.
+And so what this is
+going to look like is
+you can take your
+data set, and you'll
+have I equals 1
+to n trajectories.
+And each trajectory will
+have time steps in it.
+And for all of those
+trajectories and time steps,
+you'll also have
+some sum of rewards
+that you observe for that.
+So you'll have
+some sum of rewards
+that started at t to the end
+of the rewards of the states
+and actions that you visited.
+And if you aggregate all the
+trajectories in your data set,
+you can train a model
+to go from the state
+that you saw to the sum of
+rewards that was observed
+when you ran the policy.
+And with this, you can
+form a supervised learning
+data set where this is
+the label in the data set.
+And you can train
+with supervised
+learning a model to take
+as input this and output
+this quantity right here.
+And the number of data
+points in your data set
+will be the number
+of trajectories
+times the average
+number of time steps.
+So the question is, each
+time your policy changes,
+do you have to recollect
+the data and refit this?
+With this approach, yes.
+We will see approaches later.
+This is the simplest and
+dumbest approach you can
+use to fit a value function.
+And we will see approaches
+where you can reuse other data.
+So the question
+was, if we're going
+to be running a
+lot of simulations
+or rollouts of our policy,
+is it unreasonable to try
+to learn some estimate
+of future states
+given the current
+state and action?
+Two things here.
+If you have a very simple state
+space, a very small state space,
+you might be able
+to store some things
+and form an estimate
+just from storing things.
+You could also, in principle,
+train a neural network
+to predict what future states
+would be given current states
+and actions.
+There are a set of
+approaches that do that,
+and they're called model-based
+approaches and that they're
+learning a model of the world.
+And we will talk about those
+approaches in a few weeks.
+So this first approach,
+run a bunch of samples,
+aggregate a data set
+of our future rewards,
+and then run supervised learning
+to fit an estimated value
+function where you
+can form an L2 error
+between your predicted value
+and the observed sum of rewards,
+and then minimize
+that with respect
+to the parameters of
+your value function.
+And so what this objective
+looks like is minimizing
+with respect to your
+parameters the difference
+between your predicted
+value and the example
+or the sum of
+rewards that you saw
+in your data set for a given i.
+And you'll do this for
+all of the data points
+in your data set.
+And so this actually
+can also be a sum over i
+and t, just for completeness.
+So that will be the objective.
+And you can run gradient
+descent on this objective
+to fit a value function
+on your data point.
+Do we need to train a neural
+network for every gradient step
+in this case?
+So this is actually different
+from policy gradient where--
+the gradient steps
+here that we take
+are going to be trying
+to fit a value function.
+And the value function
+isn't changing the policy.
+And so you can actually
+take many gradient steps
+on this objective to learn a
+value function without having
+to recollect your data.
+So this is the simplest approach
+for training a value function.
+It's called Monte
+Carlo estimation
+where essentially you're just
+running lots of simulations,
+running lots of
+rollouts, and then trying
+to learn how to predict the
+outcome of the future rewards.
+Now, there's
+actually an approach
+that's better than this.
+And in particular, when we think
+about these sum of rewards,
+maybe it's helpful to draw
+a picture in this case.
+So we have a bunch of
+trajectories that we've sampled.
+And in this case, what we're
+doing is when we have a state
+right here, we are summing
+the rewards here as the value.
+And as we're
+learning this, we're
+starting to learn what the
+value of a given state is.
+And this means
+that maybe halfway
+through training when we're
+regressing to future rewards--
+and if we start to get what is
+a good value of this state right
+here, then we could
+actually try to use
+our own estimate of this value
+as the supervision target.
+And in particular,
+if we know that we
+got a reward at this time step
+right here to then get to here,
+then we could actually use
+that reward plus our estimate
+as the supervision target
+rather than just using
+the sum of future rewards.
+And so in particular,
+the ideal target
+is the true sum of
+expected rewards.
+This is equal to the
+reward at the current time
+step plus the expected
+rewards at the next time step.
+The sum of rewards
+that the next time
+step is equal to the
+value of the next state.
+And so in principle,
+what we could
+do is instead of trying to
+regress to future rewards,
+we could regress to the
+reward at the current time
+step plus the value
+at the next time step.
+And so we're actually
+going to be, in this case,
+using our estimate of the
+value at the next time step
+as part of the
+supervision target.
+So these are all for
+a given trajectory,
+and this would be your new label
+for your data set for a given
+state.
+So the question is, how often
+do you update these V pi's?
+In practice, you can update
+them every single iteration.
+If it's really expensive
+to update them,
+you could update them less
+frequently if you have
+a really huge neural network.
+But in practice,
+typically, we update them
+every single gradient step.
+So we have these
+bootstrapped estimates.
+We refer to this as
+bootstrapping because we're
+actually bootstrapping off of
+our own estimate of the value
+function as part of
+the learning process.
+We formulate our training data.
+We're then going to use
+the same exact objective
+to fit a value function.
+Just regressing
+to these targets,
+we just have different
+labels in our data set now.
+And these labels are changing
+as we run gradient descent
+on our objective.
+And so you often will
+update your labels
+every single gradient update.
+So the question is, is this
+based on one trajectory
+or is this based on
+multiple trajectories
+where things are close together?
+So this data set will be
+over multiple trajectories
+where i is indexing
+over trajectories
+and t is indexing over time
+inside those trajectories.
+In terms of this label, this
+will be for a given data point.
+And you're not going to be
+running multiple simulations
+from that data point,
+but you're going
+to be estimating what would have
+happened from your future state
+rather than a single
+sample of what
+happened in that trajectory.
+And so with this,
+you're actually
+able to get a better estimate
+of all of the possible outcomes
+that might have happened
+at the next state,
+rather than just one outcome.
+So you're asking, why is the
+input to the value function
+just S and not including
+previous time steps?
+Oh.
+The ideal target for
+our value function
+is the sum of future rewards.
+And you can think about
+this sum of future rewards
+as the reward at the
+current time step, which
+is a deterministic quantity plus
+the future rewards conditioned
+on our current state.
+And so this is conditioned
+on the current state
+because the future rewards is a
+function of where we are right
+now, and it's actually
+only a function
+of where we are right now
+and not anything else.
+So the question is, does
+this require that you have
+a good initial value estimate?
+Because if it's really
+bad at the beginning,
+then your targets
+will be really bad.
+There are some considerations
+when initializing it,
+although oftentimes
+you don't need
+to do anything super
+fancy to initialize it,
+and you can just get started
+training on this directly.
+You probably don't want to
+initialize your neural network
+such that the values are like
+negative 1000 or something, that
+would be bad.
+But usually we don't initialize
+our neural networks that way
+anyway.
+I don't know if I've in practice
+seen any issues with this.
+But in principle, you could
+also start with a Monte Carlo
+objective just to get
+it in the right ballpark
+and then continue with
+this update after that.
+So is this part of
+backpropagation,
+and is there a better
+way to than updating
+the labels every step?
+So we'll be using
+backpropagation
+to optimize that
+objective right there.
+You could also think about
+this as propagating information
+backwards in time, which is
+distinct from propagating
+gradients through the network.
+One other name for this is
+called temporal difference
+learning where we're
+looking at the difference
+between the future time step
+and the current time step.
+But generally propagating
+information through time
+is fairly distinct
+from back propagation.
+To summarize what we've
+talked about so far,
+Monte Carlo were supervising
+with the rollout summed rewards,
+whereas bootstrapping
+were supervising
+using the reward plus
+the current value
+estimate of the next state.
+And if we look at an example--
+and actually, yeah, I'll
+give another exercise for you
+to figure out.
+So let's look at an example.
+So we run the policy.
+Maybe we just have
+two trajectories.
+In practice we'll
+have more than this.
+But say we have
+two trajectories.
+One of these trajectories the
+final reward was negative 1.
+The other trajectory the
+final reward was one.
+And along this directory,
+before the final state,
+the reward is 0.
+My question for you
+is, what estimate
+would we get for two different
+states for the value function?
+And in particular, if we were
+training on just these two
+trajectories, and we use
+Monte Carlo versus using
+temporal difference
+or bootstrap learning,
+what would we estimate
+the value to be
+for the blue state
+for these two?
+And what would we
+estimate the value
+to be for the pink
+state for these two?
+So for Monte Carlo
+in the blue state,
+it's going to average out
+the minus 1 and the 1,
+and so this
+prediction will be 0.
+Does anyone want to
+share another one?
+Yeah.
+So for the Monte
+Carlo for this one,
+this will be
+negative 1 because it
+will be supervised to
+predict the sum of rewards
+for the future for
+this trajectory.
+Anyone want to share?
+Before we do that,
+let's talk about--
+do you want to do this one?
+This is a little bit more
+intuitive to go this way.
+Yeah, so this will also be 0.
+And then does anyone
+want to do the back part?
+Yeah, so for this one, it'll
+see this blue one in the future.
+This will have a 0,
+and then this will also
+be assigned the hat of 0.
+And so this is an
+example of where
+Monte Carlo and the
+bootstrap estimate
+are going to be different.
+And arguably, we get a
+more accurate estimate
+from the bootstrap
+value because it's
+able to look at its
+estimate of the value
+and actually aggregate
+information across trajectories
+more effectively.
+Why the Monte Carlo is
+minus 1 by the top right?
+So the value for this one
+is going to be minus 1
+because the Monte Carlo
+objective is supervising
+to the sum of future
+rewards that are
+observed for each trajectory.
+And so for this
+trajectory, which is black,
+it only sees the sum of future
+rewards along this trajectory.
+So it only sees negative 1.
+And anything over here, along
+this trajectory for Monte Carlo,
+would have a target
+of one because it only
+sees the future
+trajectories here
+because it doesn't bootstrap
+off of its estimate that was
+using all of the trajectories.
+So the Monte Carlo blue
+state, it's going to be--
+that exact state
+is in the buffer
+or is in your data set
+for both trajectories.
+And so it's going to
+average the reward for them.
+But this is like
+the only scenario
+where Monte Carlo is
+going to get information
+from both trajectories
+because you have
+the same exact state
+in your data set
+with two different labels.
+Why is the bootstrap
+blue state 0?
+So this is also going to be
+averaging the future rewards.
+It doesn't have anything
+necessarily special
+to bootstrap off of.
+And so for the same reason
+that Monte Carlo is 0,
+this will also be V0.
+So basically everything
+after the blue state
+will have a value estimate
+of negative 1 here.
+And everything after the
+blue state on the block
+trajectory is going to have
+an estimate of negative ones.
+We should move on.
+So one question you might
+ask looking at this is--
+there might also
+be a middle ground.
+So Monte Carlo is going
+to have high variance,
+but it is completely unbiased.
+Whereas the bootstrap estimate
+has much lower variance,
+but it actually can be incorrect
+because your current estimate
+of the value function is
+going to have inevitably
+at least a small
+amount of error in it.
+And so there might be a way to
+potentially balance this bias
+and variance a bit more.
+And one way that we
+can think about this
+is if we have our
+trajectories, we
+can think of the
+Monte Carlo version
+as using the sum
+of rewards averaged
+over those trajectories,
+whereas the Tt version
+is going to be looking
+at the first reward
+plus the value right after that.
+So it's r plus V for just like a
+temporal difference of just one
+time step.
+And you can actually interpolate
+between these two estimates.
+And instead of using
+just one time step,
+you could use n time steps.
+So you could look at sum
+of the rewards for n time
+steps in the future before
+the variance has increased
+substantially, and then use your
+value estimate after those n
+time steps.
+And what this would look like
+is an equation like this,
+where instead of just using
+one reward right here,
+and instead of using all
+of the sum of rewards,
+you can sum over the
+next n minus 1 rewards,
+and then use your value
+estimate at t plus n.
+And so this looks like
+a sum over from t to t
+plus n minus 1 r of S, a, plus
+your estimate of the value
+at t plus n.
+In this case, this
+is going to have
+a lot less variance than the
+full Monte Carlo, especially
+if you have smaller n.
+And it's going to
+be potentially less
+biased than just using a
+one step temporal difference
+bootstrap.
+And so essentially you're
+going to have more information
+about the rewards that
+were directly observed.
+So this can be written as this.
+And in this case, this
+now becomes your target
+for supervised learning.
+And yeah, this is often
+called n step returns
+because you're summing
+over n time steps.
+In practice, the bootstrap
+version, if you set n equals t,
+this is full Monte Carlo.
+Oftentimes somewhere
+in between 1 and nt
+works the best in practice.
+And this can be especially
+useful in scenarios
+where you have very
+small time steps
+because if your time
+step is, I don't know,
+10 milliseconds
+or something like
+that, then very little will have
+happened in between those time
+steps.
+If you have a very
+long time trajectory,
+can you use both of
+these, you're asking?
+Oh, yeah.
+You could add all of these to
+your data set in principle.
+I think that typically the
+high variance like labels,
+the things that
+are high variance
+can deteriorate learning because
+it leads to more stochasticity.
+And likewise, if your
+values are not very good,
+then this can also
+be a challenge.
+And so in practice,
+you'll usually
+just pick one of these versions
+and supervise with that.
+In principle, you
+could combine them.
+But yeah, in practice
+usually you don't.
+One aside here.
+So far we've been
+summing rewards.
+And we actually talked
+in the first lecture
+about how, in some
+cases, we might not
+want to just blindly sum
+all rewards in the future.
+And in particular, if
+you think about scenarios
+where the length of the
+episode is infinite or very,
+very long, then your
+estimate of the value
+can get very large
+in those cases,
+and so you might
+not want to just
+be summing over all of
+the rewards in the future.
+And so a simple trick
+to handle the fact
+that your estimates of
+the value can get very big
+is to weight your objective,
+weight the sum of rewards
+to be biased towards
+the earlier rewards.
+And the way that
+you can write this
+is, instead of having r plus V,
+you can add a coefficient right
+here.
+If this coefficient is 1,
+it's the same as before.
+But you can set it to
+something like 0.9 or 0.99.
+And what this is
+going to do is it's
+going to say that I care
+more about the rewards
+at the current time step
+and less about the rewards
+at the future time steps.
+Adding this discount
+factor that's
+discounting future
+rewards is actually
+can be viewed as changing the
+decision process slightly.
+So it's actually
+equivalent to saying
+that there is some probability
+that the agent will
+die at any given point in time.
+And so this is
+equivalent to saying
+that with some
+probability-- so say
+gamma is like 0.99, in
+this case, using this form
+is equivalent to
+saying that there's
+a 1% chance that the agent will
+enter some state that has 0
+reward and stay there forever.
+And so if you have some
+original MDP right here,
+the way that this discount
+factor would change
+the MDP is it would say that
+with probability 1 minus gamma,
+you enter this death
+state where you can't
+do anything else after that.
+And the original probabilities
+in the rest of the MDP
+are all multiplied by gamma.
+The question is, is there any
+relationship between gamma
+and these n step things?
+If gamma is small, would
+that change like what you do?
+The way that you would
+modify this objective
+would be gamma to the n.
+Possibly, I mean, I
+think that they're all
+interconnected in the sense
+that the choice of gamma
+might depend on the environment.
+And, generally, if going to be
+looking further into the future,
+that's because you're going
+to be in an environment that's
+more deterministic or
+a smaller time steps,
+and that would also affect
+the choice of gamma.
+The question was, in terms of
+choosing how far you look ahead,
+does that affect whether
+you're prioritizing short
+versus long term?
+In this case, it is
+more a factor of--
+so it doesn't actually
+affect how greedy
+you are because the value
+function is representing
+the sum of rewards.
+And so these are
+still estimating
+the same exact quantity.
+It's more a factor of
+how far in the future
+are you looking ahead
+in terms of the rewards.
+And it's more a factor of how
+much is the variance increasing.
+And if the variance
+increases somewhat slowly,
+then you can look further
+ahead into the future.
+If it increases very,
+very quickly, then you
+might want to use a smaller n.
+So let's walk through
+the full algorithm now.
+So we talked about estimating
+value functions, now let's
+actually put this into practice.
+So what we can do is we
+can sample a batch of data
+from our policy, then we
+will fit our value estimate
+to the summed
+rewards in the data.
+And we can do this by looking at
+the rewards for a short period
+of time and then the value.
+So this would be the
+equation for n step returns.
+And then when we fit this
+we'll run multiple gradient
+steps on this objective
+that's trying to minimize
+the difference
+between our estimates
+and the observed future rewards.
+Then once we have our
+estimate of the value,
+then we can use that to
+estimate the advantage
+of a particular
+action by looking
+at the reward plus the
+value at the next time
+step minus the value at
+the current time step.
+So this is telling us
+according to our value function
+and the reward we saw, how
+good is the action that
+was taken in the data set.
+And then we can use this to
+get a gradient for our policy
+where we will be increasing
+the likelihood of actions that
+are estimated to
+be advantageous,
+and decreasing the
+likelihood for actions
+that are not advantageous.
+And then lastly, we
+update our policy
+by applying this gradient
+step to our policy parameters,
+and then we can
+repeat this process
+to then sample a new batch
+of data for our policy.
+Now, note here we have
+two neural networks.
+One is for the policy and one
+is for the value function.
+This is called an
+actor-critic algorithm
+because one of the networks is
+the actor, one of the networks
+is the value function,
+which can also
+be called a critic
+because it's criticizing
+how good a state and policy
+is, and that's our algorithm.
+And coming back to
+the examples that we
+saw before, this
+is something that's
+able to actually
+make use of data,
+for example, that takes
+a step forward and then
+falls backwards because you can
+actually learn from the data,
+especially when you use
+bootstrapped estimates,
+that taking a step forward
+is advantageous and has
+a positive advantage
+compared to other actions
+that you might take.
+And this is going to be
+making much more efficient use
+of the data that
+we've collected.
+So review so far.
+We've talked about
+policy gradients, which
+is trying to do more of the good
+stuff, less of the bad stuff
+based on what you observe.
+Actor-critic are learning to
+estimate what's good and bad,
+and then doing more
+of the good stuff
+according to your estimate.
+And we can get a better estimate
+by using a neural network
+to try to explicitly
+estimate the value function.
+And then we introduced
+this third step
+where we are fitting this model
+as part of the improvement
+process.
+We talked about
+three different ways
+to estimate value,
+either directly looking
+at some rewards, bootstrapping
+off the value function,
+and this hybrid.
+And this is often referred
+to as policy evaluation.

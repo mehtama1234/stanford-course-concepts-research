@@ -1,0 +1,1843 @@
+[
+  {
+    "name": "tokenization",
+    "theme": "text-to-model interface",
+    "big_picture": "Text must be cut into reusable pieces before a model can count, compare, or predict it.",
+    "problem_solved": "Raw text has no fixed numerical shape, so the model needs stable text pieces it can assign numbers to.",
+    "domain": "Language models and multimodal models that process text.",
+    "why_important": "The first split of text controls sequence length, rare-word behavior, and what the rest of the model can represent efficiently.",
+    "first_principles": "Before learning meaning, the model needs a finite set of pieces. Tokenization chooses those pieces.",
+    "keywords": [
+      "tokenization",
+      "tokenizer",
+      "tokens",
+      "vocabulary",
+      "byte pair",
+      "bpe"
+    ],
+    "evidence_video_count": 22,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 5,
+      "stanford-cs224r-deep-rl-spring-2025": 8
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "Ub3GoFaUcds",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 1,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 1 - Transformer.txt",
+        "keyword_hits": 67
+      },
+      {
+        "video_id": "yT84Y5zCnaA",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 2,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "url": "https://www.youtube.com/watch?v=yT84Y5zCnaA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 2 - Transformer-Based Models & Tricks.txt",
+        "keyword_hits": 63
+      },
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 55
+      },
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 48
+      },
+      {
+        "video_id": "k5Fh-UgTuCo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 6,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 6 - LLM Reasoning.txt",
+        "keyword_hits": 26
+      },
+      {
+        "video_id": "HpFdSlMeXzQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 5,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 5 - Architectures.txt",
+        "keyword_hits": 21
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 18
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 17
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "embeddings",
+    "theme": "representation",
+    "big_picture": "A model turns discrete symbols into points in a learned space where useful relationships can be computed.",
+    "problem_solved": "Token IDs are arbitrary labels; the model needs numbers whose distances and directions can carry useful structure.",
+    "domain": "Language models, vision models, reinforcement learning policies, and diffusion systems.",
+    "why_important": "Most later computation works by moving, mixing, and editing vectors.",
+    "first_principles": "Give each item a location, then train those locations so useful items end up arranged in useful ways.",
+    "keywords": [
+      "embedding",
+      "embeddings",
+      "representation",
+      "representations",
+      "vector",
+      "vectors"
+    ],
+    "evidence_video_count": 29,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 8,
+      "stanford-cs224r-deep-rl-spring-2025": 12
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "agN3AlfGFrk",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 3,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "url": "https://www.youtube.com/watch?v=agN3AlfGFrk",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 3 - Flow matching.txt",
+        "keyword_hits": 125
+      },
+      {
+        "video_id": "HpFdSlMeXzQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 5,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 5 - Architectures.txt",
+        "keyword_hits": 117
+      },
+      {
+        "video_id": "yT84Y5zCnaA",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 2,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "url": "https://www.youtube.com/watch?v=yT84Y5zCnaA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 2 - Transformer-Based Models & Tricks.txt",
+        "keyword_hits": 113
+      },
+      {
+        "video_id": "Ub3GoFaUcds",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 1,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 1 - Transformer.txt",
+        "keyword_hits": 105
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 83
+      },
+      {
+        "video_id": "4tlSKdi8teU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 14,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+        "url": "https://www.youtube.com/watch?v=4tlSKdi8teU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 14\uff1a Exploration.txt",
+        "keyword_hits": 42
+      },
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 36
+      },
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 30
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "attention",
+    "theme": "information routing",
+    "big_picture": "Attention lets each token decide which other tokens matter for the current prediction.",
+    "problem_solved": "A token cannot carry the whole context by itself, so it needs a way to look up relevant information.",
+    "domain": "Transformers for language, vision, diffusion models, and agents.",
+    "why_important": "Attention is the main routing mechanism that made transformer models broadly useful.",
+    "first_principles": "Ask a question, compare it to labels on earlier information, then copy a weighted mix of what matched.",
+    "keywords": [
+      "attention",
+      "self-attention",
+      "query",
+      "queries",
+      "key",
+      "keys",
+      "value",
+      "values"
+    ],
+    "evidence_video_count": 35,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
+      "stanford-cs224r-deep-rl-spring-2025": 19
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "yT84Y5zCnaA",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 2,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "url": "https://www.youtube.com/watch?v=yT84Y5zCnaA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 2 - Transformer-Based Models & Tricks.txt",
+        "keyword_hits": 163
+      },
+      {
+        "video_id": "Ub3GoFaUcds",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 1,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 1 - Transformer.txt",
+        "keyword_hits": 136
+      },
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 109
+      },
+      {
+        "video_id": "lRDaXnPIzks",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 7,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "url": "https://www.youtube.com/watch?v=lRDaXnPIzks",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 7\uff1a Offline RL.txt",
+        "keyword_hits": 103
+      },
+      {
+        "video_id": "oejFZShW9hU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 4,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "url": "https://www.youtube.com/watch?v=oejFZShW9hU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 4\uff1a Actor-Critic Methods.txt",
+        "keyword_hits": 102
+      },
+      {
+        "video_id": "-7kv6jf0isQ",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 6,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "url": "https://www.youtube.com/watch?v=-7kv6jf0isQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 6\uff1a Q-Learning.txt",
+        "keyword_hits": 89
+      },
+      {
+        "video_id": "07MQNMcxhZU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 19,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+        "url": "https://www.youtube.com/watch?v=07MQNMcxhZU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Tutorial Session\uff1a Review of Q-Learning.txt",
+        "keyword_hits": 85
+      },
+      {
+        "video_id": "PDIxDhA9Z6Y",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 8,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 8\uff1a Reward Learning.txt",
+        "keyword_hits": 84
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "transformer architecture",
+    "theme": "model structure",
+    "big_picture": "A transformer repeatedly lets tokens read each other and then updates each token's running vector.",
+    "problem_solved": "The model needs many rounds of communication and computation without losing earlier information.",
+    "domain": "Modern language models, vision transformers, diffusion transformers, and multimodal models.",
+    "why_important": "It is the shared backbone behind much of current language and vision-model work.",
+    "first_principles": "Keep a running notebook for each token; each layer reads from other notebooks, edits its own, and passes it forward.",
+    "keywords": [
+      "transformer",
+      "transformers",
+      "residual",
+      "layer norm",
+      "feedforward",
+      "feed-forward"
+    ],
+    "evidence_video_count": 22,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 6,
+      "stanford-cs224r-deep-rl-spring-2025": 7
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 46
+      },
+      {
+        "video_id": "yT84Y5zCnaA",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 2,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "url": "https://www.youtube.com/watch?v=yT84Y5zCnaA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 2 - Transformer-Based Models & Tricks.txt",
+        "keyword_hits": 43
+      },
+      {
+        "video_id": "HpFdSlMeXzQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 5,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 5 - Architectures.txt",
+        "keyword_hits": 39
+      },
+      {
+        "video_id": "oyLUvz9nR6E",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 8,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 8 - Trending Topics.txt",
+        "keyword_hits": 23
+      },
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 21
+      },
+      {
+        "video_id": "Ub3GoFaUcds",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 1,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 1 - Transformer.txt",
+        "keyword_hits": 13
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 11
+      },
+      {
+        "video_id": "VlA_jt_3Qc4",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 4,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+        "url": "https://www.youtube.com/watch?v=VlA_jt_3Qc4",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 4 - LLM Training.txt",
+        "keyword_hits": 8
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "pretraining",
+    "theme": "learning from raw data",
+    "big_picture": "Pretraining teaches a model broad structure by making it predict missing or future data at large scale.",
+    "problem_solved": "Hand-labeled examples are too narrow; raw data provides far more practice.",
+    "domain": "Language, vision, and multimodal foundation models.",
+    "why_important": "It creates the base model that later tuning, reasoning, and tool use build on.",
+    "first_principles": "Make a guess, measure the surprise, and adjust the model so similar guesses improve later.",
+    "keywords": [
+      "pretraining",
+      "pre-train",
+      "pre train",
+      "next token",
+      "language modeling",
+      "predict the next"
+    ],
+    "evidence_video_count": 21,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 8,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 9
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 25
+      },
+      {
+        "video_id": "VlA_jt_3Qc4",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 4,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+        "url": "https://www.youtube.com/watch?v=VlA_jt_3Qc4",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 4 - LLM Training.txt",
+        "keyword_hits": 22
+      },
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 18
+      },
+      {
+        "video_id": "PmW_TMQ3l0I",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 5,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "url": "https://www.youtube.com/watch?v=PmW_TMQ3l0I",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 5 - LLM tuning.txt",
+        "keyword_hits": 13
+      },
+      {
+        "video_id": "Ub3GoFaUcds",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 1,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 1 - Transformer.txt",
+        "keyword_hits": 12
+      },
+      {
+        "video_id": "k5Fh-UgTuCo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 6,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 6 - LLM Reasoning.txt",
+        "keyword_hits": 9
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 9
+      },
+      {
+        "video_id": "XKLGuwvSKvI",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 9,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "url": "https://www.youtube.com/watch?v=XKLGuwvSKvI",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 9\uff1a RL for LLMs.txt",
+        "keyword_hits": 8
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "fine-tuning and preference learning",
+    "theme": "behavior shaping",
+    "big_picture": "A base model is steered toward behavior people want by training on examples, choices, or rewards.",
+    "problem_solved": "Predicting likely text is not the same as answering helpfully or following instructions.",
+    "domain": "Assistants, reasoning models, safety tuning, and domain adaptation.",
+    "why_important": "It turns a raw predictor into a usable system.",
+    "first_principles": "Shift probability away from bad continuations and toward responses that match the intended behavior.",
+    "keywords": [
+      "fine-tuning",
+      "finetuning",
+      "instruction",
+      "preference",
+      "rlhf",
+      "dpo",
+      "alignment"
+    ],
+    "evidence_video_count": 22,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 8,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 10
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "XKLGuwvSKvI",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 9,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "url": "https://www.youtube.com/watch?v=XKLGuwvSKvI",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 9\uff1a RL for LLMs.txt",
+        "keyword_hits": 102
+      },
+      {
+        "video_id": "PmW_TMQ3l0I",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 5,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "url": "https://www.youtube.com/watch?v=PmW_TMQ3l0I",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 5 - LLM tuning.txt",
+        "keyword_hits": 73
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 16
+      },
+      {
+        "video_id": "VlA_jt_3Qc4",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 4,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+        "url": "https://www.youtube.com/watch?v=VlA_jt_3Qc4",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 4 - LLM Training.txt",
+        "keyword_hits": 14
+      },
+      {
+        "video_id": "PDIxDhA9Z6Y",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 8,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 8\uff1a Reward Learning.txt",
+        "keyword_hits": 13
+      },
+      {
+        "video_id": "k5Fh-UgTuCo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 6,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 6 - LLM Reasoning.txt",
+        "keyword_hits": 12
+      },
+      {
+        "video_id": "IvXTl3yj-4Y",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 6,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+        "url": "https://www.youtube.com/watch?v=IvXTl3yj-4Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 6 - Model Training.txt",
+        "keyword_hits": 10
+      },
+      {
+        "video_id": "FacJ_1tTSx4",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 18,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+        "url": "https://www.youtube.com/watch?v=FacJ_1tTSx4",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 18\uff1a Frontiers.txt",
+        "keyword_hits": 8
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "chain-of-thought and reasoning",
+    "theme": "inference-time work",
+    "big_picture": "A model can spend extra tokens writing intermediate work before committing to an answer.",
+    "problem_solved": "Some problems require holding and combining intermediate facts, not just giving the first likely answer.",
+    "domain": "Math, coding, planning, tool use, and language-model agents.",
+    "why_important": "It connects model quality with how much work the model is allowed to do at inference time.",
+    "first_principles": "Use the output stream as scratch paper: write useful partial results, then base the answer on them.",
+    "keywords": [
+      "chain of thought",
+      "reasoning",
+      "step by step",
+      "scratchpad",
+      "deliberation"
+    ],
+    "evidence_video_count": 24,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 7,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
+      "stanford-cs224r-deep-rl-spring-2025": 10
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "k5Fh-UgTuCo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 6,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 6 - LLM Reasoning.txt",
+        "keyword_hits": 103
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 24
+      },
+      {
+        "video_id": "h-7S6HNq0Vg",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 7,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+        "url": "https://www.youtube.com/watch?v=h-7S6HNq0Vg",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 7 - Agentic LLMs.txt",
+        "keyword_hits": 22
+      },
+      {
+        "video_id": "8fNP4N46RRo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 8,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+        "url": "https://www.youtube.com/watch?v=8fNP4N46RRo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 8 - LLM Evaluation.txt",
+        "keyword_hits": 20
+      },
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 14
+      },
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 12
+      },
+      {
+        "video_id": "iKWYLSVAtfM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 15,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+        "url": "https://www.youtube.com/watch?v=iKWYLSVAtfM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 15\uff1a Hierarchical RL and IL.txt",
+        "keyword_hits": 8
+      },
+      {
+        "video_id": "FacJ_1tTSx4",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 18,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+        "url": "https://www.youtube.com/watch?v=FacJ_1tTSx4",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 18\uff1a Frontiers.txt",
+        "keyword_hits": 7
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "agents, retrieval, and tools",
+    "theme": "external action loop",
+    "big_picture": "A model can be placed in a loop where it reads outside information, calls tools, and updates its next step.",
+    "problem_solved": "Many tasks require fresh information or actions outside the model's stored weights.",
+    "domain": "Assistants, coding agents, research workflows, and enterprise systems.",
+    "why_important": "It moves models from answer generators toward task-completing systems.",
+    "first_principles": "Choose an action, observe the result, and decide what to do next.",
+    "keywords": [
+      "agent",
+      "agents",
+      "rag",
+      "retrieval",
+      "tool",
+      "tools",
+      "function calling",
+      "search"
+    ],
+    "evidence_video_count": 28,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 7,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 17
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "h-7S6HNq0Vg",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 7,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+        "url": "https://www.youtube.com/watch?v=h-7S6HNq0Vg",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 7 - Agentic LLMs.txt",
+        "keyword_hits": 143
+      },
+      {
+        "video_id": "8fNP4N46RRo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 8,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+        "url": "https://www.youtube.com/watch?v=8fNP4N46RRo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 8 - LLM Evaluation.txt",
+        "keyword_hits": 98
+      },
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 23
+      },
+      {
+        "video_id": "rbaWQQLrzl0",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 16,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+        "url": "https://www.youtube.com/watch?v=rbaWQQLrzl0",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 16\uff1a RL for Robots.txt",
+        "keyword_hits": 20
+      },
+      {
+        "video_id": "wSiyEpvoGkA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 13,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+        "url": "https://www.youtube.com/watch?v=wSiyEpvoGkA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 13\uff1a Meta RL.txt",
+        "keyword_hits": 15
+      },
+      {
+        "video_id": "Q5baLehv5So",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 3,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "url": "https://www.youtube.com/watch?v=Q5baLehv5So",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 3 - Tranformers & Large Language Models.txt",
+        "keyword_hits": 11
+      },
+      {
+        "video_id": "4tlSKdi8teU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 14,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+        "url": "https://www.youtube.com/watch?v=4tlSKdi8teU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 14\uff1a Exploration.txt",
+        "keyword_hits": 10
+      },
+      {
+        "video_id": "iKWYLSVAtfM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 15,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+        "url": "https://www.youtube.com/watch?v=iKWYLSVAtfM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 15\uff1a Hierarchical RL and IL.txt",
+        "keyword_hits": 10
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "policy",
+    "theme": "decision making",
+    "big_picture": "A policy is the rule a system uses to choose what to do next.",
+    "problem_solved": "In reinforcement learning, the output is not just a label; it is an action that changes the future.",
+    "domain": "Robotics, games, control, language-model agents, and RL for reasoning.",
+    "why_important": "Policy learning is the central object of reinforcement learning.",
+    "first_principles": "Given what you can see now, choose the next move.",
+    "keywords": [
+      "policy",
+      "policies",
+      "actor",
+      "action",
+      "actions"
+    ],
+    "evidence_video_count": 27,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 6,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 2,
+      "stanford-cs224r-deep-rl-spring-2025": 19
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "-7kv6jf0isQ",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 6,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "url": "https://www.youtube.com/watch?v=-7kv6jf0isQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 6\uff1a Q-Learning.txt",
+        "keyword_hits": 280
+      },
+      {
+        "video_id": "cRGKc-nAWho",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 5,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "url": "https://www.youtube.com/watch?v=cRGKc-nAWho",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 5\uff1a Off-Policy Actor Critic.txt",
+        "keyword_hits": 272
+      },
+      {
+        "video_id": "iKWYLSVAtfM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 15,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+        "url": "https://www.youtube.com/watch?v=iKWYLSVAtfM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 15\uff1a Hierarchical RL and IL.txt",
+        "keyword_hits": 250
+      },
+      {
+        "video_id": "lRDaXnPIzks",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 7,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "url": "https://www.youtube.com/watch?v=lRDaXnPIzks",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 7\uff1a Offline RL.txt",
+        "keyword_hits": 248
+      },
+      {
+        "video_id": "PvqyGnOirgA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 11,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "url": "https://www.youtube.com/watch?v=PvqyGnOirgA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 11\uff1a Model-Based RL.txt",
+        "keyword_hits": 200
+      },
+      {
+        "video_id": "WxRDyObrm_M",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 2,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+        "url": "https://www.youtube.com/watch?v=WxRDyObrm_M",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 2\uff1a Imitation Learning.txt",
+        "keyword_hits": 194
+      },
+      {
+        "video_id": "rbaWQQLrzl0",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 16,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+        "url": "https://www.youtube.com/watch?v=rbaWQQLrzl0",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 16\uff1a RL for Robots.txt",
+        "keyword_hits": 166
+      },
+      {
+        "video_id": "oejFZShW9hU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 4,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "url": "https://www.youtube.com/watch?v=oejFZShW9hU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 4\uff1a Actor-Critic Methods.txt",
+        "keyword_hits": 164
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "reward",
+    "theme": "feedback signal",
+    "big_picture": "Reward is the feedback that says which outcomes should become more likely.",
+    "problem_solved": "The learner needs a signal that connects actions now to better or worse consequences later.",
+    "domain": "Reinforcement learning, preference learning, robot learning, and reasoning-model training.",
+    "why_important": "Reward defines what the learner is being pushed toward, including possible loopholes.",
+    "first_principles": "Mark some outcomes as better, then change future choices so better outcomes happen more often.",
+    "keywords": [
+      "reward",
+      "rewards",
+      "return",
+      "advantage",
+      "preference",
+      "feedback"
+    ],
+    "evidence_video_count": 30,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 7,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 19
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "PmW_TMQ3l0I",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 5,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "url": "https://www.youtube.com/watch?v=PmW_TMQ3l0I",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 5 - LLM tuning.txt",
+        "keyword_hits": 173
+      },
+      {
+        "video_id": "XKLGuwvSKvI",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 9,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "url": "https://www.youtube.com/watch?v=XKLGuwvSKvI",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 9\uff1a RL for LLMs.txt",
+        "keyword_hits": 139
+      },
+      {
+        "video_id": "oejFZShW9hU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 4,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "url": "https://www.youtube.com/watch?v=oejFZShW9hU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 4\uff1a Actor-Critic Methods.txt",
+        "keyword_hits": 132
+      },
+      {
+        "video_id": "KCAOXd4IO9o",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 3,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+        "url": "https://www.youtube.com/watch?v=KCAOXd4IO9o",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 3\uff1a Policy Gradients.txt",
+        "keyword_hits": 101
+      },
+      {
+        "video_id": "PDIxDhA9Z6Y",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 8,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 8\uff1a Reward Learning.txt",
+        "keyword_hits": 97
+      },
+      {
+        "video_id": "k5Fh-UgTuCo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 6,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 6 - LLM Reasoning.txt",
+        "keyword_hits": 89
+      },
+      {
+        "video_id": "4tlSKdi8teU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 14,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+        "url": "https://www.youtube.com/watch?v=4tlSKdi8teU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 14\uff1a Exploration.txt",
+        "keyword_hits": 89
+      },
+      {
+        "video_id": "lRDaXnPIzks",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 7,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "url": "https://www.youtube.com/watch?v=lRDaXnPIzks",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 7\uff1a Offline RL.txt",
+        "keyword_hits": 88
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "policy gradients",
+    "theme": "learning to act",
+    "big_picture": "Policy gradients change an action rule by increasing the chance of actions that led to better outcomes.",
+    "problem_solved": "When the best action is not known directly, the system must learn from sampled attempts.",
+    "domain": "Deep RL, RLHF, robotics, and RL for language-model reasoning.",
+    "why_important": "It is a core bridge between trial-and-error feedback and neural-network training.",
+    "first_principles": "Try actions, see which attempts worked better, and nudge the action rule toward those attempts.",
+    "keywords": [
+      "policy gradient",
+      "policy gradients",
+      "reinforce",
+      "gradient estimator"
+    ],
+    "evidence_video_count": 12,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 1,
+      "stanford-cs224r-deep-rl-spring-2025": 11
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "KCAOXd4IO9o",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 3,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+        "url": "https://www.youtube.com/watch?v=KCAOXd4IO9o",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 3\uff1a Policy Gradients.txt",
+        "keyword_hits": 12
+      },
+      {
+        "video_id": "oejFZShW9hU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 4,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "url": "https://www.youtube.com/watch?v=oejFZShW9hU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 4\uff1a Actor-Critic Methods.txt",
+        "keyword_hits": 10
+      },
+      {
+        "video_id": "cRGKc-nAWho",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 5,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "url": "https://www.youtube.com/watch?v=cRGKc-nAWho",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 5\uff1a Off-Policy Actor Critic.txt",
+        "keyword_hits": 5
+      },
+      {
+        "video_id": "PvqyGnOirgA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 11,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "url": "https://www.youtube.com/watch?v=PvqyGnOirgA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 11\uff1a Model-Based RL.txt",
+        "keyword_hits": 5
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 4
+      },
+      {
+        "video_id": "PmW_TMQ3l0I",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 5,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "url": "https://www.youtube.com/watch?v=PmW_TMQ3l0I",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 5 - LLM tuning.txt",
+        "keyword_hits": 3
+      },
+      {
+        "video_id": "-7kv6jf0isQ",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 6,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "url": "https://www.youtube.com/watch?v=-7kv6jf0isQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 6\uff1a Q-Learning.txt",
+        "keyword_hits": 2
+      },
+      {
+        "video_id": "XKLGuwvSKvI",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 9,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "url": "https://www.youtube.com/watch?v=XKLGuwvSKvI",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 9\uff1a RL for LLMs.txt",
+        "keyword_hits": 2
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "q-learning",
+    "theme": "value learning",
+    "big_picture": "Q-learning estimates how good each action is from a given situation.",
+    "problem_solved": "The system needs to compare possible actions before knowing the final long-term result.",
+    "domain": "Reinforcement learning, control, games, and offline RL.",
+    "why_important": "It teaches decision-making by learning the value of choices, not only by imitating examples.",
+    "first_principles": "Ask, 'If I do this now, how much future reward should I expect?'",
+    "keywords": [
+      "q-learning",
+      "q learning",
+      "q function",
+      "q-function",
+      "bellman",
+      "value function"
+    ],
+    "evidence_video_count": 18,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 14
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "-7kv6jf0isQ",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 6,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "url": "https://www.youtube.com/watch?v=-7kv6jf0isQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 6\uff1a Q-Learning.txt",
+        "keyword_hits": 79
+      },
+      {
+        "video_id": "07MQNMcxhZU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 19,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+        "url": "https://www.youtube.com/watch?v=07MQNMcxhZU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Tutorial Session\uff1a Review of Q-Learning.txt",
+        "keyword_hits": 78
+      },
+      {
+        "video_id": "lRDaXnPIzks",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 7,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "url": "https://www.youtube.com/watch?v=lRDaXnPIzks",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 7\uff1a Offline RL.txt",
+        "keyword_hits": 66
+      },
+      {
+        "video_id": "cRGKc-nAWho",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 5,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "url": "https://www.youtube.com/watch?v=cRGKc-nAWho",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 5\uff1a Off-Policy Actor Critic.txt",
+        "keyword_hits": 44
+      },
+      {
+        "video_id": "PDIxDhA9Z6Y",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 8,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 8\uff1a Reward Learning.txt",
+        "keyword_hits": 40
+      },
+      {
+        "video_id": "oejFZShW9hU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 4,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "url": "https://www.youtube.com/watch?v=oejFZShW9hU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 4\uff1a Actor-Critic Methods.txt",
+        "keyword_hits": 36
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 15
+      },
+      {
+        "video_id": "PvqyGnOirgA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 11,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "url": "https://www.youtube.com/watch?v=PvqyGnOirgA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 11\uff1a Model-Based RL.txt",
+        "keyword_hits": 8
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "offline reinforcement learning",
+    "theme": "learning from fixed experience",
+    "big_picture": "Offline RL tries to learn a good policy from logged experience without new trial-and-error interaction.",
+    "problem_solved": "Real-world exploration can be expensive or unsafe, so the learner must use old data carefully.",
+    "domain": "Robotics, healthcare, recommendation systems, and logged control data.",
+    "why_important": "It addresses the gap between simulated RL and settings where bad exploration has real cost.",
+    "first_principles": "Learn from what was already tried, but avoid trusting guesses far outside that experience.",
+    "keywords": [
+      "offline rl",
+      "offline reinforcement",
+      "dataset",
+      "conservative",
+      "distribution shift"
+    ],
+    "evidence_video_count": 12,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 1,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 1,
+      "stanford-cs224r-deep-rl-spring-2025": 10
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "lRDaXnPIzks",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 7,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "url": "https://www.youtube.com/watch?v=lRDaXnPIzks",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 7\uff1a Offline RL.txt",
+        "keyword_hits": 26
+      },
+      {
+        "video_id": "PDIxDhA9Z6Y",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 8,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 8\uff1a Reward Learning.txt",
+        "keyword_hits": 19
+      },
+      {
+        "video_id": "wSiyEpvoGkA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 13,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+        "url": "https://www.youtube.com/watch?v=wSiyEpvoGkA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 13\uff1a Meta RL.txt",
+        "keyword_hits": 17
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 5
+      },
+      {
+        "video_id": "07MQNMcxhZU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 19,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+        "url": "https://www.youtube.com/watch?v=07MQNMcxhZU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Tutorial Session\uff1a Review of Q-Learning.txt",
+        "keyword_hits": 3
+      },
+      {
+        "video_id": "WxRDyObrm_M",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 2,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+        "url": "https://www.youtube.com/watch?v=WxRDyObrm_M",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 2\uff1a Imitation Learning.txt",
+        "keyword_hits": 2
+      },
+      {
+        "video_id": "PmW_TMQ3l0I",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 5,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "url": "https://www.youtube.com/watch?v=PmW_TMQ3l0I",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 5 - LLM tuning.txt",
+        "keyword_hits": 1
+      },
+      {
+        "video_id": "PvqyGnOirgA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 11,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "url": "https://www.youtube.com/watch?v=PvqyGnOirgA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 11\uff1a Model-Based RL.txt",
+        "keyword_hits": 1
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "model-based reinforcement learning",
+    "theme": "planning with a learned world",
+    "big_picture": "Model-based RL learns or uses a model of what happens next so it can plan before acting.",
+    "problem_solved": "Trying every action in the real world can be too slow, expensive, or risky.",
+    "domain": "Robotics, control, games, and simulated agents.",
+    "why_important": "It trades real-world trial and error for prediction and planning.",
+    "first_principles": "Imagine likely futures, compare them, take the first useful action, and update when reality arrives.",
+    "keywords": [
+      "model-based",
+      "model based",
+      "dynamics model",
+      "planning",
+      "rollout"
+    ],
+    "evidence_video_count": 15,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 2,
+      "stanford-cs224r-deep-rl-spring-2025": 13
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "PvqyGnOirgA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 11,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "url": "https://www.youtube.com/watch?v=PvqyGnOirgA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 11\uff1a Model-Based RL.txt",
+        "keyword_hits": 56
+      },
+      {
+        "video_id": "O2VpNnwB4lM",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 10,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=O2VpNnwB4lM",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 10\uff1a RL for LLM Reasoning.txt",
+        "keyword_hits": 25
+      },
+      {
+        "video_id": "qNdsI_4AQJw",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 12,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+        "url": "https://www.youtube.com/watch?v=qNdsI_4AQJw",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 12\uff1a Multi-Task RL.txt",
+        "keyword_hits": 18
+      },
+      {
+        "video_id": "EvHRQhMX7_w",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 1,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+        "url": "https://www.youtube.com/watch?v=EvHRQhMX7_w",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 1\uff1a Class Intro.txt",
+        "keyword_hits": 6
+      },
+      {
+        "video_id": "oejFZShW9hU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 4,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "url": "https://www.youtube.com/watch?v=oejFZShW9hU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 4\uff1a Actor-Critic Methods.txt",
+        "keyword_hits": 2
+      },
+      {
+        "video_id": "PDIxDhA9Z6Y",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 8,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "url": "https://www.youtube.com/watch?v=PDIxDhA9Z6Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 8\uff1a Reward Learning.txt",
+        "keyword_hits": 2
+      },
+      {
+        "video_id": "rbaWQQLrzl0",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 16,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+        "url": "https://www.youtube.com/watch?v=rbaWQQLrzl0",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 16\uff1a RL for Robots.txt",
+        "keyword_hits": 2
+      },
+      {
+        "video_id": "Hp1WBWghrak",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 17,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 17: Advancing Robot Intelligence",
+        "url": "https://www.youtube.com/watch?v=Hp1WBWghrak",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/017-Hp1WBWghrak-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 17\uff1a Advancing Robot Intelligence.txt",
+        "keyword_hits": 2
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "diffusion",
+    "theme": "generative modeling",
+    "big_picture": "Diffusion models learn to turn noise into data by reversing a gradual corruption process.",
+    "problem_solved": "Generating complex images directly is hard; removing noise step by step is easier to learn.",
+    "domain": "Image generation, video, audio, and multimodal generative models.",
+    "why_important": "Diffusion became a dominant method for high-quality generative vision systems.",
+    "first_principles": "Start from a messy picture and repeatedly clean it until structure appears.",
+    "keywords": [
+      "diffusion",
+      "denoising",
+      "noising",
+      "reverse process"
+    ],
+    "evidence_video_count": 16,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 1,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 8,
+      "stanford-cs224r-deep-rl-spring-2025": 7
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "_WaR2fjZpEQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 2,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "url": "https://www.youtube.com/watch?v=_WaR2fjZpEQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 2 - Score matching.txt",
+        "keyword_hits": 36
+      },
+      {
+        "video_id": "oyLUvz9nR6E",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 8,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 8 - Trending Topics.txt",
+        "keyword_hits": 34
+      },
+      {
+        "video_id": "Q86qzJ1K1Ss",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 9,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 9 - Recap & Current Trends.txt",
+        "keyword_hits": 28
+      },
+      {
+        "video_id": "HpFdSlMeXzQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 5,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 5 - Architectures.txt",
+        "keyword_hits": 21
+      },
+      {
+        "video_id": "agN3AlfGFrk",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 3,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "url": "https://www.youtube.com/watch?v=agN3AlfGFrk",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 3 - Flow matching.txt",
+        "keyword_hits": 20
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 20
+      },
+      {
+        "video_id": "IvXTl3yj-4Y",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 6,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+        "url": "https://www.youtube.com/watch?v=IvXTl3yj-4Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 6 - Model Training.txt",
+        "keyword_hits": 19
+      },
+      {
+        "video_id": "WxRDyObrm_M",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 2,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+        "url": "https://www.youtube.com/watch?v=WxRDyObrm_M",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 2\uff1a Imitation Learning.txt",
+        "keyword_hits": 16
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "score matching",
+    "theme": "generative modeling",
+    "big_picture": "Score matching learns which direction data becomes more likely.",
+    "problem_solved": "A generator needs guidance for how to move noisy samples toward realistic data.",
+    "domain": "Diffusion models, energy-based models, and probability modeling.",
+    "why_important": "It gives diffusion models their local direction signal for denoising.",
+    "first_principles": "At each noisy point, learn the arrow that points back toward more data-like regions.",
+    "keywords": [
+      "score matching",
+      "score function",
+      "gradient of log",
+      "denoising score"
+    ],
+    "evidence_video_count": 7,
+    "evidence_by_course": {
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 3
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "_WaR2fjZpEQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 2,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "url": "https://www.youtube.com/watch?v=_WaR2fjZpEQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 2 - Score matching.txt",
+        "keyword_hits": 24
+      },
+      {
+        "video_id": "agN3AlfGFrk",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 3,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "url": "https://www.youtube.com/watch?v=agN3AlfGFrk",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 3 - Flow matching.txt",
+        "keyword_hits": 8
+      },
+      {
+        "video_id": "KCAOXd4IO9o",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 3,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+        "url": "https://www.youtube.com/watch?v=KCAOXd4IO9o",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 3\uff1a Policy Gradients.txt",
+        "keyword_hits": 5
+      },
+      {
+        "video_id": "XKLGuwvSKvI",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 9,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "url": "https://www.youtube.com/watch?v=XKLGuwvSKvI",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 9\uff1a RL for LLMs.txt",
+        "keyword_hits": 3
+      },
+      {
+        "video_id": "cRGKc-nAWho",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 5,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "url": "https://www.youtube.com/watch?v=cRGKc-nAWho",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 5\uff1a Off-Policy Actor Critic.txt",
+        "keyword_hits": 1
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 1
+      },
+      {
+        "video_id": "oyLUvz9nR6E",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 8,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 8 - Trending Topics.txt",
+        "keyword_hits": 1
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "flow matching",
+    "theme": "generative modeling",
+    "big_picture": "Flow matching learns a smooth path that moves simple noise into data.",
+    "problem_solved": "Instead of many discrete denoising steps, learn the motion that carries one distribution into another.",
+    "domain": "Generative modeling, diffusion alternatives, and continuous-time models.",
+    "why_important": "It provides another first-principles route from noise to samples.",
+    "first_principles": "Learn the velocity field that tells each point how to travel from the starting cloud to the data cloud.",
+    "keywords": [
+      "flow matching",
+      "velocity field",
+      "ode",
+      "transport"
+    ],
+    "evidence_video_count": 9,
+    "evidence_by_course": {
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 8,
+      "stanford-cs224r-deep-rl-spring-2025": 1
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "agN3AlfGFrk",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 3,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "url": "https://www.youtube.com/watch?v=agN3AlfGFrk",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 3 - Flow matching.txt",
+        "keyword_hits": 54
+      },
+      {
+        "video_id": "_WaR2fjZpEQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 2,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "url": "https://www.youtube.com/watch?v=_WaR2fjZpEQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 2 - Score matching.txt",
+        "keyword_hits": 19
+      },
+      {
+        "video_id": "IvXTl3yj-4Y",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 6,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+        "url": "https://www.youtube.com/watch?v=IvXTl3yj-4Y",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 6 - Model Training.txt",
+        "keyword_hits": 10
+      },
+      {
+        "video_id": "oyLUvz9nR6E",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 8,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 8 - Trending Topics.txt",
+        "keyword_hits": 9
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 5
+      },
+      {
+        "video_id": "HpFdSlMeXzQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 5,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 5 - Architectures.txt",
+        "keyword_hits": 3
+      },
+      {
+        "video_id": "WxRDyObrm_M",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 2,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+        "url": "https://www.youtube.com/watch?v=WxRDyObrm_M",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 2\uff1a Imitation Learning.txt",
+        "keyword_hits": 2
+      },
+      {
+        "video_id": "tr-CUpw--ck",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 1,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+        "url": "https://www.youtube.com/watch?v=tr-CUpw--ck",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 1 - Diffusion.txt",
+        "keyword_hits": 1
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "guidance",
+    "theme": "controllable generation",
+    "big_picture": "Guidance steers a generator toward a requested condition such as a prompt or class.",
+    "problem_solved": "A generator may make plausible samples that do not match what the user asked for.",
+    "domain": "Text-to-image generation, controllable diffusion, and multimodal generation.",
+    "why_important": "It links user intent to the sample path.",
+    "first_principles": "When cleaning noise, bias each step toward features that match the request.",
+    "keywords": [
+      "guidance",
+      "classifier-free",
+      "classifier free",
+      "conditioning",
+      "conditional"
+    ],
+    "evidence_video_count": 16,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 3,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 6,
+      "stanford-cs224r-deep-rl-spring-2025": 7
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "agN3AlfGFrk",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 3,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "url": "https://www.youtube.com/watch?v=agN3AlfGFrk",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 3 - Flow matching.txt",
+        "keyword_hits": 47
+      },
+      {
+        "video_id": "WUUq6TVAu8U",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 4,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 4 - Latent Space & Guidance.txt",
+        "keyword_hits": 10
+      },
+      {
+        "video_id": "_WaR2fjZpEQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 2,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "url": "https://www.youtube.com/watch?v=_WaR2fjZpEQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 2 - Score matching.txt",
+        "keyword_hits": 7
+      },
+      {
+        "video_id": "oyLUvz9nR6E",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 8,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 8 - Trending Topics.txt",
+        "keyword_hits": 7
+      },
+      {
+        "video_id": "tr-CUpw--ck",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 1,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+        "url": "https://www.youtube.com/watch?v=tr-CUpw--ck",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 1 - Diffusion.txt",
+        "keyword_hits": 6
+      },
+      {
+        "video_id": "wSiyEpvoGkA",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 13,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+        "url": "https://www.youtube.com/watch?v=wSiyEpvoGkA",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 13\uff1a Meta RL.txt",
+        "keyword_hits": 5
+      },
+      {
+        "video_id": "07MQNMcxhZU",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 19,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+        "url": "https://www.youtube.com/watch?v=07MQNMcxhZU",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Tutorial Session\uff1a Review of Q-Learning.txt",
+        "keyword_hits": 3
+      },
+      {
+        "video_id": "HpFdSlMeXzQ",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 5,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 5 - Architectures.txt",
+        "keyword_hits": 3
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  },
+  {
+    "name": "evaluation",
+    "theme": "measurement",
+    "big_picture": "Evaluation asks whether a model improved and what the score actually measures.",
+    "problem_solved": "Generated outputs and learned behavior can look good in one way while failing in another.",
+    "domain": "Language models, RL systems, diffusion models, and agents.",
+    "why_important": "Without clear measurement, progress can be confused with overfitting to the test.",
+    "first_principles": "Choose a sample of behavior, measure it, and be explicit about what that measurement can and cannot prove.",
+    "keywords": [
+      "evaluation",
+      "evaluate",
+      "metric",
+      "metrics",
+      "benchmark",
+      "fid",
+      "human evaluation"
+    ],
+    "evidence_video_count": 29,
+    "evidence_by_course": {
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
+      "stanford-cs224r-deep-rl-spring-2025": 13
+    },
+    "strongest_evidence": [
+      {
+        "video_id": "8fNP4N46RRo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 8,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+        "url": "https://www.youtube.com/watch?v=8fNP4N46RRo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 8 - LLM Evaluation.txt",
+        "keyword_hits": 92
+      },
+      {
+        "video_id": "iNaRBp4T57Q",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 7,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+        "url": "https://www.youtube.com/watch?v=iNaRBp4T57Q",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 7 - Evaluation.txt",
+        "keyword_hits": 75
+      },
+      {
+        "video_id": "FacJ_1tTSx4",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 18,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+        "url": "https://www.youtube.com/watch?v=FacJ_1tTSx4",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 18\uff1a Frontiers.txt",
+        "keyword_hits": 22
+      },
+      {
+        "video_id": "h-7S6HNq0Vg",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 7,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+        "url": "https://www.youtube.com/watch?v=h-7S6HNq0Vg",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 7 - Agentic LLMs.txt",
+        "keyword_hits": 20
+      },
+      {
+        "video_id": "Ub3GoFaUcds",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 1,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 1 - Transformer",
+        "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 1 - Transformer.txt",
+        "keyword_hits": 19
+      },
+      {
+        "video_id": "oyLUvz9nR6E",
+        "course_slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "course_index": 8,
+        "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models \uff5c Spring 2026 \uff5c Lecture 8 - Trending Topics.txt",
+        "keyword_hits": 16
+      },
+      {
+        "video_id": "k5Fh-UgTuCo",
+        "course_slug": "stanford-cme295-transformers-llms-autumn-2025",
+        "course_index": 6,
+        "title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs \uff5c Autumn 2025 \uff5c Lecture 6 - LLM Reasoning.txt",
+        "keyword_hits": 13
+      },
+      {
+        "video_id": "KCAOXd4IO9o",
+        "course_slug": "stanford-cs224r-deep-rl-spring-2025",
+        "course_index": 3,
+        "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+        "url": "https://www.youtube.com/watch?v=KCAOXd4IO9o",
+        "clean_txt": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning \uff5c Spring 2025 \uff5c Lecture 3\uff1a Policy Gradients.txt",
+        "keyword_hits": 11
+      }
+    ],
+    "evidence_kind": "keyword/title match over clean transcript; seed extraction, not final interpretation"
+  }
+]

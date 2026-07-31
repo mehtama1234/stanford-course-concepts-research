@@ -1,0 +1,401 @@
+{
+  "id": "PLoROMvodv4rNdy8rt2rZ4T2xM0OjADnfu",
+  "title": "Stanford CME296: Diffusion & Large Vision Models",
+  "availability": "public",
+  "channel_follower_count": null,
+  "description": "This course explores diffusion-based generative models for vision. You will study the foundations of diffusion, score matching and flow matching, modern architectures such as Diffusion Transformers, and methods for controllable image generation and evaluation. \n\nThe course combines theory with practical insights into state-of-the-art generative models. Ideal for students with a background in linear algebra, probability, calculus, and machine learning.\n\nLearn more and enroll: https://online.stanford.edu/courses/cme296-diffusion-and-large-vision-models\n\nView the course syllabus: https://cme296.stanford.edu/syllabus/\n\nAfshine Amidi is an Adjunct Lecturer at Stanford University.\n\nShervine Amidi is an Adjunct Lecturer at Stanford University.",
+  "tags": [],
+  "thumbnails": [
+    {
+      "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEWCKgBEF5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLAAk6qwnPczgpfJqLmgyjyP2K0sCg",
+      "height": 94,
+      "width": 168,
+      "id": "0",
+      "resolution": "168x94"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEWCMQBEG5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLDhoSd6lIJ-RKEK5uYXODe8c8WYTw",
+      "height": 110,
+      "width": 196,
+      "id": "1",
+      "resolution": "196x110"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEXCPYBEIoBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLA5RL62kx1WaTIKpqIO-X6jwyiikA",
+      "height": 138,
+      "width": 246,
+      "id": "2",
+      "resolution": "246x138"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLAYuiH5kXYb345r00xmDc3E0k2u5Q",
+      "height": 188,
+      "width": 336,
+      "id": "3",
+      "resolution": "336x188"
+    }
+  ],
+  "modified_date": "20260601",
+  "view_count": 26116,
+  "playlist_count": 8,
+  "channel": "Stanford Online",
+  "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+  "uploader_id": "@stanfordonline",
+  "uploader": "Stanford Online",
+  "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+  "uploader_url": "https://www.youtube.com/@stanfordonline",
+  "_type": "playlist",
+  "entries": [
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBAosapbyBb8rKJtTjYdyhA41a4wQ",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLC2woDWQ-SF3yCjZz-O0X-a4hhnHA",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB9l182qcWUQfRGqFwI7qruz3TRSg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tr-CUpw--ck/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBBF8rQ_mtwxmNH5LsCatitjavJAQ",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6386,
+      "view_count": 111000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "tr-CUpw--ck",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=tr-CUpw--ck",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/_WaR2fjZpEQ/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDLrPbYdVvD6PlOvtYrFpbp_zMpRg",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/_WaR2fjZpEQ/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLByaehzp5B7JCqo5zQ8Qjfr6McuKQ",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/_WaR2fjZpEQ/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBo8ehhH7CzKcGQJlPMZJdadtvdBw",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/_WaR2fjZpEQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCmC0KGBKUod46cRudvdoPjv9gBeg",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6528,
+      "view_count": 22000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "_WaR2fjZpEQ",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=_WaR2fjZpEQ",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/agN3AlfGFrk/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCmISlqySKvsndHv-METEuK1KmvDg",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/agN3AlfGFrk/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCQnbVAS66vmTSfMk4BklKpgkBWow",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/agN3AlfGFrk/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB1jAAArF__E6_UOCUtS-qivCBQ4A",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/agN3AlfGFrk/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLC7OrD77dyKfyGHbPd8E967x4O-jQ",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6454,
+      "view_count": 14000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "agN3AlfGFrk",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=agN3AlfGFrk",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/WUUq6TVAu8U/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLA0oycfyO89S6r0qUxSrVUilV3fIA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/WUUq6TVAu8U/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCM2srkSktHiDoIA4u5nzwUtJwZlw",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/WUUq6TVAu8U/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDBVb33s2ZX4BHNz82B_FjGflFShw",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/WUUq6TVAu8U/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLD8O2h_KaLozWZjBXyb9JC4Oi_uQQ",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6058,
+      "view_count": 18000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "WUUq6TVAu8U",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=WUUq6TVAu8U",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/HpFdSlMeXzQ/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBuj_hNDc9Ywy9bpP8SaqQ9nBAxTA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/HpFdSlMeXzQ/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLCH_3DzMhmUcHAec69sjPnbFcsygg",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/HpFdSlMeXzQ/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBa5oean78DWSeTLQUAibl1sXfqTA",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/HpFdSlMeXzQ/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCWisBcezOpQpW4WnwG5rYv7Hl3_w",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6386,
+      "view_count": 12000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "HpFdSlMeXzQ",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=HpFdSlMeXzQ",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/IvXTl3yj-4Y/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDZNXShOg0G6waPK1pw2Ckm83xXcA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/IvXTl3yj-4Y/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAANZYhK0bbN8DG9b-Nz5YRCdn4mA",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/IvXTl3yj-4Y/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCn176sIwyZMbNk18gyEM2Ym9yWfA",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/IvXTl3yj-4Y/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBN1pJhd0Xa-5xgN3NCwm-UC_1XOA",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6058,
+      "view_count": 12000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "IvXTl3yj-4Y",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=IvXTl3yj-4Y",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/iNaRBp4T57Q/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLAZyj6Ijoh1epuasyO4FyFT2ncOsw",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/iNaRBp4T57Q/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDFlmVhCSEJ3Vi6HhHDQ_fwtBdeBQ",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/iNaRBp4T57Q/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBfZCc4FUVoyQg8MRiaFQ9kFh_HVw",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/iNaRBp4T57Q/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLBZKESfyTZz3tbJEpKyTAw7w1iCeA",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6072,
+      "view_count": 9300,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "iNaRBp4T57Q",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=iNaRBp4T57Q",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/oyLUvz9nR6E/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLA3mbZyNZnZm68wYefnJ-bjFN9aRg",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/oyLUvz9nR6E/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBTRZdUvCcNI4LC1Ihh-gOQ-gdnew",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/oyLUvz9nR6E/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAYJ_5RuMcGFzDOm6DgGI4mWwQ4rg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/oyLUvz9nR6E/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDYa4Iz3VjrVtnVje45QVKkCsdcGw",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 6574,
+      "view_count": 32000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": "https://www.youtube.com/channel/UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader_url": "https://www.youtube.com/@stanfordonline",
+      "creators": null,
+      "channel": "Stanford Online",
+      "channel_id": "UCBa5G_ESCn8Yd4vw5U-gIcg",
+      "uploader": "Stanford Online",
+      "uploader_id": "@stanfordonline",
+      "ie_key": "Youtube",
+      "id": "oyLUvz9nR6E",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=oyLUvz9nR6E",
+      "__x_forwarded_for_ip": null
+    }
+  ],
+  "extractor_key": "YoutubeTab",
+  "extractor": "youtube:tab",
+  "webpage_url": "https://www.youtube.com/playlist?list=PLoROMvodv4rNdy8rt2rZ4T2xM0OjADnfu",
+  "original_url": "https://www.youtube.com/playlist?list=PLoROMvodv4rNdy8rt2rZ4T2xM0OjADnfu",
+  "webpage_url_basename": "playlist",
+  "webpage_url_domain": "youtube.com",
+  "release_year": null,
+  "epoch": 1785473849,
+  "__files_to_move": {},
+  "_version": {
+    "version": "2026.07.04",
+    "current_git_head": null,
+    "release_git_head": "997fa140840a08df3938b40da470c78049fef1f6",
+    "repository": "yt-dlp/yt-dlp"
+  }
+}

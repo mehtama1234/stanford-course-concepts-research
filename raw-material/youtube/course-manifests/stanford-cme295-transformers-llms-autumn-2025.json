@@ -1,0 +1,64 @@
+{
+  "slug": "stanford-cme295-transformers-llms-autumn-2025",
+  "title": "Stanford CME295 Transformers & LLMs | Autumn 2025",
+  "kind": "video-list",
+  "seed_url": "https://www.youtube.com/watch?v=Ub3GoFaUcds",
+  "playlist_url": null,
+  "source_note": "YouTube search for Stanford CME295 lectures; original seed URL had no playlist parameter.",
+  "videos": [
+    {
+      "index": 1,
+      "id": "Ub3GoFaUcds",
+      "expected_title": "Lecture 1 - Transformer",
+      "url": "https://www.youtube.com/watch?v=Ub3GoFaUcds"
+    },
+    {
+      "index": 2,
+      "id": "yT84Y5zCnaA",
+      "expected_title": "Lecture 2 - Transformer-Based Models & Tricks",
+      "url": "https://www.youtube.com/watch?v=yT84Y5zCnaA"
+    },
+    {
+      "index": 3,
+      "id": "Q5baLehv5So",
+      "expected_title": "Lecture 3 - Tranformers & Large Language Models",
+      "url": "https://www.youtube.com/watch?v=Q5baLehv5So"
+    },
+    {
+      "index": 4,
+      "id": "VlA_jt_3Qc4",
+      "expected_title": "Lecture 4 - LLM Training",
+      "url": "https://www.youtube.com/watch?v=VlA_jt_3Qc4"
+    },
+    {
+      "index": 5,
+      "id": "PmW_TMQ3l0I",
+      "expected_title": "Lecture 5 - LLM tuning",
+      "url": "https://www.youtube.com/watch?v=PmW_TMQ3l0I"
+    },
+    {
+      "index": 6,
+      "id": "k5Fh-UgTuCo",
+      "expected_title": "Lecture 6 - LLM Reasoning",
+      "url": "https://www.youtube.com/watch?v=k5Fh-UgTuCo"
+    },
+    {
+      "index": 7,
+      "id": "h-7S6HNq0Vg",
+      "expected_title": "Lecture 7 - Agentic LLMs",
+      "url": "https://www.youtube.com/watch?v=h-7S6HNq0Vg"
+    },
+    {
+      "index": 8,
+      "id": "8fNP4N46RRo",
+      "expected_title": "Lecture 8 - LLM Evaluation",
+      "url": "https://www.youtube.com/watch?v=8fNP4N46RRo"
+    },
+    {
+      "index": 9,
+      "id": "Q86qzJ1K1Ss",
+      "expected_title": "Lecture 9 - Recap & Current Trends",
+      "url": "https://www.youtube.com/watch?v=Q86qzJ1K1Ss"
+    }
+  ]
+}

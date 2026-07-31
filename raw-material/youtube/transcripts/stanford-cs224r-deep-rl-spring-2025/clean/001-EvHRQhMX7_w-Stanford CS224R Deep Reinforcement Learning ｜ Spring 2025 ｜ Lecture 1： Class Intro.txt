@@ -1,0 +1,1991 @@
+Welcome to deep reinforcement
+learning or CS224R.
+I'm really excited to be
+teaching it again this quarter.
+My name is Chelsea.
+I am the instructor
+of the course.
+I'm an assistant professor
+here at Stanford.
+I do research on reinforcement
+learning, robotics,
+and language models, and
+a variety of other topics.
+So the plan for today.
+So we're going to be
+covering the course
+goals and some logistics.
+Hopefully this will
+be fairly short
+because all this information
+is available online.
+After that, we'll
+be talking about why
+study deep
+reinforcement learning
+and actually get into some
+technical content on modeling
+behavior and
+reinforcement learning.
+The key learning goals
+for today is what even
+is deep reinforcement learning?
+How do we go about actually
+representing behavior in a way
+that we can optimize behavior?
+And how do we formulate a
+reinforcement learning problem?
+So what do we mean by deep
+reinforcement learning?
+So first, for
+reinforcement learning,
+we mean decision-making
+problems.
+And these are problems
+where a system
+needs to make multiple
+decisions based
+on a stream of information.
+So it'll observe and
+then take an action
+based on that
+observation, and then
+observe again and
+take another action.
+And we'll be studying
+those of problems
+as well as the solutions
+to those problems,
+and that includes things like
+imitation learning, model-free
+and model-based reinforcement
+learning, offline
+and online reinforcement
+learning, multi-task
+and meta reinforcement
+learning, as well as
+a little bit of a extra
+focus on reinforcement
+learning for large
+language models,
+and reinforcement
+learning for robots.
+So that's the crux
+of reinforcement
+learning aspect of the course.
+And we'll be emphasizing
+solutions that
+scale to deep neural networks.
+And we'll be spending
+a lot less time
+on solutions that don't pertain
+to deep neural networks.
+Now, how does deep RL differ
+from other machine learning
+topics?
+So hopefully a lot of
+you have some experience
+with machine learning.
+And oftentimes in
+machine learning,
+you'll have some
+input/output pair x, y.
+And you'll have a bunch
+of these in some data set,
+and then your goal
+is to learn something
+that can map from x to y.
+And another thing
+is that we typically
+assume in these data sets is
+that these data points are
+sampled from some
+distribution and are
+sampled independent
+and identical way
+from that distribution.
+And this is actually where
+reinforcement learning
+differs quite a bit.
+So in supervised learning
+we have labeled data.
+We learn this function.
+We're directly told
+what to output.
+We're pulled what the answer
+is for that given input,
+and the inputs
+are i.i.d sampled.
+Now, in reinforcement
+learning, the picture
+is a little bit different.
+So ultimately our goal
+is to learn behavior.
+And we'll actually
+use different notation
+to refer to inputs and outputs.
+So specifically our goal will be
+to map from states to actions.
+And we'll refer to the function
+that we do that mapping as pi.
+And unlike in
+supervised learning,
+we're not going to be directly
+told what the answer is.
+Our goal will actually be to
+learn this behavior from much
+more indirect feedback.
+And so in
+reinforcement learning,
+the goal is to learn this
+behavior pi of a given s.
+And this will be
+from experience,
+and actually
+experience often drawn
+from the policy
+that you're learning
+or this function
+that you're learning.
+And the data is not
+going to be sampled
+from a single distribution.
+It's actually going to be
+sampled in a way that actually
+depends on the policy
+or the function
+that you're currently learning.
+So these are the
+two big differences.
+And what I mean by
+behavior is this
+could include motor control
+like controlling your robot.
+It could include a chatbot that
+is interacting with a person.
+It could be playing a game.
+It could be driving a car.
+It could be an agent
+that's interacting
+with the web and a wide
+range of other domains.
+So that's how reinforcement
+learning differs
+from typical machine learning.
+We don't have the ability
+to cover everything
+in deep reinforcement
+learning, and so we're
+going to try to focus
+on the core concepts
+behind deep reinforcement
+learning methods,
+so that you can then use those
+core concepts to understand
+more advanced methods,
+should you choose
+to dive deeper into the topic.
+We'll also focus on
+implementation of algorithms
+to get to the point where you
+feel comfortable implementing
+algorithms yourself.
+And we'll give examples in
+robotics, control, and language
+models, especially in
+lecture and in projects,
+but a lot of the techniques
+will generalize more broadly,
+and also just to focus
+on topics that we
+think are the most useful and
+the most exciting to cover.
+If you're interested in more
+theory and other applications
+that are beyond some of
+these, CS234 can also
+be an excellent choice.
+And then the core
+goal is really to be
+able to understand and
+implement existing and emerging
+methods in deep reinforcement.
+Cool.
+So why study deep
+reinforcement learning?
+I'll list out a
+number of things here,
+and then we'll dive into
+each one a little bit more.
+So one we already
+talked about is going
+beyond supervised example.
+And there's a lot of scenarios
+where AI model predictions have
+consequences.
+And if we want to take into
+account those consequences,
+then we need a
+framework for thinking
+about those consequences
+and how to optimize
+the behavior with respect
+to those consequences.
+So for example, if you listen to
+music on Spotify, for example,
+and the Spotify algorithm is
+recommending a song for you
+to play or even actually
+just playing it directly
+for you, that recommendation
+has consequences
+such that the next time
+it recommends a song,
+it probably shouldn't
+recommend the same song,
+or it might want to also
+stay within the same genre,
+and so forth.
+And so if we want to think
+about developing AI systems
+that can take into account
+those consequences,
+that's what deep reinforcement
+learning allows us to do.
+There's also scenarios
+where direct supervision
+isn't available.
+So for example, if you have a
+coding assistant like Cursor
+or Copilot, and you want
+to give it feedback saying,
+did a great job there
+or did a poor job there,
+that supervision
+is not the output.
+It's a more indirect
+supervision.
+And learning from that
+indirect supervision or really
+any objective can be formulated
+as a reinforcement learning
+problem.
+So it's a lot more flexible
+than supervised learning.
+Reinforcement learning is
+also widely used and deployed
+in a number of
+performant AI systems.
+Also learning from
+experience, in my opinion,
+seems fundamental
+to intelligence.
+And so just from a
+philosophical level
+in terms of building
+intelligent machines,
+figuring out how
+to actually develop
+algorithms that can learn
+from their own experience
+seems pretty
+fundamental to that.
+And it's fundamental to
+be able to actually make
+discoveries of new things rather
+than just mimicking the data.
+And then lastly, there's
+also some pretty exciting
+open research problems
+as well, and so
+it makes it a pretty exciting
+area to do research on.
+And then lastly, last weekend,
+I was telling a friend
+that I was making slides on
+why study deep reinforcement
+learning, and how I was
+making several slides on it,
+and they were like, this
+question doesn't seem very hard.
+The answer is just one
+million in total compensation
+from OpenAI.
+So maybe if you're not
+motivated by 1 through 4,
+this can be some motivation.
+So diving into beyond
+supervised learning.
+Decision-making
+problems are everywhere
+and can't be directly
+formulated supervised learning.
+Any AI agent is
+captured by this.
+Also if you want your
+AI system to interact
+with people like chatbots
+or recommenders or scenarios
+where decisions will affect
+future outcomes or observations,
+these feedback loops, these are
+reinforcement learning problems.
+And then yeah, like I mentioned
+before, if you don't have labels
+in your objective,
+isn't just accuracy
+or it's nondifferentiable.
+These are scenarios where
+reinforcement learning
+is useful.
+Now, I mentioned
+that deep RL is used
+in a variety of different
+performance systems.
+What am I talking about there?
+Two examples of legged robots
+that have learned behavior
+with reinforcement
+learning, in this case,
+reinforcement learning
+and simulation and then
+transferred to the real world.
+So you can get some cool stuff
+like puppy robots and dancing
+humanoids.
+And these are actually real
+robots in the real world.
+Policies that are trained with
+deep reinforcement learning.
+Beyond legged
+robots and dancing,
+you can also get robots that can
+manipulate with arms to do tasks
+using, in this case,
+imitation learning,
+but still within the
+scope of this course.
+So the left is a robot that is
+unloading laundry and folding
+the laundry.
+On the right is a robot that
+can fold some simple origami.
+So some pretty cool stuff you
+can do with these methods.
+You can also learn to
+play complex games.
+So several years ago, DeepMind
+used deep reinforcement learning
+to train a system to
+play the game of Go,
+and it actually
+defeated Lee Sedol,
+which was really impressive
+in its own right.
+And another really
+cool thing about it
+was coming back to this
+discovery challenge
+of AI systems.
+There was this move
+that surprised everyone
+that was an expert in Go.
+It was called Move 37, and
+it discovered a strategy
+that humans previously
+hadn't thought of before.
+And so this is an example of
+how reinforcement learning can
+be a tool to discover
+new solutions.
+And this might be
+useful beyond games.
+But if we want to, for example,
+discover curious diseases
+or discover things that
+require experimentation,
+it provides a tool for
+doing those things.
+And it's not just
+robots and games,
+so nearly all modern language
+models use some form of RL
+for post-training, especially
+for more advanced reasoning
+as well.
+There's also research on traffic
+control using reinforcement
+learning and finding
+ways to insert cars
+into human-driven cars in order
+to increase the throughput
+on different roads.
+Research on training
+generative models
+with reinforcement learning.
+In this case, for example,
+trying to make the generations
+adhere to a particular prompt.
+So what these are
+showing is on the left.
+If you ask the base
+generative model
+to make a picture of a
+dolphin riding a bike,
+it'll give you this, which
+is not a very good picture.
+And then you can optimize it
+through reinforcement learning
+to get a picture that
+is actually following
+the prompt more effectively,
+and likewise for other prompts
+as well.
+And this also is being
+used for Chip design.
+This is a paper
+that designed chips
+that are used in Google's
+production TPU, which is also
+pretty useful.
+Yeah.
+Great.
+So those are a few examples.
+There's a number of others
+that I didn't cover as well.
+The next thing that I mentioned
+in terms of studying deep RL
+seems somewhat fundamental
+to intelligence.
+And for this, I want to tell
+a little bit of a story which
+is that right after I
+graduated undergrad,
+I joined a lab that was looking
+at reinforcement learning
+for robots.
+And right next to where I was
+sitting was this robot here.
+And oftentimes
+there was a post-doc
+in the lab who was running
+experiments with reinforcement
+learning, and so I would
+look over at the robot
+and it would be doing
+things like this.
+And the thing that
+really fascinated me
+about watching this
+robot is you can actually
+see it learning over time.
+And at the beginning it
+knew nothing about how
+to, for example, insert and
+assemble these two parts
+of a toy airplane,
+and at the end,
+it's actually able to do
+it quite performantly.
+So this is really, really cool.
+You can actually see it
+learning from its own experience
+in the real world.
+So essentially
+reinforcement learning
+enables this ability
+to get better
+with practice that isn't present
+in other machine learning
+systems.
+Now, there is one
+caveat to this,
+which is that this particular
+robot had its eyes closed.
+It wasn't using a
+camera, essentially,
+and that seemed like a really
+fundamental limitation to me.
+And so I actually then worked
+with the postdoc on a follow-up
+project with cameras, and it
+was able to, in this case,
+then, learn in
+the real world how
+to insert the red block
+into the shape sorting cube.
+And again here,
+with experience is
+able to get better and better
+as it practices the task over
+and over again.
+And then after the
+learning process,
+it's still learning,
+still improving.
+It ends up getting
+a success rate.
+I think around 95% or
+100% success at the end.
+And then I can
+hold the block out,
+or at least a
+young version of me
+can hold the block
+out for the robot,
+and the robot can
+then put the red block
+into the same currency.
+Now, these are
+very simple tasks.
+This is in some ways
+a long time ago,
+and now we have robots that
+can fold laundry and do dancing
+and so forth.
+But one of the
+reasons why I like
+showing these videos
+is they really
+show the reinforcement
+learning process
+in the real world
+and the ability
+to improve with practice.
+At the same time, there's also
+a ton of exciting research
+problems that are open.
+And so if you're someone who's
+excited about doing research,
+there's challenges like,
+how does this robot learn
+to represent what is
+good for the task.
+Or how does an agent
+generalize its behavior,
+not just to one scenario, but
+to many different scenarios?
+And can we apply such
+a system at scale
+with large, diverse data sets
+and transfer from other tasks
+and other goals?
+And can we use reinforcement
+learning to learn long horizon
+tasks like cooking a meal or
+solving a really hard math
+problem?
+And can robots practice
+fully autonomously?
+And for this last point,
+I showed you some videos
+of reinforcement learning.
+That's not actually
+always what it looks like.
+So sometimes if you run
+reinforcement learning on robot,
+it looks more like this, where
+the robot is trying to hit
+the hockey puck into the goal.
+And every time the
+robot attempts the task,
+it then needs to start
+over and re-attempt it,
+and the robot doesn't actually
+know how to undo the task.
+And this is my
+friend Yevgen. You
+might notice that
+Yevgen is actually
+doing more work than
+what the robot is
+doing, which doesn't quite seem
+like the right way of doing
+things.
+And it's not practical to
+collect a lot of data this way.
+And along all these topics,
+these are some of the topics
+that we'll be covering
+in this course as well.
+So we'll be talking
+about reward learning
+and how to represent
+different rewards.
+We talk about offline
+RL, multitask RL,
+and meta-RL, hierarchy, and
+reasoning, and reset-free RL
+as well.
+Cool.
+So any questions on why deep
+RL is interesting to study?
+Yeah.
+So the question was, how
+do you learn a reward
+when the robot is learning
+in the real world?
+And in that particular example,
+we represented the reward
+as the distance between--
+or the negative distance between
+the position of the object
+and the goal position
+of the object.
+And you might have noticed that
+in the case with the shape cube,
+the robot was actually
+holding the cube,
+and so that meant
+that we could actually
+measure using the
+robot arm position
+where the cube was as well.
+Now, you can't do
+this in practice.
+In many scenarios it's
+specific to that task.
+And in the hockey example,
+there was actually
+a mocap marker on
+the hockey puck
+that measured where it is in--
+yeah, where it is in the room.
+And in general, it's very hard.
+And that's why reward
+learning is necessary
+in order to solve the problem
+in a more general way.
+Good question.
+So now let's dive into modeling
+behavior and reinforcement
+learning.
+So we need to figure out how to
+represent experience as data.
+So as the robot
+was practicing, we
+need to think about
+how we can actually
+represent what was captured
+in that video as data
+to learn from.
+And so here's another
+example of a robot
+learning in the real world.
+We might also want to think
+about how to represent text
+from a chatbot, for example.
+In either of these cases we
+need to think about experience
+that the agent collect.
+How do we actually
+write that down as data?
+So the way that we do that,
+typically in reinforcement
+learning, is first we'll think
+about the state of the world.
+And we'll use S to denote the
+current state of the world.
+And for example, in
+the case of the robot,
+the state of the world might
+be the position of the arm
+and the position of the towel
+and the position of the hook.
+Or if you don't have access
+to information about the towel
+directly, it might
+just be an image
+captured from the robot's
+camera and the position
+of the joints of the arm
+if you have access to that.
+Now, you can't always
+have direct access
+to the state of the world,
+and so sometimes we'll
+refer to an
+observation O, and use
+observations instead of states.
+And the difference between
+observations and states
+is that with
+observations it may not
+capture all of the information
+you need to make a decision.
+And you might actually need to
+think about past observations
+that you've seen before.
+So for example, for a chatbot,
+if you're interacting with it,
+you can think of the
+observation at a given time
+step as the most recent message
+that you sent to that chatbot.
+And then that most
+recent message
+doesn't tell the
+chatbot everything
+it needs to know about what
+the next response should be.
+And so what you
+need is you actually
+need to give it the history
+of past observation, not just
+the current observation, in
+order to make a decision.
+And we'll talk a little bit more
+about this state observation
+distinction in a couple slides.
+So this is capturing what
+the agent is observing.
+Now, we also need to capture
+how it's taking actions, how
+it's actually making decisions.
+And we'll refer to those
+decisions as actions.
+And we'll use the letter
+a to denote actions.
+And then in terms of
+a given interaction
+with the environment, we will
+think of that as a trajectory.
+So that will be a sequence
+of states and actions
+or a sequence of
+observations and actions.
+So this is one way to
+represent behavior,
+and this will then result in
+a data set of trajectories
+rather than a data
+set of xy pairs.
+And then we need to think
+about what is actually
+the goal of the task, and that's
+where reward functions come in.
+And reward functions
+are essentially
+telling us how good is a
+given state and action.
+In many cases, the
+reward function
+will only depend on the state.
+And for example,
+it might tell you
+how close is the
+towel to being hung,
+or is the towel hung or not.
+Or in the case of a teapot it
+might be, how happy is the user?
+Or did they give me a
+thumbs up or a thumbs down?
+And then this experience
+is the trajectory,
+and that trajectory might be
+augmented with the rewards.
+So each time you
+roll out the policy,
+you'll get some
+data in this form.
+Let's talk a little bit more
+about states and observations
+first.
+We can then think about states
+and actions, is in some ways
+a lot like a Markov chain.
+So they will have the
+first state of the world.
+This is, for example,
+in the robot case,
+let's say the towel is on
+the table and there's a hook,
+and the goal is to put
+the towel on the hook.
+This first state is like the
+robot in some neutral position
+and the towel on the table.
+And then the robot
+will take some action.
+This is like moving its arm
+to a particular location.
+And that action and
+the current state
+will inform what
+the next state is.
+And then from there--
+maybe the towel is
+in the same position
+if the robot was just
+moving in free space,
+or maybe the towel is moved.
+And the robot will then
+take another action,
+and it will move its arm again.
+And the states and actions will
+then inform the next state.
+Now, one crucial
+thing here is that we
+can think of how the environment
+is changing under what's
+called a dynamics function.
+So you have P of
+S3 given S2 and a2.
+This is the dynamics
+of the world.
+This is, does the arm
+actually move in space,
+and how does the
+towel move in space?
+as a function of where it was
+before and what the robot did.
+And the crucial
+thing to notice here
+is that S3 only
+depends on S2 and a2,
+and it doesn't depend on S1.
+And so there's no S1 in this
+probability distribution.
+And essentially, S3 is going
+to be independent of S1
+if you condition on S2.
+And this independence property
+is called the Markov property.
+And it's one of the things
+that actually ends up
+being very useful in
+reinforcement learning.
+So it allows you to
+break up the problem
+into these scenarios
+where you don't
+have to worry about
+all the dependencies
+that come before it.
+Now, if you have observations
+instead of states,
+then things look a
+little bit different.
+And the way that we can
+think about observations
+is the observation is a
+function of this current space,
+and it may not contain all the
+information that's in the state.
+And so the observation at
+any given point in time.
+For completeness we'll
+draw each of them here.
+And then if you
+don't have access,
+if you can't observe the
+space, that means now that O2--
+or sorry, O3, it's not just
+a function of O2 and a2,
+it's actually also a function
+of O1 if you cannot observe
+the same.
+Cool.
+So on the slide, we can
+think about this model
+where we have these dynamics.
+We don't know how the
+world is going to evolve.
+We can't predict the future.
+Under these dynamics
+are unknown.
+And these dynamics are
+independent of St minus 1 ,
+in this case, and that's
+known as the Markov property.
+Any questions on that?
+Yeah.
+So the question is, in practice,
+how many past observations
+do we need to infer the state?
+It is heavily domain dependent.
+Yeah.
+Heavily domain dependent.
+In a lot of robotics
+examples, you
+can often get away with just
+using the current sensor
+observations.
+But it depends a lot on
+what the sensors are like.
+If you have tactile sensors,
+for example, those oftentimes
+don't contain as
+much information
+as vision observation,
+for example.
+You have no idea when
+you're not making contact.
+And then once you
+make contact you
+know there's a lot more
+partially observable
+than an image, for example.
+But then if you have the
+images in addition to that,
+then that gives you a more
+complete representation.
+Yeah.
+So why is the reward
+function a function
+of both the state and the
+action and not just the state?
+One example of this is--
+we can go back to
+a robotics example.
+So say that you are
+a humanoid robot,
+and you're trying to
+learn how to walk,
+and maybe one natural reward
+function is just how much
+forward progress have you made.
+So where is your body, and that
+would be dependent on the state.
+One scenario where you
+might want the action
+is that scenario
+where if you don't
+want to be using too much
+energy because you don't want
+to be like tensing up all
+the motors, for example,
+or I guess--
+muscles make more sense.
+But if you don't want to
+be pushing too much energy
+into your motors, then you'll
+want to depend on the actions
+as well, and you
+could basically have
+some penalty on how
+much torque you're
+putting through the motors.
+So that's one example.
+In many cases, you can
+just depend on the state.
+But there are some
+examples where
+you want to penalize
+taking too much action.
+Yeah.
+So the question is, if
+the observation is only
+part of the state, then why
+does a future observation not
+independent of
+past observations?
+And the reason for that is
+that the-- we can actually
+go back to the tactile example.
+So say that you make contact
+and then you stop making contact
+and then you make contact
+again, in that case, the most
+immediate past observation
+doesn't actually tell you
+that much information
+about the current state,
+whereas this observation
+actually tells you
+a lot more information
+about the state.
+And so then O3, you
+can actually figure out
+more about O3 when you
+don't just condition on O2,
+but also condition on O1.
+And there's also a way for folks
+familiar with graphical models
+to actually think about.
+If you marginalize
+out these variables,
+you'll actually see that
+in the graphical model.
+I don't want to go
+into that today,
+but that's another way
+that you can see this.
+Correct.
+So yeah.
+If you were to estimate
+and predict O3,
+then you need to use
+past observations.
+But the actual observation
+in this graphical model
+is dependent on the state which
+might be unobserved or unknown.
+Cool.
+So let's walk through
+a couple examples
+of what this might look like.
+So in the robotics
+case, the state
+could include three
+different things.
+One would be the RGB images
+from any cameras on the robot,
+the positions of all
+the joints of the robot,
+and the velocities
+of the joints.
+And so this is a fairly
+common state representation
+for a robot system.
+And the images would be actually
+a different dimensionality
+than the positions, and so you
+might need to actually configure
+your neural network
+in a way that
+can accept those different
+dimensionalities.
+The action would then be the
+commanded next joint position.
+So how are you going
+to move your joint?
+If your joint's
+currently at 90 degrees,
+maybe you'll try to
+move it to 92 degrees.
+The trajectory then would be a
+sequence of states and actions.
+So a sequence of videos--
+or a sequence of images,
+which is essentially
+a video, a sequence
+of joint positions,
+and a sequence of command
+and joint positions.
+Now, what does that
+sequence actually entail?
+Typically what we do is
+we'll discretize time
+and the sequence will then,
+for example, be at 20 Hertz.
+So your video will be
+20 frames per second.
+And you'll have
+joint observations
+20 times per second.
+And you'll also have commanded
+actions 20 times per second.
+I always found this a
+little bit unintuitive
+when I first learned it
+because, as a person,
+I don't really think about
+making a decision 20 times
+every second, but it is
+oftentimes the most practical
+way to represent data and
+behavior on physical systems,
+like robots.
+And then for the
+reward function,
+there's a few things
+you could use here.
+One could be one, if the towel
+is on the hook in state S and 0.
+Otherwise you could
+also have some sort
+of penalty on the torques that
+you're applying on the action
+or something like that.
+So that's a robot example.
+Now let's go to a
+chatbot example.
+So here the
+observation-- we likely
+wouldn't have a compact
+state representation,
+so we be using observations.
+And the observation could be
+the user's most recent message.
+The action would be the
+chatbots next message.
+So this would be potentially
+a sentence or a paragraph.
+It potentially could
+actually be very large.
+And then you can think of the
+trajectory as the conversation
+trace, so the history of
+the current conversations.
+And unlike in the
+robotics example,
+this won't necessarily be at
+a fixed 20 Hertz frequency.
+It might take longer
+for a user to respond
+or something like that.
+So this is an example of how
+trajectories might vary in terms
+of how time is represented.
+So in the first case, time
+is represented as a 20th
+of a second.
+Whereas in the second
+case, time is represented
+as when the user responds next.
+And then as an example reward.
+Maybe it's 1 if the user
+gives an upvote, negative 10
+if the user gives
+a downvote, and 0
+if there's no user feedback.
+These are examples of how we can
+set up reinforcement learning.
+Now I would like to ask you
+to formulate a reinforcement
+learning problem.
+And in particular,
+I'd like you to define
+the state or observation, the
+action trajectory and reward,
+for either one of
+these three examples
+or choose your own example.
+Yeah.
+So in this example,
+basically the question is,
+why would this be an
+observation persistent state?
+It could actually be formulated
+both ways, potentially.
+It depends on the details
+of the sensor measurement.
+So as one example, if
+your sensors are just
+looking like a LiDAR, like
+the current depth around you,
+and a picture of
+what's in front of you,
+maybe something
+along those lines,
+one thing that that
+would be missing
+is how fast the cars
+are moving around you,
+the velocity of the cars.
+And that's probably quite
+important for what's
+going to happen in the future
+if it stops versus moving
+at 60 miles per hour.
+Now, you could potentially try
+to include a history of LiDAR
+information to get that
+velocity information
+and then represent your state
+as a three-second history,
+for example.
+And this will represent a
+theme which is typically
+to handle observations.
+We'll use a little
+bit of history
+and then that can form
+your state representation.
+So it's a little bit ambiguous
+in this particular case.
+And yeah, it comes
+down to the details.
+Yeah.
+So the question is,
+in the robot example,
+if the reward is 1, if
+it's on the hook and 0
+otherwise, how do
+you actually learn?
+because if you don't actually
+ever do that at any point,
+then you'll have very
+little supervision signal.
+You'll just have 0
+reward all the time.
+And so in that particular video,
+we actually showed the robot
+how to do it a couple
+times as initialization,
+and that helped it with
+what we'll call exploration.
+And if you have
+very sparse rewards,
+rewards that have
+very little signal
+and are not nicely
+shaped towards the goal,
+then usually that data might
+be important for jumpstarting
+the reinforcement
+learning problem.
+Cool.
+Yeah.
+So if folks couldn't
+hear that, you'd
+have the state being
+something like the HTML
+and the URL, information
+about the web page.
+And where you're at, the action
+would be interacting with it,
+and the reward would be whether
+or not some task was completed.
+Yeah.
+So the question is, is basically
+everything in observation
+because sensors
+may not be perfect?
+So you could always
+choose to model something
+as an observation if you're
+worried about sensor noise
+or something like that.
+There are, in some
+ways, potentially
+large downsides to it if you
+need to add a lot of history.
+And so sometimes we will
+approximate something
+as the state, even if it
+might be lacking information.
+Maybe, I don't know, once every
+10,000 times the sensor fails
+and gives you a black image
+or something like that.
+Even though that would
+technically be an observation
+case, you might still use
+it as a state representation
+because of how it
+affects the algorithms.
+So if I understand
+correctly, you're asking--
+for observations, it could
+either be everything currently
+or it could be a delta from
+the previous observation.
+Yeah.
+It would come down to different
+trade-offs oftentimes.
+If you are going to be
+including a lot of history,
+then compressing
+it by using deltas
+could potentially
+make a lot of sense.
+But once we get into
+policies, maybe it'll
+also become more clear.
+So now that we've
+talked about formulating
+the reinforcement
+learning problem,
+let's talk about actually
+representing behavior.
+So we want to map typically
+from states or observations
+to actions.
+And to do that, we'll use
+what's called a policy.
+And this policy
+will often use pi
+to denote a policy or
+basically almost always use pi.
+And this can just
+be a neural network.
+In this case, it's a
+convolutional neural network.
+It could be a transformer.
+It could be a simple fully
+connected neural network.
+It could be a linear function.
+And this is going to be
+mapping from the states
+or observations, or the sequence
+of observations to actions.
+We'll use typically
+theta to refer
+to the parameters of
+that neural network
+that you're trying to learn.
+And so then when you're actually
+using a policy to take actions,
+we'll then observe a
+state, take an action,
+and observe a next state.
+And when we take
+actions we're actually
+going to be sampling
+from our neural network.
+So we'll actually be
+running a forward pass
+through the neural network
+to select an action,
+and then execute that
+action in the real world
+and observe the next state.
+Cool.
+And so the result of this
+process is a trajectory.
+And when we're using a policy
+to generate this trajectory,
+we often refer to it as
+a rollout or an episode.
+You can think of it as--
+one episode of learning
+is like one attempt
+and then trying it
+again and again.
+And I guess the terminology
+rollout is in the sense
+that you're sequentially
+going policy dynamics,
+and so you're rolling out this
+process to create a trajectory.
+Great.
+And then if you only
+have observations
+and you don't have
+states, the solution
+is to give your policy
+memory, and so you can
+pass in multiple observations.
+Whereas if you only
+give it a state,
+you actually don't have
+to give it any memory,
+and you can just give
+it as input state.
+This is very convenient
+because if you
+have a large amount of memory,
+it will take up a lot of memory
+on your computer or on your GPU.
+But if you only
+have observations,
+then you have, in some
+ways, no choice but
+to provide that
+memory to the policy.
+And for this you may use
+sequence models, for example.
+In language models, you're going
+to be using sequence models that
+use the previous observations.
+Yeah.
+So the question is, is T
+like the current time step
+or is it general from
+the beginning to the end?
+So this capital T,
+I'm using to denote
+the end of the trajectory, so
+the length, the number of states
+and actions in a trajectory.
+And then t, I'm referring
+to a given time step
+and generalizing
+it so that you can
+think about this as happening at
+all time steps from lowercase t
+equals 1 to lowercase
+t equals capital T.
+Is it ever useful
+to condition it
+on both the observation
+and the state?
+So in this case, the state
+has strictly more information
+than the current
+observation, and so it
+isn't useful to
+add the observation
+if the state is truly the
+state that captures everything.
+So if we go back to this
+diagram, if we have states,
+then we only need to
+provide the current state.
+Whereas if we have observations,
+that's where adding history
+is helpful.
+So it's a distinction between
+states and observation.
+Why is it having history of
+observation, [INAUDIBLE]?
+Yeah.
+So basically the
+past observations
+will help give you more
+information about what S1 is.
+And so if you only
+have observations
+and you don't know what the
+underlying state of the world
+is--
+as another example
+in language modeling,
+if you are having a
+conversation with a user,
+each thing that the user says
+is a different observation,
+and the past observations
+will actually
+tell you a lot about what the
+current state of the world is.
+So if their first
+question was like,
+can you write this
+piece of code to me?
+And then you maybe
+wrote some piece of code
+and they gave you some feedback,
+it's actually very important
+to include all those past
+observations to actually capture
+the full state of the world.
+I mean, that might not
+be true in all cases.
+But in many, many cases,
+the previous observations
+will also be useful
+for the current state.
+So there also could
+be scenarios where
+you might want a two-stage
+process, one where you first
+infer the state, and then a
+second process where you then
+predict the action
+from that state.
+If you have some idea
+for a good representation
+for the underlying state,
+then that information
+could be useful in trying to
+model the underlying state.
+In other cases,
+it's simple as just
+to go straight from
+observations side.
+OK.
+Moving on a little bit.
+So we've talked about
+states actions policies.
+What is actually the goal
+of reinforcement learning?
+So our goal is to
+maximize reward.
+And so if we have
+a trajectory, we
+don't want to just optimize for
+the reward at one time step,
+but we want to optimize
+for having reward
+across the entire trajectory.
+And so we can represent this as
+maximizing the sum of rewards.
+Now, one thing that came
+up is that this is actually
+not a deterministic quantity.
+So if you have a
+policy and you're then
+executing that policy in the
+world, the reward that you get
+isn't always going to
+be the same every time
+you run your policy.
+And so a question for you.
+Why is this not a
+deterministic quantity?
+And what are the
+sources of variability
+that might cause
+the sum of rewards
+to differ from one trajectory
+to another trajectory?
+So one source of variability
+is that the state doesn't just
+depend on the
+action in the state,
+but there's also some randomness
+that can affect the next state.
+Other sources of variability.
+So your policy may not
+be deterministic either.
+So there's two
+really key sources.
+Here's a good question.
+You might have a
+stochastic reward function.
+So typically we actually
+model the reward--
+is a very interesting point.
+We often typically
+model it as a function
+and have the source
+of randomness
+come from states and actions.
+Now, if you don't
+know the state,
+then it could actually be
+viewed as stochastic if you only
+have the observations.
+So if you're doing reward
+learning, the question is,
+is there stochasticity there?
+Typically you'll still model
+it as a reward function.
+Well, you might not
+have full certainty
+over exactly what the
+reward is, and perhaps you
+might want to leverage
+that uncertainty
+in some ways in the learning
+process, that's maybe something
+to take offline.
+There's some
+considerations there.
+So the other thing is your
+goals might change over time.
+And in that case, the
+reward function will change.
+We'll actually often model that
+as a whole different decision
+process at that
+point if the rewards
+change rather than having it
+being within the same one.
+There are scenarios
+where you might
+want a nonstationary
+decision process, I guess.
+And you can actually often put
+that randomness into the state
+instead of putting it
+in the reward function.
+Maybe there's some
+underlying goal
+that you can't observe
+that's in the state,
+And then the reward function
+remains deterministic.
+And so yeah, generally
+without losing generality,
+you can push that into
+the state if needed.
+Cool.
+So the two main
+sources of variability
+that you have to worry about
+are the world is stochastic
+so environment is dynamic.
+This is a distribution.
+It's not a
+deterministic function.
+And the second is that
+the policy is also not
+deterministic.
+And so in driving, for
+example, other cars
+are going to behave in
+ways that are random,
+and your car might not make
+the same decision every time.
+Cool.
+And so if we actually want to
+think about maximizing rewards,
+we can then add in the
+policy into this diagram
+where, if you have
+access to state,
+there would be an
+error from here
+to here that is modeling
+this distribution,
+and likewise from here to here.
+Now, if we then wanted
+to actually write down
+what rewards look like, we need
+to think about a probability
+distribution over trajectories.
+You need to think about what
+is actually the distribution
+over futures that we'll see.
+And the way that we can
+think about that is we'll
+have some initial state.
+There may actually
+also be randomness here
+that we haven't talked about.
+The initial conditions of
+the world might change.
+And if you're like
+playing a game,
+for example, how the cards
+are dealt out will vary.
+And then after the
+state, you're going
+to be making a decision
+with your policy.
+And then once you
+make that decision,
+there is randomness that
+arises from the dynamic.
+And then if we want to think
+about the probability of a given
+trajectory, is going to be the
+probability of the first state,
+then the probability of
+picking the next action,
+then the probability of
+observing the next state, then
+the probability of picking the
+action after that, and then
+the next state, and so on.
+And so then we can think about
+the probability of a given
+trajectory as being
+the initial state
+probability plus the
+product of the probabilities
+from the policy and
+the dynamics where
+here t equals 1 to capital T.
+And then once we formulate
+this probability distribution
+over trajectories, then we can
+think about maximizing reward
+as actually maximizing
+our expected rewards
+under this probability
+distribution.
+So we'll think about the
+expectation of trajectories
+sampled from this distribution
+of the sum of state and actions
+in this trajectory of the
+reward of that state and action.
+And then this is our goal.
+Our goal is to maximize this.
+And our goal is to find a policy
+pi that maximizes these expected
+sum of rewards, and so
+that is written right here.
+Now, note that, unlike
+in supervised learning,
+this doesn't look like
+something that you can--
+pi actually doesn't even
+appear in this equation,
+but the way that
+it comes in is how
+it's affecting the trajectory.
+So this distribution of
+trajectories is a function of pi
+right here.
+And you actually want to
+find the policy that will
+lead to the highest reward.
+And a lot of this class
+will be figuring out
+how do we actually
+optimize behavior
+under this particular objective.
+Now the question is, does
+capital T have to be fixed?
+It does not have to be fixed.
+It can be variable.
+It's a little bit easier to
+write down if it's fixed.
+But yeah, you can
+also think about it
+as basically the
+length of the message.
+Yeah.
+So one other topic that will
+come up in depth a lot more
+is when you think
+about rewards, this
+is weighting the rewards over
+the entire trajectory equally,
+and it's saying that you
+care about immediate reward
+just as much as you care
+about future rewards.
+And in some cases, you might
+care about immediate reward
+more than future reward.
+So for example, if this
+T is like 1,000 years,
+maybe you don't care so much
+about your rewards 1,000 years
+from now, then you care
+about your rewards today.
+And so another way
+that you can actually
+formulate the reinforcement
+learning objective is not just
+this vanilla sum of rewards,
+but you can actually
+weight your rewards by what's
+called a discount factor, where
+that discount factor actually
+depends on T. So one of the ways
+we often do that is adding
+a discount factor that's
+raised to the power of t.
+And this means that if a
+discount factor-- usually
+this is some value
+that's greater than 0
+and less than or equal to 1.
+If this is 1, it's the same
+as the original formulation.
+And as you make it lower and
+lower, you're being more greedy.
+You're carrying a lot more
+about near-term rewards
+than about far rewards.
+We'll talk a little bit
+more about discount factors
+in a couple lectures.
+Cool.
+As an aside, we've
+talked about how
+our policy is a distribution,
+and so it's not deterministic.
+It's stochastic.
+Why might we want to do that?
+There's a couple reasons
+why we might want our policy
+to not be deterministic.
+The first is that if
+you want to learn,
+you probably have to
+try different things.
+If you're learning
+how to play tennis,
+you probably shouldn't try
+the same exact technique
+over and over again.
+You need to actually explore
+and try different strategies
+in order to do it.
+And so that can be represented
+as a stochastic policy that's
+trying a few
+different strategies
+and trying to figure out
+which strategy is best.
+And then in other cases, there's
+scenarios where you collect data
+from people or from
+different systems,
+and those people are taking
+different strategies.
+And if you want to model the
+way that they're approaching
+a problem, you may
+need your policies
+to be stochastic as well.
+And for this, we can
+also leverage tools
+from generative models
+where you're actually
+thinking about not just a neural
+network that maps from A to B,
+but actually a generative
+model over actions
+given states and observations.
+I think this is the last thing
+we'll touch on and introduce,
+which is, how do we
+decide how good--
+well, OK, second to last thing.
+How do we decide how
+good a policy is?
+And this is really
+useful to think about
+because if you don't know
+how good your policy is then
+you're not going to be able
+to make your policy better.
+And the terminology that
+we use to think about this
+is referred to as
+a value function.
+So we often think about
+the value function
+for a policy of a given
+state, and we denote it
+typically as V pi of S. And
+essentially what this means is,
+it's the future expected
+reward if you start at S
+and then follow pi
+from then onward.
+And so it's basically
+this equation
+except starting at S
+under your current policy.
+And similarly to
+this, another thing
+that we'll start talking
+about, not in Friday's lecture
+but starting next week, is
+Q value functions as well.
+And this is very similar
+to the value function.
+But instead of actually starting
+from S, then taking action a,
+and then following pi,
+where action a might
+be different from what
+policy pi might have taken.
+I'm not going to go into depth
+on what these two functions are
+today, but I wanted to
+introduce them because we'll
+be using them quite a lot.
+And so it's good to start
+wrapping your head around what
+they are as we start to use
+them more in future lectures.
+And then the types of
+algorithms we'll cover.
+The idea behind
+imitation learning
+is to mimic a policy that
+achieves high reward.
+We'll then next
+week start talking
+about policy gradients that
+try to directly differentiate
+this objective
+and actually learn
+from practice and experience.
+From there, we'll talk about
+actor critic algorithms that
+estimate the value of the
+current policy and use that
+to make policy better.
+We'll talk about
+value-based methods that
+try to estimate the value
+of the optimal policy,
+and then use that to
+back out a good policy.
+And then lastly, we'll talk
+about model-based methods that
+actually learn how to model
+the dynamics of the world,
+try to predict the future,
+and then use that to improve
+the policy or for planning.
+Now, you might be
+wondering, why do
+we have so many different
+algorithms for optimizing
+this objective?
+In supervised learning, we
+just have gradient descent.
+It works.
+It's great.
+It's simple.
+In reinforcement learning,
+things are less simple.
+Algorithms make
+different trade-offs
+and thrive under
+different assumptions.
+And so it's going to depend on,
+for example, how easy or cheap
+is it to collect data.
+And if you're in a
+simulator, for example,
+it's really, really
+cheap to collect
+lots of data versus
+if you're handwriting
+responses or actually
+interacting with a person that's
+writing things, that's
+going to be more expensive.
+Also, how cheap and easy are
+different forms of supervision?
+Do you have demonstrations?
+Do you have detailed rewards?
+How important is
+stability and ease
+of use versus data efficiency?
+Maybe you have
+more time to change
+some of the hyperparameters
+if it doesn't
+need massive amounts of data.
+There's also some
+considerations with regard
+to what your actions look like.
+How high-dimensional are they?
+Are they continuous or discrete?
+Is it easy to learn
+the dynamics model?
+So yeah, these are some
+of the reasons why we have
+a lot of different algorithms.
+And we'll be talking
+about different algorithms
+and where they're applied in
+the later parts of this course.
+So to recap, there's
+a lot of terminology
+and a lot of notation in
+reinforcement learning,
+and wanted to start
+introducing them today
+because we'll be
+starting to use them
+quite a bit in the
+following lectures.
+So we talked about states.
+We talked about observations.
+We talked about actions,
+reward functions, and also
+initial state
+distribution and dynamics.
+These form what's called
+a Markov decision process.
+Or if you only
+have observations,
+it's called a
+partially-observable Markov
+decision process or
+an MDP or a POMDP.
+I didn't want to bring in this
+notation until the very end
+because it doesn't actually
+really matter what it's called,
+but it's useful.
+In the long term if people
+are referring to MDPs,
+now you know what
+they're referring to.
+They're referring to this
+formulation of a reinforcement
+learning problem.
+And then we also talked
+about trajectories, policies,
+the objective of
+reinforcement learning,
+value functions, and
+Q functions briefly.

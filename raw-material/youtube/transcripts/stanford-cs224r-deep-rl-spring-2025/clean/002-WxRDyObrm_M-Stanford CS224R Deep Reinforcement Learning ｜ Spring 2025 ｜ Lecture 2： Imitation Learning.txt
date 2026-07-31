@@ -1,0 +1,2306 @@
+Today we'll be talking
+about imitation learning.
+Great.
+So as a partial
+recap from last time,
+we started talking about
+some of the notation
+that we use for
+representing behavior
+and formulating problems as
+a decision-making problem.
+We talks about states
+and observations
+where we either have
+access to something that
+can fairly, completely represent
+the state of the world,
+or a more partial
+representation that we will
+refer to as an observation.
+We also will be representing
+actions or decisions with at,
+and then we can think
+about a trajectory
+as an example of behavior
+that we've taken over time.
+We also introduced this notion
+of a reward function, which is,
+how good is a given
+state and action.
+And lastly, this
+notion of a policy
+which is either conditioned
+on the current state, what
+actions do we want to take.
+Or conditioned on a
+history of observations,
+what actions should we take.
+And usually this
+policy is the behavior
+that we're trying to learn.
+We briefly mentioned how this
+policy can be represented
+using a generative model.
+And we'll actually touch on
+that a little bit more today.
+And the last thing
+that's not on the slide
+is that we talked about how the
+goal of reinforcement learning
+problems is usually to maximize
+the expected sum of rewards.
+And today we'll be
+talking about one way
+to do that by trying to
+imitate a good policy.
+And in particular,
+the plan today
+is to go over some of the
+basics for imitation learning.
+Then we'll talk about
+learning expressive policy
+distributions, and why that's
+important for imitation
+learning.
+Then we'll talk about learning
+from online interventions.
+And time permitting,
+we'll talk a little bit
+about how to collect
+demonstrations
+in the first place.
+So some of the key
+learning goals.
+This is, in some
+ways, orthogonal
+to the main topic of the class.
+But it's actually very
+important to understand in order
+to get performant
+imitation learning systems.
+So we'll be talking about how
+to represent distributions
+using neural networks rather
+than deterministic functions.
+We'll also be talking about why
+expressive distributions matter
+for imitation learning.
+And one challenge
+that can come up
+with imitation learning,
+which is compounding errors
+and how to address
+compounding errors.
+Great.
+So what is the goal
+of imitation learning?
+Like the goal of
+reinforcement learning,
+we want to try to
+achieve high reward.
+We want to get a good policy
+that can do the task well.
+And the way that we'll
+try to do that is we'll
+assume that we're given
+some trajectories that
+are collected by an expert.
+This is our data.
+And we'll refer to these
+trajectories as demonstrations.
+So it's a special trajectory
+that is demonstrating
+how to perform the task.
+And we'll use D to denote
+these demonstrations.
+A trajectory, it'll be a
+sequence of states and actions.
+And as an example of what
+this demonstration data might
+look like, if we wanted to learn
+how to autonomously drive a car,
+we could have
+demonstrations that
+are in the form of
+people driving cars.
+Because people are pretty
+good at driving cars,
+most of the time,
+and so we could
+record from the
+sensors on a car,
+as well as record steering
+commands, acceleration,
+and so forth.
+And using a data set of
+human drivers driving,
+we could then try to mimic that
+in order to train an autonomous
+driving agent.
+Now, we don't know
+exactly how humans drive.
+We don't know the
+policy that humans
+are using in order to drive.
+So we can think about
+this demonstration
+data set as being sampled from
+some unknown policy pi expert.
+And then the goal is
+to learn a policy that
+performs at the level or similar
+to the level of the expert
+policy by mimicking what's
+present in the demonstration
+data set.
+Cool.
+So this is the problem setup.
+Now, let's think about version 0
+of how we could try to do this.
+So a very simple way that
+we could do this is first,
+we're given our
+demonstration data set.
+So this is some data set that
+contains state action pairs.
+These are each of
+the state actions
+and each of the
+demonstration trajectories.
+And then we could say that
+we want to train some policy
+to mimic the demonstration.
+So we would be
+training some policy.
+And in particular, we could
+think about the actions
+that this policy
+is going to take.
+So if we were to take one of
+the states in our demonstrations
+and run it through our
+policy, then we would get some
+predicted action, a hat.
+So let's say that this is
+sampled from pi theta given
+a state in the demonstration.
+And then we could
+try to basically say
+we want this predicted
+action to be as close as
+possible to the action
+that the demonstrator took.
+So we could then
+minimize the difference
+between the predicted action
+and the action in the data set.
+And we could do
+this minimization
+over all of the states and
+actions in our demonstration
+data set.
+Once you train a policy such
+that the predicted actions are
+as close as possible to the
+actions in your data set,
+then you can just
+deploy your policy.
+This is a policy that
+should be mimicking
+the actions in your data set.
+This is version 0 of
+imitation learning.
+So given demonstrations
+collected by an expert,
+you essentially do
+supervised regression
+to the expert actions.
+If your policy is
+a neural network,
+this means doing a forward
+pass, sample a mini batch.
+From here, do a forward
+pass on your neural network
+to get the predicted
+actions, compute the loss,
+and then back propagate the
+loss into the parameters
+of the neural network.
+And you do that iteratively
+with your favorite optimizer,
+some form of stochastic
+gradient descent
+in order to optimize
+your policy.
+So it's essentially a form
+of supervised learning.
+And then from here, you can
+then deploy your learned policy.
+And it should be able
+to mimic the expert
+and do something sensible.
+So in this case,
+we're considering
+a deterministic policy.
+And we're just essentially
+doing L2 regression.
+I guess here I wrote it
+as a stochastic policy.
+But let's correct
+that and let's have
+this be a deterministic policy.
+The expert might not
+be deterministic,
+and that might lead
+to some issues.
+So let's actually talk
+about that a little bit.
+So what could go wrong?
+Let's go back to
+our driving example.
+So we have a data set
+from human drivers.
+And we recorded the states
+or the observations.
+We recorded the steering
+commands, and any other actions
+that we might want to use.
+And let's say that for this
+particular car, in some cases,
+some human drivers might
+decide to go straight
+and other drivers might
+decide to merge left,
+maybe because they want
+to move to a faster lane.
+So our data set might
+contain both examples
+of going straight in
+situations like this,
+and examples of merging left
+in situations like this.
+Now, a question for you.
+If you train a policy
+with L2 regression
+on a data set that
+has these examples,
+what would a policy that was
+trained with L2 regression
+do in a situation like this?
+So the policy might go to
+the middle of the two lane.
+And let's see why that is.
+In this example, say we
+have the steering command.
+And if we thought
+about the distribution
+over actions that are covered
+in the data set for drivers that
+chose to go straight, their
+distribution of actions
+would look maybe something
+like this, where this
+is like 0 steering command.
+This is staying straight.
+And for the drivers that
+chose to merge left,
+their distribution over actions
+for the steering command
+might look something like this.
+So this is the
+probability of actions.
+These are the two examples.
+If they're deciding
+to merge left,
+they maybe have a steering
+command of negative 2.
+This is if you
+stay straight, that
+might have a steering
+command of 0.
+And then in your data set,
+the overarching distribution
+over actions represented
+in the data set
+might look something
+like this, where
+maybe, more likely people are to
+go straight than to merge left.
+But you get this
+multimodal distribution
+that has two peaks, one at going
+straight and one at merging
+left.
+And then when you
+use L2 regression
+to try to fit this data,
+what it's going to do
+is it's going to
+predict the mean.
+So it's going to
+predict the mean action.
+And in this case,
+the mean action
+would be something like here.
+And that would be probably
+not very good action
+to take because
+that might straddle
+the lines on the highway.
+And also we can see that
+this action actually
+has very low probability
+under the data distribution.
+So it's also objectively or
+mathematically a poor choice
+because it had low probability
+under what the data was doing.
+So L2 regression is the equation
+from the previous slide.
+So basically
+minimizing this squared
+loss between the predicted
+action and the true action.
+And then the other
+question was, what
+is the difference between
+the green and the red here?
+So essentially what I'm
+drawing in the green
+is this is the distribution
+over expert actions.
+Maybe I'll use expert
+to refer to that,
+conditioned on only the data
+that chose to go straight.
+The blue is the distribution
+over expert actions
+if they choose to merge left.
+And then the red
+is the distribution
+of actions represented in the
+data set for a given state.
+The red is actually what
+your data looks like.
+And this is a gap
+here just showing
+this is what the
+distribution looks
+like for one subset of drivers
+and the other subset of drivers.
+You're asking, can you
+sample from the data set
+and do what was in the
+data set, basically?
+Yeah.
+So the tricky thing with
+sampling from the data set
+and doing what's
+in the data set is
+that, that would look
+like a nearest neighbors
+approach within the realm
+of machine learning.
+And it is, in some
+ways, a viable approach
+to a number of machine
+learning problems.
+But one big challenge
+is that ultimately,
+when the car is driving or when
+you have some autonomous driving
+agent, it's going
+to face scenarios
+that are different from
+what's in the data set.
+And when it's in those
+different positions,
+you won't necessarily have
+examples in your data set
+that you can just pick from.
+So you won't necessarily
+be able to say like, oh, I
+saw what the expert did
+in exactly this situation
+because, ultimately, you'll
+be evaluating scenarios
+that are different.
+So what would you do if the
+actions are not numerical?
+In a slide or two, we'll talk
+about discrete actions as well.
+So to go over this
+example on the slides,
+we can say that the data for
+staying straight is in yellow.
+The data for merging
+left is in blue.
+The combined data set, maybe
+because more people decided
+to stay straight, is shown
+in the black dotted line.
+And then if we train a model
+to minimize the L2 error,
+then the deterministic
+policy will
+choose to take an action
+that's right here,
+which is the mean of the
+black distribution, which has
+low probability under the data.
+Now, you might be wondering,
+how often does this actually
+happen in practice?
+Maybe you might think that this
+is a contrived example where
+there is variability in
+what people would do.
+It turns out that this action
+actually happens all the time.
+People and demonstrators often
+do things in different ways,
+not just in driving and not
+just in key decision states.
+And this happens,
+especially when
+data is collected
+by multiple people
+because people have
+different preferences.
+They have underlying ways that
+they like about doing things,
+and you can't
+directly observe all
+of those preferences
+and all the things
+that might affect
+their behavior.
+And so as a result,
+there are some scenarios
+where if you have one expert
+policy that's always takes
+a consistent strategy, it's OK
+to use a deterministic policy.
+But in many other cases,
+it's actually very important
+to make sure that you account
+for this multimodality
+in the data.
+And so the natural question
+that arises from here
+is, instead of just
+learning the mean,
+could we actually
+learn to represent
+more of the distribution
+of the expert data
+and not just the mean?
+And so this is where
+learning distributions
+with neural networks comes in.
+Let's start a new whiteboard.
+So in the case of the
+deterministic policy,
+we had some neural network.
+I will use a box to
+represent a neural network.
+And we're taking as
+input some state,
+and we're outputting
+the mean action,
+the mean of a distribution.
+And so because it's only
+representing the mean
+it's hardly a
+distribution at all.
+And instead what we'd
+like to be able to do
+is have this neural
+network actually
+output the parameters of a
+distribution over action.
+And if it can output a
+distribution over actions,
+then we should be able to
+capture more than just the mean.
+Cool.
+So this is often the way that
+we try to learn distributions
+with neural networks, is we
+actually output the parameters
+of those distributions.
+So you can think
+about it as this.
+You have a neural network
+outputs parameters.
+If the distribution class that
+you choose is very expressive,
+then you should be able to
+get expressive distribution
+as output.
+Now, let's think about
+a couple examples
+of what this might look like.
+So if your actions
+are not continuous
+and instead they are
+discrete actions,
+maybe you're trying
+to train a policy
+to play a video game
+like Super Mario,
+then the actions
+might be something
+like up arrow, down arrow,
+press A, press B, right arrow,
+something like that.
+What the neural
+network could output
+is basically this categorical
+distribution over actions
+where, in this
+discrete case, it will
+output the probability
+of the first action,
+the probability of
+the second action,
+the probability of the
+third action, and so forth.
+And so you can think of this
+as a classification problem.
+And this distribution is
+actually maximally expressive.
+And what I mean by that is that
+there isn't any distribution
+over actions that this cannot
+represent because it's a fairly
+simple categorical or pretty
+simple set of discrete possible
+options.
+So this is actually really nice.
+We can get a really expressive
+distribution this way.
+Unfortunately, a
+lot of the world
+is not just one dimensional
+discrete action choices.
+We often have much
+more complex actions,
+and that's why we need to think
+about how to model distributions
+over those actions.
+So if we move towards continuous
+actions like in a driving
+scenario where you
+have steering commands,
+for example, the most
+natural thing to do
+is to use a Gaussian
+distribution.
+We talked about
+outputting just the mean
+of a Gaussian distribution,
+which corresponds to minimizing
+the squared error.
+But you can also have the neural
+network output the variance.
+And fortunately, if you
+have it output the variance,
+it's not going to do anything
+particularly helpful.
+In this example, it'll just
+output a wider variance Gaussian
+in order to try to cover
+more probability mass.
+And it's not very expressive.
+And so we want to be able to
+use distribution classes that
+are more expressive
+so that we can
+try to ultimately get actions
+that are high probability.
+So the question was, if we have
+some action distribution that
+looks like this, for
+example, would we be happy
+if we can perfectly model this?
+Or would that still
+lead to issues
+where you might have an
+indecisive policy that
+chooses one mode and then
+chooses another mode?
+The answer here is that
+if you have a good state
+representation, then
+you should be happy.
+And in particular, say you
+modeled this perfectly,
+and for example,
+you chose like this,
+and then you start
+merging left--
+if you know that you've
+started to merge left
+and your velocity
+is moving left,
+then the data should
+continue moving left.
+And so then, at that point,
+the distribution over actions
+should look something
+more like this
+once you are in that
+state at that point.
+So if you have a good
+demonstration data
+set and a good state
+representation,
+if you perfectly model
+the demonstrations,
+you will get a good policy out.
+So the question is, is
+the only goal in imitation
+learning to mimic the expert
+or is there some assumption
+that the expert was
+maximizing some reward?
+Generally, if you assume that
+what you're trying to imitate
+is good, but it
+doesn't necessarily
+need to be the optimal policy--
+and in many real world
+practical, messy scenarios,
+getting the optimal policy is
+like hopeless in some ways.
+Generally we assume that you're
+trying to mimic something good,
+and really the focus is
+on trying to imitate that.
+So the question is, in this
+case, if we do this perfectly,
+are we happy with sampling a
+mode that is underrepresented?
+There are scenarios
+where you might
+want to try to essentially
+do better than the expert.
+And maybe in some cases this
+mode is actually better,
+or maybe in some cases
+this mode is really better.
+If you want to
+outperform the expert,
+that's more where
+reinforcement learning comes in
+and other tools come in.
+You can also try to
+curate your data set
+to try to contain more of the
+stuff that you think is better.
+But yeah, with
+imitation learning,
+generally everything that we'll
+talk about in this lecture
+is trying to meet
+expert performance
+or meet the demonstrator
+performance and not exceed it.
+So the question is,
+should the parameters
+of the distribution over
+actions be state dependent?
+And yeah, absolutely.
+I've been writing this as
+the parameters of p of a.
+But everything
+here is implicitly
+dependent on the
+state because this
+is the output of a
+neural network that
+was conditioned on the state.
+And so in some states, it might
+choose to output a distribution
+that's really multimodal.
+In other cases, it might
+choose to output a distribution
+that is much more unimodal.
+So let's talk about
+some more interesting
+expressive distributions
+with neural networks.
+And some of these
+will build upon tools
+in generative modeling.
+And in particular, if we
+think about some examples
+of generative
+models, we won't go
+into all the details of these.
+But one example of
+a generative model
+that you might have seen before
+is called a diffusion model,
+and this is a model that
+can output and generate
+images of different people,
+can be used to generate videos,
+and so forth, is very
+popular for generative models
+over visual data.
+And the thing that's really
+cool about these image diffusion
+models is that they
+are able to represent
+a very diverse distribution
+over images, including
+images that are completely
+different from one another.
+Another example of
+a generative model
+is an autoregressive model.
+You can think about
+this as essentially what
+happens with language modeling,
+where you're predicting one
+token or one word at a time.
+And this is also a
+really powerful model.
+And it's much more powerful
+than just outputting
+the distribution, like the
+mean and variance of a Gaussian
+and much more powerful
+than outputting,
+for example, the categorical
+distribution over one dimension.
+So you can think about these
+two as most typically used
+to represent either the
+probability of an image
+given a text description or the
+probability of the next word
+given the word so far.
+And the reason why they're
+often used in these contexts
+is because these are
+very common problems
+that people work
+on a lot, and also
+because they're very well suited
+for addressing these problems.
+But the underlying technique
+behind image diffusion models
+and autoregressive models
+is extremely general,
+and you can use the
+same idea to learn
+a distribution
+over actions given
+observations or given state.
+So let's talk a
+little bit about how
+we might use some of these tools
+to learn that distribution.
+So our goal is to
+approximate p of a given s.
+One maybe form of
+generative model
+that's simpler than those
+two that we'll start with
+is a mixture of Gaussians.
+And a mixture of Gaussians is
+already a lot more expressive
+than just a single
+Gaussian, and so it's
+a case where we're trying
+to model a distribution
+as a combination of Gaussians.
+And so in this case, instead of
+just having the neural network
+output mu, we'll have it output
+the parameters of a Gaussian
+mixture model distribution.
+And so in the case
+of a GMM, it will
+output the mean standard
+deviation and weight associated
+with one Gaussian, also the mean
+standard deviation and weight
+of a Gaussian, and so on.
+And if you have n
+different components,
+it will output n
+different parameters
+for different Gaussians.
+So the question is, can
+we elaborate more on,
+what does it mean for
+these distributions
+to be more or less expressive?
+So essentially, if you have
+some underlying distribution,
+like how--
+let's see.
+Maybe I'll actually rephrase
+it slightly differently.
+So one way to think
+about it is it's
+essentially the number of
+different distributions
+you can capture perfectly with
+that chosen representation.
+And so if you only
+use a Gaussian,
+then you can only perfectly
+model Gaussian distributions.
+Whereas if you use
+Gaussian mixture model,
+you can represent any
+individual Gaussian,
+but you can also
+represent any distribution
+that can be
+represented perfectly
+as a combination of Gaussians.
+And so it's strictly more
+expressive than using
+a single Gaussian.
+Now in some cases, it can
+be difficult to compare
+two different distribution
+classes because in some ways
+some might be more expressive
+or less expressive.
+But in the case of
+Gaussian mixture models,
+it's strictly more
+expressive than a Gaussian.
+The question is, do you need
+to pick the number of Gaussians
+ahead of time?
+Yes, you do.
+You can think about it
+as a hyperparameter,
+and you could experiment and
+look at how well are you fitting
+the data with different
+numbers of mixture components.
+And then there's two other
+examples of generative models
+that we could use.
+The second one is discretized
+and autoregressive,
+which is just like
+language models.
+And the third would be to
+use something like diffusion
+over actions instead of
+diffusion over images.
+And so we talked a
+little bit, just now,
+about mixtures of
+Gaussians where
+we'll be outputting basically
+the parameters of a Gaussian
+mixture model.
+Now let's talk a little
+bit about a scenario where
+we could try to use an
+autoregressive model
+like a language model in
+order to generate action.
+So in this case, there is
+a couple scenarios where
+you might want to use this.
+So you might be in a scenario
+where your actions are already
+discrete.
+And you actually don't need
+to discretize in that case.
+Or you might be in a scenario
+where it's multidimensional,
+or you might be in a scenario
+where they are actually
+continuous and
+multi-dimensional,
+and then you need to discretize
+or tokenize first, and then
+use an autoregressive model.
+And so if we think about this
+back in the driving example,
+if we use discretize
+plus autoregressive--
+let's say that we're
+in the driving case,
+and we'll just consider
+a simplified driving case
+where the first action
+is the steering angle,
+and the second action
+is the acceleration.
+So if we wanted to represent a
+distribution over these actions
+using an autoregressive
+model, there's two things
+that we would want to do.
+The first would
+be to discretize,
+and the second then
+would be to formulate
+the autoregressive model.
+And in particular, when we
+use autoregressive models,
+it means that we're going
+to be essentially predicting
+one dimension at a time.
+So we first want to
+model a distribution
+over the first
+dimension of the action.
+What we would do is, in
+the case of steering--
+so we have P steering.
+Say that we wanted
+our prediction
+to look something like this.
+Now, a Gaussian
+can't represent this.
+And so we would choose to
+discretize it and represent
+a discretized distribution.
+And what that would
+look like is essentially
+creating bins for the
+different steering angles,
+and you would then output
+a probability for each bin.
+And then something that
+looks a little bit closer
+to a staircase, these bars would
+be the distribution that you're
+actually using to approximate
+the original distribution.
+So for the first
+dimension, you would
+be outputting each
+of the probability
+values for each of these
+bars, like the height
+of each of these bars.
+So this gives you a fairly
+expressive distribution
+over angle.
+And then you could
+choose to have
+a more fine discretization or
+a more coarse discretization.
+And if it's more fine, you
+get more expressivity in terms
+of what you can represent.
+But you also have to
+output more numbers,
+so there's a trade-off there.
+And then once you output a
+distribution over the angle,
+then you would want to output a
+distribution over acceleration.
+And in particular, in
+the case of merging
+left versus going straight,
+if you're merging left,
+probably you would be
+accelerating more because there
+was a car back into the left.
+Whereas if you're
+going straight,
+you're probably more likely to
+be keeping your current speed.
+And so we want our
+distribution over acceleration
+to be conditioned on which
+steering angle we chose.
+So what we'll do is
+we'll predict p angle,
+and then we will sample a
+steering angle from this.
+We'll refer to
+this for now as at1
+because it's the first
+dimension of the action.
+We'll sample it from
+this distribution here.
+And then we want to
+get a distribution
+over the second
+dimension conditioned
+on the first dimension.
+And to do this, we'll then
+pass our predicted action
+or the sampled action
+back into our model
+and then have our model
+output another distribution.
+And in this case, if you
+are conditioning on at1
+equals maybe an angle that's
+negative 2, so something more
+left, then you might output a
+distribution over acceleration
+that has more probability
+on higher accelerations,
+versus if you condition on a
+steering angle that is something
+more like 0, then you
+might output a distribution
+over accelerations
+that is smaller.
+So the question is, how do you
+build your training data when
+you are discretizing like this?
+Let's see.
+So when you build
+your training data,
+you'll have the
+state action pairs,
+and you'll be sampling
+state action pairs.
+And in order to convert it into
+something like this, what you'll
+do is you'll sample
+a state action pair,
+then you'll bin the
+action according
+to your bidding strategy.
+And then you'll
+apply a loss that
+is between the model's
+predicted distribution
+and the sampled action, which
+would be like one of these bins.
+And the loss you can actually
+just use the cross entropy
+loss here.
+And so you can think
+about it as you're
+doing a classification
+problem for each dimension
+of your actions.
+One other diagram that I
+think would be helpful here
+to think about how we go about
+doing this is when you have
+a model that's autoregressive,
+that's predicting actions,
+you often use a sequence model.
+And so if you think about
+a sequence neural network,
+something like a
+transformer or something
+like that, you would
+pass as input your state.
+And then you're
+predicting a distribution
+over the first dimension
+of your action.
+So this is a distribution
+over steering angle.
+You would then sample
+from this distribution,
+and then you'll pass this
+sampled action or your chosen
+steering command back
+into your model, and then
+output the distribution
+over the next action.
+This is exactly how
+language models work,
+where you'll have
+some beginning token.
+You'll predict a distribution
+over the next word.
+You'll sample a word from that,
+pass that sampled word back
+into the model, and then
+predict a distribution
+over the next word,
+except now we're
+doing it over dimensions
+of our action sequence
+rather than over different
+words in a sentence.
+Great question.
+How do you determine the order
+of these different dimensions?
+In language models,
+it's very natural
+because there's a natural
+ordering to words in a sentence,
+for example, although even
+across different languages,
+there's some variation there.
+It's something that
+generally you pick by hand.
+You could also, in some ways
+treat it as a hyperparameter.
+In other cases, there might
+also be somewhat natural choices
+for the ordering.
+So if you're
+controlling a robot arm,
+for example, you
+can go down what's
+called the kinematic
+chain of a robot arm
+where you start with
+the base dimension,
+and then you go to the next
+joint and the next joint,
+and so forth.
+The good news is
+that, in principle,
+the expressive power
+of this distribution
+doesn't change with the order.
+Essentially, your goal
+is trying to represent
+the full joint distribution
+over all dimensions.
+And the only reason why
+you're doing an ordering here
+is because, if you tried to
+represent a joint distribution
+over all the dimensions
+at once, there's
+a lot of pairwise probabilities
+that you would have to predict,
+and it's a lot more efficient
+to do it one dimension at a time
+to represent the full joint.
+So the question is, in
+the case of a video game,
+it was pretty discrete.
+Here we're in a more
+continuous case.
+Whenever we want to use
+an autoregressive model,
+does that mean we
+should be discretizing?
+Right?
+Cool.
+So there's actually two reasons
+to be using discretization.
+One reason to use
+discretization is
+it allows you to model a very
+multimodal complex distribution.
+And so these bars can be
+any height that you want.
+And so it actually
+can model things
+that are way more expressive
+than a mixture of Gaussians,
+up to how fine your
+discretization is.
+The challenge with
+discretization
+is that if you have
+a lot of bins--
+you might have hundreds
+bins for one dimension,
+and then you're trying to
+represent, I don't know,
+10 dimensional action
+or something like that,
+then the dimensionality of
+your discretized actions
+is going to blow up
+if you try to model
+that full 10 to the fifth
+matrix over probabilities.
+And so using an
+autoregressive model
+helps you deal with
+that dimensionality.
+You could, in principle, also
+use an autoregressive model
+with a mixture of
+Gaussians, for example,
+and that would be
+completely fine as well.
+It's not like a
+common choice per se,
+because if you're going to go
+through the trouble of using
+an autoregressive model,
+usually discretization
+is a pretty powerful choice.
+But yeah, you can also use
+it with a Gaussian mixture
+model or Gaussians or
+something like that.
+So the question was around
+how we actually train this.
+And maybe let's just
+walk through how
+we go about training this.
+So it's actually going to look--
+Let's walk through
+how we train it.
+So we're given some data set.
+So we're given some data set
+that has state action pairs,
+and we're going to want to
+train our neural network.
+And we're going to
+follow a typical way
+of training neural
+networks which
+is to sample an example
+from your data set,
+or sample a mini
+batch of examples.
+I'll write it up for a
+mini batch size of 1, just
+for simplicity, but
+you can extend it.
+So we're going to be
+sampling a state action
+pair from our data set.
+And once we sample this,
+we will essentially
+be running a forward
+pass through our network
+and a backward pass
+through our network.
+And the key question
+that comes up
+is doing the forward pass
+is fairly straightforward.
+And when we do the
+forward pass, we'll
+be getting some probability over
+the actions of each dimension.
+And then we need to figure out
+what should the objective be.
+There's actually
+a common objective
+that we can think about for
+all of these generative models.
+And that objective is that we're
+outputting these probability
+distributions.
+We want to be maximizing the
+probability of the actions
+represented in the data.
+Or equivalently,
+we'll write this
+as minimizing the
+log probability of--
+I'll write this as pi
+theta of a given S,
+and this is with
+respect to theta.
+And so what this
+means is we're going
+to be evaluating how
+likely is the action that
+was sampled under our policy.
+And then we'll be trying to make
+the probability of the action
+in the data set as high as
+possible, or the negative log
+probability as low as possible.
+Now, in practice, what
+this log probability
+looks like is going to be
+different for different models.
+For a Gaussian mixture
+model, what you'll do
+is you can write down
+the probability density
+function for a
+Gaussian mixture model,
+and then just differentiate with
+respect to the mean, variance,
+and weight that is outputted
+by the neural network.
+And for the case of a
+autoregressive model,
+it's a little bit different.
+So what this looks like for
+the autoregressive model is
+we essentially get
+the probability of at1
+and the probability of at2
+given at1 and so forth.
+And this probability,
+for this first dimension,
+it will just be the
+cross-entropy loss
+that corresponds to
+trying to maximize the log
+probability of this value for a
+discrete categorical variable.
+And for the second
+dimension, that's
+where things get
+a little bit more
+complicated because this will
+just be the cross-entropy loss.
+But you need to figure out which
+action you want to use here,
+and oftentimes you will use
+the action in the data set.
+So for the inputs,
+you'll often actually
+pass as input the state
+and the dimensions that
+were chosen in the data set.
+And then for each of
+these probabilities,
+you'll be applying
+the cross-entropy loss
+and backpropagating the
+cross-entropy loss back
+into the network.
+And then at test time,
+you'll then actually
+be using your own predictions
+and passing your own predictions
+into the neural network.
+But this objective right here is
+really the core loss function.
+And this corresponds to a
+form of cross-entropy loss
+for discretized distributions.
+And for Gaussian
+mixture models, you
+write down the PDF
+and differentiate.
+So the question was, it seems a
+little odd to discretize and do
+a categorical distribution
+over continuous variable,
+especially given that a loss
+function like cross-entropy
+won't take into account the fact
+that two bins error is probably
+less costly than an error for
+two bins that are very far
+apart from one another.
+This is one downside to
+using discretized actions.
+In practice, often that
+distance is something
+that is fairly quick to learn.
+And so the outcome is
+often still pretty good,
+but you might need more data.
+And how fine your discretization
+is a really important
+hyperparameter because
+if it's too fine,
+then it'll be very
+hard to get signal
+because if you're off by 1,
+you'll get 0 loss function.
+There are also other
+things that you
+can do to try to
+smoothen out the data
+and smoothen out the labels
+so that the label isn't just
+like a one hot vector.
+You can smooth around
+it a little bit.
+So that's one
+thing that can also
+help with that, although it's
+a little bit more advanced.
+Oh, yeah.
+Awesome question.
+I didn't actually get to
+write the third example.
+So when you are outputting the
+probability of the third action,
+it will be conditioned
+on everything so far.
+And often the way
+that you do that,
+is if you're using
+a sequence model,
+you can then output the
+prediction like a sample
+from this distribution, so at2,
+and then output the probability
+of the third action right here.
+And if you have a
+sequence model that
+takes into account
+everything from the past,
+then it will already condition
+on all the actions so far.
+So how does backpropagation
+handle this when it's discrete?
+So only the output is discrete.
+And so you can think about it
+as a classification problem.
+And so if the
+weights are discrete,
+that's bad for backpropagation.
+But when it's only
+at the labels,
+you're only just computing
+the loss function
+on those discrete variables,
+and then that loss
+you can back propagate
+in a direct way.
+And that's because it's
+outputting a probability
+and computing a loss
+on that probability,
+and then you can back propagate
+that loss on that probability.
+So that outputs
+are actually still
+continuous values because you're
+outputting the height of each
+of these bars.
+Cool.
+So this is a visualization
+of this discretized case
+where outputting the first
+dimension, the second dimension
+given the first dimension,
+the third dimension given
+the first two dimensions of
+the action, and so forth.
+And this is very scalable.
+It allows you to handle fairly
+long sequences of actions
+similar to language models.
+The last thing that I put
+up on here is diffusion.
+Diffusion is also a very
+appealing choice, especially
+for continuous actions.
+It can model very
+complex distributions
+over continuous
+variables, including
+high-dimensional
+continuous variables
+like images or actions.
+And it does so by using
+this denoising process
+where you start
+with complete noise,
+and denoise it iteratively to
+make it a less and less noisy
+version of the action to
+ultimately generate, hopefully,
+a clean action prediction.
+Oh, and one thing that's
+notable is just both this model
+and diffusion models do
+have some iterative process.
+In the case of
+autoregressive models,
+it's iterative over the
+dimensions of your prediction.
+And in the case
+of diffusion, it's
+iterative over this
+denoising process.
+Now, one question I
+have for all of you.
+So we've talked about these more
+expressive distribution classes,
+and none of what we talked about
+has actually really changed
+the architecture of the model.
+And I'm curious.
+One very important
+question is, instead
+of having these more
+complex distributions,
+we could just still use the L2
+error, the L2 norm as the loss
+function, but just make
+the neural network bigger.
+And bigger neural networks
+are generally more expressive
+than smaller neural networks.
+So does anyone have thoughts on
+how what we talked about here
+is different from just making
+the model bigger with the L2
+loss?
+So in the driving
+example, even if you
+make the network
+really, really large,
+it's still going to
+output just the mean.
+It might output the mean
+very, very accurately,
+but it doesn't actually
+change its ability
+to represent a more
+complex distribution.
+And so the expressive power
+of a distribution that you're
+trying to represent is
+actually, in many ways,
+separate from the expressive
+power of the function itself.
+And if you think
+about this picture,
+again, where you have
+a neural network that's
+outputting parameters
+of a distribution,
+there's the expressive
+part of this function
+of how many functions
+can you represent
+that go from S to parameters.
+And then there's the expressive
+power of this top part that,
+how many different distributions
+can those parameters even
+represent in the first place?
+And this is a really
+important point
+where neural
+network expressivity
+is often distinct from
+distribution expressivity.
+The expressivity of
+the distributions
+that it can
+represent is captured
+by what distribution you're
+allowing it to represent.
+And if it only outputs
+the mean and variance,
+it can very expressively
+represent functions
+that go from state
+to mean and variance,
+but it can't represent anything
+more complex than a Gaussian.
+So we walk through this a bit.
+So we are given
+some demonstrations.
+We're trying to train a
+generative model over actions.
+And this is trying to
+minimize the negative log
+likelihood of the
+expert's actions
+given the states and
+the demonstration.
+And so this equation looks,
+I mean, maybe a little
+bit complicated, but the log
+pi is the log probability
+under the policy.
+The blue part is
+the demo actions
+that are sampled from the
+demonstration data set.
+And this probability
+is under the policy
+that we're trying to learn.
+And then once we
+fit this, we should
+have a policy that's better
+at actually matching what
+the expert is doing,
+and as a result,
+it should be better at
+performing the task.
+So now why do we learn all this?
+How well does the
+generative model
+work compared to just
+using an L2 loss?
+There's a couple
+of works that have
+evaluated this more explicitly.
+So here's a transport
+task where you
+need to have one robot transport
+a tool to another robot.
+And the policy is controlling
+both of these robots.
+And we'll be comparing diffusion
+and a Gaussian mixture model.
+Diffusion is a lot
+more expressive
+than what you can even represent
+with a Gaussian mixture model.
+And we'll be looking at two
+different demonstration data
+sets.
+One was a data set that was
+just collected by one person,
+and then the other
+one is a data set
+that was collected
+by multiple people.
+And we'll look at success rate.
+And we use diffusion.
+We see that, on both data sets,
+it's able to do pretty well,
+although it does degrade with
+multiple humans in the data
+set, which means that as you add
+more diversity in the data set,
+performance can go down.
+And with the Gaussian
+mixture model,
+we see that well, first it
+does worse than diffusion,
+so expressive distributions
+is very helpful.
+And second it actually
+goes down a lot more
+for the multi-human
+data set, which
+means that the expressivity
+of the distribution
+is especially important for
+data sets that have more
+different behaviors in them.
+We can also see this on a
+real task on a real robot.
+So this is a task that's
+actually pretty difficult,
+hanging a shirt on a hanger.
+The data set was collected
+by lots of different people
+because it's actually a
+pretty large data set.
+And once you scale
+up, it's very hard
+to have a single person
+with one consistent strategy
+collect all of your data,
+so it has different people
+and different strategies.
+And it compares using
+either diffusion, which
+is very expressive,
+or an L1 loss, which
+is a deterministic policy.
+And what we see first, it's not
+as successful as the simpler
+simulated task.
+But here we see again that
+having a expressive distribution
+is really critical
+for being able to do
+the task successfully.
+And if you just use L1 loss,
+the success rate of the policy
+drops by nearly 50%.
+Is there any
+scenario where you'd
+want to use a mixture of other
+models instead of a Gaussian?
+Oftentimes other models might
+already be quite expressive.
+So not to my knowledge, but
+it's completely inconceivable.
+Now, if you actually look
+at some of the big models
+that people have been
+developing in robotics,
+they build on what we
+covered so far in lecture.
+And so these are
+foundation models trained
+on lots of different
+demonstration data
+sets by companies like NVIDIA,
+Figure, Pi, and this open source
+vision language model.
+Using expressive distributions,
+when you have large scale data
+sets is a key component
+of these models.
+And if you look at
+some of the big models
+that people have been developing
+for autonomous driving at Waymo
+and Wayve, the first one uses
+discretized and autoregressive
+prediction, and the second one
+also uses discretized actions
+with autoregressive prediction.
+Great.
+So a summary so far of
+what we've talked about.
+If you have data from one
+consistent demonstrator,
+you should learn a unimodal
+policy distribution.
+If you have multimodal data
+from multiple demonstrators,
+you should learn a distribution.
+You need an expressive
+generative model
+when you have data from
+multiple people, very important.
+And one other thing
+that I'll mention here
+is that the algorithm
+is fully offline.
+And this is getting
+into a notion that's
+very important in reinforcement
+learning more generally,
+which is, offline
+algorithms are a bit
+different from
+online algorithms.
+So offline algorithms use
+only an existing data set,
+and they don't use any new
+data from what you're learning.
+And online means that
+you're using new data
+from your learned policy.
+And this distinction is
+important in a couple
+of different ways.
+Online means that you're going
+to have to actually recollect
+data as you run the algorithm,
+and so this can be expensive.
+If your policy might be
+under-trained, in some scenarios
+it might be unsafe
+to run your policy.
+If you're in a medical
+domain, for example,
+you might want to
+not want to collect
+online data from a policy
+that doesn't work fully yet.
+Thinking about
+offline algorithms
+and online algorithms, it's a
+key distinction and a key way
+to think about
+different algorithms.
+So for what we've
+covered so far,
+we don't need any data from
+the policy, so this is offline.
+We also don't need to
+define a reward function.
+Last time we talked about
+defining reward functions
+for some examples, and we talked
+about how, in some examples,
+it might be hard to write
+down the reward function.
+So this is pretty nice.
+In driving, you don't
+have to write down
+all of the ways in which
+you might want it to drive.
+The downside is that you
+might need a lot of data
+for reliable performance.
+You need a lot of
+demonstrations,
+and that ties into how
+we might try to learn
+from online interventions.
+So the question was--
+for the previous
+videos that I showed--
+imitation learning
+seems straightforward,
+what is the research in it?
+And is it just doing what
+we talked about today?
+Well, I guess there's a
+number of different things
+that went into those
+different examples.
+So I can walk through
+maybe a couple examples.
+So in the case of the first
+demonstration, a lot of things
+went into curation
+of the data and also
+the architecture of the model.
+And so those were two things
+that were novel about this.
+In the case of the NVIDIA
+example, a lot of work
+went into trying to use data
+from simulation, especially
+because collecting data on
+humanoids is quite challenging,
+and trying to figure out how to
+leverage that simulation data.
+In the case of the
+figure example,
+there was also some
+architectural design choices
+that made it helpful, especially
+in terms of running models
+at very high frequency.
+And in the OpenVLA
+example, that was also
+an example where there was a
+lot of architectural choices
+in terms of the models.
+And so it's not just exactly
+what we talked about,
+so there is a bit more to it.
+But what we talked about
+is a huge driving factor
+behind these different examples.
+And these two, a lot
+of that also went
+into different co-training
+objectives and architectures.
+So we've talked a lot
+about how to train models
+with imitation learning.
+And there's one important thing
+that we haven't covered yet,
+which is what can go wrong
+and why imitation learning is
+challenging.
+So for this, it's helpful to
+look at supervised learning.
+So in supervised learning,
+we have some data.
+And it's usually trained from
+one data set that stays fixed.
+And the inputs to the
+model are completely
+independent from the predictions
+that the model makes.
+Now, this all changes
+in imitation learning.
+So say you have a demonstration
+that is in your data set.
+And so each of these dots is
+like a state and then state
+action, something like this.
+And now you're trying to
+mimic this demonstration.
+If you're trying to
+mimic it, and then you
+roll out your policy, the
+starting from this state,
+maybe at the beginning
+of the trajectory,
+it's able to do pretty well.
+But at some point it
+might make a mistake.
+The policy isn't
+going to be perfect.
+And so if it makes
+a mistake, maybe it
+ends up over here
+a little further
+from where the
+demonstration covered.
+And now from this
+state, it's possible
+that it actually doesn't have
+that much data from where
+it ended up after it
+made this mistake.
+Even if it was a
+small mistake, it's
+going to be potentially
+underrepresented in the data.
+And if it's underrepresented,
+it's actually even more likely
+to make a mistake in the future.
+And so if it's more
+likely to make a mistake,
+it might actually drift away
+from the distribution even more.
+And at that point, maybe here
+it's actually very far away,
+and it makes maybe an
+even bigger mistake.
+So this is often referred
+to as compounding errors.
+Because they can start
+drifting of the distribution
+when you make mistakes,
+those mistakes
+can then compound as you
+roll out your policy.
+And as a result of this--
+and one thing that you see
+here is that the distribution
+of states--
+this pen, sorry.
+The distribution of states
+that are visited by your policy
+is actually different from the
+distribution of states that's
+visited by the
+expert, and this means
+that it differs fundamentally
+from supervised learning.
+So errors can lead away
+from the distribution.
+Error can then compound.
+The states visited
+by the expert are
+different than the states
+visited by the learned policy.
+This is referred to
+as covariate shift.
+So it's a distribution shift.
+And that distribution shift
+can lead to worse performance.
+It also makes it different
+from supervised learning.
+So this is one of the reasons
+why fitting the distribution
+really well is very important.
+Because if you
+don't fit it well,
+and you learn only the mean,
+for example, then you're
+even more likely to have
+these compounding errors.
+Even if you do fit it well,
+you might still make mistakes
+and might drift of
+the distribution.
+So how can we address this?
+One solution is just to
+collect a ton of data,
+train for as long as possible to
+fit the data as well as you can,
+and hope for the best.
+If you have the
+capacity to do this,
+it's not a terrible solution.
+But there's also
+some other solutions,
+and these solutions are actually
+quite popular in practice.
+And basically the key
+alternative solution
+is to try to collect
+corrective data.
+And so if we're in
+this scenario, what
+we can try to do is, as the
+policy starts to make a mistake,
+we could try to say,
+OK, if you're here,
+the correct action
+is to do this.
+And this green data can
+be very, very helpful
+to allow the policy to recover
+from mistakes that it made.
+So the corrective data
+would be, ideally, you
+would learn something like this
+that tells your policy exactly
+how to recover.
+And then if you collect
+this corrective data,
+then you could combine the data
+in green with the data in black,
+train a policy on
+that combined data.
+And then if it
+makes a mistake, it
+should actually have examples
+of how to recover and get back
+to the distribution
+because we're actually
+running our policy
+and then getting
+examples of how to recover
+after running our policy.
+Does this not overfit the model
+and make it less generalizable?
+You will need to make sure that
+when you collect online data,
+you collect it in diverse
+scenarios and not just very
+narrow scenarios.
+If you only collect it in a
+very small amount of scenarios,
+then these corrections
+won't be as diverse
+as your original data set.
+So the main difference between
+the learned policy distribution
+and the expert distribution,
+it is just how the actions
+led to particular states.
+I'm using this as
+shorthand for the states
+visited by the policy.
+And when you start to
+incorporate these corrections,
+you're expanding the
+distributions of states
+that you have data
+for, and you're
+making your
+distribution of states
+seen in your data
+set wider to include
+both p of s and the states
+that your policy might
+be likely to visit
+if it makes mistakes.
+So in terms of what this
+looks like as an algorithm,
+we will first roll
+out our policy.
+So this is what's
+shown in blue here.
+Then we will query an expert
+at the states that you visited.
+And these actions in green
+are the same as the orange
+a star on the slide.
+And then we will aggregate
+the corrective data
+with the first
+demonstration data set,
+and then we'll update the policy
+on the aggregated data set.
+And this updated
+policy, you could
+fine tune the policy,
+so warm start it,
+trained on the original
+data set and then update it
+with fine tuning.
+You could also
+train from scratch
+if you're concerned
+about, I don't know,
+some biases or something
+like that, oftentimes you
+might fine tune.
+And then you can actually
+repeat this process.
+So you can train on
+the corrective data,
+get a better policy, and
+then maybe your policy
+actually starts making
+you have another policy,
+and maybe it makes mistakes
+in a different way.
+And in that case, you'd
+want to then collect
+some corrective data
+from that second policy
+if a new failure mode or
+a new mistake emerges.
+And so this is a
+repetitive process.
+This name has a terrible
+algorithm because it's not
+very descriptive.
+But it's called data set
+aggregation or DAgger
+because you're aggregating data.
+It's helpful to know
+terminology, but this, I think,
+was a bad choice.
+And it's a data efficient
+way to learn from an expert.
+But it can be hard
+to query an expert.
+And so getting
+these green actions
+can be a little bit tricky.
+So you might have
+to actually ask
+a person OK, this is what
+my car did on the road, what
+steering command should it have
+done instead in those scenarios?
+And so this data actually
+can be potentially very
+hard to collect.
+So how do we get
+the correct data?
+What this would look like
+is you would run your policy
+to get this blue trajectory.
+And so this trajectory is like
+a sequence of S1, a1, S2, a2,
+and so forth.
+This is not possible
+in some scenarios,
+but you'd ask a person for this
+S, what should the a have been?
+And for this S, what
+should the a have been?
+And for this S, what
+should the a have been?
+Now, there are scenarios
+where you can't do that,
+and where this algorithm is
+just not possible to run,
+and that leads into
+potentially another way
+that we might be able to
+collect corrective data.
+We might not be able to tell
+exactly that this is exactly
+the steering command
+you should have done
+because that's very hard to do.
+And so what we could do
+instead is instead of saying,
+for each of these
+actions we want
+to query what the
+expert would have done,
+we're actually going
+to let the expert take
+full control at some point.
+And so what this would
+look like is something
+where you start drifting off.
+The expert notices that a
+mistake was made, and then takes
+full control, for example,
+starts driving the car
+rather than letting the
+policy drive the car.
+And then in this
+case, you can then
+add those partial
+demonstrations to your data
+set instead of trying to query
+the expert on the policy states.
+And so here you would start to
+roll out the learned policy.
+The expert intervenes when
+the policy makes a mistake.
+The expert provides a partial
+demonstration from the state
+that the policy visited, so
+it would take full control
+and then aggregate this
+partial demonstrations
+with the original data set in
+order to then update the policy.
+And again, you can
+repeat this process
+so that you can cover
+different potential failure
+modes of the policy.
+In all of these cases, the
+best performance of the policy
+is upper bounded by the expert.
+The question was, if
+we're detecting a mistake,
+is that mostly if you've
+collided with something
+or something else?
+This is something
+that's subjective and is
+up to the demonstrator
+in many ways.
+Oftentimes you want to
+be a bit more proactive.
+And before the car
+hits something,
+you would want to take control.
+And so one of the
+downsides of this algorithm
+is that it can sometimes be
+hard to catch mistakes quickly.
+Or if the policy decides
+to, I don't know,
+drastically change the action
+and it was unpredictable,
+that can be very hard
+to proactively prevent.
+And you want ideally
+this to be in a scenario
+where you can predict.
+If the policy is starting
+to drift into another lane,
+re centering it,
+that sort of thing.
+This is actually
+something that companies
+do in driving where
+they let the policy run.
+They have a safety driver.
+And then the safety driver
+will take full control
+if it seems like the policy
+either doesn't know what to do,
+and it's like stalling, or it's
+starting to make a mistake.
+Now, We've seen
+failure modes of that.
+We've seen cases where
+safety drivers were not
+able to prevent a mistake
+that was more major.
+And so there's downsides
+relying on the demonstrator
+to proactively prevent a
+huge mistake from happening.
+But it is a practical interface
+for providing corrections
+in a lot of scenarios, and
+can help improve performance
+significantly.
+So the question was,
+can you explain again
+why if you're correcting
+a narrow corrective data,
+why that would lead
+to overfitting?
+So let's take the
+driving example.
+If your original driving data
+was all over the United States,
+and then your corrective
+driving data was only
+on Stanford's campus, then
+when you combine the data set,
+it might only learn
+that corrective behavior
+in a more narrow
+set of scenarios,
+and might also overfit
+to the Stanford data,
+leading to a policy that is
+perhaps less generalizable.
+And ideally, when you
+collected corrective data,
+it would be in a broader set
+of scenarios than campus.

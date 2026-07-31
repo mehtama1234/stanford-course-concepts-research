@@ -1,0 +1,2290 @@
+Let's recap what we've talked
+about in the last couple of
+lectures to lead into today.
+So for policy
+gradients, we started
+with our first reinforcement
+learning algorithm,
+where our goal was
+to run a policy
+to collect a batch of data,
+and improve the policy using
+that batch of data, and
+then repeat this process so
+that your approach
+can get better
+and better with experience.
+And the way that we actually
+improve the policy using
+this data is this
+equation that we've
+looked at where we collect
+samples from the policy.
+We then try to increase
+the probability for actions
+in the data that have a
+high reward in the future.
+And then we found that if we
+subtracted a baseline that's
+the average reward, that
+encourages us to have the policy
+do more of the above average
+things and less of the
+below average things.
+Right now everything
+here requires
+that the data be sampled
+from the exact policy
+that you're going to be
+taking a gradient step on.
+And we talked about how we can
+use importance weights this term
+right here in order to do
+multiple gradient steps so
+that we don't have to be
+collect a new batch of data
+every single time we want
+to take one gradient step.
+We also talked about
+value functions.
+And we talked about how a
+value for a policy of a state
+is the future expected
+rewards starting at state S
+and following pi thereafter.
+And we talked
+about a Q function,
+which is very similar
+to a value function,
+except instead of
+starting at state s,
+you're going to start at state
+s and then take action a,
+and then follow the policy.
+And we can think about
+these as follows.
+So if we have a
+given state that we
+want to estimate the
+value of for a policy,
+then we can run that policy.
+And the value is capturing
+the expected sum of rewards,
+so basically the sum of rewards
+of each of these trajectories
+averaged over these trajectories
+for that state and that policy.
+And we can write this as the
+summation over future time
+steps of our reward if
+we're starting at st
+and following our policy pi.
+And then for the Q function,
+instead of starting at s
+and running the policy,
+we'll start at s,
+take a, and then run the policy.
+And so we will then be
+averaging the sum of rewards
+over the trajectories that
+were a result of running
+the policy after taking
+action a at state s.
+We can write this as this.
+Again, the sum over the
+future of the future rewards
+conditioning on starting
+in state s taking action a,
+and then running the
+policy in the future.
+Great.
+Then we also talked about
+the advantage function.
+And this is,
+essentially how much
+better is it to take one action
+than to follow the policy.
+And we can think of
+this as the Q function
+for that state and
+action minus the value
+function at that state.
+And these are all for
+a particular policy pi.
+Now to think a little bit
+more about intuitively
+what value functions
+and Q functions mean,
+we can take a look at
+just one quick example.
+So I think I
+mentioned in lecture 1
+this example of how DeepMind
+developed an AI system that
+could outperform and
+beat the champion at Go,
+and this system
+was called AlphaGo.
+And they used reinforcement
+learning to do this.
+And if you were to think
+about this example,
+say the reward is the
+outcome of the game,
+whether or not
+AlphaGo won or lost,
+and then the value
+function you can
+think of as the
+expected outcome given
+the state of the board and
+the policy that's being run.
+And so if you have
+a better policy,
+the value function is
+going to be higher.
+And likewise, if
+you're in a board state
+where things are looking
+good for that policy,
+then you're also going to
+have a higher value function.
+And so the value function is
+influenced both by the policy
+and by the state.
+And yeah, so that's
+an example of what
+a value function looks like.
+And likewise, a Q
+function would be similar,
+except instead of running
+the policy from the state,
+you'd be considering a
+particular action first
+before running the policy.
+So we talked about actor-critic
+methods on Friday last week.
+And we introduced
+this equation, which
+looks a lot like
+policy gradients
+where we're summing
+over examples.
+Except now, instead of using
+the sum of rewards in a given
+trajectory, we're using
+our estimate of how good
+an action is or the advantage.
+And this comes from the sum of
+rewards which is the Q function,
+minus the average sum of
+rewards which is the value.
+And you can think of this as
+being different from policy
+gradients, and that we're
+estimating which actions
+are good and bad, and then
+encouraging the policy
+to do more of the stuff
+that we think is good.
+And then we talked about
+how to actually estimate
+what's good and bad.
+This is referred to
+as policy evaluation.
+And we can fit a value
+function, a neural network
+that takes as input the state
+and outputs a scalar value.
+And we fit this as
+trying to predict
+either just the sum of
+rewards or the next reward
+plus the value function
+where we're bootstrapping off
+of our own estimates, or the sum
+of a short trajectory of rewards
+plus the value
+function after that.
+And then this
+advantage function is
+equal to the reward
+plus the next value
+function minus the
+current value function.
+So let's get into the
+main topic of today,
+which is that we talked
+about actor-critic methods.
+Last week we were
+primarily considering
+on policy actor-critic methods.
+And today we're going to
+get into two real algorithms
+that people use, PPO and SAC.
+And we will start from the
+actor-critic formulation
+and see how we can make them
+off-policy to be more efficient.
+And at the end, we'll talk about
+how PPO, SAC, and imitation
+learning compare to each other.
+And yeah, so the
+key learning goals
+is really the key concepts
+behind practical algorithms
+like PPO and SAC.
+So we have our
+actor-critic method.
+These are the steps
+that we go through
+for an on-policy actor-critic
+method where we sample data,
+fit rewards with our
+value function, then
+we estimate the advantage with
+this equation here for all
+of our states and actions
+in this set of data,
+then we estimate what the
+gradient of our policy is
+and update our gradient.
+Now, if we want to be able to
+take multiple gradient steps,
+we need to be able to
+evaluate our gradient not just
+at the current policy
+that collected the data--
+but, for example,
+after we take step 5,
+we're now going to have
+a new set of parameters
+that were different from what
+was collected the data in step
+1.
+And so what we're
+going to do is we're
+going to use importance weights,
+which we saw in the policy
+gradient lecture.
+And so our new
+objective is going to--
+or our new gradient is going
+to look a little bit different.
+So say that we collected
+data with pi theta.
+Now we've taken a gradient step,
+and we have pi theta prime.
+So we want to be
+able to evaluate
+the gradient of the
+objective at theta prime.
+And to do this, we
+will reuse the data
+that we collected from
+pi theta in step 1.
+And we're then going to use the
+same gradient step as before,
+but we're going to weight the
+gradient term with an importance
+ratio that is a ratio
+between our new policy
+pi theta prime, and the policy
+that was used to collect
+the data which is pi theta.
+So this is our importance
+weight term right here.
+And the rest will
+look the same as
+before where we'll be
+evaluating the gradient of log
+pi times the advantage
+or advantage estimate.
+This advantage estimate
+will still be for the policy
+before taking a
+gradient step pi theta,
+and this will be for
+the s, a pair here.
+So this is our new gradient.
+So that's here.
+Now, in principle,
+once we've done this,
+this means that we can take
+multiple gradient steps.
+So we can sample a batch
+of data once and then
+fit our advantage estimates,
+and then compute our gradient,
+take a gradient step, and
+then recompute our gradient,
+take a gradient
+step, and so forth.
+And the only thing
+that's going to change
+as we take more gradient steps
+is this importance weight here.
+And of course
+we'll be doing back
+propagation on
+our new parameters
+rather than our old parameters.
+And then our advantage
+estimates will still
+be based off of the old policy.
+Now, there's something
+that can go wrong here.
+And to see what
+can go wrong, it's
+helpful to actually look
+at the surrogate objective.
+Right now we're
+looking at the gradient
+that we're going to be applying.
+But when we actually
+implement this in practice,
+we'll be having some
+surrogate objective
+that we construct
+in order to use
+auto differentiation to get the
+gradients for free from PyTorch.
+And so if we were to write
+down the surrogate objective
+for this, we need to
+formulate some objectives such
+that the gradient of
+our surrogate objective
+is equal to this right here.
+Now, to do that, we
+can remember that we
+have this convenient
+identity where
+probability times the
+grad log of a probability
+is equal to the gradient of
+the original probability.
+This is the same log trick
+that we've been seeing.
+We used to formulate the
+original policy gradient
+objective.
+And the way this
+comes in handy is
+that we actually see this
+pi grad log pi right here.
+And so this means that this
+is equal to the gradient of pi
+theta prime.
+And if we want to then construct
+a surrogate objective such
+that its gradient is this,
+then the surrogate objective
+is simply going to be--
+we can replace this with
+pi theta of a given s.
+And then we'll still have
+the other terms pi theta,
+and the advantage right here.
+Well, let's just say
+this is just over i,
+all the examples
+are in our batch.
+And so the way that
+I formulated this
+is the gradient of this
+surrogate objective
+is equal to this right here.
+And we see that if we take the
+gradient of this with respect
+to theta prime, we get grad
+theta prime right here.
+And the gradient of
+theta prime of pi
+is equal to pi theta prime
+times grad log pi theta prime.
+So you can see
+this on the slides.
+So here's our surrogate
+objective right here.
+Now, if we look at the
+surrogate objective--
+so the policy is
+going to be trying
+to maximize this when we take
+gradient steps on our policy.
+And if we're trying to
+maximize this objective,
+we have our advantage estimates.
+And so the thing that the
+policy will want to do
+is it will probably want to take
+the advantage estimates that
+are positive and increase the
+probability of our actions
+for those, especially if
+there are actions that
+had very low probability
+that we want to increase this
+a lot so that we can get a
+very high ratio here, such
+that we can increase the
+likelihood of actions
+for high advantages.
+And then for
+negative advantages,
+we'll want to decrease
+the probability.
+Now, this all seems
+reasonable here.
+The thing that's a
+little bit tricky
+is that these
+advantages are still
+based off of the old policy.
+And they were estimated based
+on a single batch of data.
+And so if you take too
+many gradient steps
+on this surrogate objective,
+it means you might actually,
+in some ways, overfit.
+You might be using
+these advantages
+at some point when
+they become out of date
+and may no longer be
+applicable to your new policy.
+And so basically the
+challenge that can come up
+is you might get really
+unstable learning.
+As a rough visual
+for what this might
+look like is if you
+were to plot the--
+let's say that this is
+the number of examples
+of state actions that
+you've collected,
+and then the y-axis
+is the rewards
+that your policy is seeing
+over the course of learning
+as it collects more data.
+If you take only one gradient
+step for every batch of data
+that you collect,
+then your learning
+might look something
+like this, where
+it learns very slowly because
+you can only take one gradient
+step for each batch
+of data, and that
+means that it's going to take
+many, many data points in order
+to learn.
+So this is for
+one gradient step.
+Now, say, you maybe
+increase this a little bit,
+so you take five
+gradient steps, then
+you should learn a
+little bit faster.
+So maybe you learn
+something like this
+because you're taking more
+gradient steps per data point.
+So with respect to the amount
+of data that you're collecting,
+your reward should
+increase more.
+But then if you try to
+get a little bit greedy
+and do a lot more gradient
+steps on this objective,
+you might start to
+overfit your advantages.
+And you'll get something
+where maybe you'll actually
+start to increase
+reward very quickly,
+but then learning might be
+unstable, and at some point
+it might even collapse
+because your policy will
+overfit those advantages.
+You'll get some
+really bad policy,
+or a policy that is increased
+the probability to 1
+for some advantage but done so
+in a way that makes the policy
+performance poor.
+And so this would be--
+I don't know exactly how many
+gradient steps this would be,
+but this would be more
+gradient steps than the others.
+And this would be to many
+gradient steps essentially.
+So the question is, what is the
+behavior of an overfit policy
+look like in practice?
+It really depends
+on the problem.
+As one example, if it's
+overfitting quite a bit,
+it might try to be assigning
+a very, very high probability
+to one particular
+action that has
+a high advantage in the data.
+And when it does that,
+it might actually also
+increase the probability
+of other actions
+around it just because neural
+networks are somewhat smooth.
+And when you do that, it might
+be a very deterministic policy
+that no longer explores.
+I don't know exactly
+what would happen,
+but if you had a 2D agent
+that's moving around in a grid,
+and maybe your goal
+is to get here,
+then a good policy
+would go here.
+And a policy that's overfit, I
+would expect to potentially--
+maybe, for example, it
+learns that going right
+is good but doesn't figure out
+that you need to stop here.
+And does it figure out
+that you need to go up?
+Then what the overfit
+policy might do
+is it might take a
+straight line here and then
+keep on trying to go
+roughly in this direction
+and then end up in the
+corner because it's
+overfit to one batch of data
+that told it to go this way
+but didn't figure out
+that it needs to stop.
+Yeah, exactly.
+So this is 5 gradient
+steps on five loops of this
+before you then collect
+a new batch of data
+and then refit your
+value function.
+Currently it's refit only on
+the current batch of data.
+Later this lecture, we'll
+see how we can potentially
+reuse previous batches.
+So the question is,
+what is the importance
+of using the surrogate objective
+versus the original formulation?
+This is the same formulation.
+I think it's a little
+bit more intuitive if you
+look at the surrogate
+objective to understand
+that these importance weights
+are really trying to make it--
+it's very easy to
+increase the probability.
+You can also see that
+with the gradient
+as well, where it's
+going to be trying
+to increase the probability.
+But I think it's just
+a little bit easier
+to see with the
+surrogate objective.
+We also, in a minute,
+see how we can
+change the surrogate objective,
+and it gets a little bit more
+complicated.
+PPO looks a little
+bit more complicated
+if you look at the
+gradient versus if you look
+at the surrogate objective.
+So the question is, why are we
+using the importance weights
+to evaluate the gradient?
+So this importance
+weight term is
+what is allowing us to
+do more than one gradient
+step in the first place.
+And it's what's
+allowing this blue curve
+to do better in some ways.
+If you don't have the
+importance weights,
+then it's essentially
+not allowing
+you to accurately
+estimate the gradient
+on the old batch of data.
+So what happens when the
+a network is too old?
+The advantage
+estimates are going
+to be based off of
+some batch of data.
+It's not like infinite.
+It's going to be a batch
+of data that might be--
+I don't know, around a few
+thousand time steps of data.
+And those advantage they're
+also under the old policy
+before we took any
+gradient steps.
+And so if you take a
+lot of gradient steps
+on this objective,
+those advantages
+they're only true
+for the old policy.
+And they're also only based
+off of a limited batch of data.
+And primarily because they were
+based off of the old policy,
+after you've taken, I
+don't 50 gradient steps
+or 100 gradient steps,
+they become out of date.
+In this example, it's
+possible that your old policy
+right here maybe it did actually
+decide to go up, for example.
+So then you learned that
+if you're over here,
+you should go this
+way because later you
+will go up because that's what
+your advantages are telling you.
+But then in practice, once
+you have your new policy,
+in the future you'll be
+doing something different.
+And so those
+advantages over here
+are no longer accurate,
+no longer valid.
+And you need to collect
+a new batch of data
+under your new policy in order
+to have accurate advantages.
+So the policy is going to
+increase probability on actions
+with high advantages.
+These advantages are
+based on the old policy,
+and so they'll get out of date.
+And so if you take a
+lot of gradient steps,
+the policy is really--
+The other thing that
+I didn't mention
+is that when it's
+increasing the probability,
+it's also inherently trying
+to differ significantly
+from the old policy.
+It's not only encouraged
+to increase probability
+on advantages, but
+that is going to cause
+it to change drastically
+from the old policy,
+and this means because
+you're also changing a lot,
+these advantages are even
+less likely to be up to date
+with your current policy.
+And so there's a question
+of how do we address this.
+And there's actually
+a couple of things
+that we can do in order to
+actually be able to stably take
+more gradient steps.
+And the key idea is if
+we keep the new policy
+to be a little bit more
+close to the original policy,
+then those advantage estimates
+are more likely to be valid.
+And there's two ways
+in which we might
+be able to encourage
+the new policy to be
+similar to the old one.
+One would be to add a term to
+our surrogate objective that
+explicitly is going
+to try to encourage
+the policies to be similar.
+And these policies
+are representing
+distributions over actions.
+And so one way that
+we could do that
+is to add a term
+to our objective.
+So we have our surrogate
+objective right here.
+If we have it be equal to
+the same thing as what's
+written up there,
+let's call this,
+I don't know, con
+for constrained.
+This is going to be equal to
+the original surrogate objective
+that we're trying to maximize.
+And then we can
+add a penalty that
+discourages you
+from changing too
+much from the previous policy.
+And that penalty could take
+the form of the KL divergence
+between two distributions.
+So this could be
+the KL divergence
+between the new policy
+distribution and the old policy
+distribution.
+And so if we add this to our
+surrogate objective, what
+this will do is it'll encourage
+the policies to stay close
+to one another while you
+take more gradient steps,
+and so your advantage functions
+will be more accurate,
+and this will allow you to more
+stably take more gradient steps.
+Now, it will still be
+constraining your step size.
+And so it's a little
+bit of a balance.
+But essentially the results of
+something like this in principle
+should look--
+I'm out of colors--
+maybe should look
+something like this
+if you do more gradient steps
+but with this KL penalty.
+So the comment was, it's
+incentivizing because
+of this ratio right here, and
+it's controlling the upper part.
+The lower part is fixed.
+This is the old policy.
+It's controlling this new one.
+And so it can make this
+very large or very small,
+and that will cause these
+weights to either go to 0
+or become--
+or potentially be
+infinite, depending
+on how small the old
+policy probability was.
+And when we constrain
+how different these are,
+then we're encouraging this
+to be closer to one answer.
+So you can't just
+push this to infinity,
+or you can't just push it to 0.
+So a couple comments were here.
+So the first was that, to
+do this scale constraint,
+we actually need to keep around
+our old parameters in memory.
+This can actually
+be annoying to do.
+It increases your memory costs.
+And this is actually
+not uncommon to do
+with large language models.
+And you'll have to keep
+around the full set of weights
+for your old language
+model in order to do this.
+That said, there are ways
+to potentially cache this.
+So you potentially
+could just keep around
+the probabilities that were
+assigned to different states
+for a given batch of data.
+And then the second
+note was that,
+for this surrogate objective,
+this ratio is initially
+going to be one.
+And then once you take
+one gradient step,
+that's where this
+starts to diverge.
+The goal is to basically
+constrain how much you're
+changing the policy and only to
+change the policy a little bit
+rather than a ton.
+One other way to
+think about this
+is if your policy is a
+neural network that's
+taking as input like
+images, for example,
+you're going to need a
+lot of gradient steps
+in order to change the
+features of those images.
+And so you want to be able to
+take a lot of gradient steps,
+but without substantially
+changing the action distribution
+that the policy is going to
+take so that you can still
+refine your features without
+causing this objective
+to overfit too much.
+So the question is,
+how do we encourage
+it to change a little
+bit, but not too much.
+Oftentimes you'll have
+some hyperparameter
+that is in front of
+this KL divergence
+that needs to be tuned.
+And so this beta is
+like a hyperparameter.
+And this will control how much
+you're allowing it to shift.
+This ends up being oftentimes a
+fairly important hyperparameter
+when you use KL constraints.
+At the same time, you
+don't need to tune it.
+Usually people tune it
+within an order of magnitude
+rather than very carefully
+finding point 4, 2, 3, whatever.
+So the question was,
+how does this look
+like for the original
+gradient and not quite
+understanding the surrogate?
+So the surrogate
+objective is what
+we're plugging into PyTorch.
+And then PyTorch or
+TensorFlow or JAX
+will then compute
+the gradients for us.
+And when they compute
+the gradients for us,
+they will get the first line.
+The gradient of the second line
+is equal to the first line.
+If you were to
+implement this, you
+have your original
+surrogate objective
+and then you just plug-in
+this term as well.
+You can look up the expression
+for KL divergence between two
+categorical distributions
+or two Gaussians,
+which in the Gaussian case
+will be a function of the means
+and variances.
+And then just add that to
+your surrogate objective
+and then have PyTorch
+give you the gradients.
+If you write down the equation
+for a particular distribution,
+you could also get
+the gradients yourself
+if you want to take
+a look at that.
+What's the difference between
+J theta and J tilde theta?
+So I'm using J tilde to refer
+to the surrogate objective
+because it's technically
+not the true objective.
+The original J
+theta objective was
+equal to the expected
+sum of rewards.
+So it was the sum
+of rewards here.
+So this is an
+estimation of that.
+So the first idea is
+use a KL constraint.
+This is actually
+very common to do.
+We will leave it
+at this for now.
+We'll actually won't
+use KL constraints.
+There is actually a version of
+PPO that uses KL constraints,
+but it's not the
+most common version.
+But it's also used a lot
+in preference optimization,
+so we'll probably see it
+again in a couple of weeks.
+And then there's
+actually a second idea.
+So we could add this
+constraint in the objective.
+for this ratio right
+here, we could simply
+remove the incentive
+for the policy
+to change this ratio a lot.
+And the way that we
+would do that is we
+could actually just
+clip this ratio
+so that the ratio never
+exceeds some value
+and never goes below some value.
+And so what that
+would look like is--
+I guess this is version 1.
+What version 2 would
+look like is we
+would be taking these
+importance weights,
+and we would be clipping them.
+So we have the importance
+weights, pi theta prime
+divided by pi theta.
+And we'd be clipping these
+to be between some lower
+value, 1 minus epsilon, and some
+higher value, 1 plus epsilon.
+Epsilon could be
+something like 0.2.
+So you're saying that if
+it goes below 0.8, then
+it'll just be 0.8.
+And if this goes
+above 1.2, we're
+just going to leave it as 1.2.
+Now, this is a
+little bit informal.
+If I were to write this
+out mathematically,
+what this would look like.
+Let's call this w.
+This weight right here.
+Then if we wanted to clip
+it below by 1 minus epsilon,
+then we would be taking the max
+between w and 1 minus epsilon.
+And if we wanted to then clip
+this above by 1 plus epsilon,
+then we would be taking the min
+between this and 1 plus epsilon.
+And now, if we use
+this clipped importance
+weights in our
+objective right here,
+once the policy changes
+the ratio to be above 1.2,
+it's no longer
+going to be able--
+increasing the probability any
+further isn't going to help it.
+It's no longer going
+to be incentivized
+to increase the
+probability further
+because the objective will just
+stay as 1.2 times the advantage.
+And so it isn't actually
+explicitly constraining
+the policy not to
+change, but it's
+removing the incentive
+to change significantly
+from the old policy.
+Yes.
+So it cannot be below
+1 minus epsilon,
+and it cannot be
+above 1 plus epsilon.
+A value of epsilon
+that's used in practice
+it might be something like 0.2.
+So it's not tiny.
+Sometimes you refer to
+epsilon as tiny numbers.
+In this case, it's
+going to be constraining
+it to be between 0.8 and 1.2.
+So this idea of bounding
+the importance weights
+is one of the key
+ideas behind PPO, which
+is a popular RL algorithm.
+And so let's see.
+If we were to then put this
+clipping into practice,
+we could take our
+surrogate objective,
+and then replace the
+importance weights
+by the clipped
+importance weights
+right here in order to get a
+modified surrogate objective.
+Now, there's a
+couple more tricks
+that PPO introduces to try
+to get stable reinforcement
+learning improvement.
+So in this first
+trick, it's no longer
+incentivized to
+deviate significantly.
+Now, one thing that's a little
+bit funky about these importance
+weights is that there is
+actually a possibility
+that it might actually--
+the clipping in some
+rare cases might actually
+make the objective better.
+If, for example,
+the policy ended up
+assigning a very low probability
+to a negative advantage,
+and it went below
+the advantages, then
+you're clipping it
+to a higher weight.
+And so one thing that PPO does
+and the final objective of PPO
+is to take this
+clipped objective,
+but take the
+minimum with respect
+to the original objective.
+And this minimum
+is just making sure
+that the clipping will never
+make the objective better.
+It ensures that this is a lower
+bound on the original surrogate
+objective.
+And this means that we're
+going to be maximizing a lower
+bound on our objective.
+And usually, if
+you're ever going
+to be optimizing or
+maximizing something that's
+different from your
+original objective,
+it's good if it's a lower bound
+because it means that you're
+actually going to be--
+you're not going to be
+maximizing something
+that you can maximize beyond
+the original objective.
+So this is the final
+PPO surrogate objective.
+The motivation behind
+trick 1 or trick 2?
+Trick 2.
+So the motivation
+behind trick 2.
+I'm not actually sure how
+often this happens in practice,
+how critical this is,
+but the motivation
+is that you might
+actually be in a scenario
+where maybe it increased
+the probability
+on a lot of the good stuff.
+It decreased the probability
+on a lot of the bad stuff.
+But in some of the rare
+circumstances where
+maybe increasing the
+probability on a good stuff
+led it-- there was
+another advantage that
+had a similar state that
+was actually really bad,
+and maybe it increased the
+probability on both of those,
+in that case, clipping it
+at 1.2 for that second one
+is actually making it better.
+It's actually making the
+objective better because you're
+then saying, OK,
+maybe it assigned
+to a really high probability
+to this bad action,
+we're then going to clip that
+at 1.2 or something like that.
+And so if we take the
+minimum with respect
+to the original objective,
+the state action level,
+at the data point
+level, this is going
+to ensure that those
+situations aren't happening.
+And so I guess, explicitly say
+you have a particular state
+and action pair where the
+advantage is, I don't know,
+negative 1000 or something like
+that, so something really large.
+And say that your new policy
+for this state and action
+decided to give it a probability
+of 0.9 or something very high.
+And the original policy maybe
+gave it a probability of--
+oops.
+If the original policy gave
+it a probability of 0.1,
+then, in this case, the
+ratio between these two is 9.
+And then when we clip it, it
+then would be clipped to 1.2.
+And then once we
+clip it to 1.2, we'll
+multiply 1.2 by negative 1000.
+And so that's actually going to
+be making the objective better
+than if we hadn't
+clipped the objective.
+And so what this
+trick number 2 does
+is it means that
+it actually doesn't
+get to do the clipping for
+this particular data point.
+And this will disincentivize
+it from making these accidents,
+which is a good thing to do.
+So you're asking, why don't
+we just clip above and not
+clip below?
+So there is actually an
+analogous version of this,
+if you just make this
+negative and flip
+these, where the clipping could
+also make the objective better.
+For example, if a Hertz for a
+given state and action pair is
+positive 1,000, and the
+new policy assigns 0.1,
+and the old policy assigns 0.9,
+if you did this by accident,
+or if it happened to do this
+when optimizing other data
+points, then now the ratio
+is going to be 1 over 9,
+which is very small.
+You multiply that by 1,000.
+If you clip the 1 over 9
+by 0.8, that's actually
+be making the objective better.
+And so generally
+clipping on both sides
+and then taking the lower bound
+prevents both of these scenarios
+from being encouraged
+through clipping.
+So this is the final
+PPO surrogate objective.
+The last trick that PPO does
+is on estimating the advantage.
+So to estimate the
+advantage, there's
+a third trick that's used.
+This is actually a
+trick where I'm not sure
+how necessary it is myself.
+I haven't done a
+ton of comparisons.
+And the way that it
+works is you still
+can be fitting a value function
+V pi in the normal way,
+either with Monte
+Carlo or bootstrapping.
+But then once you fit
+that value function,
+previously, the equation
+for our value function
+was the reward plus the next
+value minus the current value.
+And instead of just
+using a horizon of 1,
+it's actually going to
+use a varying horizon.
+So before we were estimating
+the advantage of a given
+state and action, we're using
+the reward at that state
+plus the value at the
+next state minus the value
+at the current state.
+These were all for pi, and
+then had hats on each of these.
+But you can also
+estimate the advantage
+using something that looks like
+n step returns, where you're
+actually going to be summing
+over multiple of the rewards
+into the future or adding that
+future value instead of adding
+just one step into the future.
+We were talking about
+bias and variance before.
+If you calculate these different
+advantages with varying horizons
+and then weight
+them accordingly,
+then you can get
+advantage estimates that
+have varying variance
+and maybe have less bias
+than if you just use the one
+step estimate right here.
+I think there's some argument
+in terms of bias and variance
+that can be made.
+But it's also not 100% clear if
+it's necessary in my opinion.
+So there's now going to be a
+hyperparameter here with regard
+to how do you choose
+these weights with regard
+to the different n step returns.
+Generally, you'll mostly
+use the earlier ones
+so that you have less variance.
+And usually you will choose
+it to decay very quickly
+as the horizon increases.
+So you're mostly still
+going to be using
+the t equals 1 or n equals 1.
+So if you're using these
+weights, do you set gamma to 1
+or do you use them together?
+You'll use them together.
+And if you write
+this out, you'll
+get a term that multiplies
+gamma and lambda here.
+So the question was, is this
+the same as taking a weighted
+average of different n step
+returns for different n's.
+So the one thing
+that's different
+is we're still going to be
+fitting the value function
+in the normal way, and then
+this is in terms of how
+we estimate the advantage.
+But otherwise you can think
+of it as n step returns,
+but averaging the different ends
+in order to get an estimate.
+What's the benefit of using GAE?
+I think it's a little
+bit hard to motivate.
+I think one way to view it is
+that if you just use this one
+step return, especially if
+the time steps are very close
+together, then this might be--
+if your V's are not
+completely accurate,
+then this estimate
+might be a bit off.
+And if you increase
+this horizon,
+then you'll get potentially
+a better estimate.
+Now, why not just use one
+value of n versus a mixture?
+Perhaps it helps you
+hedge a little bit
+if you're not sure which
+value of n is correct.
+But I don't have a great
+motivation myself for it.
+If you use it and
+don't use it, I'm
+not 100% sure what the
+performance is like.
+So the final PPO algorithm.
+We sample a batch of data.
+We fit a value
+function to that data,
+and then we evaluate this
+generalized advantage estimate
+that we just talked about.
+And then we will
+update the policy
+by taking M gradient steps
+on your surrogate objective
+where the surrogate
+objective uses
+these clipped importance
+weights using the GAE estimate
+of the advantage function.
+And then you can
+repeat this process
+after taking M gradient steps,
+then sample a new batch of data,
+fit a new value function to
+that, and repeat the process.
+In order to get a rough sense
+for what this looks like,
+here are some example
+hyperparameters.
+Now, generally
+hyperparameters are something
+that you would tune per domain.
+So this is not like my
+recommended hyperparameters
+necessarily, but just
+to give a rough sense
+for what this looks like.
+The batch of data might have
+around 2000 time steps in it.
+So if you have a long horizon
+problem that has 1,000 time
+steps, this might actually be
+only a couple trajectories.
+If you have a shorter
+horizon problem,
+this might be more trajectories.
+When you update the
+policy on step 4,
+a common hyperparameter
+is something
+around 10 epochs on the data set
+that was collected in step 1.
+And if your batch
+size is 64, this
+might be around
+300 gradient steps.
+And so this means that
+in comparison to before,
+because we introduced
+this clipping,
+we're actually able to take 300
+gradient steps without having
+really unstable improvement.
+So that's good.
+Clipping range.
+I mentioned 0.2 is something
+that might be reasonable.
+And then you might run this
+full outer loop 500 times
+in order to get around a million
+total time steps of experience.
+We'll see some other examples,
+actually some cooler examples
+at the end of the lecture.
+But if you run PPO
+on this very simple
+simulated the right half
+of a cheetah or something,
+and you look at, as you collect
+more time steps of data,
+what does the reward look like?
+There are a number
+of algorithms here.
+This beige one is
+vanilla policy gradient.
+It's a slightly smarter version
+of vanilla policy gradient,
+but it's basically vanilla
+policy gradient where you're not
+fitting the advantage
+function, and you're not
+doing the clipping.
+And then PPO is up here.
+And you can see that with less
+experience able to improve
+much faster because it's
+fitting the advantage function,
+and because it's doing the
+clipping on the gradient
+in order to take many more
+gradient steps on a single data
+point.
+So can I explain the
+error from 4 to 1
+and how are the
+parameters being updated?
+So this error is just saying
+that after we finish step four,
+then we're going to go
+back to step 1 and collect
+a new batch of data.
+When we do that,
+we're going to keep
+our policy as it was at
+the current time step
+and keep on iterating.
+And so at this
+point actually theta
+will become the
+previous theta prime,
+and you'll be sampling a batch
+of data from your latest policy.
+And then the other thing here is
+that, for this value function,
+you could warm started at
+the previous value function
+or you could train
+it from scratch.
+It depends a little
+bit on the domain.
+So in terms of these
+plots, the question is,
+do you fit the best set of
+hyperparameters and then run it?
+So each of them will have its
+own set of hyperparameters.
+And the best practice is to
+figure out good hyperparameters
+on one environment or
+maybe two environments,
+and then apply those
+hyperparameters
+to the remaining environments
+in your experiments.
+There are scenarios
+where you might
+need a new set of
+hyperparameters
+for a different domain.
+For example, if you are
+controlling something
+at 1 Hertz versus 5 Hertz,
+or optimizing a language
+model versus a half
+cheetah, the hyperparameters
+will be different.
+So there is some
+variability there.
+One good practice is to not
+tune your hyperparameters
+per environment because
+then you're essentially
+using more data,
+more samples in order
+to get those hyperparameters
+in the first place,
+and that wouldn't be reflected
+on this curve right here.
+We should move on.
+But happy to answer
+it after class.
+So far we've talked about
+using one batch of data
+for one gradient step that's
+the fully on policy version.
+And we've looked at using
+one batch of policy data
+for multiple gradient steps.
+And this is off-policy.
+What I'd like to talk about
+for the rest of the lecture
+is can we be even
+more off-policy.
+So can we reuse
+previous batches of data
+rather than recollecting
+a new batch each time,
+like all of the past trial
+and error experience.
+And there's two
+ideas for doing this.
+One is that we actually need
+to retain all of our past data.
+We'll use a term called a
+replay buffer that you actually
+saw in homework 1, where we will
+have a data set of past data.
+We'll keep on adding to it.
+And at some point, we might
+also remove some very old data
+from it.
+This is called a replay buffer
+because you're replaying
+your past experiences.
+And then the second
+idea is we actually
+need to adjust some
+of the equations
+to remove some on
+policy assumptions
+in order to be able to actually
+use all of our past data.
+So what this looks like is we'll
+take our actor critic algorithm.
+But to make it off-policy,
+we can think about it
+as getting one time step of
+data, then updating our policy,
+getting another time
+step, updating our policy,
+and so forth.
+So rather than getting one
+batch and then doing updates,
+we can actually do
+this much more online.
+And when we update our
+policy, this will actually
+be coming from a replay buffer.
+We'll be actually
+doing gradient steps
+using all of our
+past experiences
+rather than just our
+immediate past experience.
+When we collect
+experience, we'll
+want to then add this
+to our replay buffer.
+And when we then
+update our policy,
+we want to use a minibatch
+sampled from all previous data
+rather than just our
+last batch of data.
+So that's the modifications
+we need to make in order
+to use a replay buffer.
+So walking through this, we
+start with an empty replay
+buffer.
+We then collect experience
+from our policy.
+We add that to
+the replay buffer,
+and then we sample a
+transition state action
+reward and next state.
+From the replay buffer,
+there's a small probability
+this could be exactly
+what we just sampled,
+but otherwise it'll be
+something randomly sampled
+from our previous experience.
+Then we'll update our value
+function using the batch of data
+that we just sampled
+from the buffer.
+We can update our value function
+with the same objective before
+but now we're going to be
+averaging over our minibatch.
+And then we can
+evaluate the advantage,
+and then take a gradient
+step on our policy.
+So that's the mechanics
+of replay buffers.
+Finally update the policy
+and then repeat this process.
+Unfortunately, this algorithm
+right now is currently broken.
+And it's broken in
+two different ways.
+The first way that's
+broken is right here.
+So say that we're
+using bootstrapping
+to update our value
+function, then
+our target would be the reward
+at the current time step
+plus our value estimate
+for the next state.
+And so I have a
+question for you.
+And the question is, when
+we're fitting a value function
+on all of the data
+in the replay buffer,
+so this is the data from all
+of our previous policies,
+the question is, what policy
+are we learning a value function
+for when we fit the value
+function this way from data
+in a replay buffer?
+And so I'll give you two
+minutes to discuss that
+and then we'll come back.
+Let's come back.
+I also should have
+maybe mentioned
+that the answer is not as
+clean as some other questions.
+So the response there was the--
+so for our latest policy,
+we actually don't have any--
+we have maybe one data
+point from that policy.
+the rest of the buffer
+is not from that policy.
+And so we don't actually have
+any really much data at all
+from our current policy.
+So it's not our current policy.
+And that's why
+this is incorrect.
+And in particular, when
+we collect trajectories
+from previous policies, the
+actions will be different,
+and that means that the
+next state will also
+be different when you took that
+action as well as the reward.
+So the policy that you're
+going to be learning a value
+function for--
+I'll phrase it
+slightly differently.
+The policy that you'll be
+learning a value function for
+is some mixture of all
+of your past policies.
+It's actually not
+trivial to write it down.
+If things were collected
+in a particular way,
+the policy might look
+something like an average
+over your previous policies,
+if you had N previous policies.
+Now, it's actually a little
+bit different than this
+because in some
+states one policy
+might have gone over
+here, and another policy
+might have gone over here.
+And so then in this
+state, it's going
+to be a mixture of policies.
+But in this state, it's going
+to be more of this policy.
+In this state it's going
+to be a different policy.
+So it's actually a
+little bit messy.
+But the thing
+that's definitive is
+that it's not going
+to be a value function
+for your current policy.
+And we would like to get a value
+function for our current policy
+using data from
+previous policies
+so that we can actually
+estimate this advantage
+for our current policy and
+get an accurate gradient
+for our current policy.
+It's a little bit
+messy, but it's
+a policy that is
+a conglomeration
+of your previous
+policies or some mixture
+of your previous policies.
+It's not something that you
+can very cleanly write down,
+but it's a mixture
+of your past policy.
+The other thing that's
+a bit wrong about this
+is that here this is
+also not the action
+that the policy
+would have taken.
+And likewise, when you pass
+the action into the advantage,
+that's also not the action that
+the policy would have taken.
+And so we'll also see
+how we can fix that part.
+But first, let's talk
+about the value function.
+And we have this
+key question of,
+how do we fit a value function
+for our current policy using
+a replay buffer of data
+from past policies?
+So one idea here is,
+instead of trying to fit V,
+what if we try to
+fit Q instead of V?
+So we can remember
+that the Q function
+it's very similar to
+the value function,
+but it's the sum of rewards if
+we start at s and take action a.
+So you can think of it as the
+sum over say, this is St of at.
+This is the sum of time
+steps starting at t
+through the end of the
+trajectory of the reward m
+r of St prime at prime under
+the expectation that we're
+running our policies after
+taking state St and action at.
+And so this under the
+expectation of pi theta
+conditioned on St, at.
+So this is just the
+definition of the Q function.
+So we have the summation
+over future time steps.
+We can start to write
+out the summation.
+And in particular, if we
+write out the first time step,
+the first state and action
+is actually just St,
+at because that's what we're
+passing into the Q function.
+So we can write this as, we know
+the reward of the first state
+and action that we
+took, and then we
+could have a summation over
+things starting at t plus 1
+of the sum of future rewards.
+Now, for this sum
+of future rewards,
+this would now need to be
+an expectation after St, at.
+And so for this
+one, we would need
+an expectation if we were
+starting from St plus 1
+under the dynamics, and
+remaining actions and states
+sampled from pi theta.
+This is for pi theta.
+Now, this is starting to look
+also a lot like a value function
+but for the St plus 1.
+And so you can actually also
+write this in terms of Q.
+And in particular,
+you can write this
+is equivalent to the reward at
+the current time step plus--
+if we then try to take
+this one step further,
+then we'll have St plus 1
+sampled by the dynamics,
+and at plus 1 sampled
+from our policy.
+So if we have the
+expectation over St plus 1
+and at plus 1 sampled
+from our policy,
+then the Q at the
+current time step
+is the reward plus this
+expectation of the next Q.
+And so we can essentially
+define Q recursively
+like this as the reward
+at the current time
+step plus the future Q
+at the next time step.
+And the thing that's really
+nice about this equation
+is that this equation holds
+for any state in action.
+We haven't made any assumption
+about which state and action
+the data was collected for.
+And so if we walk through
+that on the slides again.
+So we have data points that are
+state action reward next state.
+This is sampled from
+some other policy,
+and we also have
+the future reward.
+This is a trajectory
+collected from an old policy.
+This action was taken
+from the past policy.
+And this future reward depends
+on the past policies actions.
+We don't want to use the
+future reward part because this
+is going to depend on the past
+policy actions in a pretty
+complicated way.
+But if we're fitting
+Q of s, a, then we're
+actually passing
+the action as input,
+and it's actually
+OK if that action
+is a bit different from what
+our policy would have taken.
+And so because that's
+OK, and because we
+have this equation that
+represents this recursion,
+then we can actually
+try to fit Qa
+to a target that
+looks like this.
+And so we have our
+definition of the Q function
+of the future
+rewards conditioned
+on the state and action.
+And for any state and action,
+we have this equivalence
+where Q for pi theta of s, a is
+the reward at the current time
+step plus the Q function
+at the next time step
+where you have an expectation
+over the next time step,
+and an expectation over the
+next action for a policy.
+Yeah.
+Good question.
+So the question was, for this
+data, we have this action.
+And for the Q function,
+it takes as input
+an action but the
+rest of the trajectory
+was still following
+a different policy.
+And the Q needs to
+be like-- we need
+to be summing the rewards
+for a current policy
+not the other policy.
+And the thing that
+we've done here
+is that if we represent
+this Q in terms
+of Q for our current policy,
+this second term right here
+is actually not using
+the future data at all.
+Well, the S prime we
+will be using the data,
+but it's not using
+anything after S prime.
+And in particular, we're using
+our bootstrap estimate of Q
+at the next time step.
+And for the next action,
+instead of using the action that
+was taken in our data, we
+can use the action sampled
+from our current policy.
+So we're recursively
+defining the Q function here,
+and the only things
+that will-- maybe we
+can actually just go
+through the next part.
+So what we'll do here is
+we'll sample an s, a, s
+prime from the buffer.
+This a was from an old policy,
+but the dynamics are constant.
+And then we'll sample an a
+prime from our current policy.
+This is sampled from our current
+policy conditioned on s prime.
+And then we can
+estimate the q function
+as the reward at the
+current time step
+plus the q function for the
+next state in the buffer,
+and an action sampled
+from our policy here.
+And because this action
+is sampled from our policy
+rather than from
+the data set, then
+we're actually
+getting an estimate
+for our current
+policies Q function.
+So yeah.
+Good question.
+So the question was,
+does this require
+that we see data from all
+possible state action pairs?
+There is a very
+good insight there.
+We don't actually need to see
+data from all state action
+pairs, but it means that, for
+this target to be accurate,
+we do need to have
+data that covers
+actions that are similar to
+what our policy would be taking.
+And if we haven't
+seen that data,
+this Q function is
+going to be inaccurate.
+And you'll need to collect
+data from your current policy
+in order to get that.
+We're not getting a really
+good estimate of our Q function
+for free based on past policies.
+We still need decent coverage of
+what our policy would have done,
+but it provides somewhat
+of a means to use old data.
+And so I guess just
+to finish the slide
+and then come back
+to that point,
+we'll be using r plus
+gamma times Q as our label.
+And then we can use
+supervised learning
+to pass as input to the state
+and action to a neural network,
+and then try to output
+this label right here.
+And again, we can
+use a similar like L2
+error between our
+prediction and the target,
+just like with the
+value function.
+And to be accurate,
+these targets
+need to have sufficient action
+coverage and need to have--
+the action taken
+from your policy
+can't be wildly out
+of distribution,
+otherwise these targets
+will be inaccurate.
+Yeah.
+So we'll need to have taken
+that action from that state.
+And so this does
+make it, if you don't
+have any data from that
+state, that's a problem.
+And then if you have
+data from that state
+but only for very different
+actions is also a problem.
+Some of this is also
+going to be relying on,
+neural networks can generalize,
+can interpolate reasonably well,
+and so that helps this.
+But you do need sufficient
+coverage for this
+to be accurate.
+So we actually didn't quite get
+to this equation on the board.
+We have this expectation
+here over the next state
+and an action sampled
+from our policy.
+And this equation estimates
+this with a single sample
+where we have St and at.
+And then we're going
+to use the St plus 1
+from our data set,
+which is just one
+example to estimate this part.
+And then in this equation,
+we'll use one sample, at plus 1
+in order to estimate this.
+There are actually methods that
+you can use multiple samples
+to estimate this to get a better
+estimate of this expectation.
+In a batch, you'll be sampling
+from your current policy.
+Each data point will
+get a different sample,
+so you also get multiple
+samples in that way.
+But yeah, even
+for next state you
+could also sample
+multiple actions here.
+So we mentioned that we need
+sufficient action coverage here.
+And the question was, if we use
+a KL constraint or something
+similar to encourage it to stay
+close to the previous policy,
+would that be helpful here?
+And I think that one of the
+algorithms that we'll see
+doesn't do that, but
+it's a good idea.
+And in general, we'll see that
+those KL constraints come up
+quite frequently in
+reinforcement learning
+because we'll often be assuming
+that we're not deviating too
+far from our previous policy.
+And yeah, it's possible
+for the algorithm
+that we'll see that
+could make it better
+in some circumstances too.
+Well, so I guess what
+we talked about is
+we'll be updating Q hat with our
+targets y, where the target is
+r plus the Q. And
+critically, the state Si
+will be sampled from
+the replay buffer.
+But the next action will not
+be from the replay buffer.
+It will be sampled from
+our policy conditioned
+on that next state
+from the buffer.
+So that will be our revised
+step 3 for the algorithm.
+The last thing is what
+we want to do here.
+So instead of estimating
+the value function,
+we estimate the Q function.
+There's a couple of things that
+we'll do here for this update.
+The first is that it'll
+be convenient to use
+Q instead of a.
+And this means that we're
+not going to use a baseline.
+This is going to
+be higher variance,
+but that's going to
+be OK because we're
+going to be using
+a lot more data,
+all the data from our
+buffer, not just the data
+from our current policy.
+And then the second is that
+the current policy's actions
+are likely better than
+the past policy's actions.
+And so for this
+update right here,
+we'll be sampling an a
+from our current policy
+instead from the action
+taken in the buffer.
+And then this will be the
+gradient update on our policy
+where we'll be looking at log
+pi of a given s times Q of s, a.
+And these a's will be
+sampled from our policy.
+So essentially using the same
+trick as what we did with the Q
+function, except now
+for the current state
+instead of the next state.
+So here's our full algorithm.
+There's one remaining
+problem, which
+is that the states
+in our buffer didn't
+come from our current policy.
+There isn't really anything
+that we can do here.
+But it's actually not
+necessarily a bad thing.
+It means that we're going to be
+getting a policy on a broader
+state distribution rather than
+just on the state distribution
+that our policy would visit.
+So this is essentially the
+soft actor-critic algorithm.
+There are other ways to estimate
+this gradient that we don't have
+time to get into today,
+but we might go over
+in future lectures.
+There are also some
+fancier ways to fit this Q
+function that we'll see
+in the next lecture.
+But the algorithm here that
+this is very, very close to
+is called soft
+actor-critic or SAC.
+And if we compare SAC and PPO,
+the more off-policy version
+that uses a replay buffer
+is shown in orange,
+and the less off-policy
+is shown in brown.
+And so we see that we're able
+to get much more data efficient
+learning with something
+like SAC than with something
+that's less off-policy.
+So you can be far, far
+more data efficient
+when you use this replay buffer.
+The downside is that
+it can be a lot harder
+to tune hyperparameters,
+and generally it
+can be a bit less stable
+when you're using these Q
+functions than compared to PPO.
+Cool.
+And then lastly, when
+you're fully off-policy,
+you can actually
+be efficient enough
+to run reinforcement
+learning on real robots.
+So in this example,
+in about two hours,
+the policy learns how to walk
+forward just with the algorithm
+that we talked about.
+You can also learn some
+cool manipulation tasks
+with reinforcement learning.
+This was seeded
+with demonstrations.
+This is a very precise task.
+And you can see that
+actually, if you compare
+the performance
+of this RL method,
+it actually gets 100% on all
+the tasks that they tested.
+Whereas if you use
+imitation learning,
+you'll get a much
+lower success rate.
+And reinforcement learning
+also leads to a faster policy
+than with imitation learning.
+And then PPO is a
+common algorithm
+that's used if you want really
+stable learning but less data
+efficient learning.
+And so if you're in
+simulation, for example,
+data is not a problem.
+You can collect tons and
+tons of data in simulation.
+And you can learn a
+policy in simulation.
+And then if you carefully
+tune your simulator,
+that policy might be able to
+transfer to the real world.
+And then there was
+also an example of--
+in general, for manipulation,
+send to real transfer
+is a lot harder.
+We're learning how
+to do a Rubik's cube
+that was trained in simulation.
+And after about five
+minutes of this rollout,
+you get a Rubik's cube
+that has been completed.
+And that was with PPO.
+PPO is also a common
+choice for language models.
+We'll start to discuss
+them next week.

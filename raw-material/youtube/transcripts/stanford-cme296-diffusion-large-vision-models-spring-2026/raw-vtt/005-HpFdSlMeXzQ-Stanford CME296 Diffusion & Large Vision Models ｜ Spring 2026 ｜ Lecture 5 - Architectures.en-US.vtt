@@ -1,0 +1,6475 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:05.480 --> 00:00:12.440
+Hello, everyone, and welcome
+to lecture 5 of CME 296.
+
+00:00:12.440 --> 00:00:18.240
+So we are officially entering
+the second half of this class.
+
+00:00:18.240 --> 00:00:22.120
+So we did a lot of hard
+work during the first half.
+
+00:00:22.120 --> 00:00:28.000
+We derived a tractable loss to
+learn how to generate images.
+
+00:00:28.000 --> 00:00:30.600
+So if you remember, the
+first three lectures
+
+00:00:30.600 --> 00:00:34.040
+was us looking from
+different perspectives
+
+00:00:34.040 --> 00:00:36.080
+to derive that loss.
+
+00:00:36.080 --> 00:00:40.580
+And then something else we did,
+which was, again, hard work,
+
+00:00:40.580 --> 00:00:45.380
+was figuring out in which space
+those images were living--
+
+00:00:45.380 --> 00:00:48.280
+so how to represent images.
+
+00:00:48.280 --> 00:00:52.320
+And so this second half is
+going to be more practical.
+
+00:00:52.320 --> 00:00:54.880
+And this lecture is
+specifically going
+
+00:00:54.880 --> 00:00:59.390
+to be about the architectures
+behind the image-generation
+
+00:00:59.390 --> 00:01:01.630
+models.
+
+00:01:01.630 --> 00:01:04.190
+So before we start,
+as usual, we're
+
+00:01:04.190 --> 00:01:08.550
+going to recap what
+we did the last times.
+
+00:01:08.550 --> 00:01:12.990
+So as I mentioned, the
+first three lectures
+
+00:01:12.990 --> 00:01:17.390
+were around deriving a
+tractable training loss
+
+00:01:17.390 --> 00:01:19.830
+to learn how to generate images.
+
+00:01:19.830 --> 00:01:23.390
+So what we want is to be
+able to generate images
+
+00:01:23.390 --> 00:01:26.030
+like the one that
+is on the slides.
+
+00:01:26.030 --> 00:01:29.950
+And we saw that a
+common denominator is us
+
+00:01:29.950 --> 00:01:32.350
+starting from those.
+
+00:01:32.350 --> 00:01:34.050
+So we saw three perspectives.
+
+00:01:34.050 --> 00:01:38.390
+The first one was
+diffusion with DDPM.
+
+00:01:38.390 --> 00:01:41.710
+So we saw that we were
+corrupting a clean image.
+
+00:01:41.710 --> 00:01:45.270
+And then we were learning
+how to reconstruct it
+
+00:01:45.270 --> 00:01:49.470
+by predicting the noise
+that we had to remove.
+
+00:01:49.470 --> 00:01:53.030
+And so we ended up with a loss
+that was actually quite nice--
+
+00:01:53.030 --> 00:01:56.630
+L2 loss on the noise.
+
+00:01:56.630 --> 00:02:02.070
+Then in lecture 2, we saw
+another perspective, which was,
+
+00:02:02.070 --> 00:02:06.790
+let's figure out the regions
+of high density of the data
+
+00:02:06.790 --> 00:02:09.070
+distribution of interest.
+
+00:02:09.070 --> 00:02:14.630
+And what we did was derive a
+loss that is based on the score.
+
+00:02:14.630 --> 00:02:17.830
+The score here is the
+gradient of the logarithm
+
+00:02:17.830 --> 00:02:21.270
+of the probability distribution.
+
+00:02:21.270 --> 00:02:24.670
+And then the last one was
+lecture 3, where we actually
+
+00:02:24.670 --> 00:02:27.150
+said, OK, this
+problem can actually
+
+00:02:27.150 --> 00:02:30.830
+be framed as a
+transport problem, where
+
+00:02:30.830 --> 00:02:33.710
+we want to go from an initial
+distribution, which is
+
+00:02:33.710 --> 00:02:36.470
+the noise, to the target one.
+
+00:02:36.470 --> 00:02:41.110
+And here we derive the loss
+based on the velocity, a.k.a,
+
+00:02:41.110 --> 00:02:43.910
+vector field, which
+is again, very nice.
+
+00:02:43.910 --> 00:02:48.790
+It can be expressed as
+an L2 regression loss.
+
+00:02:48.790 --> 00:02:52.150
+And in between, we have
+this denoising process
+
+00:02:52.150 --> 00:02:58.660
+that is similar in these three
+paradigms but done differently.
+
+00:02:58.660 --> 00:03:03.700
+And then in lecture 4 we
+said, OK, up until that point,
+
+00:03:03.700 --> 00:03:08.080
+we just assumed that we were
+able to represent images,
+
+00:03:08.080 --> 00:03:11.360
+the XTs, and we
+said, OK, actually,
+
+00:03:11.360 --> 00:03:14.860
+let's figure out a good
+way to represent them
+
+00:03:14.860 --> 00:03:17.380
+in a way that makes sense.
+
+00:03:17.380 --> 00:03:21.020
+And what we said
+was that we wanted
+
+00:03:21.020 --> 00:03:24.300
+them to be represented
+in a space that was not
+
+00:03:24.300 --> 00:03:27.420
+too high in dimensionality.
+
+00:03:27.420 --> 00:03:30.540
+So there was a space called
+latent space, in which we want
+
+00:03:30.540 --> 00:03:33.220
+our images to be represented.
+
+00:03:33.220 --> 00:03:36.780
+And we want the representations
+to be meaningful.
+
+00:03:36.780 --> 00:03:38.160
+So what does meaningful mean?
+
+00:03:38.160 --> 00:03:44.380
+It means having some
+structure to the space,
+
+00:03:44.380 --> 00:03:47.660
+because what we
+want is our model
+
+00:03:47.660 --> 00:03:52.980
+to have an easy time learning
+this generation process.
+
+00:03:52.980 --> 00:03:58.580
+And we focused on the VAE,
+Variational Autoencoder,
+
+00:03:58.580 --> 00:04:03.980
+which was structuring the latent
+space by having some constraints
+
+00:04:03.980 --> 00:04:10.020
+on how the distribution was
+behaving over the latent space.
+
+00:04:10.020 --> 00:04:12.840
+So we saw this KL
+divergence term in the loss.
+
+00:04:12.840 --> 00:04:18.060
+But then we said, OK, actually
+the images were becoming blurry.
+
+00:04:18.060 --> 00:04:21.339
+So then we looked at
+a number of strategies
+
+00:04:21.339 --> 00:04:23.480
+to combat the blurriness.
+
+00:04:23.480 --> 00:04:25.400
+So we saw the adversarial loss.
+
+00:04:25.400 --> 00:04:29.180
+We saw perceptual
+loss and so on.
+
+00:04:29.180 --> 00:04:30.020
+So we're happy.
+
+00:04:30.020 --> 00:04:33.100
+Now we know how to
+represent those images.
+
+00:04:33.100 --> 00:04:39.780
+And we saw also that if we were
+to condition our generation
+
+00:04:39.780 --> 00:04:43.140
+process with the
+condition, we also
+
+00:04:43.140 --> 00:04:48.060
+had a method called
+classifier free guidance that
+
+00:04:48.060 --> 00:04:54.930
+allowed us to generate images by
+emphasizing more on the prompts.
+
+00:04:54.930 --> 00:05:01.530
+And we did that by
+predicting twice the,
+
+00:05:01.530 --> 00:05:07.250
+let's say, noise to remove
+or velocity or score.
+
+00:05:07.250 --> 00:05:13.370
+And with a guidance factor,
+emphasize the generation process
+
+00:05:13.370 --> 00:05:15.290
+more towards the prompt.
+
+00:05:15.290 --> 00:05:19.210
+So here this can be
+represented on the image.
+
+00:05:19.210 --> 00:05:22.450
+And this is where we stopped.
+
+00:05:22.450 --> 00:05:24.690
+And then, of course,
+we had the midterm.
+
+00:05:24.690 --> 00:05:27.370
+And today, what
+we're going to do
+
+00:05:27.370 --> 00:05:33.330
+is to focus on the architecture
+behind the image-generation
+
+00:05:33.330 --> 00:05:41.170
+model, which until now we
+considered as being a black box.
+
+00:05:41.170 --> 00:05:43.730
+So I want to give a disclaimer.
+
+00:05:43.730 --> 00:05:46.730
+There are many
+different architectures.
+
+00:05:46.730 --> 00:05:49.970
+Our goal is not going
+to just have a catalog
+
+00:05:49.970 --> 00:05:52.210
+of every single one of them.
+
+00:05:52.210 --> 00:05:54.690
+But what I hope this
+lecture will provide
+
+00:05:54.690 --> 00:05:59.730
+is at least an intuition as
+to why certain components are
+
+00:05:59.730 --> 00:06:02.930
+always being reused.
+
+00:06:02.930 --> 00:06:07.090
+So if you walk away with just
+an understanding of why things
+
+00:06:07.090 --> 00:06:10.130
+are the way they
+are, then I think
+
+00:06:10.130 --> 00:06:14.570
+it's going to be a
+good thing for us.
+
+00:06:14.570 --> 00:06:19.810
+So let's first start
+by what we want.
+
+00:06:19.810 --> 00:06:22.530
+So what we want,
+if you remember,
+
+00:06:22.530 --> 00:06:26.690
+diffusion, score
+matching, flow matching,
+
+00:06:26.690 --> 00:06:30.090
+they had a few things as inputs.
+
+00:06:30.090 --> 00:06:34.170
+So first, they had x t--
+
+00:06:34.170 --> 00:06:37.090
+the noisy image or
+the noisy latent
+
+00:06:37.090 --> 00:06:41.170
+that you're trying to denoise.
+
+00:06:41.170 --> 00:06:45.210
+You also had some indication
+of the noise level
+
+00:06:45.210 --> 00:06:48.400
+that's given by time step, t.
+
+00:06:48.400 --> 00:06:50.920
+And you also have a condition.
+
+00:06:50.920 --> 00:06:56.000
+Let's call it C, which
+it can be a text prompt.
+
+00:06:56.000 --> 00:06:57.800
+For instance, if
+you want to generate
+
+00:06:57.800 --> 00:07:00.800
+an image of a teddy
+bear reading a book,
+
+00:07:00.800 --> 00:07:02.920
+that can be your condition.
+
+00:07:02.920 --> 00:07:07.600
+So these three elements
+are your inputs
+
+00:07:07.600 --> 00:07:12.000
+that goes through
+your generation model.
+
+00:07:12.000 --> 00:07:16.820
+And as an output, you want
+to predict, let's say,
+
+00:07:16.820 --> 00:07:22.600
+the velocity that will allow
+you to then iteratively move
+
+00:07:22.600 --> 00:07:27.120
+towards your desired
+predicted image.
+
+00:07:27.120 --> 00:07:30.120
+And the goal of
+this whole lecture
+
+00:07:30.120 --> 00:07:32.620
+is to focus on that
+generation model.
+
+00:07:32.620 --> 00:07:36.160
+So that's the model that
+we're talking about.
+
+00:07:36.160 --> 00:07:39.160
+But before we go
+into that, I just
+
+00:07:39.160 --> 00:07:42.180
+want to give a few slides notes.
+
+00:07:42.180 --> 00:07:44.480
+So the first one
+is the condition.
+
+00:07:44.480 --> 00:07:47.480
+So I mentioned it can
+be a piece of text.
+
+00:07:47.480 --> 00:07:53.850
+In that case, such models are
+called text to image models, T
+
+00:07:53.850 --> 00:08:01.500
+to I. But you can also have a
+text and an image as input--
+
+00:08:01.500 --> 00:08:05.200
+so an image editing
+problem, in which case
+
+00:08:05.200 --> 00:08:09.520
+the model will be called a
+TI to I model, Text Image
+
+00:08:09.520 --> 00:08:10.880
+to Image Model.
+
+00:08:10.880 --> 00:08:14.720
+So here make this
+teddy bear dance along
+
+00:08:14.720 --> 00:08:17.480
+with the image of
+the teddy bear.
+
+00:08:17.480 --> 00:08:21.560
+And then another thing is,
+of course, the outputs.
+
+00:08:21.560 --> 00:08:23.040
+I mentioned there
+are several ways
+
+00:08:23.040 --> 00:08:25.940
+to parameterize your generation.
+
+00:08:25.940 --> 00:08:30.020
+You can either predict the
+velocity or, of course,
+
+00:08:30.020 --> 00:08:31.960
+the noise or the score.
+
+00:08:31.960 --> 00:08:35.640
+All of this is roughly
+the same thing.
+
+00:08:35.640 --> 00:08:38.023
+But just for the
+sake of consistency,
+
+00:08:38.023 --> 00:08:39.440
+we're just going
+to say that we're
+
+00:08:39.440 --> 00:08:44.590
+going to predict the velocity
+just because nowadays
+
+00:08:44.590 --> 00:08:46.370
+most models do that.
+
+00:08:48.990 --> 00:08:55.910
+So with that in mind, what
+do we want our model to be?
+
+00:08:55.910 --> 00:09:02.470
+So first we want our model
+to be able to understand
+
+00:09:02.470 --> 00:09:06.750
+the global structure of the
+image that it wants to generate.
+
+00:09:06.750 --> 00:09:08.350
+So that's one.
+
+00:09:08.350 --> 00:09:13.710
+But we also wanted to understand
+the nuances of the local details
+
+00:09:13.710 --> 00:09:18.830
+so that it can also
+generate crisp images.
+
+00:09:18.830 --> 00:09:20.710
+And of course, we
+want a model that
+
+00:09:20.710 --> 00:09:23.970
+not only is able to
+have x t and t as input,
+
+00:09:23.970 --> 00:09:27.890
+but can also condition that
+based on external signals.
+
+00:09:27.890 --> 00:09:32.630
+And so here it can be
+input text or input image.
+
+00:09:32.630 --> 00:09:34.270
+And we want, of
+course, that model
+
+00:09:34.270 --> 00:09:38.430
+to be scalable because of
+course, nowadays, we're
+
+00:09:38.430 --> 00:09:41.910
+generating images of
+very high resolution,
+
+00:09:41.910 --> 00:09:44.630
+and we're also generating
+videos, which we have not
+
+00:09:44.630 --> 00:09:50.070
+seen so far, but you can think
+of this as being also applicable
+
+00:09:50.070 --> 00:09:51.990
+there.
+
+00:09:51.990 --> 00:09:57.550
+So these are our wish lists.
+
+00:09:57.550 --> 00:10:01.510
+And let's start
+with the first model
+
+00:10:01.510 --> 00:10:08.350
+by first thinking about how
+humans look at an image.
+
+00:10:08.350 --> 00:10:10.870
+So you see this
+teddy bear image.
+
+00:10:10.870 --> 00:10:14.030
+So you have an eye on the
+right side of the slide.
+
+00:10:14.030 --> 00:10:18.150
+So when you look at this
+image, what you're doing
+
+00:10:18.150 --> 00:10:22.190
+is focusing on a specific
+part of the image
+
+00:10:22.190 --> 00:10:27.430
+and skimming through that
+image, scanning that image.
+
+00:10:27.430 --> 00:10:31.590
+That's what we do as humans.
+
+00:10:31.590 --> 00:10:39.220
+So one natural way of thinking
+about how to build such a model
+
+00:10:39.220 --> 00:10:45.300
+is to have this bias.
+
+00:10:45.300 --> 00:10:48.000
+I will call it bias,
+and I will justify it
+
+00:10:48.000 --> 00:10:49.800
+why I say it that way.
+
+00:10:49.800 --> 00:10:53.460
+We want to have
+our model be biased
+
+00:10:53.460 --> 00:10:58.620
+towards looking at the image in
+the way we humans look at it.
+
+00:10:58.620 --> 00:11:02.980
+I'm going to call that
+bias, inductive bias.
+
+00:11:02.980 --> 00:11:06.620
+Who has heard of
+inductive bias by the way?
+
+00:11:06.620 --> 00:11:07.900
+Yeah, a few people.
+
+00:11:07.900 --> 00:11:14.900
+So we say that the model has an
+inductive bias when we build it
+
+00:11:14.900 --> 00:11:18.460
+in such a way that it
+behaves in some way
+
+00:11:18.460 --> 00:11:21.460
+that we think it should behave.
+
+00:11:21.460 --> 00:11:23.560
+So in other words, here
+we're going to say,
+
+00:11:23.560 --> 00:11:28.540
+OK, we want our model to
+take some image as input,
+
+00:11:28.540 --> 00:11:33.900
+and scan it a little
+bit like humans do.
+
+00:11:33.900 --> 00:11:35.620
+And that's the
+reason why I'm going
+
+00:11:35.620 --> 00:11:39.620
+to introduce an operation
+that maybe you're already
+
+00:11:39.620 --> 00:11:45.980
+familiar with, which is called
+the convolution operation, which
+
+00:11:45.980 --> 00:11:50.780
+takes some inputs, let's
+say an input image,
+
+00:11:50.780 --> 00:11:55.980
+and then uses a filter
+to perform convolution
+
+00:11:55.980 --> 00:12:01.660
+operation across that
+input in order to generate
+
+00:12:01.660 --> 00:12:06.780
+or in order to
+produce an output.
+
+00:12:06.780 --> 00:12:10.340
+So just on the terminology
+side, the output
+
+00:12:10.340 --> 00:12:15.980
+is usually called feature
+map or activation map.
+
+00:12:15.980 --> 00:12:18.940
+And here this
+convolution process
+
+00:12:18.940 --> 00:12:24.140
+typically leads to your
+output exhibiting things
+
+00:12:24.140 --> 00:12:30.100
+like edges, corners,
+texture, from your inputs.
+
+00:12:30.100 --> 00:12:35.370
+So it's going to extract
+features, visual features.
+
+00:12:35.370 --> 00:12:39.210
+So another thing that I
+will note is on this slide,
+
+00:12:39.210 --> 00:12:44.170
+you may think the convolution
+is done in a 2D manner,
+
+00:12:44.170 --> 00:12:49.210
+but let's remember that images
+are represented in height,
+
+00:12:49.210 --> 00:12:54.210
+width, but also depth, because
+you have the three values that
+
+00:12:54.210 --> 00:12:55.970
+represent a pixel.
+
+00:12:55.970 --> 00:13:02.290
+And so the filter is as deep--
+
+00:13:02.290 --> 00:13:06.330
+if you want to think of it
+that way-- as the input.
+
+00:13:06.330 --> 00:13:12.930
+And so the convolution is really
+across the depth axis as well.
+
+00:13:12.930 --> 00:13:16.450
+So in particular, those
+filters, they're 3D.
+
+00:13:16.450 --> 00:13:20.090
+They have a dimension
+of F times F times C,
+
+00:13:20.090 --> 00:13:24.770
+which is the same C as
+the number of channels
+
+00:13:24.770 --> 00:13:26.530
+from the input.
+
+00:13:26.530 --> 00:13:30.930
+And we typically
+have K such filters.
+
+00:13:30.930 --> 00:13:35.600
+And then the number
+of steps by which
+
+00:13:35.600 --> 00:13:41.000
+we move the filter
+is called the stride.
+
+00:13:41.000 --> 00:13:45.560
+So that's also a terminology
+you should have in mind.
+
+00:13:45.560 --> 00:13:50.620
+So based on that, let's
+remember the conditions we had.
+
+00:13:50.620 --> 00:13:53.420
+We want our image to
+understand global structure.
+
+00:13:53.420 --> 00:13:55.620
+We want to preserve
+local details.
+
+00:13:55.620 --> 00:13:57.180
+We want external signals.
+
+00:13:57.180 --> 00:14:00.200
+And we want it to be scalable.
+
+00:14:00.200 --> 00:14:05.000
+Well, with that, at least we
+have seemingly a tractable way
+
+00:14:05.000 --> 00:14:06.420
+of doing this computation.
+
+00:14:06.420 --> 00:14:10.440
+So let's say that
+number 4 is good.
+
+00:14:10.440 --> 00:14:12.560
+Local details, I
+think that's also
+
+00:14:12.560 --> 00:14:18.120
+something that is
+valid here, because you
+
+00:14:18.120 --> 00:14:26.040
+are able to capture patterns
+within a certain range of,
+
+00:14:26.040 --> 00:14:26.900
+let's say, pixels.
+
+00:14:26.900 --> 00:14:29.240
+So that one is also good.
+
+00:14:29.240 --> 00:14:32.120
+But how about the
+global structure?
+
+00:14:32.120 --> 00:14:35.880
+You want your output-- so
+here you want your output
+
+00:14:35.880 --> 00:14:44.080
+to have seen the whole input
+to be able to be aware of it.
+
+00:14:44.080 --> 00:14:49.320
+So there is this concept
+of a receptive field, which
+
+00:14:49.320 --> 00:14:54.400
+is defined by the area
+that an activation
+
+00:14:54.400 --> 00:14:57.920
+element is able to see.
+
+00:14:57.920 --> 00:15:02.000
+So here, let's suppose
+we have an input that
+
+00:15:02.000 --> 00:15:04.760
+has a series of convolutions.
+
+00:15:04.760 --> 00:15:07.760
+So what we're saying
+is if we take just one
+
+00:15:07.760 --> 00:15:12.480
+element from the output, we
+want to know how many elements
+
+00:15:12.480 --> 00:15:16.320
+from the input it has seen.
+
+00:15:16.320 --> 00:15:18.440
+So this is the receptive field.
+
+00:15:18.440 --> 00:15:21.320
+So there is some
+formulas there that I
+
+00:15:21.320 --> 00:15:23.120
+don't want us to just
+remember, but I just
+
+00:15:23.120 --> 00:15:29.830
+want to call out that the
+area that an element can see
+
+00:15:29.830 --> 00:15:37.590
+is a function of the filter
+dimension and the strides.
+
+00:15:37.590 --> 00:15:46.430
+And if you want the output
+to have seen all the input,
+
+00:15:46.430 --> 00:15:52.270
+you can imagine that you
+need a lot of convolutions,
+
+00:15:52.270 --> 00:15:54.830
+because here in this
+slide, if you do,
+
+00:15:54.830 --> 00:15:59.990
+let's say, just one convolution,
+then the area is just,
+
+00:15:59.990 --> 00:16:02.750
+let's say, five.
+
+00:16:02.750 --> 00:16:05.070
+So you do two
+convolutions actually.
+
+00:16:05.070 --> 00:16:11.370
+But images, they are typically
+500 by 500, 1,000 by 1,000.
+
+00:16:11.370 --> 00:16:15.550
+So you need a lot of
+such convolutions,
+
+00:16:15.550 --> 00:16:18.390
+which may not be as tractable.
+
+00:16:18.390 --> 00:16:25.870
+So one idea that we can have is
+to have down-sampling operations
+
+00:16:25.870 --> 00:16:30.630
+that would allow us was to have
+a bigger receptive field early
+
+00:16:30.630 --> 00:16:37.550
+on so that we can have a global
+understanding of the structure,
+
+00:16:37.550 --> 00:16:43.990
+and then we can have some
+up-sampling operations to then
+
+00:16:43.990 --> 00:16:48.830
+end up with the same
+dimensions as the input.
+
+00:16:48.830 --> 00:16:51.450
+That's just an idea
+I'm throwing out,
+
+00:16:51.450 --> 00:16:53.990
+because let's remember
+that our model needs
+
+00:16:53.990 --> 00:16:57.430
+to have the inputs X--
+
+00:16:57.430 --> 00:17:00.230
+so the noisy image as input.
+
+00:17:00.230 --> 00:17:02.750
+And it needs to
+return something that
+
+00:17:02.750 --> 00:17:06.790
+is as the same dimension
+as the input as well.
+
+00:17:06.790 --> 00:17:10.430
+So you cannot just reduce the
+dimension and just call it
+
+00:17:10.430 --> 00:17:11.089
+a day.
+
+00:17:11.089 --> 00:17:13.230
+You cannot do that.
+
+00:17:13.230 --> 00:17:16.109
+So for that reason,
+we're going to see
+
+00:17:16.109 --> 00:17:21.550
+a series of operations
+that are going to help us
+
+00:17:21.550 --> 00:17:23.910
+in building such a model.
+
+00:17:23.910 --> 00:17:28.980
+So here let's see a very
+common down-sampling operation.
+
+00:17:28.980 --> 00:17:31.700
+So who has heard
+of pooling here?
+
+00:17:31.700 --> 00:17:32.660
+Pooling?
+
+00:17:32.660 --> 00:17:33.240
+Great.
+
+00:17:33.240 --> 00:17:38.080
+So pooling, as you know, is you
+take, let's say a given square,
+
+00:17:38.080 --> 00:17:40.580
+and what you do is you
+just down-sample it
+
+00:17:40.580 --> 00:17:45.860
+by either taking the max value
+or just the average value.
+
+00:17:45.860 --> 00:17:50.500
+So there is no learnable
+parameters there.
+
+00:17:50.500 --> 00:17:52.920
+And speaking of
+learnable parameters,
+
+00:17:52.920 --> 00:17:57.100
+I may have been a bit too fast
+there, but here the filters that
+
+00:17:57.100 --> 00:18:01.440
+are used for convolutional
+operation, they, of course,
+
+00:18:01.440 --> 00:18:02.820
+are learnable.
+
+00:18:02.820 --> 00:18:08.580
+And you have F times F times
+C parameters per filter
+
+00:18:08.580 --> 00:18:10.300
+plus some bias
+term, if you assume
+
+00:18:10.300 --> 00:18:17.720
+that there is bias, times K. Not
+that I want to go to formulas,
+
+00:18:17.720 --> 00:18:19.940
+but just giving you a
+sense of what is learned
+
+00:18:19.940 --> 00:18:22.100
+and what is not learned.
+
+00:18:22.100 --> 00:18:24.160
+So pooling, you don't
+learn anything--
+
+00:18:24.160 --> 00:18:27.380
+just the pooling operation.
+
+00:18:27.380 --> 00:18:31.640
+So this is just
+down-sampling operations.
+
+00:18:31.640 --> 00:18:36.020
+But I mentioned we want to
+also be able to up-sample.
+
+00:18:36.020 --> 00:18:42.460
+And there is an operation called
+the transpose convolution that
+
+00:18:42.460 --> 00:18:44.400
+we're not going to go
+into too much detail,
+
+00:18:44.400 --> 00:18:48.540
+but I just want to call out
+that there is an up-sampling
+
+00:18:48.540 --> 00:18:55.620
+operation, that is the transpose
+convolution that uses filters
+
+00:18:55.620 --> 00:19:02.260
+to broadcast elements from
+the input towards the output--
+
+00:19:02.260 --> 00:19:06.260
+so just up-samples it.
+
+00:19:06.260 --> 00:19:16.180
+So given that, I hope it's not
+coming out of the blue, that's
+
+00:19:16.180 --> 00:19:19.740
+a model that
+down-samples the input
+
+00:19:19.740 --> 00:19:25.610
+and then up-samples it could
+be a natural choice of such
+
+00:19:25.610 --> 00:19:28.250
+a model, because here
+what you're doing
+
+00:19:28.250 --> 00:19:31.570
+is during the
+down-sampling step,
+
+00:19:31.570 --> 00:19:35.930
+you're able to have receptive
+fields of your output
+
+00:19:35.930 --> 00:19:41.450
+that sees most of the inputs,
+which is the global structure
+
+00:19:41.450 --> 00:19:43.850
+understanding part.
+
+00:19:43.850 --> 00:19:45.910
+And then you have the
+up-sampling part--
+
+00:19:45.910 --> 00:19:47.810
+so the one on the right--
+
+00:19:47.810 --> 00:19:54.810
+that just increases your output
+once again back to the dimension
+
+00:19:54.810 --> 00:19:57.730
+that it was just
+in order for you
+
+00:19:57.730 --> 00:20:02.610
+to have a shape that's
+abides by what you want.
+
+00:20:02.610 --> 00:20:07.210
+And here you can also
+have direct connections
+
+00:20:07.210 --> 00:20:14.010
+from one to the other to just
+transport some local details
+
+00:20:14.010 --> 00:20:18.610
+that you may have computed.
+
+00:20:18.610 --> 00:20:24.050
+So such a model
+is called U-Net--
+
+00:20:24.050 --> 00:20:25.810
+well, because it's
+a shape like a U
+
+00:20:25.810 --> 00:20:29.890
+when you do the illustration.
+
+00:20:29.890 --> 00:20:33.950
+And so I mentioned a little
+bit of the intuition.
+
+00:20:33.950 --> 00:20:36.030
+But we're going to
+go step by step.
+
+00:20:36.030 --> 00:20:41.170
+So the first step is
+the down-sampling step.
+
+00:20:41.170 --> 00:20:47.490
+So it has a combination of
+convolutions and pooling
+
+00:20:47.490 --> 00:20:54.690
+that are able to down-sample the
+dimension of the feature map.
+
+00:20:54.690 --> 00:20:58.370
+And as we saw, it just
+allows your output
+
+00:20:58.370 --> 00:21:01.430
+to have seen more and
+more of the input.
+
+00:21:01.430 --> 00:21:02.970
+And when I say
+that, what I mean is
+
+00:21:02.970 --> 00:21:07.570
+if you take a single pixel,
+a single activation value,
+
+00:21:07.570 --> 00:21:10.950
+it has seen more and
+more of the input--
+
+00:21:10.950 --> 00:21:13.490
+a bigger area of the input.
+
+00:21:13.490 --> 00:21:15.170
+So in that sense,
+what I'm saying is,
+
+00:21:15.170 --> 00:21:21.800
+it is able to understand the
+global structure of the inputs.
+
+00:21:21.800 --> 00:21:24.060
+Is everyone clear
+on that statement?
+
+00:21:27.640 --> 00:21:28.140
+Cool.
+
+00:21:28.140 --> 00:21:29.940
+So this is similar
+to an encoder.
+
+00:21:29.940 --> 00:21:32.340
+And then you have
+the second step,
+
+00:21:32.340 --> 00:21:35.640
+which is the up-sampling part.
+
+00:21:35.640 --> 00:21:39.040
+So you have here a feature
+map at the very beginning
+
+00:21:39.040 --> 00:21:43.360
+of the up-sampling step,
+which is very small.
+
+00:21:43.360 --> 00:21:48.280
+And what you want is to
+up-sample that feature map back
+
+00:21:48.280 --> 00:21:51.000
+to the dimension of the input.
+
+00:21:51.000 --> 00:21:55.840
+So here you're using a mix
+of transpose convolution also
+
+00:21:55.840 --> 00:21:59.800
+called up convolution
+and convolutions.
+
+00:21:59.800 --> 00:22:03.520
+And you can think of
+this more as a decoder.
+
+00:22:03.520 --> 00:22:07.280
+So it just leverages
+the understanding,
+
+00:22:07.280 --> 00:22:09.160
+the global structure
+understanding
+
+00:22:09.160 --> 00:22:13.000
+that is compressed
+in the representation
+
+00:22:13.000 --> 00:22:16.600
+at the very bottom, which
+is called the bottleneck.
+
+00:22:16.600 --> 00:22:22.880
+And it just gets it back to the
+same dimension as the input.
+
+00:22:22.880 --> 00:22:27.820
+But at that step, you
+may tell me, well, sure,
+
+00:22:27.820 --> 00:22:30.820
+you can have a global
+understanding of the structure,
+
+00:22:30.820 --> 00:22:33.960
+but you may lose the details.
+
+00:22:33.960 --> 00:22:39.880
+And that's where these
+connections come into play.
+
+00:22:39.880 --> 00:22:43.800
+So during the down-sampling
+step, what you want
+
+00:22:43.800 --> 00:22:48.440
+is to leverage the patterns
+that you're computing
+
+00:22:48.440 --> 00:22:50.620
+in the up-sampling step.
+
+00:22:50.620 --> 00:22:56.880
+So what you're doing is
+you're taking at each level
+
+00:22:56.880 --> 00:23:02.920
+a part of the feature map, and
+you're just simply copying--
+
+00:23:02.920 --> 00:23:07.360
+so cropping and copying.
+
+00:23:07.360 --> 00:23:10.520
+So that just allows
+local details
+
+00:23:10.520 --> 00:23:13.560
+to flow from what
+you have computed
+
+00:23:13.560 --> 00:23:16.970
+in the down-sampling step
+to the up-sampling step.
+
+00:23:19.910 --> 00:23:21.590
+Is that part clear?
+
+00:23:21.590 --> 00:23:23.613
+So the question is,
+what are you copying?
+
+00:23:23.613 --> 00:23:24.530
+What are you cropping?
+
+00:23:24.530 --> 00:23:26.630
+So great question.
+
+00:23:26.630 --> 00:23:31.670
+So what you're doing here
+is the feature map that
+
+00:23:31.670 --> 00:23:34.670
+you're computing in
+the down-sampling step,
+
+00:23:34.670 --> 00:23:37.270
+you're just literally
+taking that--
+
+00:23:37.270 --> 00:23:42.350
+literally doing that-- and
+then the feature map that
+
+00:23:42.350 --> 00:23:45.270
+is part of the
+up-sampling step, you're
+
+00:23:45.270 --> 00:23:48.790
+just concatenating
+those features
+
+00:23:48.790 --> 00:23:53.710
+to the features that are
+in the up-sampling step.
+
+00:23:53.710 --> 00:23:57.750
+So in other words, in the
+up-sampling procedure,
+
+00:23:57.750 --> 00:23:59.550
+you may have a feature
+map that you're
+
+00:23:59.550 --> 00:24:05.350
+computing that is let's say
+of size O times O times C.
+
+00:24:05.350 --> 00:24:09.350
+So what you're saying here is
+you're concatenating something
+
+00:24:09.350 --> 00:24:14.950
+that is also of size O
+times O times C, where
+
+00:24:14.950 --> 00:24:18.990
+maybe the C can be
+different, but you're just
+
+00:24:18.990 --> 00:24:21.830
+concatenating the two.
+
+00:24:21.830 --> 00:24:24.390
+So of course, you have some
+variations of how this is done,
+
+00:24:24.390 --> 00:24:28.290
+but this is what this
+illustration represents.
+
+00:24:31.070 --> 00:24:34.030
+So the question is,
+why are you not looking
+
+00:24:34.030 --> 00:24:35.890
+at the down-sampled features?
+
+00:24:35.890 --> 00:24:38.950
+Because we have already
+lost the details already.
+
+00:24:38.950 --> 00:24:41.310
+So if you see on
+the slide, we're
+
+00:24:41.310 --> 00:24:44.350
+actually copying and
+cropping the features
+
+00:24:44.350 --> 00:24:49.830
+that are before we're at that
+very down-sampled outputs.
+
+00:24:49.830 --> 00:24:53.570
+Because as you go down, you
+lose more and more details,
+
+00:24:53.570 --> 00:24:57.110
+but then you're gaining global
+understanding of the inputs.
+
+00:24:57.110 --> 00:24:59.150
+And so that's why you
+want your connections
+
+00:24:59.150 --> 00:25:04.190
+to go from the very top to
+the other way and so on.
+
+00:25:04.190 --> 00:25:06.530
+Yeah.
+
+00:25:06.530 --> 00:25:08.890
+So the question is, how
+we're training this model.
+
+00:25:08.890 --> 00:25:11.260
+So we're training it jointly.
+
+00:25:11.260 --> 00:25:13.200
+So we're not going to
+go into details there,
+
+00:25:13.200 --> 00:25:17.540
+but let's just assume you can
+train the whole thing by just
+
+00:25:17.540 --> 00:25:21.460
+considering it as just a model.
+
+00:25:21.460 --> 00:25:24.620
+So the question is,
+can the model output
+
+00:25:24.620 --> 00:25:26.600
+exactly what the input image?
+
+00:25:26.600 --> 00:25:30.060
+So that is not what
+you want because-- so I
+
+00:25:30.060 --> 00:25:33.220
+think you're maybe remembering
+the autoencoder that we
+
+00:25:33.220 --> 00:25:34.900
+saw last time.
+
+00:25:34.900 --> 00:25:38.900
+So the goal of
+the autoencoder is
+
+00:25:38.900 --> 00:25:43.020
+to learn a representation
+of the inputs and compress
+
+00:25:43.020 --> 00:25:45.260
+it into in a latent
+space so that you
+
+00:25:45.260 --> 00:25:48.700
+can sample from the latent
+space and then reconstruct it.
+
+00:25:48.700 --> 00:25:51.220
+And the problem here is
+you have the connections
+
+00:25:51.220 --> 00:25:55.380
+that come from the thing that
+you're not supposed to have.
+
+00:25:55.380 --> 00:26:01.620
+So you can think of this
+model as taking a noisy latent
+
+00:26:01.620 --> 00:26:02.740
+as input.
+
+00:26:02.740 --> 00:26:06.060
+But your goal is to not
+reconstruct that output,
+
+00:26:06.060 --> 00:26:09.980
+it's actually to
+predict the thing that
+
+00:26:09.980 --> 00:26:13.140
+will allow you to denoise it.
+
+00:26:13.140 --> 00:26:15.100
+So in that sense, there
+are some similarities
+
+00:26:15.100 --> 00:26:19.580
+with an autoencoder,
+but it's very different.
+
+00:26:19.580 --> 00:26:20.540
+Yep.
+
+00:26:20.540 --> 00:26:23.180
+So the question is, does
+the output of the model
+
+00:26:23.180 --> 00:26:26.600
+have to be equal to the
+dimensions of the input?
+
+00:26:26.600 --> 00:26:27.660
+Yes.
+
+00:26:27.660 --> 00:26:30.100
+Because so the question is, why?
+
+00:26:30.100 --> 00:26:35.140
+Well if you take your
+input latent x t,
+
+00:26:35.140 --> 00:26:37.620
+so if you remember back
+in lecture 3, which
+
+00:26:37.620 --> 00:26:39.860
+was like two or
+three weeks ago, we
+
+00:26:39.860 --> 00:26:45.140
+had the iterative
+step, which was,
+
+00:26:45.140 --> 00:26:54.918
+sorry xt plus dt is equal to
+xt plus the velocity times dt.
+
+00:26:54.918 --> 00:26:56.460
+So if you just look
+at that equation,
+
+00:26:56.460 --> 00:27:01.380
+you just see that the
+dimensions need to match.
+
+00:27:01.380 --> 00:27:05.100
+Another way to think about
+it is in the diffusion
+
+00:27:05.100 --> 00:27:08.330
+with the DPM formulation.
+
+00:27:08.330 --> 00:27:12.510
+What you want is to find
+the noise to remove,
+
+00:27:12.510 --> 00:27:16.090
+and that noise needs to
+match your input image.
+
+00:27:16.090 --> 00:27:19.690
+Exactly, exactly.
+
+00:27:19.690 --> 00:27:22.090
+OK, perfect.
+
+00:27:22.090 --> 00:27:24.130
+I have a lot of content.
+
+00:27:24.130 --> 00:27:27.270
+So we'll try to move
+a little bit faster,
+
+00:27:27.270 --> 00:27:29.770
+but I try to also
+do some pauses here
+
+00:27:29.770 --> 00:27:34.010
+and there to make sure
+we're still together now.
+
+00:27:34.010 --> 00:27:36.070
+So you have that model.
+
+00:27:36.070 --> 00:27:39.050
+But now you may wonder,
+well, how can you
+
+00:27:39.050 --> 00:27:41.390
+add external conditions?
+
+00:27:41.390 --> 00:27:44.670
+How can you inform your model
+that you're at time step t?
+
+00:27:44.670 --> 00:27:47.970
+How can you inform your model
+that you want to condition it
+
+00:27:47.970 --> 00:27:50.010
+with respect to some condition?
+
+00:27:50.010 --> 00:27:52.850
+Well, that's a great question.
+
+00:27:52.850 --> 00:27:56.130
+And so to answer that
+question, you first
+
+00:27:56.130 --> 00:28:03.210
+need to think about how you want
+to represent your time step t
+
+00:28:03.210 --> 00:28:05.360
+and your condition C.
+
+00:28:05.360 --> 00:28:08.120
+Well, let's start
+with the time step.
+
+00:28:08.120 --> 00:28:13.240
+Here the goal is to represent
+the time step in a D dimensional
+
+00:28:13.240 --> 00:28:15.840
+space.
+
+00:28:15.840 --> 00:28:19.340
+And before I tell
+you how we do it,
+
+00:28:19.340 --> 00:28:23.360
+I just want you to
+look at your watch.
+
+00:28:23.360 --> 00:28:28.800
+Well, as humans,
+we construct time
+
+00:28:28.800 --> 00:28:31.800
+as a function of
+different dimensions--
+
+00:28:31.800 --> 00:28:38.240
+hours, minutes, seconds,
+days, and so on and so forth.
+
+00:28:38.240 --> 00:28:42.960
+And you can think of
+each of these dimensions
+
+00:28:42.960 --> 00:28:46.480
+as being part of a vector
+if you think about it.
+
+00:28:46.480 --> 00:28:49.160
+And one thing that's
+quite interesting
+
+00:28:49.160 --> 00:28:52.400
+about these dimensions
+is that they
+
+00:28:52.400 --> 00:28:55.760
+run at different frequencies.
+
+00:28:55.760 --> 00:28:59.030
+So for instance, an hour
+is kind of slow to pass.
+
+00:28:59.030 --> 00:29:00.780
+So I hope, by the way,
+this lecture is fun
+
+00:29:00.780 --> 00:29:05.720
+so you're not feeling like an
+hour is low, but hour is slow.
+
+00:29:05.720 --> 00:29:07.760
+Minute is faster.
+
+00:29:07.760 --> 00:29:09.840
+Seconds are even faster.
+
+00:29:09.840 --> 00:29:11.780
+So you have a difference
+in frequencies,
+
+00:29:11.780 --> 00:29:17.400
+a difference in frequencies,
+which hopefully motivates
+
+00:29:17.400 --> 00:29:25.160
+the fact that what we want is
+to represent these time steps
+
+00:29:25.160 --> 00:29:30.420
+as vectors of quantities
+that are also sinusoidal--
+
+00:29:30.420 --> 00:29:34.680
+so things that have
+some frequency to it--
+
+00:29:34.680 --> 00:29:38.940
+where some dimensions are,
+let's say, slower than others.
+
+00:29:41.880 --> 00:29:46.080
+So is that motivating example
+intuitive enough for this
+
+00:29:46.080 --> 00:29:47.880
+to be making sense?
+
+00:29:47.880 --> 00:29:50.000
+So in other words,
+let me tell you what
+
+00:29:50.000 --> 00:29:52.840
+that illustration represents.
+
+00:29:52.840 --> 00:29:57.960
+If you take a single
+row, then what you have
+
+00:29:57.960 --> 00:30:03.150
+is an illustration of the
+values of each dimension.
+
+00:30:03.150 --> 00:30:07.270
+So what that means is, for
+instance, at the very bottom,
+
+00:30:07.270 --> 00:30:11.230
+or let's start at the
+very top, let's say.
+
+00:30:11.230 --> 00:30:15.710
+You have values that alternate
+between let's say 1 and 0
+
+00:30:15.710 --> 00:30:16.690
+in this example.
+
+00:30:16.690 --> 00:30:18.190
+And then as you
+move down, you see
+
+00:30:18.190 --> 00:30:23.350
+that some dimensions they
+vary faster than others.
+
+00:30:23.350 --> 00:30:29.470
+And this is exactly matching
+the intuition I mentioned.
+
+00:30:29.470 --> 00:30:32.550
+So that is for the time step.
+
+00:30:32.550 --> 00:30:34.710
+Now the condition.
+
+00:30:34.710 --> 00:30:37.670
+So I mentioned a condition
+can be a piece of text.
+
+00:30:37.670 --> 00:30:41.390
+Well, you have a number of
+ways to represent that text.
+
+00:30:41.390 --> 00:30:45.310
+We've seen some methods in the
+past lecture in terms of how
+
+00:30:45.310 --> 00:30:47.870
+to represent text and image.
+
+00:30:47.870 --> 00:30:52.290
+But here, I'll just mention just
+a few categories of methods.
+
+00:30:52.290 --> 00:30:58.230
+So there's one where you have
+very basic predefined class.
+
+00:30:58.230 --> 00:31:02.550
+And what you're doing is
+you're just learning the vector
+
+00:31:02.550 --> 00:31:05.430
+representation of that class.
+
+00:31:05.430 --> 00:31:10.350
+Or you can go more granular
+and divide your input text
+
+00:31:10.350 --> 00:31:12.550
+into tokens and then
+have representation
+
+00:31:12.550 --> 00:31:14.550
+for each of these tokens.
+
+00:31:14.550 --> 00:31:16.910
+So for both these
+categories of methods,
+
+00:31:16.910 --> 00:31:19.410
+you have a bunch
+of such methods.
+
+00:31:19.410 --> 00:31:21.510
+But one very common
+method these days
+
+00:31:21.510 --> 00:31:23.990
+is just to get a
+pre-trained LLM,
+
+00:31:23.990 --> 00:31:27.590
+and just grab the
+embeddings, which
+
+00:31:27.590 --> 00:31:32.790
+we will not go into details here
+but what people do nowadays.
+
+00:31:32.790 --> 00:31:35.030
+And then for the
+first method, we
+
+00:31:35.030 --> 00:31:39.230
+can simply take
+a VIT-based model
+
+00:31:39.230 --> 00:31:43.670
+and just take the
+representation of the CLS
+
+00:31:43.670 --> 00:31:49.470
+token, which I believe we
+briefly saw in the last lecture.
+
+00:31:49.470 --> 00:31:56.980
+All of that to say that we have
+ways to represent the condition.
+
+00:31:56.980 --> 00:31:57.600
+Cool.
+
+00:31:57.600 --> 00:32:00.600
+So let's suppose we have a
+representation of the time step.
+
+00:32:00.600 --> 00:32:03.620
+We have a representation
+of the condition.
+
+00:32:03.620 --> 00:32:08.540
+Now, how do you inject
+it in your model?
+
+00:32:08.540 --> 00:32:11.580
+Well, here again, you
+have a number of methods.
+
+00:32:11.580 --> 00:32:14.020
+There is no consensus.
+
+00:32:14.020 --> 00:32:18.420
+One is injecting that
+to the feature map.
+
+00:32:18.420 --> 00:32:22.000
+So here what I mean is
+you take your vector t,
+
+00:32:22.000 --> 00:32:26.940
+you take your vector c,
+let's say you add them,
+
+00:32:26.940 --> 00:32:29.740
+and then you make sure that
+the dimension of your vector
+
+00:32:29.740 --> 00:32:34.260
+is, let's say, c the
+number of channels.
+
+00:32:34.260 --> 00:32:38.020
+And then what you do is you
+add it to your feature map,
+
+00:32:38.020 --> 00:32:41.780
+which if you remember
+is of depth c.
+
+00:32:41.780 --> 00:32:44.380
+So that can be one way.
+
+00:32:44.380 --> 00:32:48.260
+Another way is to
+modulate that feature.
+
+00:32:48.260 --> 00:32:51.780
+And that part we will see
+that in about 20 minutes.
+
+00:32:51.780 --> 00:32:55.100
+So just wait for that.
+
+00:32:55.100 --> 00:33:01.460
+And then the third one is you do
+some cross attention operation
+
+00:33:01.460 --> 00:33:06.380
+there, which we're going to see
+as well, maybe in 40 minutes.
+
+00:33:06.380 --> 00:33:10.820
+So all of that to say that
+there are a number of ways
+
+00:33:10.820 --> 00:33:14.860
+to inject TNC, and there
+is not like a standard way
+
+00:33:14.860 --> 00:33:15.800
+that people do it.
+
+00:33:15.800 --> 00:33:18.660
+So this is just a
+way for me to tell
+
+00:33:18.660 --> 00:33:22.700
+you there are several methods.
+
+00:33:22.700 --> 00:33:27.580
+So in terms of
+timeline, we're in 2026.
+
+00:33:27.580 --> 00:33:32.060
+So just giving you a sense
+of when these models were
+
+00:33:32.060 --> 00:33:34.940
+published when these were used.
+
+00:33:34.940 --> 00:33:39.420
+So in 2015, the
+U-Net paper came out
+
+00:33:39.420 --> 00:33:43.480
+in the context of image
+segmentation for, I believe,
+
+00:33:43.480 --> 00:33:46.020
+medical images.
+
+00:33:46.020 --> 00:33:50.220
+But it is something that has not
+been widely in use in the image
+
+00:33:50.220 --> 00:33:54.530
+generation field up
+until the early 2020s.
+
+00:33:54.530 --> 00:33:57.875
+So for instance, you
+have the DDPM paper,
+
+00:33:57.875 --> 00:33:59.250
+which if you
+remember, we focused
+
+00:33:59.250 --> 00:34:02.330
+on during lecture one
+that actually used U-Net
+
+00:34:02.330 --> 00:34:05.370
+as an architecture.
+
+00:34:05.370 --> 00:34:08.409
+And then another thing
+that's quite noteworthy
+
+00:34:08.409 --> 00:34:14.530
+is latent diffusion model, which
+was a paper that introduced
+
+00:34:14.530 --> 00:34:20.489
+or that popularized the fact of
+generating images in the latent
+
+00:34:20.489 --> 00:34:25.810
+space, also used some
+form of the U-Net.
+
+00:34:25.810 --> 00:34:29.130
+And then we also had
+a U-Net that was quite
+
+00:34:29.130 --> 00:34:33.710
+scaled in a very big way
+in Stable Diffusion, Excel,
+
+00:34:33.710 --> 00:34:38.449
+which was published in 2023.
+
+00:34:38.449 --> 00:34:41.810
+So if you look at that
+timeline and if you
+
+00:34:41.810 --> 00:34:47.070
+look at my explanations, you
+may think, well, that's great.
+
+00:34:47.070 --> 00:34:48.130
+We have everything.
+
+00:34:48.130 --> 00:34:49.370
+Let's stop here.
+
+00:34:49.370 --> 00:34:52.130
+We have our model.
+
+00:34:52.130 --> 00:35:00.170
+Well, not so fast, because
+in 2017 and in 2020,
+
+00:35:00.170 --> 00:35:05.103
+there are papers that were
+landmark papers that really
+
+00:35:05.103 --> 00:35:06.770
+revolutionize, for
+instance, transformer
+
+00:35:06.770 --> 00:35:10.090
+revolutionized the NLP field?
+
+00:35:10.090 --> 00:35:14.810
+And one question you may
+wonder is, well, they're
+
+00:35:14.810 --> 00:35:17.530
+performing so well there.
+
+00:35:17.530 --> 00:35:18.610
+What about here?
+
+00:35:18.610 --> 00:35:20.610
+What about us?
+
+00:35:20.610 --> 00:35:22.370
+And that's what the
+vision transformer
+
+00:35:22.370 --> 00:35:27.810
+did in the image
+understanding space, which
+
+00:35:27.810 --> 00:35:31.810
+took a backbone
+of the transformer
+
+00:35:31.810 --> 00:35:35.530
+and applied it in the
+image-understanding case
+
+00:35:35.530 --> 00:35:38.170
+and saw great results.
+
+00:35:38.170 --> 00:35:41.130
+And so now you may wonder,
+OK, but can we do the same
+
+00:35:41.130 --> 00:35:44.570
+for image-generation?
+
+00:35:44.570 --> 00:35:48.560
+And that's what we're
+going to see now.
+
+00:35:48.560 --> 00:35:51.400
+But before we do
+that, I told you
+
+00:35:51.400 --> 00:35:54.620
+I will try to not give you
+things out of the blue.
+
+00:35:54.620 --> 00:35:56.580
+I'll try to build
+some intuition.
+
+00:35:56.580 --> 00:36:01.600
+And here, one thing I
+want to try to tell you
+
+00:36:01.600 --> 00:36:05.940
+is, why would such a model
+be beneficial for us?
+
+00:36:05.940 --> 00:36:08.140
+Because we have the global
+structure understanding.
+
+00:36:08.140 --> 00:36:09.960
+We have the local
+details preserving.
+
+00:36:09.960 --> 00:36:11.040
+We have everything.
+
+00:36:11.040 --> 00:36:13.760
+Why would we need that?
+
+00:36:13.760 --> 00:36:17.520
+Well, imagine if
+you want to generate
+
+00:36:17.520 --> 00:36:22.600
+an image of a teddy
+bear next to a mirror.
+
+00:36:22.600 --> 00:36:26.520
+Well, what happens
+is in your image,
+
+00:36:26.520 --> 00:36:31.800
+what you need is for
+the low level texture
+
+00:36:31.800 --> 00:36:34.920
+to be very similar in
+one part of the image
+
+00:36:34.920 --> 00:36:37.940
+and in a very different
+part of that same image.
+
+00:36:41.000 --> 00:36:46.720
+So the problem with the U-Net
+is you have convolutions
+
+00:36:46.720 --> 00:36:50.240
+that are localized to
+in the neighborhood
+
+00:36:50.240 --> 00:36:53.200
+in the vicinity of pixels.
+
+00:36:53.200 --> 00:36:57.180
+But as you go further
+from that pixel,
+
+00:36:57.180 --> 00:36:59.200
+you have a bunch of
+information that gets
+
+00:36:59.200 --> 00:37:01.840
+mixed in whatever you compute.
+
+00:37:01.840 --> 00:37:07.920
+So you don't have almost pixel
+to pixel or patches of pixel
+
+00:37:07.920 --> 00:37:11.160
+to patches of pixel interaction.
+
+00:37:11.160 --> 00:37:17.560
+So you're not able to
+cleanly capture or to cleanly
+
+00:37:17.560 --> 00:37:21.320
+have an understanding of a local
+detail in one part of the image
+
+00:37:21.320 --> 00:37:24.800
+and local detail in
+another part of the image.
+
+00:37:24.800 --> 00:37:28.920
+And so this is a kind of example
+that the U-Net may actually
+
+00:37:28.920 --> 00:37:31.240
+fail.
+
+00:37:31.240 --> 00:37:34.840
+And so for that
+reason, the transformer
+
+00:37:34.840 --> 00:37:38.520
+is actually a great
+model for that because--
+
+00:37:38.520 --> 00:37:39.620
+yeah, exactly.
+
+00:37:39.620 --> 00:37:41.840
+So the transformer is
+based on the concept
+
+00:37:41.840 --> 00:37:47.430
+of attention, which was
+initially introduced for texts.
+
+00:37:47.430 --> 00:37:53.430
+I'm going to briefly mention
+it here, but the idea for text
+
+00:37:53.430 --> 00:37:58.950
+was you want to compute
+representations of your words
+
+00:37:58.950 --> 00:38:02.950
+as a function of
+all other words.
+
+00:38:02.950 --> 00:38:08.470
+So what you want is to have
+direct links from one word
+
+00:38:08.470 --> 00:38:12.510
+to another word,
+regardless of the distance.
+
+00:38:12.510 --> 00:38:20.350
+So what you have is a concept
+of queries, keys, and values.
+
+00:38:20.350 --> 00:38:23.690
+So what you're wondering
+is, if you have a query,
+
+00:38:23.690 --> 00:38:28.510
+if you have a text, you
+want to know how relevant
+
+00:38:28.510 --> 00:38:32.350
+or how similar all the
+other pieces of text,
+
+00:38:32.350 --> 00:38:35.510
+a.k.a tokens are.
+
+00:38:35.510 --> 00:38:40.750
+So you want to see how the
+query relates two keys.
+
+00:38:40.750 --> 00:38:43.510
+And then once you how
+relevant they are, so you
+
+00:38:43.510 --> 00:38:46.230
+take some separation of
+the two-- so let's say
+
+00:38:46.230 --> 00:38:49.310
+dot product that's
+normalized in a good way.
+
+00:38:49.310 --> 00:38:53.470
+And then you can take
+the associated value.
+
+00:38:53.470 --> 00:38:55.510
+So that's the
+attention mechanism
+
+00:38:55.510 --> 00:38:58.150
+or the self-attention
+mechanism that is aimed
+
+00:38:58.150 --> 00:39:02.430
+at removing the inductive bias.
+
+00:39:02.430 --> 00:39:07.550
+And here we can actually use
+that same mechanism for images.
+
+00:39:07.550 --> 00:39:15.437
+So you can think that you
+take pieces of your image
+
+00:39:15.437 --> 00:39:16.770
+and you're doing the same thing.
+
+00:39:16.770 --> 00:39:21.790
+So you say, OK, a
+given a set piece
+
+00:39:21.790 --> 00:39:27.510
+of image, what are the other
+pieces of the same image that
+
+00:39:27.510 --> 00:39:29.630
+are relevant to that one?
+
+00:39:29.630 --> 00:39:33.750
+So it's the same mechanism.
+
+00:39:33.750 --> 00:39:39.070
+So what I told you also happens
+to be very nicely represented
+
+00:39:39.070 --> 00:39:42.380
+mathematically-- so very
+tractable computationally
+
+00:39:42.380 --> 00:39:45.060
+with the hardware
+that we have today.
+
+00:39:45.060 --> 00:39:50.500
+So you may have seen the formula
+softmax of Q times K transpose
+
+00:39:50.500 --> 00:39:52.300
+over some normalization
+normalizing
+
+00:39:52.300 --> 00:39:57.980
+constant times V. So that is the
+self-attention operation just
+
+00:39:57.980 --> 00:40:00.580
+in matrix form.
+
+00:40:00.580 --> 00:40:02.200
+And on the right
+side of the slide,
+
+00:40:02.200 --> 00:40:04.740
+you have just the
+transformer architecture
+
+00:40:04.740 --> 00:40:09.500
+as it was initially introduced
+in the context of I believe
+
+00:40:09.500 --> 00:40:11.540
+it was translation--
+so for instance,
+
+00:40:11.540 --> 00:40:14.380
+English to French translation.
+
+00:40:14.380 --> 00:40:16.260
+So you had two parts--
+
+00:40:16.260 --> 00:40:18.700
+one on the left side, which
+is called the encoder, which
+
+00:40:18.700 --> 00:40:23.620
+computes rich embeddings of
+your input, and the right side
+
+00:40:23.620 --> 00:40:28.980
+is the decoder that allows you
+to do translation one at a time,
+
+00:40:28.980 --> 00:40:34.540
+by allowing each of your output
+to interact to output that you
+
+00:40:34.540 --> 00:40:39.770
+decoded so far, to interact
+with the whole input.
+
+00:40:39.770 --> 00:40:42.850
+So four images.
+
+00:40:42.850 --> 00:40:45.530
+We're not translating
+anything, we're just
+
+00:40:45.530 --> 00:40:47.910
+processing pieces of images.
+
+00:40:47.910 --> 00:40:52.130
+So we're only going
+to borrow the encoder
+
+00:40:52.130 --> 00:40:56.370
+part of the transformer--
+so the left part.
+
+00:40:56.370 --> 00:41:02.130
+And that's what we saw the
+vision transformer did.
+
+00:41:02.130 --> 00:41:06.970
+So it took just the encoder
+part of the transformer,
+
+00:41:06.970 --> 00:41:11.530
+and it took an
+image as an input,
+
+00:41:11.530 --> 00:41:13.970
+and it did something very
+special to that image
+
+00:41:13.970 --> 00:41:15.550
+as a pre-processing step.
+
+00:41:15.550 --> 00:41:21.490
+So what it did was
+cut it into patches,
+
+00:41:21.490 --> 00:41:24.130
+and then consider
+these patches as tokens
+
+00:41:24.130 --> 00:41:27.930
+in the same way it
+is done for words,
+
+00:41:27.930 --> 00:41:33.430
+and then process them again with
+the self-attention mechanism,
+
+00:41:33.430 --> 00:41:39.010
+allowing each patch of image
+to interact with all other ones
+
+00:41:39.010 --> 00:41:44.610
+to just figure out which
+ones are actually relevant.
+
+00:41:44.610 --> 00:41:47.610
+So this was the DiT.
+
+00:41:47.610 --> 00:41:53.330
+And let me introduce you to the
+vision generation equivalent,
+
+00:41:53.330 --> 00:41:57.530
+the diffusion transformer,
+which it was introduced
+
+00:41:57.530 --> 00:42:05.490
+in 2022, which is also relying
+on the self-attention mechanism.
+
+00:42:05.490 --> 00:42:08.050
+And we're going to
+see exactly how.
+
+00:42:08.050 --> 00:42:10.850
+But the idea is very similar.
+
+00:42:10.850 --> 00:42:16.810
+You take a noisy latent as
+input, and what you do is--
+
+00:42:16.810 --> 00:42:18.630
+so remember the wish
+list that we had.
+
+00:42:18.630 --> 00:42:20.790
+We want to understand
+global structure.
+
+00:42:20.790 --> 00:42:24.730
+We want to preserve local
+details and so on and so forth.
+
+00:42:24.730 --> 00:42:29.450
+So here what we're saying is
+we're just allowing all patches
+
+00:42:29.450 --> 00:42:31.190
+to interact with one another.
+
+00:42:34.560 --> 00:42:36.020
+Does that make sense so far?
+
+00:42:39.360 --> 00:42:42.340
+It's not out of the blue
+that I brought up this model.
+
+00:42:42.340 --> 00:42:42.840
+No.
+
+00:42:42.840 --> 00:42:44.840
+All good?
+
+00:42:44.840 --> 00:42:46.160
+Perfect.
+
+00:42:46.160 --> 00:42:54.440
+So let's go step by step into
+what each component means here.
+
+00:42:54.440 --> 00:43:00.560
+So you have on the illustration,
+a patchy file operation,
+
+00:43:00.560 --> 00:43:04.920
+that takes in your
+noised latent and that
+
+00:43:04.920 --> 00:43:07.000
+divides it into patches.
+
+00:43:07.000 --> 00:43:12.320
+So you have let's say, I times
+I times C tensor that you divide
+
+00:43:12.320 --> 00:43:16.560
+into P times P times C patches.
+
+00:43:16.560 --> 00:43:22.510
+And those patches you just want
+to consider them as tokens.
+
+00:43:22.510 --> 00:43:28.620
+And you end up with an input
+length of I over P squared.
+
+00:43:28.620 --> 00:43:33.840
+So the smaller your
+patches, the higher
+
+00:43:33.840 --> 00:43:37.600
+or the longer your
+sequence, which
+
+00:43:37.600 --> 00:43:42.240
+also matches your intuition.
+
+00:43:42.240 --> 00:43:46.200
+So in that sense, you can
+also tell from this step
+
+00:43:46.200 --> 00:43:49.560
+that there is a trade off
+between how granular you
+
+00:43:49.560 --> 00:43:54.060
+want to be and how much
+computation you want to compute.
+
+00:43:56.880 --> 00:43:57.780
+So that's for that.
+
+00:43:57.780 --> 00:44:00.520
+And then the second step
+is to actually inject
+
+00:44:00.520 --> 00:44:03.600
+your conditions-- so the
+external signals, the time
+
+00:44:03.600 --> 00:44:07.200
+step, and then the
+input text, let's say.
+
+00:44:07.200 --> 00:44:13.400
+So here what we do is we take
+our timestep embedding, which
+
+00:44:13.400 --> 00:44:19.000
+as we saw can be a series
+of sinusoidal functions
+
+00:44:19.000 --> 00:44:21.920
+that you have in
+a vector, and then
+
+00:44:21.920 --> 00:44:24.780
+your condition that can
+be just an embedding.
+
+00:44:24.780 --> 00:44:27.400
+So I believe in the
+DiT paper, they just
+
+00:44:27.400 --> 00:44:31.110
+consider the embedding of the
+whole text-- so just one vector
+
+00:44:31.110 --> 00:44:33.830
+for the whole text.
+
+00:44:33.830 --> 00:44:38.510
+So let's suppose you have
+these two quantities.
+
+00:44:38.510 --> 00:44:41.970
+Now the question is, how do you
+inject that into your model?
+
+00:44:45.190 --> 00:44:50.090
+So the paper went through
+different methods.
+
+00:44:50.090 --> 00:44:52.190
+But there was one
+that stood out.
+
+00:44:52.190 --> 00:44:55.710
+So what we're going to do
+is for me to just tell you
+
+00:44:55.710 --> 00:44:58.230
+what methods they
+tried out and then
+
+00:44:58.230 --> 00:45:01.390
+focus on the one that
+performed the best.
+
+00:45:01.390 --> 00:45:06.390
+So the first method was
+called adaptive layer norm,
+
+00:45:06.390 --> 00:45:11.710
+which consisted of taking
+the external signals
+
+00:45:11.710 --> 00:45:15.530
+and then modulating the tokens.
+
+00:45:15.530 --> 00:45:18.530
+So do you remember when I told
+you modulating in the U-Net?
+
+00:45:18.530 --> 00:45:22.590
+So that's the same modulating
+modulation I'm talking about.
+
+00:45:22.590 --> 00:45:25.350
+So that's the first method.
+
+00:45:25.350 --> 00:45:30.030
+The second method is to say, OK,
+you have your external signals.
+
+00:45:30.030 --> 00:45:35.550
+What you can do is to have an
+extra step in your transformer
+
+00:45:35.550 --> 00:45:42.470
+block, where what you do is
+letting the tokens representing
+
+00:45:42.470 --> 00:45:48.670
+the image latents interact
+with the time step interacts
+
+00:45:48.670 --> 00:45:54.150
+with the label embedding
+via cross-attention.
+
+00:45:54.150 --> 00:45:57.190
+So here you can think of
+it as you have queries
+
+00:45:57.190 --> 00:45:59.870
+which are your noise latents.
+
+00:45:59.870 --> 00:46:03.630
+And you're wondering which
+ones of your conditions
+
+00:46:03.630 --> 00:46:09.270
+are relevant for
+your noise patch.
+
+00:46:09.270 --> 00:46:12.670
+And then you do a
+query times key,
+
+00:46:12.670 --> 00:46:15.490
+let's say a dot
+product of those,
+
+00:46:15.490 --> 00:46:17.050
+and then you multiply by value.
+
+00:46:17.050 --> 00:46:21.750
+So you express
+your noise latents
+
+00:46:21.750 --> 00:46:26.030
+as a function of
+your conditions.
+
+00:46:26.030 --> 00:46:27.480
+So this can be a second option.
+
+00:46:27.480 --> 00:46:31.700
+And the third option is
+to just say, OK, actually
+
+00:46:31.700 --> 00:46:34.060
+we're going to
+take these vectors,
+
+00:46:34.060 --> 00:46:35.900
+and we're just
+going to concatenate
+
+00:46:35.900 --> 00:46:38.860
+that in the input sequence.
+
+00:46:38.860 --> 00:46:40.580
+Very easy.
+
+00:46:40.580 --> 00:46:45.580
+Well, it turns out that after
+they did all these experiments,
+
+00:46:45.580 --> 00:46:52.340
+they saw that the adaptive layer
+norm was the most performant.
+
+00:46:52.340 --> 00:46:54.420
+I'm going to give you
+a preview of what we're
+
+00:46:54.420 --> 00:46:59.060
+going to see in lecture 7,
+which is how to quantify
+
+00:46:59.060 --> 00:47:01.180
+how good an image is.
+
+00:47:01.180 --> 00:47:05.340
+So there is a metric called
+the Fréchet Inception Distance,
+
+00:47:05.340 --> 00:47:09.700
+the FID, which is the one
+that is represented here
+
+00:47:09.700 --> 00:47:14.300
+where the lower that
+metric, the better it is.
+
+00:47:14.300 --> 00:47:19.660
+And what you see here is when
+you use adaptive layer norm,
+
+00:47:19.660 --> 00:47:24.260
+you get the bottom
+curve that allows
+
+00:47:24.260 --> 00:47:27.940
+you to get better quality
+image quality compared
+
+00:47:27.940 --> 00:47:32.340
+to the other ones as a
+function of how far you
+
+00:47:32.340 --> 00:47:35.427
+are in the training process.
+
+00:47:35.427 --> 00:47:37.260
+So if you saw, there's
+actually two versions
+
+00:47:37.260 --> 00:47:38.800
+of the adaptive layer norm.
+
+00:47:38.800 --> 00:47:41.620
+There is adaptive layer norm,
+and there's adaptive layer norm
+
+00:47:41.620 --> 00:47:42.980
+0.
+
+00:47:42.980 --> 00:47:47.340
+I'm going to tell you
+what that 0 is about.
+
+00:47:47.340 --> 00:47:51.620
+But let's focus on
+adaptive layer norm.
+
+00:47:51.620 --> 00:47:55.540
+So I could very well
+just give you the formula
+
+00:47:55.540 --> 00:47:58.760
+and tell you that it
+is adaptive layer norm.
+
+00:47:58.760 --> 00:48:03.620
+But I think it's very
+convenient to just build
+
+00:48:03.620 --> 00:48:08.060
+an intuition as to
+why it may make sense.
+
+00:48:08.060 --> 00:48:13.900
+So I'm going to use
+an example for that.
+
+00:48:13.900 --> 00:48:20.500
+So I mentioned each patch can
+be represented by a vector.
+
+00:48:20.500 --> 00:48:27.290
+Let's assume that we can
+interpret this vector
+
+00:48:27.290 --> 00:48:29.850
+and say that let's
+say a dimension is
+
+00:48:29.850 --> 00:48:32.410
+responsible for something
+and another one for something
+
+00:48:32.410 --> 00:48:34.410
+else, which may not be true.
+
+00:48:34.410 --> 00:48:35.910
+But for the sake
+of this example,
+
+00:48:35.910 --> 00:48:38.690
+let's suppose it is true.
+
+00:48:38.690 --> 00:48:40.570
+So remember, we are
+in the latent space,
+
+00:48:40.570 --> 00:48:44.610
+and we can have some
+semantic interpretation
+
+00:48:44.610 --> 00:48:45.710
+of the dimensions.
+
+00:48:45.710 --> 00:48:48.730
+So there is some truth
+to what I'm saying.
+
+00:48:48.730 --> 00:48:53.890
+But let's suppose you have a
+vector where let's say the 10th
+
+00:48:53.890 --> 00:48:58.150
+dimension represents the
+intensity of, let's say,
+
+00:48:58.150 --> 00:49:00.490
+the brown color.
+
+00:49:00.490 --> 00:49:04.650
+Let's say dimension 24 is
+how round the shape is.
+
+00:49:04.650 --> 00:49:08.770
+Dimension 59 is how
+fluffy the local details
+
+00:49:08.770 --> 00:49:14.170
+are and then dimension 130,
+which is how white the color is.
+
+00:49:14.170 --> 00:49:18.290
+So let's suppose you
+have such dimensions.
+
+00:49:18.290 --> 00:49:23.290
+And now let's suppose
+you want to generate
+
+00:49:23.290 --> 00:49:30.210
+an image with the condition,
+a brown fluffy teddy bear.
+
+00:49:30.210 --> 00:49:33.250
+So you want to
+generate that image.
+
+00:49:33.250 --> 00:49:36.630
+And as you remember, generating
+an image is not one shot.
+
+00:49:36.630 --> 00:49:39.010
+Typically you do
+that iteratively
+
+00:49:39.010 --> 00:49:41.890
+where you take a noisy
+latent as inputs.
+
+00:49:41.890 --> 00:49:43.270
+And then you have the condition.
+
+00:49:43.270 --> 00:49:45.070
+You have how noisy
+that image is,
+
+00:49:45.070 --> 00:49:48.170
+and you try to have something
+as output that will allow
+
+00:49:48.170 --> 00:49:51.690
+you to denoise your image.
+
+00:49:51.690 --> 00:49:55.570
+And let's suppose that
+we're at a stage where
+
+00:49:55.570 --> 00:49:57.690
+there is a lot of noise.
+
+00:49:57.690 --> 00:50:00.810
+So, the noise can be
+represented on a scale that's
+
+00:50:00.810 --> 00:50:03.730
+here we're going to
+assume is between 0 and 1,
+
+00:50:03.730 --> 00:50:05.150
+where 0 is super noisy.
+
+00:50:05.150 --> 00:50:07.850
+1 is clean.
+
+00:50:07.850 --> 00:50:14.170
+And let's assume that time here
+is 0.1-- so a lot of noise.
+
+00:50:14.170 --> 00:50:20.400
+So here what you would
+want is to focus on-- so
+
+00:50:20.400 --> 00:50:22.760
+at that stage of
+the generation, you
+
+00:50:22.760 --> 00:50:27.960
+want to focus on surfacing the
+global structure of the image
+
+00:50:27.960 --> 00:50:29.300
+because it's still super noisy.
+
+00:50:29.300 --> 00:50:33.320
+You're just trying to sketch
+what the final image is.
+
+00:50:33.320 --> 00:50:37.660
+So here you want some
+brownness in the image.
+
+00:50:37.660 --> 00:50:40.080
+You want some round
+shapes that may represent
+
+00:50:40.080 --> 00:50:41.180
+your teddy bear and so on.
+
+00:50:41.180 --> 00:50:45.040
+So you want these
+features to surface.
+
+00:50:45.040 --> 00:50:49.920
+So our intuition tells us
+that you want these dimensions
+
+00:50:49.920 --> 00:50:54.760
+to have a higher intensity.
+
+00:50:54.760 --> 00:50:57.000
+In contrast to
+that, you don't want
+
+00:50:57.000 --> 00:51:00.540
+to have local details just
+yet because it's very noisy.
+
+00:51:00.540 --> 00:51:02.180
+So that's not the time.
+
+00:51:02.180 --> 00:51:04.120
+And then you don't
+want any white color
+
+00:51:04.120 --> 00:51:05.980
+because your teddy
+bear is brown.
+
+00:51:05.980 --> 00:51:08.840
+It's not white.
+
+00:51:08.840 --> 00:51:12.500
+Now let's suppose you have
+the same condition as inputs,
+
+00:51:12.500 --> 00:51:14.720
+but now you're at a
+more advanced stage
+
+00:51:14.720 --> 00:51:17.400
+in your generation process.
+
+00:51:17.400 --> 00:51:23.720
+Now t equals 0.9, which
+corresponds to almost no noise
+
+00:51:23.720 --> 00:51:25.920
+in your input image.
+
+00:51:25.920 --> 00:51:29.080
+So here you may
+wonder, OK, so now
+
+00:51:29.080 --> 00:51:32.360
+the input is already
+quite figured out
+
+00:51:32.360 --> 00:51:33.860
+in terms of global structure.
+
+00:51:33.860 --> 00:51:38.080
+Now I need to focus
+on the details.
+
+00:51:38.080 --> 00:51:41.960
+So you want the, let's
+say fluffy details,
+
+00:51:41.960 --> 00:51:45.080
+to have a higher intensity.
+
+00:51:45.080 --> 00:51:47.200
+And you don't want
+the round shape
+
+00:51:47.200 --> 00:51:51.200
+to be that intense because
+it's already there.
+
+00:51:51.200 --> 00:51:53.140
+And the brown color is same.
+
+00:51:53.140 --> 00:51:55.140
+It's already there and
+then white color again.
+
+00:51:55.140 --> 00:51:58.440
+You don't want it.
+
+00:51:58.440 --> 00:52:03.960
+So what I just
+told you is how we
+
+00:52:03.960 --> 00:52:09.720
+would like different dimensions
+of the patch embedding
+
+00:52:09.720 --> 00:52:13.400
+to have their
+intensity modulated
+
+00:52:13.400 --> 00:52:16.370
+as a function of the
+condition, which is,
+
+00:52:16.370 --> 00:52:20.910
+for instance, the input
+text and the noise
+
+00:52:20.910 --> 00:52:22.490
+level in which you are.
+
+00:52:25.070 --> 00:52:33.550
+So in that sense, what you want
+is for your patch embedding
+
+00:52:33.550 --> 00:52:38.270
+to exhibit higher intensities
+in the dimensions you care
+
+00:52:38.270 --> 00:52:44.230
+and lower intensity in the
+dimensions you don't care.
+
+00:52:44.230 --> 00:52:48.790
+So in that sense,
+what I propose is how
+
+00:52:48.790 --> 00:52:50.890
+about we modulate these tokens?
+
+00:52:50.890 --> 00:52:53.710
+How about we modulate
+these vectors?
+
+00:52:53.710 --> 00:52:58.990
+So here what we would do
+is to take the condition
+
+00:52:58.990 --> 00:53:05.250
+to take the time step as input
+and to obtain some vectors.
+
+00:53:05.250 --> 00:53:08.370
+So let's call them
+alpha, gamma, and beta.
+
+00:53:08.370 --> 00:53:10.270
+So let's assume we
+obtain these vectors that
+
+00:53:10.270 --> 00:53:15.310
+are a function of the
+condition and the noise level.
+
+00:53:15.310 --> 00:53:18.950
+And what we want to
+do is to modulate
+
+00:53:18.950 --> 00:53:21.190
+the embedding of the patch.
+
+00:53:21.190 --> 00:53:23.790
+So how would we do that?
+
+00:53:23.790 --> 00:53:29.510
+Well, you take your vector.
+
+00:53:29.510 --> 00:53:33.590
+You do some normalization
+just because it's not
+
+00:53:33.590 --> 00:53:35.130
+part of the
+modulation procedure,
+
+00:53:35.130 --> 00:53:39.190
+but it's just good because it
+just improves your training
+
+00:53:39.190 --> 00:53:39.850
+stability.
+
+00:53:39.850 --> 00:53:44.110
+So let's suppose you
+normalize your vector.
+
+00:53:44.110 --> 00:53:48.750
+And you do an element-wise
+multiplication
+
+00:53:48.750 --> 00:53:53.070
+with 1 plus gamma.
+
+00:53:53.070 --> 00:53:56.550
+So if gamma is equal
+to the vector 0,
+
+00:53:56.550 --> 00:53:59.150
+the element-wise
+multiplication of this and one
+
+00:53:59.150 --> 00:54:04.750
+is completely [INAUDIBLE]
+and nothing changes.
+
+00:54:04.750 --> 00:54:08.790
+But if gamma is a
+vector that tells you
+
+00:54:08.790 --> 00:54:11.500
+that, OK, a given
+dimension should be higher
+
+00:54:11.500 --> 00:54:14.260
+and another dimension
+should be lower,
+
+00:54:14.260 --> 00:54:19.900
+then it will scale your x.
+
+00:54:19.900 --> 00:54:24.700
+And by the way, I said
+1, but it's the vector 1.
+
+00:54:24.700 --> 00:54:28.580
+So you can think of it as a
+vector matching the dimension
+
+00:54:28.580 --> 00:54:32.700
+of gamma of just filled with 1.
+
+00:54:32.700 --> 00:54:34.980
+So in that sense, you
+can think of gamma
+
+00:54:34.980 --> 00:54:39.060
+as being a scale
+coefficient, a scale
+
+00:54:39.060 --> 00:54:42.040
+vector because it scales x.
+
+00:54:44.700 --> 00:54:50.060
+Then you can add
+beta, which is a bias,
+
+00:54:50.060 --> 00:54:54.660
+and perform some
+operation, and have
+
+00:54:54.660 --> 00:54:58.180
+an element-wise multiplication
+of this whole quantity
+
+00:54:58.180 --> 00:55:00.500
+with alpha.
+
+00:55:00.500 --> 00:55:04.020
+And alpha will be your gate.
+
+00:55:04.020 --> 00:55:08.060
+Because what you do
+is you take your x.
+
+00:55:08.060 --> 00:55:09.370
+You flow the same x.
+
+00:55:09.370 --> 00:55:13.770
+And what you do is you make
+some operation with that x,
+
+00:55:13.770 --> 00:55:15.190
+and you scale it.
+
+00:55:15.190 --> 00:55:19.250
+You shift it, and you
+gate it with alpha.
+
+00:55:19.250 --> 00:55:25.010
+And alpha is there to
+tell you how much of that
+
+00:55:25.010 --> 00:55:30.010
+change is going to
+flow in your embedding.
+
+00:55:30.010 --> 00:55:34.050
+So in that sense, I'm just
+going to, again, stress
+
+00:55:34.050 --> 00:55:39.650
+that these stars are
+element-wise multiplications.
+
+00:55:39.650 --> 00:55:43.790
+And alpha, gamma, and beta
+have very specific roles.
+
+00:55:43.790 --> 00:55:47.290
+So alpha really gate
+keeps this whole quantity
+
+00:55:47.290 --> 00:55:49.810
+from being injected.
+
+00:55:49.810 --> 00:55:54.430
+Gamma is responsible for
+scaling the quantity.
+
+00:55:54.430 --> 00:55:56.650
+And then beta is
+there to shift it
+
+00:55:56.650 --> 00:56:02.370
+because it's a plus
+with that quantity.
+
+00:56:02.370 --> 00:56:04.530
+And do you remember
+I told you I'm
+
+00:56:04.530 --> 00:56:09.650
+going to say what
+adaptive layer norm 0 is?
+
+00:56:09.650 --> 00:56:11.850
+Do you remember in the chart?
+
+00:56:11.850 --> 00:56:19.410
+Well, adaptive layer norm
+0 is adaptive layer norm
+
+00:56:19.410 --> 00:56:22.730
+where when you
+start training, you
+
+00:56:22.730 --> 00:56:29.110
+initialize your gates to 0, such
+that there is no modification.
+
+00:56:29.110 --> 00:56:32.710
+So by the way you, you set
+alpha and gamma and beta to 0,
+
+00:56:32.710 --> 00:56:34.390
+I believe in most
+implementations,
+
+00:56:34.390 --> 00:56:37.690
+but alpha being to
+0 already guarantees
+
+00:56:37.690 --> 00:56:43.430
+that at the very beginning
+of training, you--
+
+00:56:43.430 --> 00:56:43.930
+yeah.
+
+00:56:43.930 --> 00:56:45.310
+So the question
+is unconditional.
+
+00:56:45.310 --> 00:56:45.810
+Yes.
+
+00:56:45.810 --> 00:56:47.268
+So at the very
+beginning, you don't
+
+00:56:47.268 --> 00:56:51.910
+have any impact from the
+condition on your embedding.
+
+00:56:54.690 --> 00:56:55.630
+So far so good?
+
+00:56:58.930 --> 00:57:02.030
+So we will have a detailed
+example after that.
+
+00:57:02.030 --> 00:57:04.350
+So I hope it will be
+also clearer there.
+
+00:57:04.350 --> 00:57:08.960
+But that is the
+high level intuition
+
+00:57:08.960 --> 00:57:14.800
+behind why adaptive
+LayerNorm is useful.
+
+00:57:14.800 --> 00:57:20.720
+It is there to highlight
+dimensions that are
+
+00:57:20.720 --> 00:57:24.320
+important for the task at hand.
+
+00:57:24.320 --> 00:57:28.680
+And so here what we do is-- so
+just recapping what we said.
+
+00:57:28.680 --> 00:57:30.340
+We take our condition.
+
+00:57:30.340 --> 00:57:31.540
+So it's the time step.
+
+00:57:31.540 --> 00:57:33.840
+It's the class
+label-- so t and c.
+
+00:57:33.840 --> 00:57:35.920
+We add them
+together, and then we
+
+00:57:35.920 --> 00:57:40.040
+use just a multi-layer
+perceptron, which is just
+
+00:57:40.040 --> 00:57:42.200
+a linear projection,
+some activation,
+
+00:57:42.200 --> 00:57:47.240
+and another linear projection,
+to obtain this gate, scale,
+
+00:57:47.240 --> 00:57:51.320
+and shift alpha,
+gamma and beta, that
+
+00:57:51.320 --> 00:57:58.080
+are then used to modulate
+the patch embeddings.
+
+00:57:58.080 --> 00:58:00.280
+So the question is,
+is t corresponding
+
+00:58:00.280 --> 00:58:01.580
+to the diffusion time step?
+
+00:58:01.580 --> 00:58:02.480
+Yes.
+
+00:58:02.480 --> 00:58:07.020
+So it's how noisy you are
+in your generation process.
+
+00:58:07.020 --> 00:58:09.420
+So one example is in the
+very, very beginning.
+
+00:58:09.420 --> 00:58:12.080
+If let's say, your
+input is super noisy,
+
+00:58:12.080 --> 00:58:16.480
+then t is going to be very
+close to 0, for instance.
+
+00:58:16.480 --> 00:58:20.200
+But you will represent that by
+your vector that is composed
+
+00:58:20.200 --> 00:58:23.320
+of sinusoidal functions.
+
+00:58:23.320 --> 00:58:24.340
+Yeah, that's right.
+
+00:58:24.340 --> 00:58:27.220
+So the question is, is
+this a reverse process?
+
+00:58:27.220 --> 00:58:28.920
+Well, actually even
+during training,
+
+00:58:28.920 --> 00:58:33.560
+you would just inject the t
+that corresponds to the noise
+
+00:58:33.560 --> 00:58:35.920
+level of your image.
+
+00:58:35.920 --> 00:58:38.580
+So we're going to see
+exactly an example of this.
+
+00:58:38.580 --> 00:58:40.440
+So I'll actually
+answer your question
+
+00:58:40.440 --> 00:58:42.660
+in great detail in a second.
+
+00:58:45.240 --> 00:58:46.360
+Perfect.
+
+00:58:46.360 --> 00:58:51.600
+Well, with that, what I
+propose is we wrap up this,
+
+00:58:51.600 --> 00:58:53.760
+and I walk you through
+an end to end example
+
+00:58:53.760 --> 00:58:55.440
+of what that looks like.
+
+00:58:55.440 --> 00:59:01.270
+So your patch embeddings, you
+run them through your diffusion
+
+00:59:01.270 --> 00:59:03.030
+transformer blocks.
+
+00:59:03.030 --> 00:59:05.230
+There can be several of them.
+
+00:59:05.230 --> 00:59:11.270
+And at the very end, you
+obtain encoded tokens-- so
+
+00:59:11.270 --> 00:59:13.630
+patch-embedding tokens that
+are aware of one another
+
+00:59:13.630 --> 00:59:16.590
+because they went through
+all these operations.
+
+00:59:16.590 --> 00:59:20.470
+And remember what
+we want is to have
+
+00:59:20.470 --> 00:59:23.350
+an output that is of the
+same shape as the input.
+
+00:59:23.350 --> 00:59:29.550
+And so here the step is to
+reshape that output in the shape
+
+00:59:29.550 --> 00:59:32.110
+that matters to you.
+
+00:59:32.110 --> 00:59:38.830
+Well, the authors of DiT applied
+this to the DDP end use case,
+
+00:59:38.830 --> 00:59:43.190
+and they actually assumed that
+they were not just predicting
+
+00:59:43.190 --> 00:59:46.630
+the mean but also the
+covariance matrix.
+
+00:59:46.630 --> 00:59:48.970
+So that's not very
+common by the way.
+
+00:59:48.970 --> 00:59:53.190
+So you would more predict
+the mean but not both.
+
+00:59:53.190 --> 00:59:57.030
+But I'm saying this
+because that just explains
+
+00:59:57.030 --> 00:59:59.630
+why there are two outputs.
+
+00:59:59.630 --> 01:00:02.030
+But in our case, we would
+just have one output--
+
+01:00:02.030 --> 01:00:04.790
+in our case, the
+velocity, which should be
+
+01:00:04.790 --> 01:00:09.870
+in the same shape as the input.
+
+01:00:09.870 --> 01:00:18.150
+And what the authors saw
+was that if you take the DiT
+
+01:00:18.150 --> 01:00:22.270
+architecture and if
+you scale it in terms
+
+01:00:22.270 --> 01:00:26.270
+of number of
+parameters, then you
+
+01:00:26.270 --> 01:00:29.990
+get better and better results.
+
+01:00:29.990 --> 01:00:34.050
+And they scaled it in terms
+of number of parameters,
+
+01:00:34.050 --> 01:00:37.350
+but they also scaled it
+in terms of how granular
+
+01:00:37.350 --> 01:00:42.030
+the patches were, because the
+patches they have dimension
+
+01:00:42.030 --> 01:00:44.910
+p times p times c.
+
+01:00:44.910 --> 01:00:50.070
+And if you take big patches,
+then you have a much coarser
+
+01:00:50.070 --> 01:00:54.950
+view than let's say, a
+small patch, small p.
+
+01:00:54.950 --> 01:00:58.180
+The problem with the
+number of parameters
+
+01:00:58.180 --> 01:01:01.665
+is it does not convey
+that dimension.
+
+01:01:01.665 --> 01:01:03.540
+So you can have the same
+number of parameters
+
+01:01:03.540 --> 01:01:11.460
+but vary p, which is why
+the authors also use FLOPs.
+
+01:01:11.460 --> 01:01:14.620
+So who has heard
+of FLOPs before?
+
+01:01:14.620 --> 01:01:16.500
+Floating Point
+Operations is just
+
+01:01:16.500 --> 01:01:18.540
+a measure of how many
+operations you're
+
+01:01:18.540 --> 01:01:20.340
+doing in your forward pass.
+
+01:01:20.340 --> 01:01:24.780
+And that actually includes patch
+size, because if you remember,
+
+01:01:24.780 --> 01:01:30.648
+your input has a length
+of I over P squared.
+
+01:01:30.648 --> 01:01:32.940
+So if you have a smaller p,
+you have a bigger sequence,
+
+01:01:32.940 --> 01:01:36.000
+which is reflected in
+your flops measure.
+
+01:01:38.540 --> 01:01:42.640
+And in particular, so
+that's pretty interesting.
+
+01:01:42.640 --> 01:01:46.440
+So you should not only
+scale one and not the other.
+
+01:01:46.440 --> 01:01:51.220
+So they see that if they
+scale the transformer size,
+
+01:01:51.220 --> 01:01:54.020
+they get better
+results but not great.
+
+01:01:54.020 --> 01:01:57.260
+Now, if they only
+scale the patch size,
+
+01:01:57.260 --> 01:01:59.620
+they get better
+results but not great.
+
+01:01:59.620 --> 01:02:04.940
+But if they scale both the
+transformer size and the patch
+
+01:02:04.940 --> 01:02:11.380
+size, then they get
+amazing results.
+
+01:02:11.380 --> 01:02:13.960
+That's what you see in
+the figure on the right
+
+01:02:13.960 --> 01:02:17.620
+and also the chart
+that tells you this
+
+01:02:17.620 --> 01:02:20.440
+as a function of FID,
+which as I mentioned,
+
+01:02:20.440 --> 01:02:23.740
+is a metric we will
+see in two lectures,
+
+01:02:23.740 --> 01:02:29.060
+where the lower the
+value, the better it is.
+
+01:02:29.060 --> 01:02:33.420
+And that was the DiT.
+
+01:02:33.420 --> 01:02:37.420
+Given that the DiT is a pretty
+important architecture, what
+
+01:02:37.420 --> 01:02:39.980
+we will do is take
+our time to go
+
+01:02:39.980 --> 01:02:44.900
+through an end to end example
+of exactly how that works.
+
+01:02:44.900 --> 01:02:51.460
+So our goal is to take an
+input-- so here, the input text,
+
+01:02:51.460 --> 01:02:55.050
+generate an image of a
+teddy bear that is reading,
+
+01:02:55.050 --> 01:02:58.010
+and what we want as an
+output is the image itself
+
+01:02:58.010 --> 01:03:01.730
+or the generated
+image, I should say.
+
+01:03:01.730 --> 01:03:07.410
+So in lecture 4, we saw that
+we have a lot of incentive
+
+01:03:07.410 --> 01:03:09.430
+to do all of this
+in the latent space,
+
+01:03:09.430 --> 01:03:11.450
+because it's more
+tractable computationally,
+
+01:03:11.450 --> 01:03:14.290
+and it's just
+easier for a model.
+
+01:03:14.290 --> 01:03:17.330
+So what we'll do is
+we'll take a look
+
+01:03:17.330 --> 01:03:23.970
+at the latent space learned by
+a VAE that is at our disposal.
+
+01:03:23.970 --> 01:03:26.150
+And you see you have
+two distributions.
+
+01:03:26.150 --> 01:03:29.290
+You have on the bottom left,
+the initial distribution, which
+
+01:03:29.290 --> 01:03:32.530
+is very easy to sample from, and
+the target distribution, which
+
+01:03:32.530 --> 01:03:36.730
+is the one that you
+want to sample from.
+
+01:03:36.730 --> 01:03:39.885
+So what you do is you sample
+from your easy distribution,
+
+01:03:39.885 --> 01:03:42.010
+typically your Gaussian
+distribution in your latent
+
+01:03:42.010 --> 01:03:42.550
+space.
+
+01:03:42.550 --> 01:03:44.970
+Let's call it z 0.
+
+01:03:44.970 --> 01:03:48.010
+And you obtain this thing--
+
+01:03:48.010 --> 01:03:51.610
+dimension I times I times C.
+
+01:03:51.610 --> 01:03:54.890
+What you do is you
+take that image,
+
+01:03:54.890 --> 01:03:58.770
+and you divide it into patches.
+
+01:03:58.770 --> 01:04:03.930
+So each element has a
+dimension of p times p times c.
+
+01:04:03.930 --> 01:04:05.890
+So if you do some
+counting, you will
+
+01:04:05.890 --> 01:04:10.770
+see that I squared
+over p squared patches.
+
+01:04:10.770 --> 01:04:17.050
+And this is the length
+of your sequence.
+
+01:04:17.050 --> 01:04:21.090
+So you take each patch, and
+you want to represent them
+
+01:04:21.090 --> 01:04:23.130
+with a vector.
+
+01:04:23.130 --> 01:04:25.910
+So you just perform
+a linear projection.
+
+01:04:25.910 --> 01:04:28.130
+And you obtain a
+vector of, let's say,
+
+01:04:28.130 --> 01:04:32.750
+dimension D. Great
+for the patches.
+
+01:04:32.750 --> 01:04:36.210
+Now let's take care
+of the conditions.
+
+01:04:36.210 --> 01:04:37.990
+So you have the
+timestamp embedding,
+
+01:04:37.990 --> 01:04:40.210
+and then you have the label
+embedding corresponding
+
+01:04:40.210 --> 01:04:43.810
+to let's say the teddy bear.
+
+01:04:43.810 --> 01:04:45.150
+And what you do is super simple.
+
+01:04:45.150 --> 01:04:46.250
+You just add them.
+
+01:04:46.250 --> 01:04:47.930
+Add them together.
+
+01:04:47.930 --> 01:04:52.000
+And you obtain your
+condition embedding.
+
+01:04:52.000 --> 01:04:55.080
+So far so good?
+
+01:04:55.080 --> 01:04:59.280
+So here we are with
+our patchified input,
+
+01:04:59.280 --> 01:05:05.920
+where each element is
+represented with an embedding.
+
+01:05:05.920 --> 01:05:07.772
+There's something I
+have not told you about.
+
+01:05:07.772 --> 01:05:09.480
+And it's actually
+something that Shervine
+
+01:05:09.480 --> 01:05:15.240
+will cover in great detail
+in hopefully 20 minutes.
+
+01:05:15.240 --> 01:05:19.400
+When you perform this
+self-attention operations,
+
+01:05:19.400 --> 01:05:23.280
+the great thing is you let
+everyone interact with everyone,
+
+01:05:23.280 --> 01:05:28.520
+but then you lose the concept of
+how far different elements are
+
+01:05:28.520 --> 01:05:31.720
+just because you have
+direct links, which
+
+01:05:31.720 --> 01:05:37.500
+is why you need to specify in
+which position each input is.
+
+01:05:37.500 --> 01:05:40.720
+You need to have
+a way to do that.
+
+01:05:40.720 --> 01:05:42.440
+And here a very
+naive approach is
+
+01:05:42.440 --> 01:05:47.400
+to just add some embedding
+that represents the position.
+
+01:05:47.400 --> 01:05:49.380
+This is not the norm nowadays.
+
+01:05:49.380 --> 01:05:51.860
+Shervine will go
+deeper in there,
+
+01:05:51.860 --> 01:05:55.800
+but let's assume here that
+we add a position embedding
+
+01:05:55.800 --> 01:05:57.360
+to the patch embedding.
+
+01:05:57.360 --> 01:06:02.560
+And here we obtain a
+position-aware patch embedding.
+
+01:06:02.560 --> 01:06:06.560
+And we do the same for all
+the patches in our input.
+
+01:06:06.560 --> 01:06:10.940
+And nowadays, GPUs
+they love matrices.
+
+01:06:10.940 --> 01:06:13.420
+So we just put everything
+in a matrix format.
+
+01:06:13.420 --> 01:06:16.080
+So here we concatenate
+everything.
+
+01:06:16.080 --> 01:06:20.000
+And we also have our
+conditioned embedding vector.
+
+01:06:20.000 --> 01:06:24.120
+Well, let's start with that.
+
+01:06:24.120 --> 01:06:28.560
+So I mentioned that the
+diffusion transformer, so one
+
+01:06:28.560 --> 01:06:30.480
+method of injecting
+the conditions
+
+01:06:30.480 --> 01:06:36.560
+is to modulate the patch
+embeddings with the conditions.
+
+01:06:36.560 --> 01:06:42.160
+So a first step here is to
+obtain the gate, the scale,
+
+01:06:42.160 --> 01:06:46.710
+and the shift coefficients
+corresponding to that condition.
+
+01:06:46.710 --> 01:06:47.870
+So let's do that here.
+
+01:06:47.870 --> 01:06:51.830
+We input this embedding
+through an MLP layer, which
+
+01:06:51.830 --> 01:06:54.510
+is a projection
+and an activation
+
+01:06:54.510 --> 01:06:57.110
+function to introduce
+nonlinearities, and then
+
+01:06:57.110 --> 01:06:59.110
+another projection.
+
+01:06:59.110 --> 01:07:02.390
+And we obtain six quantities--
+
+01:07:02.390 --> 01:07:06.030
+two for gate, two for
+scale, two for shifts.
+
+01:07:06.030 --> 01:07:06.630
+So why two?
+
+01:07:06.630 --> 01:07:11.190
+Because we will have two
+operations in the diffusion
+
+01:07:11.190 --> 01:07:12.030
+transformer block.
+
+01:07:12.030 --> 01:07:13.970
+One is the
+self-attention operation.
+
+01:07:13.970 --> 01:07:17.090
+The other one is the
+feed-forward neural network.
+
+01:07:17.090 --> 01:07:22.430
+And we want these quantities
+to be respectively
+
+01:07:22.430 --> 01:07:25.830
+to go to their own operation.
+
+01:07:25.830 --> 01:07:33.470
+So let's go back to our position
+where patch-embedding matrix.
+
+01:07:33.470 --> 01:07:35.770
+We input that into our block.
+
+01:07:35.770 --> 01:07:40.030
+So what we do is we perform a
+layer normalization operation.
+
+01:07:40.030 --> 01:07:44.820
+And right after that, we
+use gamma 1 and beta 1
+
+01:07:44.820 --> 01:07:48.300
+to scale and shift them.
+
+01:07:48.300 --> 01:07:51.580
+We input them to the
+self-attention layer,
+
+01:07:51.580 --> 01:07:57.540
+and then we get the
+result with alpha 1,
+
+01:07:57.540 --> 01:08:03.700
+which we add to the input.
+
+01:08:03.700 --> 01:08:06.320
+So this is becoming very
+complicated on the slide.
+
+01:08:06.320 --> 01:08:08.300
+So I'm just going to
+represent this operation
+
+01:08:08.300 --> 01:08:10.460
+with just self-attention
+and then alpha
+
+01:08:10.460 --> 01:08:13.120
+1, gamma 1, and beta 1.
+
+01:08:16.180 --> 01:08:21.420
+And as you remember,
+this is what happens.
+
+01:08:21.420 --> 01:08:23.340
+So you take your
+input, and then you
+
+01:08:23.340 --> 01:08:27.760
+do the attention operation with
+the scaled and shifted inputs.
+
+01:08:27.760 --> 01:08:31.140
+And you get it by alpha 1, where
+the star operation here is just
+
+01:08:31.140 --> 01:08:34.979
+the element-wise operation.
+
+01:08:34.979 --> 01:08:39.220
+You do the same thing for the
+feed forward neural network,
+
+01:08:39.220 --> 01:08:45.380
+along with the alpha 2,
+gamma 2, beta 2 coefficients.
+
+01:08:45.380 --> 01:08:54.819
+And you obtain an output matrix
+that takes into consideration
+
+01:08:54.819 --> 01:08:57.279
+all other patch embeddings.
+
+01:08:57.279 --> 01:08:59.620
+So it's something that went
+through this self-attention
+
+01:08:59.620 --> 01:09:01.260
+computation.
+
+01:09:01.260 --> 01:09:06.939
+So that's why I'm saying
+it's contextualized
+
+01:09:06.939 --> 01:09:11.500
+because it's in the context
+of the other patch embeddings.
+
+01:09:11.500 --> 01:09:15.660
+But now what you want is
+to have a prediction that
+
+01:09:15.660 --> 01:09:17.700
+matches the input shape.
+
+01:09:17.700 --> 01:09:21.560
+So what you do is you
+perform some normalization,
+
+01:09:21.560 --> 01:09:25.300
+some linear operation
+reshaping in order
+
+01:09:25.300 --> 01:09:28.740
+to have your
+prediction, which is
+
+01:09:28.740 --> 01:09:32.260
+the predicted
+velocity of your input
+
+01:09:32.260 --> 01:09:37.420
+z at time t with condition c.
+
+01:09:37.420 --> 01:09:43.850
+In the very beginning,
+z is z, 0, t is 0,
+
+01:09:43.850 --> 01:09:46.890
+c is, well, just
+your class label.
+
+01:09:46.890 --> 01:09:50.990
+Just I want an image of a teddy
+bear that is reading a book.
+
+01:09:53.609 --> 01:09:54.590
+So you have this.
+
+01:09:54.590 --> 01:09:56.630
+So just recapping
+exactly what I said.
+
+01:09:56.630 --> 01:09:58.390
+So we have the latent z, 0.
+
+01:09:58.390 --> 01:10:00.070
+We have the time
+step t equals 0.
+
+01:10:00.070 --> 01:10:05.090
+We have the class label all fed
+into this diffusion transformer.
+
+01:10:05.090 --> 01:10:10.450
+And at the end of it, we get
+the predicted velocity at z,
+
+01:10:10.450 --> 01:10:15.330
+0 time t equals 0
+and class label C.
+
+01:10:15.330 --> 01:10:17.130
+And that's great.
+
+01:10:17.130 --> 01:10:20.970
+But we're not done here.
+
+01:10:20.970 --> 01:10:24.970
+We're only done here for
+the iteration that allows us
+
+01:10:24.970 --> 01:10:28.970
+to go to step 0 plus delta t.
+
+01:10:28.970 --> 01:10:33.170
+And we perform-- so the
+formula that I wrote
+
+01:10:33.170 --> 01:10:35.210
+is just a reference
+to the formula
+
+01:10:35.210 --> 01:10:37.650
+that we derived in
+the flow-matching case
+
+01:10:37.650 --> 01:10:42.150
+where you're just
+numerically solving.
+
+01:10:42.150 --> 01:10:47.130
+So here's an Euler
+solver that just
+
+01:10:47.130 --> 01:10:51.970
+allows you to go from initial
+to target by just following
+
+01:10:51.970 --> 01:10:52.990
+the vector field.
+
+01:10:52.990 --> 01:10:55.050
+So that's exactly
+what you're doing.
+
+01:10:55.050 --> 01:11:00.690
+So you obtain this
+z 0 plus delta t
+
+01:11:00.690 --> 01:11:04.450
+that you can also
+have represented
+
+01:11:04.450 --> 01:11:07.470
+like this on the left
+in your latent space.
+
+01:11:07.470 --> 01:11:08.730
+So that's great.
+
+01:11:08.730 --> 01:11:11.010
+So now let's do one more.
+
+01:11:11.010 --> 01:11:13.690
+You're at time step t i.
+
+01:11:13.690 --> 01:11:19.410
+So you input your latent z t
+i, along with the time step t i
+
+01:11:19.410 --> 01:11:21.730
+and the condition
+c that is not--
+
+01:11:21.730 --> 01:11:24.810
+or the class label c
+that is not changing--
+
+01:11:24.810 --> 01:11:28.195
+so your input text.
+
+01:11:28.195 --> 01:11:30.070
+So you put that in the
+diffusion transformer.
+
+01:11:30.070 --> 01:11:35.533
+Again, you get a predicted
+velocity for that latent z
+
+01:11:35.533 --> 01:11:40.240
+t i for that time step t i
+and for the class label c.
+
+01:11:40.240 --> 01:11:41.740
+And you go through
+the same thing.
+
+01:11:41.740 --> 01:11:43.900
+So you have the prediction.
+
+01:11:43.900 --> 01:11:48.480
+And you obtain z t
+i plus 1 by, again,
+
+01:11:48.480 --> 01:11:51.840
+following the Euler method.
+
+01:11:51.840 --> 01:11:56.440
+So here on the left side,
+you have the next step.
+
+01:11:56.440 --> 01:12:01.720
+You continue again and again
+and again and again and again up
+
+01:12:01.720 --> 01:12:04.040
+until z 1.
+
+01:12:04.040 --> 01:12:05.740
+So now you're at t equal 1.
+
+01:12:05.740 --> 01:12:06.340
+You have z 1.
+
+01:12:06.340 --> 01:12:07.640
+That's great.
+
+01:12:07.640 --> 01:12:10.420
+Well, what do you have?
+
+01:12:10.420 --> 01:12:10.920
+Well, no.
+
+01:12:10.920 --> 01:12:11.820
+It's not noise.
+
+01:12:11.820 --> 01:12:14.060
+It's just it's the latent space.
+
+01:12:14.060 --> 01:12:18.620
+So from a human perspective,
+you don't know what that is.
+
+01:12:18.620 --> 01:12:23.320
+So that's why I represent
+it with the noise image.
+
+01:12:23.320 --> 01:12:27.000
+But it is actually
+your final latent.
+
+01:12:27.000 --> 01:12:34.160
+And so the last step is to
+take the final latent Z1
+
+01:12:34.160 --> 01:12:37.502
+and pass it through
+your VA decoder,
+
+01:12:37.502 --> 01:12:39.460
+because you want to go
+back to the pixel space,
+
+01:12:39.460 --> 01:12:43.260
+because we humans,
+we understand pixels.
+
+01:12:43.260 --> 01:12:46.960
+We don't understand the
+latent, or at least not yet.
+
+01:12:46.960 --> 01:12:50.000
+And we get the
+pixel space image,
+
+01:12:50.000 --> 01:12:55.520
+which is the image of your
+teddy bear reading a book.
+
+01:12:55.520 --> 01:12:57.200
+And that's great.
+
+01:12:57.200 --> 01:12:59.480
+And you will tell me,
+Afshine, that's great.
+
+01:12:59.480 --> 01:13:01.280
+We solved it.
+
+01:13:01.280 --> 01:13:07.320
+Well, the truth is, these
+days people are actually
+
+01:13:07.320 --> 01:13:09.520
+using a variation
+of the diffusion
+
+01:13:09.520 --> 01:13:12.520
+transformer for a
+number of reasons
+
+01:13:12.520 --> 01:13:16.320
+that we're going to see now.
+
+01:13:16.320 --> 01:13:21.400
+And again, I just want to repeat
+one thing I said earlier, which
+
+01:13:21.400 --> 01:13:26.040
+is there is a number, infinite
+number of architectures
+
+01:13:26.040 --> 01:13:30.800
+out there, infinite number
+of variations, combinations.
+
+01:13:30.800 --> 01:13:36.190
+My hope is to just motivate
+why some elements that we're
+
+01:13:36.190 --> 01:13:40.390
+going to see are being
+reused actively these days,
+
+01:13:40.390 --> 01:13:45.270
+but they're by no
+means exhaustive.
+
+01:13:45.270 --> 01:13:52.390
+So let's go back to the example
+that we had with respect to us
+
+01:13:52.390 --> 01:13:56.470
+wanting to modulate
+patch embeddings.
+
+01:13:56.470 --> 01:13:58.790
+So do you remember
+the example we
+
+01:13:58.790 --> 01:14:03.910
+used where we said we want
+a brown fluffy teddy bear
+
+01:14:03.910 --> 01:14:06.070
+and we had all these dimensions?
+
+01:14:06.070 --> 01:14:09.270
+And we said, let's
+say at t equals 0.1,
+
+01:14:09.270 --> 01:14:13.252
+we wanted brown color and
+round shape to be highlighted
+
+01:14:13.252 --> 01:14:14.210
+but not the other ones.
+
+01:14:14.210 --> 01:14:16.990
+Do you remember that?
+
+01:14:16.990 --> 01:14:19.670
+So let's suppose now
+I'm changing the class
+
+01:14:19.670 --> 01:14:23.390
+label or the condition,
+the text input,
+
+01:14:23.390 --> 01:14:29.150
+to brown fluffy teddy bear
+surrounded by white walls.
+
+01:14:29.150 --> 01:14:31.910
+So imagine I do that.
+
+01:14:31.910 --> 01:14:35.630
+Then the white
+color dimension, you
+
+01:14:35.630 --> 01:14:38.710
+would want to also have
+it emphasized because you
+
+01:14:38.710 --> 01:14:43.670
+have white in your input.
+
+01:14:43.670 --> 01:14:48.310
+But remember that
+this modulation
+
+01:14:48.310 --> 01:14:54.670
+is happening for all tokens,
+regardless of where they are.
+
+01:14:54.670 --> 01:14:56.590
+So in other words,
+what we're saying
+
+01:14:56.590 --> 01:15:02.150
+is if you want to predict the
+velocity to denoise an image,
+
+01:15:02.150 --> 01:15:06.150
+you're going to modulate
+all patch embeddings
+
+01:15:06.150 --> 01:15:08.950
+in the same way.
+
+01:15:08.950 --> 01:15:12.590
+But here what you want is for
+places where you have a Teddy
+
+01:15:12.590 --> 01:15:15.050
+bear to have Brown
+that's increased
+
+01:15:15.050 --> 01:15:18.270
+but not the white
+color and for places
+
+01:15:18.270 --> 01:15:20.190
+where there is the
+white wall to have
+
+01:15:20.190 --> 01:15:21.970
+white increase but not brown.
+
+01:15:24.510 --> 01:15:26.770
+Well, you cannot do
+that with the DiT,
+
+01:15:26.770 --> 01:15:33.940
+and that's a big limitation,
+which is the reason why we want
+
+01:15:33.940 --> 01:15:35.520
+to change a little
+bit our approach.
+
+01:15:35.520 --> 01:15:36.187
+So that's great.
+
+01:15:36.187 --> 01:15:38.920
+We're having the
+self-attention mechanism there.
+
+01:15:38.920 --> 01:15:40.220
+It's amazing.
+
+01:15:40.220 --> 01:15:44.500
+The only thing we want to
+do is to change the way
+
+01:15:44.500 --> 01:15:48.500
+we're injecting conditions.
+
+01:15:48.500 --> 01:15:53.020
+So modulating with
+respect to the time step,
+
+01:15:53.020 --> 01:15:55.700
+I think we can all
+agree that makes sense
+
+01:15:55.700 --> 01:15:59.020
+because all tokens
+of your input,
+
+01:15:59.020 --> 01:16:00.620
+they're all at the
+same time step.
+
+01:16:00.620 --> 01:16:04.700
+So it's very fair to
+have the same treatment.
+
+01:16:04.700 --> 01:16:09.140
+But we need to do
+something else when
+
+01:16:09.140 --> 01:16:16.820
+it comes to injecting the
+text input from the user.
+
+01:16:16.820 --> 01:16:22.940
+We don't want to apply the
+same treatment to all tokens.
+
+01:16:22.940 --> 01:16:27.100
+So out there, there
+are two main classes
+
+01:16:27.100 --> 01:16:34.780
+of methods that allows us
+to introduce some nuance
+
+01:16:34.780 --> 01:16:36.820
+to the way we do that.
+
+01:16:36.820 --> 01:16:41.640
+And while there is no standard
+classification out there,
+
+01:16:41.640 --> 01:16:44.540
+I'm just telling you there is
+two main classes of methods
+
+01:16:44.540 --> 01:16:46.300
+that seem to emerge--
+
+01:16:46.300 --> 01:16:51.260
+one that involves
+cross-attention and one
+
+01:16:51.260 --> 01:16:55.260
+that involves joint attention.
+
+01:16:55.260 --> 01:16:58.820
+So before we go
+further, I just want
+
+01:16:58.820 --> 01:17:03.380
+to explicit a little bit more
+what these two correspond to.
+
+01:17:03.380 --> 01:17:08.760
+So cross-attention is the idea
+of having something as input--
+
+01:17:08.760 --> 01:17:11.580
+so your queries, your
+patch embeddings--
+
+01:17:11.580 --> 01:17:17.340
+and wondering how relevant your
+keys and values, which here is
+
+01:17:17.340 --> 01:17:21.080
+your text, is to your queries.
+
+01:17:23.650 --> 01:17:27.650
+So in other words, I'm
+going to use an analogy,
+
+01:17:27.650 --> 01:17:30.610
+and I hope it's something
+that will be intuitive to you
+
+01:17:30.610 --> 01:17:31.110
+as well.
+
+01:17:31.110 --> 01:17:35.490
+So let's suppose you
+have a painter that
+
+01:17:35.490 --> 01:17:39.530
+paints the final
+image and then let's
+
+01:17:39.530 --> 01:17:44.530
+say a poet that writes
+the instruction in a very
+
+01:17:44.530 --> 01:17:47.410
+eloquent way.
+
+01:17:47.410 --> 01:17:52.010
+So it's the same
+thing as saying,
+
+01:17:52.010 --> 01:17:55.850
+if we were to say that the
+painter, the one who determines
+
+01:17:55.850 --> 01:17:58.770
+what changes to
+bring to the image,
+
+01:17:58.770 --> 01:18:03.010
+is actually looking at
+a piece of text that
+
+01:18:03.010 --> 01:18:08.770
+is brought by the writer, and
+just based on that determines
+
+01:18:08.770 --> 01:18:10.470
+what to change on the image.
+
+01:18:10.470 --> 01:18:13.510
+So it pays attention to the
+input text for a given patch.
+
+01:18:13.510 --> 01:18:17.010
+It says, OK, what
+is the piece of text
+
+01:18:17.010 --> 01:18:18.150
+that is relevant to that?
+
+01:18:18.150 --> 01:18:19.930
+And then based on
+that it says, OK, I
+
+01:18:19.930 --> 01:18:21.870
+need to change
+this, change that.
+
+01:18:21.870 --> 01:18:24.650
+So that is cross-attention.
+
+01:18:24.650 --> 01:18:27.490
+So now what is joint attention?
+
+01:18:27.490 --> 01:18:34.330
+Joint attention is saying, you
+are considering your image patch
+
+01:18:34.330 --> 01:18:38.690
+embeddings as inputs, but you're
+also considering your text
+
+01:18:38.690 --> 01:18:42.970
+embeddings as input as well.
+
+01:18:42.970 --> 01:18:48.130
+And what you're saying is
+that both these modalities
+
+01:18:48.130 --> 01:18:52.090
+are being attended, if you
+want, through the self-attention
+
+01:18:52.090 --> 01:18:53.770
+layer.
+
+01:18:53.770 --> 01:18:58.790
+So continuing the analogy, so
+let's say, sorry, I'm a painter.
+
+01:18:58.790 --> 01:19:00.430
+And let's say
+Shervine is a poet.
+
+01:19:00.430 --> 01:19:02.570
+So instead of
+Shervine writing to me
+
+01:19:02.570 --> 01:19:07.610
+exactly what needs to be
+drawn, now, both Shervine and I
+
+01:19:07.610 --> 01:19:10.930
+are in the same room,
+and we're talking
+
+01:19:10.930 --> 01:19:15.930
+about how things should be
+placed with respect to the text.
+
+01:19:15.930 --> 01:19:18.610
+And let's suppose
+if I paint something
+
+01:19:18.610 --> 01:19:21.640
+and then, I don't
+know, I need to write
+
+01:19:21.640 --> 01:19:25.880
+Stanford top right and then
+my drawing is in such a way
+
+01:19:25.880 --> 01:19:29.440
+that there is not
+that much space,
+
+01:19:29.440 --> 01:19:31.900
+then we can talk amongst
+one another to say,
+
+01:19:31.900 --> 01:19:34.880
+OK, actually, I want Stanford
+to be written in maybe smaller
+
+01:19:34.880 --> 01:19:42.000
+fonts so we can change what we
+are each saying as a constraint
+
+01:19:42.000 --> 01:19:46.880
+and doing as an image, as
+a function of one another.
+
+01:19:46.880 --> 01:19:49.720
+So in other words,
+cross-attention
+
+01:19:49.720 --> 01:19:53.880
+is considering text
+more as being a given.
+
+01:19:53.880 --> 01:19:56.720
+So it's OK.
+
+01:19:56.720 --> 01:19:58.500
+So you have a patch embedding.
+
+01:19:58.500 --> 01:20:01.820
+Look at which piece of
+text is relevant for you,
+
+01:20:01.820 --> 01:20:04.920
+and just do something.
+
+01:20:04.920 --> 01:20:07.480
+And joint attention
+is saying, OK,
+
+01:20:07.480 --> 01:20:15.720
+let's consider both, and try to
+find a representation of each,
+
+01:20:15.720 --> 01:20:18.950
+such that we can get to our
+final destination in the best
+
+01:20:18.950 --> 01:20:19.730
+way possible.
+
+01:20:23.230 --> 01:20:24.850
+So I hope this makes sense.
+
+01:20:24.850 --> 01:20:30.150
+All of that to say that
+nowadays most people do
+
+01:20:30.150 --> 01:20:34.670
+joint attention-related
+methods, and in particular, I'm
+
+01:20:34.670 --> 01:20:38.090
+going to introduce a
+term in one second.
+
+01:20:38.090 --> 01:20:40.230
+But before I do that, it's
+exactly what I mentioned
+
+01:20:40.230 --> 01:20:41.950
+here-- the joint attention.
+
+01:20:41.950 --> 01:20:46.230
+We're considering the patch
+embeddings and the text
+
+01:20:46.230 --> 01:20:51.110
+embeddings all jointly that goes
+through this attention layer
+
+01:20:51.110 --> 01:20:53.830
+and so on.
+
+01:20:53.830 --> 01:20:58.350
+And the name of
+such an architecture
+
+01:20:58.350 --> 01:21:00.805
+was coined as being an MM-DiT.
+
+01:21:00.805 --> 01:21:02.930
+So I don't exactly know
+how you would pronounce it,
+
+01:21:02.930 --> 01:21:07.310
+but I just go by MM-DiT--
+so Multi-Modal Diffusion
+
+01:21:07.310 --> 01:21:09.390
+Transformer.
+
+01:21:09.390 --> 01:21:11.750
+And this term was
+coined in a paper
+
+01:21:11.750 --> 01:21:15.190
+that's actually not that long
+ago-- so Stable Diffusion 3.
+
+01:21:15.190 --> 01:21:19.390
+That was published two
+years ago-- so in 2024.
+
+01:21:19.390 --> 01:21:23.190
+And this relies on
+a joint attention
+
+01:21:23.190 --> 01:21:26.350
+of different modalities.
+
+01:21:26.350 --> 01:21:32.470
+Now, there is another dimension
+that some papers play around
+
+01:21:32.470 --> 01:21:37.590
+with, which is whether you
+want to consider each modality
+
+01:21:37.590 --> 01:21:42.750
+separately or jointly.
+
+01:21:42.750 --> 01:21:46.390
+And in particular, you know
+in the diffusion transformer
+
+01:21:46.390 --> 01:21:49.030
+architecture, you have this
+feed-forward neural network
+
+01:21:49.030 --> 01:21:50.290
+where you project.
+
+01:21:50.290 --> 01:21:52.870
+You do some activation
+function, and you project again
+
+01:21:52.870 --> 01:21:57.270
+where you learn different
+ways to just represent
+
+01:21:57.270 --> 01:21:58.710
+the same thing.
+
+01:21:58.710 --> 01:22:06.350
+And if you were to consider
+all modalities as going
+
+01:22:06.350 --> 01:22:08.590
+through the same thing--
+
+01:22:08.590 --> 01:22:13.820
+so just continuing the analogy
+of the writer and the poet,
+
+01:22:13.820 --> 01:22:16.740
+it would be as if
+you were saying
+
+01:22:16.740 --> 01:22:19.760
+that both the poet
+and the-- sorry,
+
+01:22:19.760 --> 01:22:25.780
+both the poet and the painter,
+they use the same tools.
+
+01:22:25.780 --> 01:22:28.580
+So you learn the
+same projections.
+
+01:22:28.580 --> 01:22:33.040
+But if you were to consider
+each modality on their own,
+
+01:22:33.040 --> 01:22:37.297
+if you were to consider
+specific projection,
+
+01:22:37.297 --> 01:22:38.880
+depending on which
+modality you're on,
+
+01:22:38.880 --> 01:22:41.540
+you're actually
+learning tools that
+
+01:22:41.540 --> 01:22:44.960
+are tailored to the task
+of whoever's doing it.
+
+01:22:44.960 --> 01:22:47.660
+So the painter will
+have a great brush
+
+01:22:47.660 --> 01:22:49.780
+that is tailored to
+whatever they're doing,
+
+01:22:49.780 --> 01:22:53.460
+and the poet will have
+exactly whatever is tailored
+
+01:22:53.460 --> 01:22:56.060
+to their needs.
+
+01:22:56.060 --> 01:22:58.200
+Maybe I'm pushing it too
+far with this analogy,
+
+01:22:58.200 --> 01:23:01.980
+but all of that to say that
+we have two different classes
+
+01:23:01.980 --> 01:23:03.960
+of MM-DiT.
+
+01:23:03.960 --> 01:23:06.080
+One is single stream.
+
+01:23:06.080 --> 01:23:08.300
+So everything is
+treated equally.
+
+01:23:08.300 --> 01:23:10.700
+And the second one
+is double stream.
+
+01:23:10.700 --> 01:23:14.500
+Each modality has
+its own stream.
+
+01:23:14.500 --> 01:23:16.480
+And you even have papers
+that mixes the two.
+
+01:23:16.480 --> 01:23:18.580
+So I call them hybrids here.
+
+01:23:18.580 --> 01:23:23.340
+So they contain both single
+stream and double stream layers.
+
+01:23:23.340 --> 01:23:29.640
+And the next few slides are just
+about calling out such models.
+
+01:23:29.640 --> 01:23:34.520
+So the state of the art models
+that you would see nowadays,
+
+01:23:34.520 --> 01:23:37.120
+they actually are relying
+on this architecture.
+
+01:23:37.120 --> 01:23:41.900
+So I'm going to just mention
+a double stream MM-DiT.
+
+01:23:41.900 --> 01:23:43.860
+So this one is an
+image for those of you
+
+01:23:43.860 --> 01:23:46.740
+who have heard of it.
+
+01:23:46.740 --> 01:23:50.240
+Then you have Z-image, as an
+example of a single stream--
+
+01:23:50.240 --> 01:23:54.460
+so here treating
+everything as one.
+
+01:23:54.460 --> 01:23:56.720
+And then for those of
+you who have heard of it,
+
+01:23:56.720 --> 01:24:03.100
+flux one contexts is
+actually doing a bit of both.
+
+01:24:03.100 --> 01:24:06.900
+So I put all the
+links in the slides.
+
+01:24:06.900 --> 01:24:09.640
+So we don't have time to talk
+about each of these papers.
+
+01:24:09.640 --> 01:24:11.850
+But if you're interested,
+you can just go there
+
+01:24:11.850 --> 01:24:17.210
+and just look at the papers
+to see how they design it.
+
+01:24:17.210 --> 01:24:19.790
+It is not in the
+scope of the finals,
+
+01:24:19.790 --> 01:24:21.590
+so don't worry if
+you don't go there.
+
+01:24:21.590 --> 01:24:23.050
+It's not required.
+
+01:24:23.050 --> 01:24:28.050
+But if you're interested,
+I think it's a good source.
+
+01:24:28.050 --> 01:24:30.770
+And just continuing
+the timeline.
+
+01:24:30.770 --> 01:24:36.050
+So nowadays,
+image-generation models
+
+01:24:36.050 --> 01:24:40.130
+are full of MM-DiT-based models.
+
+01:24:40.130 --> 01:24:43.290
+And in particular, if you
+think about when the diffusion
+
+01:24:43.290 --> 01:24:47.210
+transformer was published,
+which was in 2022,
+
+01:24:47.210 --> 01:24:52.370
+Stable Diffusion 3, which was
+the first one to coin MM-DiT
+
+01:24:52.370 --> 01:24:54.030
+was released in 2024.
+
+01:24:54.030 --> 01:24:57.830
+And then the models I mentioned
+were released in 2025.
+
+01:24:57.830 --> 01:25:00.670
+And again, the ones that
+are being published in 2026,
+
+01:25:00.670 --> 01:25:02.210
+they seem to follow
+the same trend.
+
+01:25:02.210 --> 01:25:07.250
+All of that to say that I
+think these are relevant
+
+01:25:07.250 --> 01:25:11.830
+architectures that I think
+are good to have in mind.
+
+01:25:11.830 --> 01:25:12.990
+I'm looking at the time.
+
+01:25:12.990 --> 01:25:17.110
+I'm slightly over time,
+but any questions on that?
+
+01:25:21.050 --> 01:25:23.130
+We're all good?
+
+01:25:23.130 --> 01:25:23.850
+Perfect.
+
+01:25:23.850 --> 01:25:26.970
+So with that, I'm going
+to give it to Shervine.
+
+01:25:26.970 --> 01:25:28.490
+Thank you, Afshine.
+
+01:25:28.490 --> 01:25:31.330
+So with all these
+models, we have
+
+01:25:31.330 --> 01:25:35.330
+seen that one constant is
+that we need to represent
+
+01:25:35.330 --> 01:25:37.250
+the position of the input.
+
+01:25:37.250 --> 01:25:40.490
+So the next section here
+is called optimization.
+
+01:25:40.490 --> 01:25:43.610
+But we're not going to look at
+optimizations of everything--
+
+01:25:43.610 --> 01:25:47.410
+just the optimization
+of the position.
+
+01:25:47.410 --> 01:25:50.410
+So in order to
+make things simple,
+
+01:25:50.410 --> 01:25:53.050
+I'm going to start
+in the 1D case.
+
+01:25:53.050 --> 01:25:56.890
+And then we're going to see
+how we can adapt this concept
+
+01:25:56.890 --> 01:25:59.690
+of positions in the 2D one.
+
+01:25:59.690 --> 01:26:04.010
+So as you recall, the
+original transformer
+
+01:26:04.010 --> 01:26:06.800
+was based on text tokens.
+
+01:26:06.800 --> 01:26:09.640
+So in this case, where
+you have the sentence,
+
+01:26:09.640 --> 01:26:11.640
+a teddy bear is
+reading, what you
+
+01:26:11.640 --> 01:26:16.440
+would want is when you do
+comparisons between your tokens
+
+01:26:16.440 --> 01:26:20.320
+in the attention layer,
+that the token teddy
+
+01:26:20.320 --> 01:26:26.680
+bear or the representation of it
+is seen as being close to tokens
+
+01:26:26.680 --> 01:26:32.320
+around it or itself and far from
+others that are far from it.
+
+01:26:32.320 --> 01:26:34.560
+That's the goal.
+
+01:26:34.560 --> 01:26:38.560
+So let's write that
+in mathematical form.
+
+01:26:38.560 --> 01:26:44.520
+So what we want is a way for
+us to compare two embeddings
+
+01:26:44.520 --> 01:26:47.680
+and when you do an operation
+like the dot product
+
+01:26:47.680 --> 01:26:51.440
+to have it as a function
+of the distance.
+
+01:26:51.440 --> 01:26:53.560
+But here I'm saying
+the dot product
+
+01:26:53.560 --> 01:26:57.280
+of embeddings of these
+tokens it's not totally true.
+
+01:26:57.280 --> 01:26:59.840
+Here I'm going to
+put it in quotes,
+
+01:26:59.840 --> 01:27:01.680
+because in the
+case of attention,
+
+01:27:01.680 --> 01:27:04.120
+we're not comparing
+the same embeddings.
+
+01:27:04.120 --> 01:27:07.240
+We're comparing
+the query embedding
+
+01:27:07.240 --> 01:27:10.960
+with the key embedding
+of the other token.
+
+01:27:10.960 --> 01:27:15.440
+So it's modulo some
+transformation.
+
+01:27:15.440 --> 01:27:19.680
+And just to write
+things down, we
+
+01:27:19.680 --> 01:27:23.040
+are going to decompose,
+as a first approach,
+
+01:27:23.040 --> 01:27:27.320
+the representation of the
+embedding of a given token
+
+01:27:27.320 --> 01:27:30.800
+with what we call the input
+embedding, which is whatever
+
+01:27:30.800 --> 01:27:35.000
+representation we already have
+that is not position-specific,
+
+01:27:35.000 --> 01:27:38.760
+and then adding it as
+an element-wise addition
+
+01:27:38.760 --> 01:27:41.540
+in the vector space,
+the position embedding.
+
+01:27:41.540 --> 01:27:44.360
+That's what the original
+transformer paper proposed,
+
+01:27:44.360 --> 01:27:49.760
+such that when you do the dot
+product operation that I just
+
+01:27:49.760 --> 01:27:55.000
+mentioned, you have
+a term that pops out
+
+01:27:55.000 --> 01:27:59.800
+that is a dot product of these
+position embeddings together.
+
+01:27:59.800 --> 01:28:05.710
+And I'm not saying that all the
+other terms are not functions
+
+01:28:05.710 --> 01:28:07.170
+of this position embeddings.
+
+01:28:07.170 --> 01:28:09.710
+Some of them are cross
+terms, but we're just
+
+01:28:09.710 --> 01:28:11.910
+going to ignore them for now.
+
+01:28:11.910 --> 01:28:16.710
+And we're going to focus on what
+choice to get for these position
+
+01:28:16.710 --> 01:28:21.870
+embeddings in order for the
+representation to make sense.
+
+01:28:21.870 --> 01:28:27.350
+So the original transformer
+hard coded it with a formula
+
+01:28:27.350 --> 01:28:29.070
+that I just wrote down here.
+
+01:28:29.070 --> 01:28:30.210
+So it might look scary.
+
+01:28:30.210 --> 01:28:33.710
+Some of you might know about it
+already, but for all the others,
+
+01:28:33.710 --> 01:28:35.470
+it might look scary.
+
+01:28:35.470 --> 01:28:39.310
+So you have a combination
+of sines and cosines
+
+01:28:39.310 --> 01:28:43.190
+that you might ask
+yourself, why are they here?
+
+01:28:43.190 --> 01:28:46.790
+So we're going to decompose
+all the notations in there
+
+01:28:46.790 --> 01:28:50.870
+and see intuitively
+what they are for.
+
+01:28:50.870 --> 01:28:56.230
+So you see that you have
+the position as a numerator
+
+01:28:56.230 --> 01:28:57.890
+within these sines and cosines.
+
+01:28:57.890 --> 01:29:03.750
+And on the denominator,
+you have some huge number
+
+01:29:03.750 --> 01:29:05.910
+put at some exponent.
+
+01:29:05.910 --> 01:29:11.870
+And that exponent is a function
+of the position in the vector
+
+01:29:11.870 --> 01:29:14.790
+and the dimension
+of the embedding
+
+01:29:14.790 --> 01:29:17.390
+altogether, such
+that when you vary
+
+01:29:17.390 --> 01:29:22.230
+this I between the first
+and the middle position,
+
+01:29:22.230 --> 01:29:25.550
+you cover exponents from 0 to 1.
+
+01:29:25.550 --> 01:29:28.150
+So in other words,
+you have these signs
+
+01:29:28.150 --> 01:29:32.790
+that have frequencies
+that are either high
+
+01:29:32.790 --> 01:29:37.030
+when this I is close
+to 0 because you
+
+01:29:37.030 --> 01:29:39.490
+have the position over
+something that is small.
+
+01:29:39.490 --> 01:29:41.770
+So it's going to
+vary quite fast.
+
+01:29:41.770 --> 01:29:44.950
+So we're going to call
+them high frequency.
+
+01:29:44.950 --> 01:29:47.950
+And on the other
+end of the spectrum,
+
+01:29:47.950 --> 01:29:52.870
+when you have I close to the
+dimension of the vector over 2,
+
+01:29:52.870 --> 01:29:55.310
+it's going to be close to 1.
+
+01:29:55.310 --> 01:29:57.990
+And as you can see,
+the number that
+
+01:29:57.990 --> 01:30:02.620
+is elevated to that
+exponent is some number
+
+01:30:02.620 --> 01:30:06.660
+that looks arbitrary,
+but it's quite large.
+
+01:30:06.660 --> 01:30:09.860
+It's voluntarily taken
+quite large with respect
+
+01:30:09.860 --> 01:30:15.060
+to the sequence length,
+because the mindset behind it
+
+01:30:15.060 --> 01:30:21.900
+is that we want these
+frequencies when I is high,
+
+01:30:21.900 --> 01:30:23.980
+to be considered as low.
+
+01:30:23.980 --> 01:30:28.460
+So in other words, when you have
+a sequence length of let's say
+
+01:30:28.460 --> 01:30:34.940
+500, we want these 1 over
+10,000 to be so small that
+
+01:30:34.940 --> 01:30:41.060
+the variation of that sine and
+cosine is of low frequency with
+
+01:30:41.060 --> 01:30:44.820
+respect to the sequence length.
+
+01:30:44.820 --> 01:30:47.320
+Does that make sense?
+
+01:30:47.320 --> 01:30:47.820
+OK.
+
+01:30:47.820 --> 01:30:48.540
+Awesome.
+
+01:30:48.540 --> 01:30:51.980
+So now I'm going to show
+you the exact same figure
+
+01:30:51.980 --> 01:30:55.100
+that Afshine showed
+in a different context
+
+01:30:55.100 --> 01:30:57.180
+in a timestep embedding.
+
+01:30:57.180 --> 01:30:59.460
+But it turns out
+that here we choose
+
+01:30:59.460 --> 01:31:01.440
+a similar mathematical framing.
+
+01:31:01.440 --> 01:31:03.900
+So the same graph applies.
+
+01:31:03.900 --> 01:31:08.820
+And we're going to analyze
+parts of these projection
+
+01:31:08.820 --> 01:31:12.860
+and then see how it compares
+with respect to our frequencies
+
+01:31:12.860 --> 01:31:16.140
+that we qualified
+as high and low.
+
+01:31:16.140 --> 01:31:20.260
+So on the left, we're
+looking at dimensions that
+
+01:31:20.260 --> 01:31:22.400
+are early on in the vector.
+
+01:31:22.400 --> 01:31:28.260
+So we call them the
+high frequencies.
+
+01:31:28.260 --> 01:31:32.700
+And as you can see, when you
+vary the sequence position,
+
+01:31:32.700 --> 01:31:37.420
+these numbers, they vary between
+negative 1 and 1 quite fast.
+
+01:31:37.420 --> 01:31:40.060
+And on the other end
+of the spectrum, when
+
+01:31:40.060 --> 01:31:42.740
+you look at positions
+of this vector
+
+01:31:42.740 --> 01:31:50.220
+that are larger than the cosine
+and sines take time in order
+
+01:31:50.220 --> 01:31:54.650
+to cover the whole face.
+
+01:31:54.650 --> 01:32:01.370
+So now I talked about a given
+frequency that was hard coded.
+
+01:32:01.370 --> 01:32:03.310
+This is a design choice.
+
+01:32:03.310 --> 01:32:06.170
+We're going to hide
+it under some variable
+
+01:32:06.170 --> 01:32:08.750
+that I'm going to call omega y.
+
+01:32:11.580 --> 01:32:16.690
+And we're going to look side
+by side what these vectors look
+
+01:32:16.690 --> 01:32:21.450
+like when you take position
+m on one hand and position n.
+
+01:32:21.450 --> 01:32:23.690
+And we're going
+to try to see what
+
+01:32:23.690 --> 01:32:25.850
+taking the dot products
+between both of them
+
+01:32:25.850 --> 01:32:26.990
+is going to give us.
+
+01:32:29.762 --> 01:32:33.970
+So here you see that you have
+these sines that are aligned
+
+01:32:33.970 --> 01:32:37.770
+and these cosines, so that
+when you do the dot product,
+
+01:32:37.770 --> 01:32:45.370
+you have a sum of these sines of
+similar frequencies at position
+
+01:32:45.370 --> 01:32:51.970
+m and n and plus a product of
+cosines of a same frequency
+
+01:32:51.970 --> 01:32:55.090
+at positions m and n again.
+
+01:32:55.090 --> 01:32:59.210
+And if you recall your
+trigonometry class,
+
+01:32:59.210 --> 01:33:07.050
+sine A, sine B, plus cosine
+A cosine B is an identity.
+
+01:33:07.050 --> 01:33:12.370
+And you can rewrite it as
+cosine of A minus B, such
+
+01:33:12.370 --> 01:33:15.890
+that when you compute
+this dot product,
+
+01:33:15.890 --> 01:33:22.770
+this is nothing else as the sum
+of about dimension of embeddings
+
+01:33:22.770 --> 01:33:29.090
+over 2 terms of this cosine
+of difference of terms.
+
+01:33:29.090 --> 01:33:32.090
+So it's quite interpretable.
+
+01:33:32.090 --> 01:33:37.050
+So now let's take a look at
+when we compare positions
+
+01:33:37.050 --> 01:33:41.810
+m and n what the dot product
+evolves with respect to time.
+
+01:33:41.810 --> 01:33:47.570
+So you see that it has
+this natural curve that
+
+01:33:47.570 --> 01:33:48.950
+overall decreases.
+
+01:33:48.950 --> 01:33:50.360
+But it's not monotonic.
+
+01:33:50.360 --> 01:33:52.700
+It doesn't
+monotonically decrease,
+
+01:33:52.700 --> 01:33:54.840
+but it tends to decrease.
+
+01:33:54.840 --> 01:33:59.680
+And you can see multiple
+regions in this curve
+
+01:33:59.680 --> 01:34:02.120
+that you can interpret
+as to why you
+
+01:34:02.120 --> 01:34:04.340
+have such phenomenon happening.
+
+01:34:04.340 --> 01:34:08.760
+So at the very beginning,
+you see a sudden drop.
+
+01:34:08.760 --> 01:34:11.120
+And this can be
+interpreted by the fact
+
+01:34:11.120 --> 01:34:14.120
+that all your
+cosines in your sum,
+
+01:34:14.120 --> 01:34:16.800
+whether high frequency
+or low frequency,
+
+01:34:16.800 --> 01:34:19.960
+start from an angle
+close to 0, and they
+
+01:34:19.960 --> 01:34:24.840
+all drop from these
+cosine of 0 equals 1.
+
+01:34:24.840 --> 01:34:27.480
+And then as you
+progress, when you
+
+01:34:27.480 --> 01:34:30.920
+increase the distance
+between positions, m and n,
+
+01:34:30.920 --> 01:34:33.920
+you have your high
+frequency cosine
+
+01:34:33.920 --> 01:34:37.660
+terms that oscillate
+between minus 1 and 1,
+
+01:34:37.660 --> 01:34:41.840
+and they will tend to
+cancel each other out.
+
+01:34:41.840 --> 01:34:47.840
+So this is why you see some
+oscillations but not that much.
+
+01:34:47.840 --> 01:34:53.210
+And then later on you see more
+and more oscillations coming in.
+
+01:34:53.210 --> 01:34:57.990
+This is your low frequency
+terms that start oscillating,
+
+01:34:57.990 --> 01:35:03.390
+and this is how it
+can be interpreted.
+
+01:35:03.390 --> 01:35:06.910
+So why are we choosing
+these positions embeddings
+
+01:35:06.910 --> 01:35:08.510
+in the first place?
+
+01:35:08.510 --> 01:35:12.550
+So we saw that we can have
+an interesting interpretation
+
+01:35:12.550 --> 01:35:16.230
+in terms of comparing two
+position embeddings when
+
+01:35:16.230 --> 01:35:18.330
+they are close versus
+far from each other.
+
+01:35:18.330 --> 01:35:21.310
+You have an intuitive
+interpretation
+
+01:35:21.310 --> 01:35:26.710
+as to the dot products that can
+be compared to the distance.
+
+01:35:26.710 --> 01:35:29.350
+And also something
+that I haven't put here
+
+01:35:29.350 --> 01:35:33.830
+and that was highlighted
+by initial authors,
+
+01:35:33.830 --> 01:35:40.150
+the position embedding when you
+increase the position by a given
+
+01:35:40.150 --> 01:35:44.150
+factor, k, can be represented
+by a linear operation.
+
+01:35:44.150 --> 01:35:47.070
+So when you have all these
+matrix multiplication
+
+01:35:47.070 --> 01:35:50.350
+operations, you can
+see that operation
+
+01:35:50.350 --> 01:35:54.170
+as being absorbed by
+these matrix computations,
+
+01:35:54.170 --> 01:35:58.030
+such that position information
+can be taken into account.
+
+01:35:58.030 --> 01:36:01.550
+So it has this linear
+interpretation as well.
+
+01:36:01.550 --> 01:36:07.310
+And the argument is that
+it's very simple because you
+
+01:36:07.310 --> 01:36:09.130
+have a pre-computed formula.
+
+01:36:09.130 --> 01:36:11.310
+So let's say at
+training time, you
+
+01:36:11.310 --> 01:36:15.670
+have a given constraint
+on the sequence length.
+
+01:36:15.670 --> 01:36:18.230
+If at inference time you
+change that parameter,
+
+01:36:18.230 --> 01:36:23.190
+then you're not lost
+because you know how
+
+01:36:23.190 --> 01:36:26.550
+to extrapolate by the formula.
+
+01:36:26.550 --> 01:36:31.830
+And so we see that it just
+works well in practice.
+
+01:36:31.830 --> 01:36:36.150
+But then on the flip side, and
+I'm not talking about the fact
+
+01:36:36.150 --> 01:36:39.990
+that it's hard-coded, but more
+about the absolute property
+
+01:36:39.990 --> 01:36:43.470
+of these position
+embeddings, we saw
+
+01:36:43.470 --> 01:36:46.900
+that it was introduced
+at the input level,
+
+01:36:46.900 --> 01:36:51.780
+whereas the initial
+motivation where I mentioned
+
+01:36:51.780 --> 01:36:54.260
+position embeddings
+were helpful were more
+
+01:36:54.260 --> 01:36:56.900
+at the attention level.
+
+01:36:56.900 --> 01:36:59.660
+So it seems like we're injecting
+this position information
+
+01:36:59.660 --> 01:37:04.620
+at a place where that
+information doesn't matter most,
+
+01:37:04.620 --> 01:37:07.220
+but it might matter
+most at places
+
+01:37:07.220 --> 01:37:09.460
+where you want to
+compare embeddings
+
+01:37:09.460 --> 01:37:11.040
+with respect to one another.
+
+01:37:11.040 --> 01:37:15.100
+So we're going to see
+how to alleviate that.
+
+01:37:15.100 --> 01:37:19.700
+And I mentioned as well this
+extra interaction terms.
+
+01:37:19.700 --> 01:37:23.500
+When you add position embeddings
+at the very beginning,
+
+01:37:23.500 --> 01:37:27.540
+that might interact with
+the input embeddings.
+
+01:37:27.540 --> 01:37:30.220
+And I'm not saying
+this is bad, but I'm
+
+01:37:30.220 --> 01:37:33.020
+saying this might not
+be the intention we
+
+01:37:33.020 --> 01:37:35.540
+have behind this
+position embeddings.
+
+01:37:35.540 --> 01:37:38.260
+So it doesn't seem to align
+with the design choice
+
+01:37:38.260 --> 01:37:40.620
+that we have in mind.
+
+01:37:40.620 --> 01:37:45.980
+And just to give you some
+information regarding who
+
+01:37:45.980 --> 01:37:48.080
+used it, basically, everyone.
+
+01:37:48.080 --> 01:37:50.600
+Like every first
+paper on transformers
+
+01:37:50.600 --> 01:37:53.740
+used absolute position
+embedding-- so not necessarily
+
+01:37:53.740 --> 01:37:57.940
+the hard-coded version, but the
+one that adds it in the input.
+
+01:37:57.940 --> 01:38:02.300
+So the transformer, of course,
+did it the way I presented.
+
+01:38:02.300 --> 01:38:05.240
+The original VIT
+didn't hardcode it.
+
+01:38:05.240 --> 01:38:07.900
+It was something
+that was learned.
+
+01:38:07.900 --> 01:38:13.860
+And then the DiT did hard-code
+it but in 2D space in a manner
+
+01:38:13.860 --> 01:38:17.460
+similar to one that we're
+going to see very soon.
+
+01:38:17.460 --> 01:38:21.500
+But it did so at
+the input level.
+
+01:38:21.500 --> 01:38:23.960
+Yeah.
+
+01:38:23.960 --> 01:38:24.560
+A great point.
+
+01:38:24.560 --> 01:38:25.920
+So what about the 2D case?
+
+01:38:25.920 --> 01:38:28.300
+We're going to see it.
+
+01:38:28.300 --> 01:38:29.560
+And yeah, great point.
+
+01:38:33.565 --> 01:38:35.420
+But first before
+doing that, we're
+
+01:38:35.420 --> 01:38:37.780
+going to see if there
+is a better location
+
+01:38:37.780 --> 01:38:40.830
+to have these position
+embeddings be represented.
+
+01:38:40.830 --> 01:38:44.170
+And as you might have
+guessed from all my hints,
+
+01:38:44.170 --> 01:38:47.730
+the attention layer is going
+to be the place to put them.
+
+01:38:47.730 --> 01:38:54.750
+And this is the key insight from
+RoPE Rotary Position Embeddings.
+
+01:38:54.750 --> 01:38:58.650
+That was a paper in
+2021 that introduced
+
+01:38:58.650 --> 01:39:01.790
+these kinds of
+representation of positions,
+
+01:39:01.790 --> 01:39:06.130
+and that is the leading way
+people do it in practice today.
+
+01:39:06.130 --> 01:39:09.090
+And the way it
+works is as follows.
+
+01:39:09.090 --> 01:39:10.810
+You take queries.
+
+01:39:10.810 --> 01:39:12.330
+You take keys.
+
+01:39:12.330 --> 01:39:16.910
+And instead of fitting them
+in the dot product as is,
+
+01:39:16.910 --> 01:39:21.250
+you will rotate them by a
+rotation operation that takes
+
+01:39:21.250 --> 01:39:23.690
+into account their position.
+
+01:39:23.690 --> 01:39:24.710
+So you take the query.
+
+01:39:24.710 --> 01:39:28.530
+You rotate it with respect to
+something that depends on m.
+
+01:39:28.530 --> 01:39:29.810
+Same for key.
+
+01:39:29.810 --> 01:39:32.570
+That depends on n, its position.
+
+01:39:32.570 --> 01:39:37.890
+And you're going to do the dot
+product of these rotated queries
+
+01:39:37.890 --> 01:39:40.930
+and keys instead
+of the raw ones.
+
+01:39:40.930 --> 01:39:43.370
+And one nice property
+that is interpretable
+
+01:39:43.370 --> 01:39:47.090
+here is that you see
+a rotation matrix that
+
+01:39:47.090 --> 01:39:52.510
+depends on the difference of
+positions, n minus m, pop out.
+
+01:39:52.510 --> 01:39:56.430
+So you feel like it's a design
+choice that that makes sense.
+
+01:40:00.130 --> 01:40:05.030
+And then to answer your
+points, now we're good for 1D.
+
+01:40:05.030 --> 01:40:07.290
+But what about 2D?
+
+01:40:07.290 --> 01:40:11.010
+So 2D you have this coordinates.
+
+01:40:11.010 --> 01:40:13.790
+But if you don't talk
+about coordinates just yet,
+
+01:40:13.790 --> 01:40:16.690
+you might number
+them in a 1D manner.
+
+01:40:16.690 --> 01:40:22.210
+And it's not super clear whether
+it makes sense at all to compare
+
+01:40:22.210 --> 01:40:25.410
+1D numbers with
+respect to one another.
+
+01:40:25.410 --> 01:40:29.390
+So you have a few
+ways to get around it.
+
+01:40:29.390 --> 01:40:33.490
+So the first idea, which
+is a similar flavor of what
+
+01:40:33.490 --> 01:40:39.880
+the original DiT paper
+used is to segregate axes,
+
+01:40:39.880 --> 01:40:43.280
+such that you represent
+vectors with respect
+
+01:40:43.280 --> 01:40:46.640
+to their coordinates
+in the 2D space.
+
+01:40:46.640 --> 01:40:51.400
+And you do the x-axis in
+some part of the vector
+
+01:40:51.400 --> 01:40:54.680
+and the y-axis at
+some other part.
+
+01:40:54.680 --> 01:40:57.280
+And here we're talking
+about one given
+
+01:40:57.280 --> 01:41:02.960
+design choice of how to order
+the indices with respect
+
+01:41:02.960 --> 01:41:04.640
+to where you project.
+
+01:41:04.640 --> 01:41:08.180
+But it doesn't have to be
+grouped by even or odd indices.
+
+01:41:08.180 --> 01:41:10.040
+You can group these
+by any way you
+
+01:41:10.040 --> 01:41:13.440
+want because this is arbitrary.
+
+01:41:13.440 --> 01:41:16.560
+And so this is one
+way of doing it.
+
+01:41:16.560 --> 01:41:19.920
+It's called axial RoPE.
+
+01:41:19.920 --> 01:41:23.640
+There is another way that
+you could get around it
+
+01:41:23.640 --> 01:41:26.720
+that mitigates the fact that--
+
+01:41:26.720 --> 01:41:29.440
+so here if you do
+the actual way,
+
+01:41:29.440 --> 01:41:33.600
+one thing is that if you do
+the dot product between two
+
+01:41:33.600 --> 01:41:37.160
+rotated vectors, you realize
+that you're comparing
+
+01:41:37.160 --> 01:41:39.360
+x with x and y with y.
+
+01:41:39.360 --> 01:41:43.080
+So you're missing that
+interaction component.
+
+01:41:43.080 --> 01:41:49.400
+And one way you can go around it
+is to mix rotations with respect
+
+01:41:49.400 --> 01:41:52.200
+to x and y in the same vector.
+
+01:41:52.200 --> 01:41:57.400
+So this is the
+so-called mixed RoPE.
+
+01:41:57.400 --> 01:42:01.880
+And the authors of the paper
+that discuss these two 2D
+
+01:42:01.880 --> 01:42:09.920
+strategies made a representation
+of a given input position
+
+01:42:09.920 --> 01:42:14.902
+and applied a frequency-based
+technique that I know some
+
+01:42:14.902 --> 01:42:17.360
+of you might know from the
+physics space called the Fourier
+
+01:42:17.360 --> 01:42:18.180
+Transform.
+
+01:42:18.180 --> 01:42:21.520
+So to apply the
+Fourier Transform,
+
+01:42:21.520 --> 01:42:26.520
+it's filtered out for a
+given frequency's budget--
+
+01:42:26.520 --> 01:42:29.480
+only those that were
+taken into consideration.
+
+01:42:29.480 --> 01:42:32.240
+And after trying to
+reconstruct the signal
+
+01:42:32.240 --> 01:42:36.190
+from these set of
+frequencies, saw
+
+01:42:36.190 --> 01:42:40.550
+that Axial RoPE had all
+these axial artifacts that
+
+01:42:40.550 --> 01:42:44.190
+were due to this lack of
+interaction between the two
+
+01:42:44.190 --> 01:42:48.790
+axes, whereas Mixed RoPE
+was able to leverage
+
+01:42:48.790 --> 01:42:51.710
+the same set of frequencies,
+like the same set
+
+01:42:51.710 --> 01:42:55.210
+of frequencies budgets in
+a way more efficient way.
+
+01:42:58.250 --> 01:43:00.150
+So these are two ways
+of looking at them,
+
+01:43:00.150 --> 01:43:04.270
+and mixing things seems
+to make it better.
+
+01:43:04.270 --> 01:43:09.230
+And something else that you
+might worry about beyond taking
+
+01:43:09.230 --> 01:43:13.830
+into account the 2D case, is how
+to make sense of these positions
+
+01:43:13.830 --> 01:43:18.490
+when you have different number
+of patches presented to you.
+
+01:43:18.490 --> 01:43:20.430
+So, for example, let's
+say your teddy bear
+
+01:43:20.430 --> 01:43:24.150
+is in low resolution
+versus high resolution.
+
+01:43:24.150 --> 01:43:27.230
+How does it make
+sense me as a model
+
+01:43:27.230 --> 01:43:30.270
+to interpret what is at the
+center of the image versus what
+
+01:43:30.270 --> 01:43:32.830
+is on the left or
+what is on the right?
+
+01:43:32.830 --> 01:43:38.270
+And this is what
+Seedream 2 thought about.
+
+01:43:38.270 --> 01:43:43.910
+And the idea here is to
+center the coordinates
+
+01:43:43.910 --> 01:43:46.270
+in a way that will
+tell the model where
+
+01:43:46.270 --> 01:43:50.030
+the center of the image is
+in order for it to locate
+
+01:43:50.030 --> 01:43:51.670
+different parts of the image.
+
+01:43:51.670 --> 01:43:57.470
+So instead of having like
+a grid that starts from 0,
+
+01:43:57.470 --> 01:44:01.950
+you have the 0 roughly being
+at the center of the image,
+
+01:44:01.950 --> 01:44:05.270
+and then you adjust
+the external points.
+
+01:44:05.270 --> 01:44:12.110
+And one thing that you might
+wonder by Afshine's description
+
+01:44:12.110 --> 01:44:15.070
+of MM-DiT models,
+for example, those
+
+01:44:15.070 --> 01:44:17.590
+that perform joint
+attention, so you
+
+01:44:17.590 --> 01:44:20.670
+have these points
+in the architecture
+
+01:44:20.670 --> 01:44:25.150
+where you might have text tokens
+interacting with image tokens.
+
+01:44:25.150 --> 01:44:27.310
+So one question you
+might ask yourself,
+
+01:44:27.310 --> 01:44:31.580
+how to quantify the position of
+one with respect to the other.
+
+01:44:31.580 --> 01:44:35.780
+And by thinking
+about this, one thing
+
+01:44:35.780 --> 01:44:39.860
+you might want to think
+about is what wouldn't work.
+
+01:44:39.860 --> 01:44:42.860
+So what wouldn't
+work intuitively
+
+01:44:42.860 --> 01:44:49.420
+is the positions at the
+horizontal lines of the image
+
+01:44:49.420 --> 01:44:51.420
+and the vertical ones.
+
+01:44:51.420 --> 01:44:54.540
+Because intuitively, you
+do not want your model
+
+01:44:54.540 --> 01:44:57.060
+to think that your
+text tokens are
+
+01:44:57.060 --> 01:44:59.500
+a continuation of your image.
+
+01:44:59.500 --> 01:45:04.660
+So one natural position that
+the coin image paper points out
+
+01:45:04.660 --> 01:45:07.780
+is the diagonal, because
+it's clear that it's out
+
+01:45:07.780 --> 01:45:10.500
+of the area of the image.
+
+01:45:10.500 --> 01:45:17.780
+And by doing so, they see that
+they can just live together.
+
+01:45:17.780 --> 01:45:23.780
+And if you use an actual
+formulation of the 2D
+
+01:45:23.780 --> 01:45:29.060
+representation, you even notice
+that your text tokens become
+
+01:45:29.060 --> 01:45:32.460
+equivalent to the 1D case
+because you have your x
+
+01:45:32.460 --> 01:45:36.020
+and y's that are incremented
+by 1 between one another.
+
+01:45:36.020 --> 01:45:39.580
+So just you fall back
+on the same case.
+
+01:45:39.580 --> 01:45:45.860
+And so I just went through
+some of the keys that made some
+
+01:45:45.860 --> 01:45:48.100
+of these techniques work well.
+
+01:45:48.100 --> 01:45:53.260
+I just want to say that this
+is very much an open problem.
+
+01:45:53.260 --> 01:45:58.180
+There is no many papers that use
+the same techniques but rather
+
+01:45:58.180 --> 01:46:03.280
+many that use variations to
+reach their own architectures,
+
+01:46:03.280 --> 01:46:05.480
+goals.
+
+01:46:05.480 --> 01:46:08.500
+And then there are
+trade offs as well.
+
+01:46:08.500 --> 01:46:12.540
+And you might remember
+from the early slides
+
+01:46:12.540 --> 01:46:17.460
+that we were talking about teddy
+bear that was wanting to dance.
+
+01:46:17.460 --> 01:46:21.090
+So here is our teddy bear
+wishing you a great weekend.
+

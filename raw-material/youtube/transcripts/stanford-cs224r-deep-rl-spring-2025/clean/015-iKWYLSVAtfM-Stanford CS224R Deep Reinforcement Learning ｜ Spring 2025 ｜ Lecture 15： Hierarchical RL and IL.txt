@@ -1,0 +1,2581 @@
+Hi, everyone.
+Let's get started.
+In the last couple
+of lectures, we've
+been talking about
+training RL and imitation
+learning systems that can
+do multiple different tasks.
+And we first looked at this from
+the lens of multi-task imitation
+and reinforcement
+learning, where
+you condition a policy or a
+Q-function not just on the state
+but also on some sort of
+descriptor of the task,
+or where there
+are also scenarios
+in the goal condition setting
+where that descriptor could
+actually be a state
+itself, like a goal state
+that you're trying to reach.
+And then more recently,
+we were talking
+about meta-reinforcement
+learning, where you could think
+of that instead of conditioning
+on a description of the task,
+you want to do-- you
+actually need to figure out
+from a few examples and a
+little bit of experience
+with rewards, what the task is.
+And you're trying to train
+this few-shot policy that
+can adapt with a small
+amount of experience.
+Now, today, we'll
+be kind of building
+on some of these concepts
+and trying to not just train
+a policy to do multiple tasks
+but to actually string together
+behaviors for multiple tasks
+into a longer horizon task.
+So this is where we're
+going to be talking
+about where hierarchy might
+be helpful for solving
+long-horizon tasks.
+And then we'll be
+talking about some
+of the key design choices
+behind hierarchical imitation
+and reinforcement
+learning methods,
+including how to represent
+skills and goals, when
+to move on from one
+goal or task to another,
+and the supervision for
+the different levels
+of the hierarchy.
+And then lastly, we'll go
+through a couple examples
+of what these systems could
+actually look like because there
+are a variety of
+different ways that you
+could design these sort
+of hierarchical systems.
+So the task that we'll
+be talking about today
+are long-horizon tasks.
+And by long-horizon
+tasks, I mean
+tasks that take a
+while to complete
+and might consist of a
+number of different subtasks
+or a number of
+different steps that you
+need to take in some
+sort of sequence or order
+in order to complete
+it successfully.
+So this could be something
+like cooking a meal.
+It could be for a robot
+system, for an LLM agent.
+It could be trying to fix a bug
+that's causing a neural network
+training loss to explode.
+For an autonomous vehicle, it
+could be driving to Yosemite.
+For a different LLM, it
+could be giving feedback
+on a long report.
+And for these
+tasks, you can think
+about how there are
+oftentimes different steps
+that you need to complete.
+Some of those steps might be
+interdependent on one another,
+where it makes sense to
+do one before the other.
+And other tasks
+might be something
+where they're less
+interdependent,
+and it's actually OK to
+do those in parallel.
+These are really hard problems
+for AI systems to solve,
+in general.
+There's a number of
+reasons for that.
+So the first is
+that when you are
+doing a task that
+takes a long time,
+you're visiting a large
+number of states along the way
+to get there.
+And every new state
+that you visit,
+you need to be able
+to make decisions for.
+So you basically just have
+a much broader distribution
+that your policy needs
+to be successful on.
+There's also a lot of different
+opportunities to make mistakes.
+And if you make a
+mistake, you need
+to be able to recover
+from that mistake,
+if it's something that you
+can actually recover from.
+And separate from
+mistakes, there's
+also just opportunities
+to get stuck.
+For example, if there's
+one kind of mistake
+that might, for
+example, not lead
+you to actually make
+progress on the task.
+And if you're not
+making progress,
+then you'll actually just end
+up in the same state again.
+And you'll keep on making that
+same mistake over and over again
+and essentially just get
+stuck at performing the task.
+And these kinds of
+mistakes are particularly
+gnarly because when you end
+up in the same state again,
+your policy will keep on
+deterministically staying
+in that state and
+never making forward
+progress towards the goal.
+And then what's the main
+idea behind hierarchy?
+So we've talked about multi-task
+policies, where you have some--
+actually, let me draw
+this further to the right.
+We have some policy that
+takes as input some state.
+Maybe the state
+at some timestep.
+And it also takes as input
+some task or some goal.
+I'm going to write
+this as g for now
+because this task
+or goal could take
+a number of different forms.
+And this is passed
+into your policy
+to produce actions that
+are trying to address
+that particular goal.
+The idea for trying to
+solve long-horizon tasks
+is if we have a policy that can
+do a number of different things.
+Then we could try
+to break up a bigger
+task into different
+subtasks and then
+use one policy to actually tell
+this policy what task it should
+be doing at any
+given point in time.
+So for example, you could
+have another policy here
+that's actually outputting
+the goals to be doing.
+And this policy should
+also have information
+about the state as input so
+that it knows where it is
+and what goal makes sense
+for the agent to do.
+And then optionally, this is
+often called a low-level policy,
+or we'll use pi LL to refer.
+This is the low-level policy.
+This is doing shorter tasks.
+And we can refer to this as
+a high-level policy that's
+outputting goals for the
+low-level policy to accomplish.
+And this policy,
+it can have a task.
+Sorry.
+I wrote this as low level.
+This should be high level.
+If you want your
+policy to be able to do
+multiple long-horizon tasks,
+then this high-level policy
+could also have some sort of
+task descriptor as input as
+well, or some sort
+of goal as input.
+And so we, for example, could
+have goal high level as input
+to this policy, if you
+want to be completing
+not just one long-horizon task
+but multiple long-horizon tasks.
+Like not just
+driving to Yosemite
+but also being able
+to drive to the Grand
+Canyon or LA or Seattle
+or something like that.
+And the kind of crux
+underlying this idea
+is that if we can break up a
+really long task into smaller
+parts, then we might be able
+to better address the problem.
+And say, for example,
+your long-horizon task
+is to bake a cheesecake.
+This is a really,
+really hard problem.
+And if you just tried to train
+a policy like a robot policy
+to output motor commands
+for doing this task,
+it's really hard to figure
+out what you should be doing
+at any given point in time.
+But if you're just starting
+out, you can think about, OK,
+what's the first step
+for accomplishing this?
+Maybe you need to
+buy ingredients.
+Then what's the first step
+of buying ingredients?
+Well, maybe you need
+to go to the store.
+And how do you get to the store?
+Well, maybe you need
+to walk to the door.
+To walk to the door,
+you might take a step.
+How do you take a step?
+You might contract a muscle.
+And so you can basically
+break down a bigger task
+into a much smaller task.
+And these smaller tasks are
+a lot easier to train systems
+to do.
+And if you can train systems
+to do the smaller tasks,
+then you can try to compose
+them with a higher-level policy
+to be able to accomplish
+that more challenging task.
+So what we can do is for the
+"bake a cheesecake" task,
+we could pass this with a state
+or observation into a high-level
+policy, which is going to
+predict an intermediate step,
+like for example, go to the
+store or go to the door.
+And then that intermediate
+step, along with the state
+or observation, will be
+passed to the low-level policy
+to predict an action.
+Now, a couple notes here.
+So one note is that
+this low-level policy--
+this needs to be acting
+at the original frequency.
+So if you're
+controlling a robot,
+maybe this is
+operating at 20 hertz.
+If you're controlling
+a language model,
+then this is going to be
+outputting word by word.
+Whereas the
+high-level policy, it
+could actually predict goals
+for the low-level policy
+at a coarser timescale.
+And so, for example, it
+could be outputting goals
+after you've completed a
+paragraph for a language model
+or after you've completed that--
+like going to the
+store, for example.
+It could then give a new
+goal for the low-level policy
+to perform.
+And so we have a
+high-level policy that
+predicts intermediate goals.
+And then the low
+level policy tries
+to accomplish those intermediate
+goals by predicting actions.
+Typically, the
+low-level policy is
+operating at a higher frequency
+than the high-level policy.
+And I should note that--
+I'll refer to these as
+kind of goals or subtasks.
+There's a number of
+other names for these
+as well, like skills or options.
+You could also think about
+these as high-level actions.
+So these are actions but
+for a different policy
+that's operating at a
+higher level of abstraction
+than the original policy.
+And then the other
+thing here is that--
+this is like a
+two-level hierarchy,
+but you could also imagine
+having more than two levels
+of hierarchy as well.
+And for example, the baking a
+cheesecake, you could have--
+maybe one level
+of hierarchy could
+be things like go to the store,
+buy the things, bring them back.
+And a different
+level of hierarchy
+might actually be controlling,
+like the motors on a robot,
+in order to accomplish
+those tasks.
+And then once we have
+this hierarchical policy,
+how do we actually roll it
+out if we can do these things?
+So specifically, if we're at,
+say, we'll start at t equals 1,
+then the first
+step is to predict.
+Or another way to think about
+predicting a goal is planning.
+We're trying to think forward.
+What is the next step
+that we should do?
+So we could try to plan a goal.
+And this will be by sampling
+from our high-level policy based
+off of the current state and
+optionally some high-level goal.
+And then we'll be
+repeatedly sampling
+from our low-level policy.
+And so we could repeat.
+First sample, an action from the
+low-level policy using this goal
+as input.
+So sample a from high low level,
+with the state and this goal--
+the goal from the
+high level as input.
+And then we'll actually
+execute that action
+and get the next state.
+So basically at that
+point, we'll then--
+t will now become t plus 1.
+And we'll observe St. Then again
+with the same goal as before.
+But the new state will then
+be sampling a new action,
+repeating this process.
+And then at some
+point after we have--
+and we'll talk a
+little bit about how we
+decide when to get a new goal.
+But when we have decided
+that we're either
+done with the goal or
+enough time has passed,
+then we'll move back to step one
+to re-plan a new goal based off
+of the latest state.
+Yeah.
+So let's walk through this, and
+then I'll get to your question
+in a minute.
+So is there some initial state
+or observation, plan a new goal?
+Until a new goal
+is selected, we're
+going to execute a
+predicted action according
+to our low-level policy based
+off of that predicted goal.
+And then we'll observe
+a new observation.
+Now, why might hierarchy help?
+Which I think is getting
+at your question.
+There's a couple
+reasons for this.
+So the first is
+that typically we're
+going to be training this
+low-level policy to reach
+goals and this high-level policy
+to maximize rewards or reach
+some high-level goals.
+And this means that the
+objective for this policy
+is different than the overall
+objective of completing
+the long-horizon task.
+And so this is actually
+getting different supervision.
+And this intermediate
+supervision signal
+for how to complete
+intermediate goals or tasks
+can be useful for guiding
+the policy towards completing
+the long-horizon task.
+So you can think
+about it potentially.
+It depends on the setup,
+but you can think about it
+as a way to leverage
+intermediate supervision.
+Now you could always have
+intermediate supervision
+when training a big, flat
+policy as well, where
+you give it shaped
+rewards, and you give it
+rewards for completing
+individual subtasks.
+But compared to that,
+the other difference
+here is that this
+low-level multi-task policy
+is going to be able to more
+explicitly share knowledge
+across the different subtasks.
+So because, for example,
+it has this goal as input,
+it's targeting a
+particular subtask.
+And if two subtasks are
+quite similar to one another,
+then this policy will be able
+to share data across those tasks
+in order to more
+efficiently learn,
+compared to if you
+were just to try
+to train a single policy
+across the long-horizon task.
+In reinforcement learning,
+specifically, you
+can also think about benefits
+in terms of exploration.
+And in particular, when
+this high-level policy
+is proposing goals
+to reach, that's
+structuring the
+exploration process
+to encourage it to explore not
+just in the original action
+space but also in this
+higher-level goal space.
+And lastly, there can also be
+sometimes practical benefits
+as well.
+So, for example,
+if you're thinking
+about this task of making
+a cheesecake, for example,
+you might need to be reasoning
+through the steps for how
+to do that.
+And if you have a
+single policy, then you
+need to reason
+through those steps
+every single timestep
+with that flat policy.
+So if your robot is
+operating at 20 hertz,
+for example, you're going to
+be reasoning through like, what
+is the next thing
+I should be doing
+and the way to get there with my
+action at every single timestep?
+Where here, we can run
+this reasoning computation
+at a lower frequency than
+the low-level policy.
+So that can be kind
+of a practical benefit
+in terms of compute costs.
+Yeah.
+So the question is, can we
+elaborate on the first point,
+and how the supervision
+for the low-level policy
+is different for the
+high-level policy?
+So the high level policy--
+it's goal is to complete
+the long-horizon task.
+So it's goal is to
+bake the cheesecake,
+and it gets rewards when
+the cheesecake is baked.
+The low-level policy--
+it gets rewards
+for completing
+intermediate subtasks.
+And so when it, for example,
+finds the ingredients, preheat
+the oven, that
+sort of thing, it's
+getting rewards for
+completing those tasks.
+And that intermediate
+supervision
+guides it towards completing
+the long-horizon task.
+Yeah.
+So the question is,
+what if you need to be
+doing multiple tasks at once?
+So in that case, unless your
+low-level agent can has--
+I don't know-- 10 arms or
+something or can output things
+in parallel, you do need to
+pick some order for that.
+Now, the goal of the
+high-level policy
+is to figure out whether
+that order matters or not.
+And so if it figures out that
+the order is really important,
+then it will get rewards.
+It will be better able to
+predict those goals if it
+predicts the correct order.
+In other circumstances, if
+the order doesn't matter,
+then it should be able to
+learn that and figure out
+that it doesn't really
+matter, and it'll just
+pick one arbitrarily.
+Now, there's also a
+question of whether or not
+we actually need multiple
+policies in order
+to get some of these benefits.
+And on the last slide, we
+talked about the benefits
+of what you might get with
+a hierarchical approach
+versus just what's called a flat
+policy with no hierarchy, which
+is the typical path in the
+long-horizon task and the state
+and predict the action.
+There's actually also
+an intermediate approach
+that you can take as
+well, that actually
+retains a lot of the
+benefits of hierarchy
+and actually, in some ways,
+has a lot of the same design
+choices, which is something
+that's a little bit like chain
+of thought in language models,
+if you're familiar with that--
+which is that if you have
+some long-horizon task,
+you could have the policy
+first reason through what goal
+or what subtask it should be
+completing and then predict
+the low-level action.
+So this is kind of combining
+these two policies into one.
+But now you're just
+predicting them in sequence.
+You're first predicting the
+goal and then the action.
+This sort of
+approach can actually
+retain a fair number
+of the benefits,
+so it can benefit
+from the same sort
+of intermediate supervision.
+It also might have some
+practical downsides.
+So this doesn't
+have the benefits
+of the kind of practical
+computational benefits
+of separating them into
+two because then you still
+have to run this at
+the full frequency.
+There isn't entirely
+a conclusion
+yet empirically on
+whether this is just
+as good as a
+hierarchical approach.
+And you could imagine
+that there might
+be benefits in terms of
+sharing some knowledge
+with low-level policies versus
+with a combined approach.
+So this is an open
+area of research
+on whether or not you
+could just do this.
+And the only really
+conclusive downside
+would be the computational
+upside of having reasoning
+at a lower frequency than taking
+actions for the first one.
+So the question is, why is
+having intermediate supervision
+helpful?
+There's a couple reasons.
+So if you're in a
+reinforcement learning setting
+and your goal is to
+make a cheesecake
+and you only get rewards when
+the cheesecake is baked versus
+not, then those rewards are
+going to be really sparse
+and not actually
+allow you to progress.
+The second is that even if you--
+say, you're in an imitation
+learning setting, like you're
+just predicting actions,
+imitating actions for
+making a cheesecake,
+then sometimes if the
+policy isn't explicitly
+thinking about what part of
+that task it might be doing,
+it might oscillate between
+different subtasks,
+especially if it doesn't have
+a history of past observations.
+So there's also even benefits
+in imitation learning settings
+as well.
+So now let's dive into
+some of the design choices.
+This will also start to answer
+some of the questions that
+have come up as well.
+So the first is that
+we've abstractly
+been talking about
+these different goals,
+and we need to think about
+how to actually represent
+those different goals.
+And I'm actually want to start
+with this as an exercise for you
+all to think about what
+different representations might
+make sense for
+different problems.
+And so I'll give you a few
+different example problems.
+And then the goal for
+you is to think through
+for that particular problem.
+What would be kind of
+sensible intermediate steps
+for the agent?
+And how would you
+actually represent
+those different
+intermediate steps?
+So the first task
+is a robot that
+wants to learn how to cook
+Italian dishes like focaccia.
+What would the intermediate
+steps for those cooking tasks
+look like if it needs to
+control its motors to complete
+that task and the
+representation for that?
+The second one is maybe you're
+developing an autonomous driving
+bike, and you want it to break
+down navigation and biking
+to various locations on campus.
+The third is a
+language model that
+is drafting legal briefs,
+which is also a rather
+complex and involved process.
+And then the last
+is maybe a web agent
+that needs to plan and book
+one week vacations for users.
+So I'll give you a couple
+minutes to pick one of these.
+Discuss with your neighbor what
+intermediate goals would look
+like.
+And then we'll come
+back and discuss.
+Does anyone want to share
+what they discussed?
+Cool.
+Yeah.
+So for number two,
+one way that you
+could address it is the
+different intermediate goals
+could be like waypoints towards
+that particular goal location
+that you want to reach.
+And then the representation for
+that could be GPS coordinates.
+And the reward for
+the low-level policy
+would be like, how close are
+you to those GPS coordinates?
+So yeah, something
+like that makes sense?
+Anyone else want to share
+either for that problem
+or a different problem?
+Yeah, cool.
+So for the fourth one,
+you could-- there's
+a few different ways you
+could think about it.
+You could think about it as
+intermediate goals or booking
+day one, booking day
+two, booking day three.
+Or you could have a more coarse,
+defined approach where you're
+booking travel, booking--
+I don't know-- hotels
+or whatever, and then
+specific activities.
+One other part of this
+that I would imagine you
+would need to do is just
+generally figuring out
+what does the user want
+from their vacation.
+And so doing high-level
+research first.
+And that could be also
+an intermediate goal
+as part of completing the task.
+Did anyone pick one or three?
+So the intermediate goals are
+things like opening the cabinet,
+beating the eggs, and then the
+representation for those goals.
+All right.
+Didn't quite get to that.
+So a few things
+that you could do
+for the representation
+for that is it
+could just be a
+natural language.
+So it could be literally
+the string beat the eggs
+or open the cabinet.
+If, for example, if
+you're cooking something
+where you want to look
+in a particular way,
+you can even have an image as an
+intermediate goal representation
+as well, saying like, I want
+the bread to look like this,
+or yeah, that sort of thing.
+So can imagine multimodal
+goal representations as well.
+So one of the
+things that I wanted
+to convey with this exercise
+is that oftentimes the goal
+representation that
+you might pick likely
+depends on the particular domain
+or the particular problem.
+For example, like for
+biking, it might be
+something like GPS coordinates.
+Whereas for cooking,
+it might be language.
+For booking a vacation, it
+might also be in language.
+There might also be images
+involved and so forth.
+And in terms of what these
+representations might look like,
+oftentimes you'll
+want it to be--
+if you're developing something
+for many different subtasks,
+you want it to be
+fairly expressive.
+If you're trying to cook
+lots of different meals--
+natural language is something
+that's like quite expressive
+and can describe a number of
+different low-level behaviors.
+Ideally, it also
+has some structure.
+And so for example, if your
+different goals are just
+do task subtask
+one, do subtask two,
+it's going to be hard
+for your low-level policy
+to figure out how those
+relate to one another.
+Whereas if you have something
+like GPS coordinates,
+then two GPS coordinates that
+are very close to each other
+are going to have
+similar actions.
+And that sort of
+structure will make
+the learning problem a lot
+easier for the low-level policy.
+And then the third is also
+picking an appropriate level
+of abstraction.
+So for the biking
+task, for example,
+you can have a level
+of abstraction that's
+like potentially two low level.
+So you could have something
+that's kind of pedal--
+I don't know-- current,
+like exact velocity
+for the next second.
+You could also have
+something too high level,
+which is like go to the quad
+or something, which might not
+be particularly helpful in terms
+of breaking the problem down
+into smaller steps.
+And choosing the right
+level of abstraction
+is often somewhat tricky and
+can also be domain dependent,
+depending on the
+particular kind of details
+of the problem and
+the application area.
+So the question is,
+should we also abstract
+the state space for each layer?
+This depends on whether or
+not you have access to that--
+that sort of abstraction layer.
+Let's see.
+Oftentimes, even for
+the high-level policy,
+it's helpful for it to
+have all of the information
+about the current state in order
+to make even high-level goal
+predictions.
+But yeah, there are some
+things that you can do.
+You could, for example,
+ask a language model
+to summarize the high-level
+information about a state
+and have a high-level
+policy use that information.
+But generally, in
+practice, you'll
+often use the same low level,
+like the full-state information.
+You don't lose too much
+from doing that as well.
+Now let's talk a little
+bit about the supervision
+for each level.
+And for this, I think it's
+helpful to consider an example.
+So let's consider an example
+where you're making pasta.
+And I chose this to be slightly
+simpler long-horizon task.
+And you could imagine there
+being a few steps involved
+for doing this.
+And we can abstractly
+think about the state
+space for this task and reaching
+different intermediate steps
+for this.
+Let's see.
+Let's say that this is your
+initial state distribution.
+And the steps for
+making pasta is
+that you'll need to get
+out a pot and pasta, so
+some ingredients.
+You'll need to boil the water.
+And you also need to pour the
+pasta into the boiling water.
+Maybe there's also
+a straining step,
+but maybe we can
+skip that for now.
+And we can think about the--
+imagine the set of
+states where you have--
+for example, you
+have taken out a pot.
+So find a pot before actually
+like putting any water into it.
+You could have
+some states, where
+you've now have boiled the
+water, another set of states
+where you have found the pasta,
+and then some other states where
+the pasta is cooked.
+If we have our
+low-level policy, it's
+going to be trying
+to figure out like,
+how do I take actions to
+reach these kinds of states?
+And then the
+high-level policy is
+trying to predict, if
+I'm in a given state,
+what command should I use to
+tell the low-level policy what
+to do?
+And generally, as we've
+talked about a bit
+before, for the
+low-level policy,
+it's going to be getting
+rewards that are based off
+of the low-level tasks.
+And the goal of
+something like this
+would be something where you're
+moving towards finding a pot.
+Maybe then you try
+to boil the water.
+Then you try to find the pasta.
+And then you try
+to cook the pasta.
+Now, one thing that we talked
+about a little bit before is--
+so this is actually deviating
+from this example a little bit--
+we'll come back to it--
+is we could also just
+train the high-level policy
+and the low-level
+policy end to end
+without any intermediate
+goal representation.
+Just for example,
+we'd have some sort
+of latent goal representation.
+That's just the activations
+of the neural network.
+And we could train
+all of these just
+for the high-level task and the
+rewards of completing the task.
+Now, one important thing
+that is good to know about
+of the supervision is that if
+you do that, that's basically
+just a flat policy with a
+particular architecture that
+has some sort of activations
+when you feed in the observation
+twice.
+You just think about
+that as basically
+a single neural
+network architecture.
+That's basically the
+same as a flat policy.
+And the reason why it's
+important to recognize this is,
+is that when designing
+these kinds of systems,
+it's important to think about
+where the benefits are coming
+from, whether it's coming
+from additional supervision,
+whether it's coming from
+structured exploration.
+And if you don't think
+carefully about this,
+you could end up in
+a situation where
+intuitively if you haven't
+thought about it, it's like, oh.
+Ideally, my high-level
+policy will do this.
+My low-level policy will do this
+without actually seeing benefits
+compared to just
+naively training
+things with a single policy.
+For those of you that
+are doing research,
+it's also just generally
+something that's good to do
+in any kind of research
+because you never really know
+if the systems that you're
+developing or the methods that
+you're developing are going
+to improve over some existing
+state-of-the-art method.
+And if you're very
+honest with yourself
+about what might go wrong
+and why might not actually
+see benefits from your
+new idea, then you
+can think more critically
+about what sorts of things
+will actually improve
+the final results.
+Cool.
+So supervising each level.
+So we have the low-level policy.
+And the low-level
+policy will be trained
+to accomplish that goal,
+not the original task.
+And so when you're passing
+in the string of "find pot,"
+it's going to be getting
+a reward that is trying
+to maximize reward for getting
+to the states where you found
+the pot.
+And the high-level policy--
+its goal is to
+predict the subtasks
+so that you end up in the final
+state of the pasta being cooked.
+So this is kind of trying to
+accomplish the original goal.
+Now there's a couple
+of things that can be
+a little bit tricky about this.
+So say that you're
+training these separately
+and say that you've trained--
+you could, for example,
+think about training a policy
+to find the pot,
+and maybe you've
+gotten to a good policy that's
+really good at finding the pot
+and getting to the
+state really reliably.
+And then maybe for example,
+when you train the policy
+for finding the pasta.
+If you weren't exactly
+careful with how you did this,
+maybe you would think about,
+OK, maybe I could actually just
+start from this
+state and also try
+to find the pasta from
+this state over here.
+And that's not taking into
+account that actually when
+it's finding the
+pasta, according
+to the high-level policy, if
+the high-level policy actually
+wanted it to find the pasta
+after boiling the water when
+you're at the stove.
+Then when you actually
+try to string together
+this low-level policy with the
+low-level policy for these two.
+It'll actually then
+struggle to transition
+from going to the stove over
+to finding where the pasta is.
+And this is basically like
+a mismatch when you're
+training these modular systems.
+And you're training them
+completely independently.
+You might not actually get a
+system that works effectively
+if they're not actually at
+some point connected together
+and trained such that this
+skill is starting from states
+where the high-level
+policy will actually
+start commanding that task.
+And so essentially when you're
+training the low-level policy--
+so you have your
+low-level policy actions,
+given states and goals.
+You want this policy to
+work for the set of states
+where the high-level
+policy is going to command
+this particular goal.
+Another way to think
+about this is that--
+and I guess the other
+thing here is also
+you want it to be able to
+pick the goals that actually
+the high-level
+policy would predict.
+So for different
+distributions of goals
+and different distributions
+of states, ideally,
+that low level policy
+would work for whatever
+states and goals the
+high-level policy will output.
+Now, if we haven't actually
+learned a high-level policy yet,
+this puts things in a bit
+of a tricky situation.
+And likewise for the
+high-level policy,
+if we assume that our low-level
+policy is really great,
+then we might not
+realize that it actually
+has some deficiencies and
+that we need to, for example,
+continue to command
+something in certain states
+until you've actually reached a
+state that a different skill can
+operate in.
+Yeah.
+So if the low-level policy
+works from particular sequences
+of states, then the
+high-level policy
+can learn that it should
+walk the low-level policy
+through those states.
+So you don't necessarily
+need your low-level policy
+to work from every state.
+It just needs to work for
+the state-goal combinations
+that the high-level policy
+is going to command.
+Now, you might have
+a situation where,
+say, that your
+low-level policy knows
+how to do something like this.
+So it knows how to
+go from here to here.
+It knows how to go
+from here to here
+and maybe knows how to
+go from here to here,
+like with some boiled water.
+Then you might have
+some sort of gap
+where to actually
+find the pasta,
+you need to go back
+to these states.
+And if you don't have
+a command or some way
+to get from here to
+here, then you're
+going to basically have
+a gap in the states
+that you're visited in.
+The high-level policy
+will struggle to actually
+get to this state here.
+And so basically,
+one way to think
+about it is you need to make
+sure that there's at least some
+overlap in the states from
+one skill to the next.
+And ideally, that
+overlap has some buffer.
+Because if, for example, when
+you're trying to find the pasta,
+it only works if
+you're standing exactly
+in front of the boiled
+water and not if you're
+like a little bit to the right.
+Then if your policy ends up
+deciding to boil the water,
+standing a little bit
+to the right of it,
+then you'll get a brittle
+final result where
+it will struggle in that case.
+I guess one way
+to think about it
+is that if this
+low-level policy only
+works from this
+part of the states
+where the water is being boiled
+and the high-level policy gets
+you here, or the previous
+low-level policy gets you here,
+then you're going to have a
+little bit of a gap between here
+and here.
+And that sort of gap can
+lead to brittle performance
+on the full long-horizon task.
+Yeah.
+So the question is, does it
+have to be a fixed sequence?
+And can you learn
+if one sequence
+is more efficient than another?
+Yeah.
+So absolutely, the
+high-level policy
+can actually decide which
+sequence it wants to do,
+and that sequence might depend
+on what's the most efficient.
+It might also depend on
+where the low-level policy is
+most successful.
+And so one of the reasons why
+I wanted to pick this example
+is actually these two steps
+can be done in any order.
+And the high-level policy could
+decide that when you're here,
+it actually wants to
+command you to go here.
+And as long as the
+low-level policy
+knows how to find the
+pasta from these states,
+then that might be
+more efficient overall.
+There's also worlds
+where maybe this would
+be more efficient because maybe
+while you're boiling the water,
+you're just waiting.
+And you can find the
+pasta in the meantime.
+And so I guess there's also a
+pouring water that-- and turning
+on the stove and so forth.
+So there's more steps involved.
+But yeah, the high-level
+policy can decide
+which order it wants to take.
+So generally the
+way to address this
+is that you can first train
+them potentially completely
+separately.
+But it's important for
+at least one policy
+to be adapted to the other.
+And ideally, even both could be
+jointly adapted with each other
+to optimize reward, or optimize
+some complete objective.
+Cool.
+One other side note,
+I guess, that I
+think is worth
+mentioning is that the--
+even for problems that are not
+traditionally LLM problems--
+LLMs are actually often
+pretty good at some
+of the higher-level reasoning
+that you might want to do.
+And so, for example, if you know
+that you want to cook pasta,
+if you ask a language model
+what are the steps involved
+with that, oftentimes, they
+can actually give you that.
+And so this is one way
+where you can actually
+train the high-level policy
+completely separately
+from the low-level policy and
+then potentially fine-tune them
+because the language
+model, for example,
+might not know which order the
+low-level policy is best suited
+for, or other things
+about the capabilities
+of the low-level policy.
+And so that sort of
+adaptation process,
+even though language models
+are pretty good at this,
+that sort of adaptation
+process is really important.
+Also, if a robot is in
+front of a coffee machine
+and you ask the robot to
+get some coffee for you,
+if the language model doesn't
+actually pay attention
+to that image, it might
+tell the robot like, oh,
+can you go out and buy coffee
+at Starbucks or something?
+And the robot might not have
+that sort of affordance,
+that sort of ability to do that.
+And so adapting
+these two together,
+that's another example
+where adapting these two
+high-level and
+low-level policies
+together is quite important.
+The last key design choice that
+we haven't talked about yet
+is when to move from
+one task to another.
+So we outlined
+this process here,
+and we didn't really spend
+that much time thinking about
+like, how long do
+you repeat sampling
+from your low-level policy
+to accomplish a goal?
+And essentially,
+it's how often do we
+requery a new goal from
+the high-level policy
+to pass through the
+low-level policy.
+So basically, yeah,
+this step right here.
+So there's two natural
+options for this.
+The first natural option is to
+requery the high-level policy
+whenever the low-level policy
+has completed the goal.
+So when it has boiled
+the water, that's
+when you tell it to go find
+the pasta, for example.
+And the way that this
+would look like is--
+at this point, your
+low-level policy not only
+needs to predict action but
+also needs to predict whether
+or it's successfully
+completed the task.
+And this could be either with
+some sort of binary indicator
+or through some sort
+of progress indicator.
+You can think about this
+not done as a success
+classifier for the task.
+And then the other option that's
+a bit simpler but maybe less
+elegant, in some ways,
+is just to simply requery
+the high-level policy after
+some fixed number of timesteps.
+So maybe you query the
+low-level policy at 50 hertz,
+and you query the high-level
+policy once every second.
+So then you would be querying
+the high-level policy
+after 50 timesteps.
+So there's pros and cons of
+each of these two options.
+For the first case where
+we're doing something
+after we've completed a
+goal, this is actually ideal.
+If you were to do
+this well, this
+should be the most
+compute efficient
+because you're waiting
+for the low-level policy.
+You don't need to
+rethink how you're
+doing the task while the
+low-level policy is executing.
+There's a couple of things that
+are tricky about this though.
+The first is that
+it can actually
+be hard to estimate when
+you're done with a task.
+It's definitely not
+trivial to do this.
+And the second is
+that you actually
+need to account for mistakes
+that require actually
+redoing some past goal.
+So for example,
+if you are trying
+to organize some things on a
+table, you go grab something,
+and then you accidentally
+drop it on the ground.
+Your subgoal should no longer
+be like, put that object
+on the table, and
+instead it should be
+to pick it up off the ground.
+And this means that
+actually you need
+to now estimate not
+just when you're
+done but also whether
+or not you've actually
+exited the states in which
+that subtask makes sense.
+Then going back to the
+fixed number of timesteps,
+this is less ideal because we're
+going to be probably wasting
+some compute, and
+there's going to be
+a trade-off between
+spending more compute,
+thinking through what
+the next goal should be,
+versus if this n is too long.
+Then you're going to be
+delayed in transitioning
+to the new goal, where your
+agent will be-- for example,
+maybe it's found the pot.
+It's taken out the pot, and
+it's waiting for a new goal.
+If n is too long,
+it's just going
+to be sitting there with the
+pot because it's like, OK,
+I found the pot.
+And that's the goal
+that it's getting.
+And there'll be some
+delay before it then
+moves on to actually
+finding the pasta
+or pouring water into the pot.
+So this trade-off between
+how long n should be.
+Generally, because you don't
+want these really long delays,
+you'll pick n to be fairly
+small or fairly frequent.
+But when n is
+smaller, you're then
+going to be placing more burden
+on your high-level policy
+because it needs to be making
+accurate goal predictions more
+frequently on more states.
+And you'll be spending
+more compute as well.
+So both of these
+have pros and cons.
+In general, if we wanted to
+think about how these pros
+and cons relate
+to each other, we
+can think about how
+these pros and cons lead
+to different
+downstream performance.
+And with regard to
+estimating when you're done
+and accounting for
+mistakes, if you actually
+make a mistake in estimating
+when you're done, then
+you could actually
+end up in a situation
+where the agent is
+perpetually stuck.
+If it thinks that it's not
+done but it is actually done,
+then it will actually
+just stay in that state
+because the low-level policy
+will keep on predicting this--
+won't actually be making
+any more further progress
+on the task.
+So this actually is a
+pretty rough outcome
+for these kinds of errors,
+even if they're infrequent.
+And then for option two,
+if you make a mistake
+in predicting the
+subtask because you're
+querying the high-level
+policy more frequently,
+this also has bad outcome, which
+is that the low-level policy
+might stop making
+progress on the final task
+and might be taking the
+wrong actions for n steps
+until you get hopefully a
+more accurate goal prediction.
+And generally, between
+these two things,
+these errors are more fatal.
+And as a result, typically, a
+lot of the hierarchical systems
+out there opt for choosing
+option two because
+of the simplicity
+and because some
+of the mistakes that the
+high-level policy might make
+when it's queried
+more frequently
+are less fatal than
+mistakes with regard
+to estimating when you're
+done and at what subtask,
+whether or not you should
+re-account for past goals.
+It's also worth mentioning
+that you could potentially
+combine these, where you
+try to estimate progress.
+But then if it's been
+a long period of time,
+then you're re-query anyway.
+But yeah, the takeaway is
+that, generally, option two
+is typically what people
+do, where you just query
+at a fixed lower frequency.
+Cool.
+So let's look at
+some example systems.
+And I guess one thing
+that I'll mention
+is that hierarchy is
+pretty popular these days.
+So here are four
+systems that we're all
+announced in the last
+five months, four months.
+And they actually all
+use hierarchical systems.
+So these are all fairly
+long horizon tasks,
+where you're cleaning a
+bedroom, handing over objects,
+and pouring them or
+putting them into bins,
+putting away objects
+into a fridge,
+putting fruit into bowls.
+And if you look at the
+architectures for these things,
+they all have some
+higher-level model
+that's predicting
+intermediate goals
+and some lower-level model that
+is predicting low-level actions.
+These are in robotics domains.
+Likewise in language
+model domains,
+things like chain of thought,
+where you're reasoning
+through intermediate steps.
+And then actually outputting
+tokens for those steps
+is also really popular for
+completing more challenging
+language tasks.
+Cool.
+So I want to cover a few
+examples of these systems,
+and I picked
+examples that I think
+illustrate a few different
+design choices that are helpful
+and actually have comparisons
+on those design choices
+that elucidate some of
+the benefits of one design
+choice versus another.
+So let's start with talking
+about hierarchical imitation
+learning systems.
+And we'll start with
+language subgoals.
+And let's first talk about
+what the data would look
+like for training a hierarchical
+imitation learning system
+with language subgoals.
+This will be kind of
+a real robot example.
+What the data looks
+like is actually
+it's going to use data of a
+long-horizon demonstration
+of completing the complete
+long-horizon task.
+And so in this case, the
+task is to make trail mix
+and put the trail
+mix into a bag.
+And with this long-horizon
+demonstration for the full task,
+it will then be segmented
+with language labels
+for each segment.
+And in this case, the
+segments in the data
+can have a variable length.
+If, for example,
+the robot trajectory
+looks something like this,
+then you might have--
+the first subtask is
+something like this.
+The second subtask
+is maybe shorter.
+The third subtask
+is maybe longer.
+So you'll have variable
+frequency in the data,
+but the actual system will later
+be using a fixed frequency where
+it's requiring more frequently
+than the typical segment
+length in the data.
+So these are different
+language labels.
+These labels could either be
+recorded during data collection,
+where you're actually saying,
+I'm going to pick up the bag
+and then do a demonstration
+of picking up the bag.
+Then say, I'm going to
+pick up the metal scoop,
+do a demonstration
+of that in sequence,
+or you can do it
+post-hoc where you just
+collect the full demonstration.
+And then with a
+labeling interface label
+like, this segment is
+picking up the bag.
+This segment is picking
+up the metal scoop.
+This segment is getting
+M&Ms and so forth.
+So we have segmented
+demonstrations
+with the associated
+language command.
+Here's another example of
+what this would look like.
+And this shows that one segment
+might be longer for picking up
+a slice of cheese,
+a different segment
+might be shorter for putting
+the cheese on the bread
+and so forth.
+Cool.
+And then once we
+have this data, we'll
+train a high-level policy
+and a low-level policy
+with imitation learning.
+And the high-level policy will
+be outputting the language
+labels from the observations.
+And the low level will
+be taking the language
+labels and the observations
+and predicting the actions.
+So what this looks like
+is an image observation.
+So an RGB image passes it
+into a high-level policy
+that's trained to predict
+the language label.
+And then you'll have a low-level
+policy that takes the language,
+in addition to the observations.
+In this case, the work chooses
+to use not just RGB images
+but also joint angles as
+input to the low-level policy.
+And generally, it's
+OK to have actually
+this sort of mismatch between
+observations for the high-level
+and the low-level policy.
+And then the low-level policy
+outputs joint commands.
+And the low-level policy
+operates at 50 hertz.
+And I can't remember
+the exact frequency
+of the high-level
+policy, but I think
+it's something around 1 hertz.
+Cool.
+So that's the general setup.
+Now we also learned
+about DAgger.
+And you can think
+about if we just
+do imitation learning
+on the offline data,
+we might have issues
+where we're training these
+somewhat independently,
+although the data is at least
+of the full long-horizon task.
+And we could actually use
+DAgger with these systems
+on both the low-level policy
+and the high-level policy.
+Now, one thing
+that's pretty cool
+is that actually for
+the high-level policy,
+we can actually update
+the high-level policy
+with language supervision.
+And so DAgger on the
+high-level policy
+is actually in language
+space, not in joint space.
+And so in principle, you can
+do DAgger on both low level
+and high level.
+In this particular
+approach, if you
+were to do it on the high level
+with freezing the low level,
+you would be running the
+policy, the full system.
+And then you would
+then type or speak
+a language command that
+is going to override
+the high-level policy and
+then continue collecting data.
+And then at some point,
+you might give control back
+to the high-level policy.
+And then from there, you
+can fine-tune and actually
+do gradient steps on data that
+has these kinds of language
+interventions to actually
+fine-tune the high-level policy.
+And when you do this together
+with the high-level policy
+and the low-level policy
+acting as one system,
+then you can actually
+adapt the high-level policy
+to deficiencies in
+the low-level policy.
+So, for example, if there's
+one language command
+that the low-level policy
+makes a mistake on,
+then you could actually issue
+some corrections to help
+compensate for that mistake.
+So yeah.
+I guess to summarize, we can
+train the high-level policy
+and the low-level policy,
+both with imitation,
+and then freeze the
+low-level policy
+and update the high level policy
+with DAgger by supervising
+on language corrections.
+And so as a video of
+what this looks like,
+these yellow commands
+are showing the output
+of the high-level policy.
+And then the robot motions
+are showing the output
+of the low-level policy.
+So at the beginning, the
+high-level policy is saying,
+pick up spoon.
+The robot picks up the spoon,
+move the spoon towards me.
+So then it says I
+want some peanuts.
+So then the low-level
+policy scoops peanuts.
+Then the high-level policy says
+move the scoop into the bag.
+The low-level policy
+starts to do that.
+At this point, you'll
+actually notice that the robot
+is about to make a mistake.
+And so that's when
+you can intervene.
+And instead of telling the
+robot move the scoop in the bag,
+because it seems like the
+low-level policy isn't going
+to do that correctly, you
+could then intervene and say,
+move the scoop into the bag.
+Or instead of saying
+move the scoop,
+you say move the
+left arm to the left,
+go higher, move the
+scoop into the bag, then.
+And so these user
+commands are overriding
+the high-level policy.
+And then at this point,
+you can give control back
+to the high-level policy.
+And the high-level policy
+predicts, pour into the bag,
+get some banana
+chips, and so forth.
+So that's what this sort
+of DAgger intervention
+looks in the high-level space.
+And then after you fine-tune
+the high-level policy
+on those kinds of interventions,
+the high-level policy
+can then self-correct and
+know that the low-level policy
+is making a mistake,
+where it was
+about to make the same
+sort of mistake again.
+And then the high-level policy
+says, go higher, and then
+move the scoop into the bag to
+prevent that sort of mistake.
+And so this is an example of the
+high-level and low-level policy
+adapting together to
+account for deficiencies.
+Cool.
+Now we've talked about
+hierarchy versus flat policies.
+You could ask.
+You can actually
+do a comparison.
+In this particular
+setup, does hierarchy
+outperform using a
+single flat policy
+to do the long-horizon task?
+This comparison is actually
+from a different research paper,
+but it has basically
+the same approach.
+In terms of task
+progress, there's
+a 34% improvement
+from using hierarchy
+versus training a
+single policy to do
+the full long-horizon
+imitation learning task.
+And in terms of
+following instructions,
+there's also a gap.
+This is this instruction
+accuracy metric.
+And you can also
+actually compare
+DAgger to imitation learning
+for the high-level policy.
+And you can also
+see that there's
+an improvement from using
+DAgger compared to just using
+vanilla imitation learning.
+And this is the
+improvement that you
+get from adopting the
+policies together.
+Cool.
+The nice thing
+about hierarchies,
+you can do longer horizon tasks.
+And so with this full
+system, you can, for example,
+get the robot to put three
+objects into a Ziploc bag, which
+is traditionally a
+pretty difficult task
+to do, especially in one go.
+And likewise with
+a similar system,
+you can also get a robot to--
+the high-level command
+is clean the bedroom.
+And then the
+low-level policy will
+output things like pick up
+shirt, put shirt in basket,
+pick up shirt, put
+shirt in basket.
+And later pick up the
+pillow, adjust the blanket,
+put the pillow at the top of
+the bed, adjust the pillow,
+pick up tissue, put the tissue
+in the trash can, and so forth.
+And so these are
+things that are like,
+would be very hard to do if you
+just train a single flat policy.
+So instead of using
+language, we could also
+use images as that
+intermediate representation.
+And so what this would
+look like is instead
+of having the high-level
+policy output language,
+you would output a goal image.
+And so it'd be like,
+this is the kind
+of an image of what I want you
+to accomplish in the future.
+In practice, you can
+use a generative model,
+like an image-editing
+model to do
+this, that takes as input
+the image of the current step
+and then edits that to look like
+an image at a future timestep
+that you want the
+robot to achieve.
+And then the low-level
+policy would no longer
+be language conditioned
+but would rather
+be a goal image
+conditioned policy.
+And so you can think of this as
+a kind of a multi-step inverse
+model that takes as
+input the current image,
+some future image, and
+then outputs the actions
+that you can take to
+get to that goal image.
+And then both of these
+will be trained again
+with imitation learning.
+And one of the things
+that's pretty nice
+is that you no longer need to
+segment videos with language
+annotations to do this.
+You just need the videos
+of the long-horizon task.
+And to train this
+high-level policy,
+you can train it on robot
+data and predict future images
+in the trajectory, like
+from 1 second or 5 seconds
+into the future, or 10
+seconds in the future.
+But you could also actually
+train this high-level policy
+using YouTube videos,
+or something like that,
+to predict what are future
+images that might accomplish
+some long-term goal.
+And that sort of
+unlabeled video data
+can be helpful, especially
+if data from the robot
+is more sparse.
+So then an example of
+what this looks like
+is, say, the task is
+to move the wooden bowl
+to the top of the table.
+You pass that into the
+high-level policy that
+then generates images, which
+are shown with the pink border,
+and then that generated subgoal
+image with the pink border
+is passed as input to the
+low-level policy, which
+then predicts actions.
+And both of these
+policies again are
+trained with imitation
+learning on demonstration data
+and potentially also if
+for the high-level policy
+can be trained on
+video data as well.
+So this one is putting the
+toothpaste in the wooden bowl.
+You can see that it generates
+these subgoal images of,
+for example, holding the
+toothpaste above the bowl.
+It then reaches that.
+Then it generates a subgoal
+of lowering the arm.
+And so the robot lowers the
+arm to complete the task.
+And then this last example,
+the goal is to open the drawer.
+The first subgoal is to put
+the gripper on the handle.
+Then the next subgoal is to
+move the gripper to the right
+so that it opens, and so forth.
+Another thing that's nice
+about this sort of approach
+is that if your
+policy sees objects
+that it's never seen before
+that are hard to describe
+in language, then you--
+obviously, that's something
+that it can more easily describe
+in images because it can
+more easily generalize
+across the objects
+that it's seeing
+and generate pixels
+for those images,
+if it doesn't know what the
+semantic name for that object
+is.
+Cool.
+And then for this
+sort of thing, you
+can also do a
+comparison on like,
+is it helpful to include those
+unlabeled videos for training
+the high-level policy?
+And if you only
+use robot data, you
+get performance that
+looks like this.
+And if you add videos
+of humans for training
+the high-level policy, you
+get an increase in performance
+compared to just using the
+robot data to train the policy.
+Now, we talked earlier
+about how chain of thought
+can replace hierarchy.
+And there's also approaches
+that have developed
+chain of thoughts versions
+of this, where you can have
+some high-level task and
+the current observation,
+and then actually output either
+subgoal images or subtasks.
+You can also have
+other representations,
+like bounding boxes
+or waypoints, and then
+output the action.
+And there are some
+recent approaches
+from the last one year,
+basically, quite recent,
+that do something like that.
+The other thing to note is that
+this is with imitation learning.
+And we'll talk
+about reinforcement
+learning in a minute.
+But generally for these
+large-scale systems to date,
+for the most part, they use
+imitation learning more so
+than reinforcement learning.
+And fine-tuning them with
+reinforcement learning
+is, in some ways, an
+open research question
+for like, what is the best
+recipe for accomplishing that
+at large scales?
+It's also a pretty important
+research direction,
+because if we think about
+this slide right here,
+the kind of performance
+of these systems
+is still not super,
+super reliable.
+I should mention, these are in
+pretty challenging situations
+with held-out objects that
+the robot hasn't seen before.
+So it's kind of out of
+distribution compared
+to what it saw during training.
+But if we had a way to train
+these with reinforcement
+learning, then we
+should be able to get
+these performances to
+be much higher compared
+to using imitation learning.
+So the question is, like we
+talked about personalized
+recommendation systems, could
+hierarchy be useful for that?
+It's not something
+that I've seen before.
+And generally when
+I've seen hierarchy,
+it's usually been for pretty
+longer-horizon problems
+and tasks that are
+more complicated.
+In language modeling,
+it's been used
+for math problems,
+essentially, and things
+where you need to have multiple
+steps for completing something.
+Yeah.
+I could think about it.
+Yeah.
+So in this case, the
+high-level policy
+is an image generative model.
+And what it does is it's
+going to take as input.
+It's trained to take
+as input, like an image
+observation and some high-level
+goal, like goal high level.
+And then you have
+a neural network.
+And that neural
+network is going to be
+trained to output Ot plus k.
+And so it's going to
+be trained to generate
+an image of a future image.
+Yeah, trained to
+generate a future image.
+And you can get this
+as if you have videos.
+Then you don't need language
+annotations to get this image.
+In terms of the architecture,
+it's using a diffusion model
+to generate these images.
+That's why you saw
+the noise moving
+into the image in the
+direction of the goal.
+Yeah.
+So this particular goal might
+be on the horizon of like--
+I don't know-- a minute.
+And this subgoal could
+be in the direction,
+or it could just be like--
+I don't know-- 10 seconds in the
+future or something like that.
+Yeah.
+So in terms of using
+image-editing models,
+that general sort
+of pre-training
+can be useful because
+it teaches the model how
+to generate images, in general.
+And then the videos
+that are used,
+there are actually
+videos of people
+doing different
+tasks that have--
+like a single-language
+annotation for what the person
+is doing in the whole video.
+And so those videos
+are especially
+useful to include because
+they're pretty relevant.
+If instead you included
+random videos on YouTube,
+it's a little bit harder.
+But it might still
+teach it about--
+if there's some
+future thing, what
+are images that could
+happen in the future?
+And that is useful pre-training
+for this kind of task.
+Yeah.
+So you're asking like, what if
+the language isn't accurate?
+This is like a sketch
+instead of a real image?
+So good question.
+I guess, first, if you
+wanted to use sketches here,
+you just want to ideally
+train the low-level policy
+to be able to use
+that sort of thing.
+And there are
+actually approaches
+that have taken images, and you
+can convert them into a sketch
+and train a low-level
+policy to do that.
+And you don't actually
+necessarily need
+this to be a full image.
+These are just kind
+of, I should mention,
+two example representations.
+And language is
+actually particularly
+popular as an intermediate
+representation.
+But there's lots of other
+representations you could use,
+including sketches, including--
+I don't know-- like a trace of
+where you want the robot to go
+or something like that.
+And then in cases where the
+language isn't accurate,
+if it is describing
+something that's different,
+then oftentimes the robot will
+then follow that different task
+until it's been told to
+do something different.
+If the high-level policy is
+predicting language that is bad,
+then the system will suffer.
+There are some cases where the
+low-level policy might also
+ignore the high-level policy.
+If you give it
+gibberish, it might just
+have some sort of, in some
+ways, kind of default behavior
+because it was trained
+to output actions.
+For different
+states, for example,
+if it's like holding
+the pasta right here,
+regardless of any sort
+of language input,
+chances are the next action
+is actually to pour it.
+And so if you don't give
+it a language instruction,
+or if you give it a noisy
+language instruction,
+it might still
+continue to pour it
+just because it knows
+that for that state,
+typically, that's
+what you do next.
+Now let's talk briefly about
+hierarchical reinforcement
+learning.
+So when I was bringing
+up examples of this,
+I think that the hierarchical
+imitation learning systems
+are quite recent, and I
+don't have too many, I think,
+exciting examples,
+or examples that I
+was excited about with regard
+to hierarchical reinforcement
+learning.
+There are a few example
+systems that you can look at,
+and I think that generally
+getting these kinds of systems
+to work really well,
+potentially on top
+of the initialized hierarchical
+imitation learning systems--
+something that would be,
+I think, really exciting
+and important to explore.
+But generally, in terms of what
+has been done and what exists,
+you can do hierarchical
+reinforcement
+learning with trying to
+reach different states.
+And this could be the
+relative target position
+of some agents or some objects.
+And one cool work
+that does this is it
+has this four-legged ant
+agent that you might have
+worked with in homework one.
+And its goal is
+to get over here.
+And to get over
+there, it actually
+needs to push this
+object to the right
+and then move there
+as a result. And then
+there's also this example,
+where it needs to get over here.
+If it tries to go
+directly there,
+it will fall in this crevasse.
+And instead, it needs
+to push and make
+a little bridge for
+itself and walk over here.
+And these are pretty
+long-horizon problems,
+where if you just try to
+take actions greedily,
+you won't be able
+to get to the goal.
+And so the work trained
+a goal-conditioned policy
+conditioned on goal
+states with a reward
+of reaching those goal states.
+And then it trained a high-level
+policy to output goal states.
+And those goal states are
+the high-level actions.
+But it actually also
+used hindsight relabeling
+for the high-level
+policy to actually
+relabel high-level actions,
+or to relabel the goals
+that the high-level
+policy should output
+in certain circumstances.
+And it used an
+off-policy algorithm
+to train this in order to
+allow it to work effectively.
+And then another work that
+does hierarchical reinforcement
+learning uses language goals.
+So you could use goal states.
+You could also do
+language goals.
+This trains a
+language-conditioned policy.
+It uses language relabeling.
+So instead of goal
+relabeling, just
+hindsight relabeling
+in language space.
+And then the
+high-level policy is
+trained to output
+language, which is actually
+a pretty difficult task.
+Again, this is a work
+that's not too recent.
+And so it's from 2019.
+And so the tasks are
+relatively simple,
+where it's trying to be able to
+arrange these different objects
+in particular order, where you
+need to push the green object,
+push the red object, the
+blue object, and so forth.
+Cool.
+And then the last thing
+that I'll mention is that--
+we've talked about
+these scenarios, where
+you're supervising the low-level
+policy to reach some goals
+and the high-level policy
+to output those goals.
+Now, there's, in some ways, a
+really cool research direction
+of-- instead of
+actually supervising
+it to do certain goals,
+can you actually discover
+subtasks or discover
+skills that might
+be useful without
+requiring supervision
+on those low-level skills?
+And here's one example of a work
+that studies that, where it--
+in this kind of simple
+half-cheetah agent
+that you might have also seen
+in one of your homeworks.
+It's able to learn skills
+like backing up, walking
+forward, doing I think a
+front flip, and so forth.
+And then in principle,
+if you discovered skills
+without supervision,
+then you could
+try to sequence those
+together to do harder tasks.
+But this is generally still
+an active research area
+and something that's pretty
+challenging to scale up,
+especially in very
+large state spaces.
+Cool.
+That's it.
+And next time, we'll be
+talking about reinforcement
+learning for
+robotics, specifically
+learning with
+autonomy, and a guest
+lecture from Ashish Kumar
+on the Tesla Optimus team.

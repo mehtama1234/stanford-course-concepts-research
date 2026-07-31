@@ -1,0 +1,2135 @@
+OK, let's get started.
+As a recap of some of the stuff
+that we've talked about so far,
+we've formulated this
+reinforcement learning problem
+where we have
+states and actions.
+We have some trajectories
+that we might be collecting,
+which are sequences
+of states and actions.
+We have a reward
+function, which tells
+us how good is a particular
+state and action,
+and also a policy,
+which is usually
+what we're trying to learn.
+And this is representing
+the behavior
+that we're trying to learn.
+And then the goal of
+reinforcement learning,
+which we talked about
+in the first lecture,
+is to try to maximize the
+expected sum of rewards.
+So we want to produce behavior
+that leads to positive outcomes.
+And we can actually
+mathematically write this
+down as an expectation over
+the probability distribution
+over trajectories, where this
+probability distribution is
+a function of the
+policy which is acting
+in the world, the
+environment dynamics which
+might be stochastic, and of
+course, the reward function.
+Last week on Friday, we
+started talking about one way
+to do this, which is if you
+have expert demonstrations,
+you could try to
+imitate the expert
+by trying to maximize the
+likelihood of the actions
+that the demonstrator did--
+so trying to actually produce
+a policy that leads to
+actions that the expert would
+have taken.
+This is a very simple
+and scalable approach,
+but it cannot outperform the
+demonstrator and doesn't allow
+improvement through
+trial and error.
+We also introduced the notion
+of an offline algorithm that
+only uses an existing
+data set, and no new data
+from a learned policy, and
+an online algorithm that
+uses new data from
+the learned policy.
+And today we'll be
+talking about ways
+in which we can
+use reinforcement
+learning to outperform
+the demonstrator
+to improve from practice.
+And specifically,
+we'll be starting
+to talk about online
+reinforcement learning
+algorithms.
+Particularly, our first
+online RL algorithm
+will be policy gradients.
+We'll talk about a couple of
+different variants of policy
+gradients and introduce both the
+mathematical derivation for it,
+as well as some of the
+intuition behind it.
+And policy gradients
+are the basis
+for some popular reinforcement
+learning algorithms, including
+ones that are used to train
+legged robots, algorithms that
+are used to train
+language models,
+and are also part of
+the default project.
+We won't get the
+complete algorithm
+that was used to train these
+today, but we'll get most of--
+or halfway there, basically.
+And by Friday, we'll have
+most of the algorithm for it.
+And then the key
+goals will be to try
+to get the intuition
+behind policy gradients,
+how to implement them,
+and when to use them.
+OK.
+So the outline of an online
+reinforcement learning algorithm
+is going to look
+something like this.
+So first, we need to initialize
+our policy in some way.
+When you train a
+neural network, you
+need to initialize its weights.
+We could initialize the
+weights of our policy randomly.
+We could also initialize
+it with imitation learning.
+We could also use heuristics.
+It depends on the
+problem setting.
+And after we
+initialize our policy,
+we'll run our policy
+to collect some data.
+So actually, try out
+different things in the world.
+Then we'll use that batch of
+data to improve the policy.
+And then we will
+repeat that process.
+We'll then collect new data
+with our updated policy
+and update our policy again
+using that latest batch of data.
+So we're going to attempt the
+task and try to get better.
+So what this might look
+like is the first iteration,
+we attempt whatever--
+some kind of simple
+2D navigation task.
+The reward for some
+of them is bad.
+The reward for other
+trajectories is OK.
+And then after more
+iterations of this,
+we might have a policy
+that's a bit better that
+is able to get a higher
+reward but isn't perfect.
+So sometimes it gets
+a higher reward,
+sometimes it still
+gets a low reward.
+Then we'll use that to
+improve the policy again.
+And after more
+iterations, hopefully, we
+will get a policy that
+is able to succeed.
+So this is this notion of
+online reinforcement learning
+where we're collecting
+data online and improving
+using that data.
+So we talked about
+this reinforcement
+learning objective.
+And say you have
+some policy, and you
+want to actually understand
+how good that policy is,
+to do that, we can't
+just actually look
+at the weights of
+the neural network.
+We actually have
+to run the policy
+to understand how good it is.
+And so what we'll do is to
+estimate this expectation, which
+is a function of the policy.
+We can actually just run
+the policy multiple times,
+observe the resulting reward,
+and then compute the average
+over the observed reward.
+And that's an estimate of
+how good our policy is.
+So we can then sum over the
+samples from our policy.
+Now, let's start to think about
+how we actually-- so we have
+this trial and error process.
+We collect some data and
+we improve our policy.
+Collecting the data
+is straightforward.
+We've talked about
+how to run a policy
+to get a rollout
+in the environment.
+We can sample an action,
+observe the next state,
+then run that through our policy
+again to get a new action,
+and repeat that process.
+But how do we actually
+then improve our policy
+after we've collected that data?
+So we have our objective, and
+this can be written down--
+we have some policy pi-theta.
+And our goal is to maximize
+the expected rewards when
+we sample from that policy.
+So we can consider the
+trajectories that are sampled
+from the policy as being drawn
+by some distribution that
+I'll write as p-theta of tau--
+theta because the
+distribution over trajectories
+is a function of the
+policy that you're using.
+And our goal is to maximize
+the sum of rewards.
+I'm going to use shorthand here.
+And I'm going to use shorthand
+for r of the trajectory, where
+this just means the sum of the
+rewards along that trajectory.
+So our goal is to
+maximize the rewards.
+We're going to maximize
+this with respect
+to our policy parameters theta.
+Now, how do we
+actually optimize this?
+So we want to use gradient
+descent because we typically
+train neural networks
+with gradient descent.
+We need to figure out the
+gradient of this objective
+with regard to theta.
+And we'll refer to this
+term right here as j-theta
+to be able to write it.
+This is the objective that
+we're trying to maximize.
+And it's a little
+bit challenging
+to try to get a
+gradient of this thing
+directly because
+the relationship
+that this has on theta is
+through the trajectories
+that we sampled.
+So we can't just differentiate
+through the sampling process.
+And that sampling
+process also depends
+on the dynamics of the world,
+which we also don't know.
+So if we're going to
+think about trying
+to get a gradient
+of j-theta, it's
+helpful to write down this
+expectation as an integral.
+So this expectation
+can be written
+as an integral of p-theta
+of tau times r of tau d tau.
+So this is just from the
+definition of an expectation.
+Now, because an
+integral is a summation,
+and that's a linear
+operation, we
+can bring the gradient
+inside the integral.
+And so in particular,
+what that looks
+like is the integral of
+the gradient of p-theta
+of tau r of tau.
+Now, this doesn't really
+help us directly in any way,
+because we don't want to have to
+evaluate this integral in order
+to take a gradient.
+And at this point, there is kind
+of a trick, a convenient trick
+that we can use
+to try to put this
+into a form that's more useful.
+And in particular,
+the trick is that--
+we'll write it over here--
+is that if you
+think about p-theta
+of tau times the gradient of
+p-theta of tau-- actually,
+sorry, times the
+gradient of the log.
+Does anyone remember what
+the gradient of a log is
+or the derivative of log?
+[INAUDIBLE]
+1 over, right?
+Then what this is equal to?
+This is equal to p-theta of tau
+times 1 over p-theta of tau.
+And then we need to
+use the chain rule
+to apply the gradient to this.
+And so with the
+chain rule, we'll
+get the gradient
+of p-theta of tau.
+And these two will
+then cancel out.
+And this is equal to the
+gradient of p-theta of tau.
+And the reason why this is a
+convenient equality between
+gradient of p-theta--
+and this is we
+could actually then
+replace the gradient of p-theta
+down here with this first thing
+right here.
+If we replace this gradient
+of p-theta of tau right here,
+we replace this, we now get an
+integral of p-theta of tau times
+grad log p-theta of tau
+times r of tau d tau.
+Now, this is something
+that's useful
+because we can
+now represent this
+as an expectation, this
+first term right here.
+And so this is equal
+to an expectation
+of tau sampled from
+p-theta of tau of grad log
+p-theta of tau times r of tau.
+So what we did there is
+we used this log trick
+to then get the p-theta out here
+and then get an expectation.
+And we're starting to get to
+something that's actually more
+what we can evaluate.
+And in particular,
+this expectation
+is something that we can
+estimate with samples.
+And now theta is actually
+appearing on the inside here.
+And that means that
+this is actually
+getting closer to something
+that we can evaluate.
+We still have this
+term right here,
+which doesn't look
+like pi of a given S.
+So we need to work on this term.
+But we're starting to
+get towards something
+that we can evaluate.
+So the question is, how is this
+more useful than the first term,
+because we still
+have the sampling,
+and the issue with
+the first case
+was that we can't differentiate
+through the sampling?
+Now, the thing
+that's different here
+is that theta actually appears
+inside the expectation.
+Now we're not going to
+be able to differentiate
+through the sampling, still.
+But the thing that's
+useful here is
+that we will actually
+be able to differentiate
+with respect to theta.
+And we're still not going to
+differentiate in this part,
+but we'll be able to get an
+estimate that's still useful.
+And we could potentially
+draw many, many samples.
+And then measure this
+quantity to get actually
+a pretty accurate representation
+of the gradient in a way that
+actually depends on theta.
+OK.
+Let's talk a little bit
+about this term right here.
+And actually, maybe in
+case it's useful in terms
+of where we're at so far, we can
+show that on the slides as well.
+So we looked at this j of theta,
+wrote it down as an integral.
+We found this convenient
+identity over here,
+where p grad log p
+is equal to grad p.
+And then we can use that to
+derive this second equation
+right here.
+And now we're right here.
+So for this part,
+for grad log p,
+this is something
+that we can write out.
+And if we use--
+if we remember that p-theta
+of tau equals p of S1 times pi
+of at given St and P of
+St plus 1, given St at,
+and then with a product over t.
+Then when we take the log
+of this, it's over there,
+the log of p-theta of
+tau is equal to the log
+of p of S1 plus the sum over T
+of the log of pi plus the log
+of the dynamics.
+And then once we actually take
+the gradient of log p tau, then
+the gradient of this
+with respect to theta,
+theta doesn't affect the
+initial state distribution.
+It also doesn't affect
+the dynamics in any way.
+And so the gradient
+of log p-theta of tau
+is equal to just the gradient
+of this term right here.
+So the gradient of log
+pi-theta of a given S.
+And so this is really
+useful because this
+means that we can actually
+plug in this over there.
+And this is actually something
+that we can evaluate.
+We can evaluate
+the gradient of--
+or the log-- the
+gradient of log pi.
+And this is just
+taking a backward pass
+through the log of the
+output of our neural network.
+And so then we actually get a
+gradient that we can evaluate.
+So the gradient that we
+get when we plug things in,
+the gradient of j-theta
+when we plug this in,
+is we have an expectation
+over trajectories
+sampled from our policy.
+And inside that expectation,
+we can bring the gradient
+inside that summation.
+And so we'll have a sum
+over time steps of grad log
+pi of at given St, right here.
+And then we still
+have our r of t
+right here, so we can
+write that as r of tau.
+We could also write it as a
+summation of r of St comma at.
+So this is what's called the
+policy gradient or the vanilla
+policy gradient.
+And this is a lot
+nicer than the version
+up there because we can sample
+trajectories from our policy,
+compute their reward.
+Also, compute the
+gradient of each of log
+of pi for each of the actions.
+And then sum those
+together, multiply,
+and we can get a
+gradient that we
+can apply to the weights
+of our neural network.
+That's actually leading
+to a higher reward.
+So again, on the
+slides, we wrote down
+what the probability
+of a trajectory is.
+If you take the log
+of that, you get
+a summation instead
+of a product,
+and the log of each of
+the individual terms.
+Then if we plug that
+into our gradient
+and we take the
+gradient of log p tau,
+then the first term
+and the last term
+go away because they
+don't depend on theta.
+And then we get this final
+term when we plug it in.
+So this is the gradient.
+When we run policy gradient,
+we'll collect data.
+And then we'll
+evaluate this equation.
+And then we'll use that
+to represent the gradient
+of the weights of the policy.
+And then run gradient descent,
+apply that to our policy,
+and then repeat the process.
+So yeah, we also talked
+about this verbally.
+But in order to estimate
+this gradient here,
+we'll run the policy
+to collect some data.
+We'll then improve the
+policy using that data.
+In particular, you can
+think of the first summation
+as collecting n samples
+for that expectation.
+And ideally, n is larger
+because the higher n
+is, the better an
+estimate you're
+going to get of the
+expectation of the integral.
+And then once we
+evaluate this gradient
+that we're estimating
+with samples,
+we'll then take a gradient
+step on our policy parameters.
+And so the full
+algorithm looks something
+like sampling trajectories
+from our policy,
+evaluating an estimate of the
+gradient using those samples,
+applying that to the weights,
+and then repeating this process
+to collect a new batch of
+data, recomputing the gradient,
+and improving the policy.
+So the question is,
+what does it look
+like to use the data to
+estimate this gradient term--
+the first term or
+the second term?
+The first term.
+Yeah.
+So when we're using the data to
+compute this first term, what
+we're doing is we're getting
+a bunch of states and actions,
+a bunch of trajectories.
+We're getting n trajectories
+at each-- in this case,
+have length t time steps.
+And we'll be taking
+the states and actions
+in those trajectories,
+passing the state
+through the policy
+as a forward pass
+to get the probability
+of our actions.
+We'll then evaluate the action
+in the data, the probability
+of that action in the data under
+the distribution, the policy
+output.
+So it's like a
+categorical distribution.
+We'll then get the probability.
+We'll take the log
+of that probability.
+And then we take the
+gradient right here,
+which will just be
+a forward pass--
+sorry, a backward pass
+through the network
+after taking the log of the
+policy output for that action.
+So this is called the REINFORCE
+algorithm or the vanilla policy
+gradient algorithm.
+So this came out.
+This is just r of tau.
+So I'm using r of tau
+as shorthand for this,
+just because I didn't want to
+write the summation five times.
+But yeah, this is
+exactly r of tau.
+Yeah, exactly.
+So this is an estimate
+because we're only
+going to be taking n samples
+to estimate this expectation.
+If you took infinite,
+then this would be exact.
+Of course, taking infinite
+samples is not possible.
+The gradient.
+Yeah.
+So the gradient right
+here, this is going
+to depend on the architecture.
+The question was, do we
+compute this by hand?
+You can use automatic
+differentiation.
+So whatever library,
+PyTorch or whatever,
+that can compute
+that for you, so you
+don't have to write it out.
+Great.
+So let's talk about some of
+the intuition behind this.
+So there's the math.
+But what does this
+gradient actually mean?
+So if you look at
+this, maybe let's
+start by looking
+at the first term.
+The first term if we think
+back to imitation learning,
+this first term is actually
+the same as the gradient
+of the imitation
+learning objective.
+So in imitation
+learning, we were
+trying to mimic actions from
+some demonstration data set
+by maximizing the
+log probability
+or minimizing the
+negative log probability.
+And if you take the
+gradient of that,
+it's similarly going to be the
+gradient of the log probability.
+So you can think about
+this first term as saying,
+I'm going to basically
+try to increase
+the likelihood of the
+actions in the online data.
+But then for the
+second term, it's
+weighting that by the
+reward of that trajectory.
+How good was that trajectory?
+And so you can think about
+this as the imitation gradient,
+but weighted by the sum of
+rewards seen in the data.
+And so essentially,
+you're going to increase
+the likelihood of actions
+that had high reward
+and decrease the
+likelihood of actions
+that were taken in negative
+reward trajectories.
+And so you're
+actually going to be
+imitating your own
+data, the data that
+was collected by the policy.
+But depending on whether it's
+high reward or low reward,
+you actually might have
+a negative gradient.
+If it's negative
+reward, that's actually
+going to push you away
+from the bad stuff
+and push you towards
+the good stuff.
+[INAUDIBLE]
+Yeah.
+So this is inside
+the first summation.
+You can see the eye
+comes up right here.
+So we're summing a
+bunch of directories,
+and then, yeah, this is all
+within the summation over n.
+So the question is,
+is the difference
+between this and
+imitation learning where
+imitation learning you're
+either right or wrong,
+or here you're like,
+this amount of right
+or this amount of wrong?
+So you can apply this--
+well, in principle, you
+can apply this in scenarios
+where the reward is very sparse.
+And so you can actually
+apply it in scenarios
+where the reward is just 1 if
+you succeeded, and 0 otherwise.
+Now, this algorithm may not do
+very well in those scenarios,
+and we'll talk about that.
+One of the key differences
+with imitation learning
+is that you're actually doing
+this on your own rollouts.
+Actually, the policy is
+collecting its own data
+and then applying this
+objective to its own data.
+And so that's one
+of the differences.
+And then second
+is we're actually
+using this reward, whereas
+in imitation learning,
+you're just blindly imitating
+all the data without any notion
+of how good the data is.
+And it assumes that
+it's good data.
+Yeah.
+How do you sample the first
+state of the trajectory?
+This is something
+that's typically
+defined by the problem setting.
+So in some problem
+settings, if you're
+trying to train an agent to
+play pinball or something,
+then the initial state will just
+be given by the pinball machine.
+In other cases, in
+language modeling,
+the initial state or observation
+might be the first question
+that the user asked.
+So it's usually thought of as
+a property of the environment.
+So the question is,
+can you use this
+to improve imitation
+learning by weighting
+the trajectories by reward?
+Yeah, you could
+definitely do that.
+We will also talk about some of
+the good things and bad things
+about this objective
+in the coming slides.
+So the question
+was, in practice,
+does it make sense to start
+with imitation learning,
+run that for some
+number of iterations,
+and then switch to this?
+That can definitely make sense.
+If you start completely from
+a randomly initialized policy,
+it will do random stuff.
+And if you have a very dense
+reward signal, that can be OK.
+But in other scenarios, if you
+have access to demonstrations,
+then initializing it
+with demonstrations
+can be a very good
+fit, and then it
+will allow you to improve on
+top of your initial policy.
+So the question is, if you don't
+have a good conception of what's
+good and bad, what the
+reward function should be,
+can you use imitation
+learning to get
+an initial sense for that?
+We'll talk about reward
+learning in a few lectures
+and how you can potentially
+use expert data for that.
+In practice, it's challenging.
+So we talked about how
+this intuitively increasing
+likelihood on high
+reward trajectories
+and decreasing likelihood on
+negative reward trajectories.
+If we actually look
+at this visually,
+say that we took a
+few trajectories--
+one of them had good reward,
+one of them had bad reward--
+and this red is showing
+our initial distribution
+over trajectories, what
+this gradient is going to do
+is it's going to increase the
+likelihood on the green part.
+So you'll get something
+that looks like this.
+And then it'll decrease the
+likelihood on the red part,
+so you'll get something
+that looks like this.
+And it'll encourage
+the policy to take
+actions that are more like
+the high-reward trajectory.
+[INAUDIBLE]
+In even more brief terms,
+you can think of this
+as trying to do more of the good
+stuff and less of the bad stuff
+that you observe.
+And then you can
+also think about this
+as a formalization
+of trial and error,
+where you're actually going
+to try to do different things.
+And if you see good
+stuff happening,
+then you'll try to
+do more of that.
+And if you make a mistake, then
+you'll try to stop doing that.
+Cool.
+So now I have a
+question for you.
+So let's look at an example.
+Say that we're trying
+to have a humanoid
+learn how to walk in
+simulation, and we'll
+define the reward function
+to be the forward velocity
+of the robot.
+This means that the reward
+function will be positive
+if it's moving forward.
+It may also be negative if
+the robot is moving backwards.
+It might be 0 if the
+robot is not moving.
+First, we'll sample
+from our policy.
+Say we have a policy that's
+not very good at the beginning.
+So in the first trajectory,
+maybe it falls backwards.
+In the second
+trajectory, maybe it
+falls forward, which will
+actually technically give it
+positive reward.
+So the sum of rewards
+will be positive.
+Maybe another trajectory,
+it manages to stand still.
+So the rewards
+would be 0 for that.
+In another trajectory, maybe
+it takes one small step forward
+and then falls backwards.
+And so the initial reward at
+the beginning of the trajectory
+would actually be
+getting positive rewards.
+And then later on, it would
+be getting negative rewards,
+and the sum of rewards
+would be negative.
+And then maybe the
+last trajectory
+is it takes one
+large step backwards,
+and then a small step forwards.
+And in this case, it would
+have negative rewards, and then
+some positive rewards,
+but the sum of rewards
+would still be negative.
+Now my question for you is,
+what will the gradient that we
+defined here, what will
+it encourage the policy
+to do if this is your data
+set, if these are the five
+trajectories that you sampled?
+This is going to be one
+of our simpler examples,
+and then we'll move to
+more complex examples
+in a couple more slides.
+So I'd encourage you to
+pair up for a minute,
+discuss it briefly,
+and then we'll
+come back and share
+in 1 or 2 minutes.
+OK, let's come back.
+If you want to share your
+answer, can you raise your hand?
+OK.
+So the gradient
+will encourage it
+to fall forwards and
+potentially stand still.
+Cool.
+That's mostly correct.
+So if we think through
+each of these trajectories,
+the first one, the reward
+will be negative here.
+It will also be negative.
+The sum of rewards over
+the entire trajectory
+will be negative
+for 1, 4, and 5.
+It should be about 0 for
+3, and for 2, the sum
+should be positive.
+And so what this means is
+you'll get negative gradients
+for any actions that were
+taken in 1, 4, and 5.
+You'll get positive gradients
+for all the actions taken in 2.
+And you'll get roughly 0
+gradients for all the actions
+that are taken in trajectory 3.
+And so this means that it will
+encourage it to fall forwards.
+And it'll encourage it
+to not do the things that
+were in 1, 4, and 5.
+So it will discourage
+it from taking steps
+backwards or forwards and
+will also discourage it
+from falling backwards.
+Cool.
+So yeah.
+So we encourage the policy
+to fall forwards and not
+take steps.
+This is distressing because
+we don't want our policy
+to fall forward.
+We want to take steps.
+And so this is
+kind of an example
+of how the gradient that we're
+getting is noisy, high variance.
+It means that depending on
+what these trajectories are,
+the gradient might
+vary drastically.
+So if you do actually have
+some trajectories that
+are walking forwards,
+you might actually
+get a very different
+gradient estimate
+from this set of trajectories.
+And so that's the definition
+of having noise or having
+high variance.
+So the question is, why are we
+getting multiple trajectories
+from the same policy?
+Why not just get one?
+There's two reasons for this.
+One is that the policy
+is not deterministic.
+And so if we want to explore
+different strategies,
+we will get different samples
+of different strategies
+because it's non-deterministic.
+And the second reason
+is also the environment
+might be stochastic.
+And so even if you have
+a deterministic policy,
+you might see
+different outcomes,
+and this will help you learn
+about those different outcomes.
+There's one thing that we can do
+about this that we can already
+directly improve the gradient
+in a fairly simple way.
+And in particular, one
+observation that we might make
+is that if you're in the
+middle of a trajectory
+and you take an
+action, that action
+has no influence
+on previous states.
+And right now, the gradient
+that is using the rewards at all
+states in the trajectory--
+in the gradient
+update, and it's even
+telling us to take actions
+later in the trajectory
+if the reward earlier in the
+trajectory was good or bad.
+And so one of the
+things that we can do
+is if one of our
+trajectories was
+to take a large step backwards
+and then a small step forwards,
+then we should actually be able
+to learn from this trajectory
+that taking a small
+step forward is good.
+And the way that we can do
+that is instead of having this
+be a sum from t equals 1 to
+T, what we can instead do
+is we can actually have
+this summation start at t.
+And so we can have
+this essentially be--
+let's use a different letter.
+So we'll have t prime
+that is starting at t
+and going to capital T. And
+now this is reward of St prime,
+at prime.
+And by having it only
+look at future rewards,
+this means that we're now
+incorporating the fact
+that current actions can
+only affect the future,
+and not affect the past.
+[INAUDIBLE]
+Oh, yes.
+Sorry.
+One other thing that
+you have to do here--
+yes, good point-- is to
+actually move this summation
+inside this summation here.
+[INAUDIBLE]
+Yeah.
+Why can we do this?
+So the reason is that we
+know that our action at--
+let's say our action
+at time equals 100.
+So let's say if t equals 100,
+so we're looking at a100.
+We know that this 100 is only
+going to influence rewards
+in the future.
+And this isn't going to have any
+impact on states in the past.
+So this is going to be
+completely independent of St50--
+or sorry, S50.
+So this doesn't affect
+S50 or S51 or S99.
+And this means that the--
+yeah, because of
+that independence,
+we can then drop the rewards.
+We can drop that from
+the equation and--
+[INAUDIBLE]
+Yeah.
+And only look at--
+when looking at increasing the
+likelihood of an action at time
+t, only use the future
+rewards in that influence.
+It's a little bit hard to
+write out mathematically
+why you can do that.
+I can maybe think
+about whether there's
+a nice mathematical
+expression for that,
+but it's really just about
+causality in the world.
+And so basically, policy
+behavior at time t
+is not going to influence
+rewards at earlier time steps.
+Cool.
+I think that this equation--
+OK.
+I don't have the typo in
+this equation, so, yeah.
+We're bringing this summation
+inside the other one.
+And it's only going to be a
+factor of the future time steps.
+And this means that for
+this example right here,
+we will be decreasing
+the likelihood of actions
+at the beginning
+of the trajectory.
+And then the future summations
+will become positive
+because you took a step forward.
+Then you'll actually start to
+be increasing the likelihood
+of taking a small step forward.
+[INAUDIBLE]
+Yeah.
+So a very good
+point is this still
+doesn't help if you
+take a step forward
+and then you take
+a step backwards.
+And the reason why it doesn't--
+the reason why that's actually
+a little bit difficult to handle
+is that it's possible that
+the step forwards actually
+cause you to fall
+backwards, or cause
+you to take a step backwards.
+A big part of
+reinforcement learning
+is thinking about what influence
+does actions have on the future.
+And you need to learn
+that from experience.
+And if you take a step forward,
+it means that it could--
+from the algorithm's
+point of view,
+actually, have caused something
+bad to happen in the future,
+and so we can't
+drop those rewards.
+So the question was,
+if you say that you
+had a lot of really bad
+stuff at the beginning
+and then you took a good action
+later on in the trajectory,
+would you have enough
+time to accumulate that?
+So in your particular
+example, you started getting--
+capital T was equal to 10,
+and you started seeing--
+you did something really
+good at time step 6.
+Now, at time step 6, what
+this will look like is
+you'll have grad
+log a6 given S6.
+And then you'll have a summation
+from t prime equals 6 to 10
+of our St prime, at prime.
+And so if you did get a high
+reward from that action,
+immediately or in the
+next four time steps,
+then you would actually increase
+the likelihood on that action.
+Now, it's really going to depend
+a lot on the reward function.
+So you're saying that for
+fixed horizon problems,
+you're actually going
+to be giving it--
+the gradient will be different
+if you're summing over 10
+rewards versus over 4 rewards.
+So one of the things
+that's important
+if you have a fixed
+time horizon T is
+for this to be a proper state--
+and actually to be
+truly Markovian-- you
+need it to contain information
+about the future dynamics.
+And if it's fixed
+at 10 and the policy
+doesn't know if the
+horizon is about to finish,
+then it's actually not
+a truly Markovian state.
+You need to actually give it
+information about how many time
+steps it has left to
+succeed, and then you
+can incorporate
+that into the state.
+And so you would actually
+have different states
+in those different
+circumstances.
+OK.
+So now another example for you.
+And this actually comes
+back to the question
+that came up earlier,
+although it's actually
+slightly different.
+So say that the robot--
+we now have a
+version that is only
+depending on future rewards.
+We have the same
+version of the problem,
+but now our policy is
+a little bit better.
+One of the trajectories
+falls forward.
+One of the trajectories
+slowly stumbles forward.
+One of the trajectories
+steadily walks forward.
+And one of the
+trajectories runs forward.
+My question for you is, what
+will the gradient encourage
+the policy to do in this case?
+And we can use this version,
+the updated version.
+And so I'll encourage you to
+pair up again and discuss this,
+and then we'll come
+back in 2 minutes.
+[INTERPOSING VOICES]
+OK.
+Let's come back.
+Please raise your hand if you
+want to share your answer.
+OK?
+Yeah.
+So the first answer
+was that it's
+going to get the highest reward
+for the stuff that is moving
+forward at higher velocity.
+So it's going to encourage
+it to do that, the highest
+velocity stuff the most.
+And you're saying
+that even if it
+makes any sort of
+forward progress,
+it will still encourage
+it to do that.
+So another hypothesis
+was that if you go back
+to the previous example,
+it might encourage
+it to fall forward and then
+get back up again and then
+fall forward and get
+back up again, especially
+if it's easy to fall forward.
+Now, getting up
+again is actually
+a little bit more challenging,
+so that might also
+be a little tricky.
+And so the thoughts there
+was that the fourth one,
+if the reward is--
+it might dominate if that
+one has a much higher reward
+than the others.
+If they're more even in terms
+of velocity and it's just move
+forward, then it won't
+necessarily dominate,
+and you'll do all four.
+So all of the rewards in these
+cases will all be positive.
+I think what a lot of
+people were getting at
+is that the reward of this
+last one will be the highest,
+and so we'll be
+encouraged to do this.
+But because all of
+these 1, 2, and 3
+also have positive
+rewards, the policy
+is actually also
+still going to be
+encouraged to do those things.
+So basically, when this term is
+nonnegative, when it's positive,
+you're still going to be
+increasing the likelihood
+on the actions in
+these trajectories.
+Now it won't do it as
+frequently as running forward,
+but it will still be
+encouraged to do that.
+And that might be a
+little bit concerning
+because some of the
+time, it will actually
+be encouraging it
+to stumble forward.
+And ideally, we would
+actually, in this case,
+want a policy that can
+actually have the policy run
+as fast as possible.
+So the question was, is this
+because of local minimum?
+It seems like with
+this reward function,
+the best outcome
+is to run forward,
+and so why are we getting
+this kind of objective?
+The reason for this is
+because the gradient is noisy.
+It comes down to variance.
+And if you do have a
+policy that runs forward,
+it will encourage it to
+keep on running forward.
+But when you have
+other data in there,
+that other data will
+influence it in some ways.
+And so it won't necessarily
+converge to a local optimum,
+because at this point,
+it will encourage
+it to run forward more.
+And then the next batch of
+data will run forward more,
+and it'll encourage it
+to run forward even more.
+So eventually, it will
+converge to the global optimum,
+but it will get there more
+slowly because the gradient has
+a lot of variance, depending
+on the samples that you select.
+Will this encourage the
+robot to roll forward?
+With this data, it
+will not encourage
+it to roll forward unless some
+weird combination of gradients
+causes that.
+But yeah, generally,
+it will not.
+If you had data of
+rolling forward,
+then it would encourage
+it to roll forward.
+So the question
+is, can the agent
+learn from a subset
+of characters instead
+of the whole trajectory?
+In this case, it will
+learn from all future steps
+in the trajectory.
+So that is a subset,
+but it might not be--
+and I guess-- in
+the next lecture,
+we'll talk about more
+sophisticated ways to estimate
+this--
+are smarter basically.
+Cool.
+So the thing that we
+saw here is that things
+are sensitive to the scaling
+of the reward function.
+And on the flip side, if
+everything was negative--
+it came up in the
+question before--
+we would actually only be
+getting negative gradients
+to our policy and no
+actual positive gradients.
+And that's actually
+a big problem
+with this kind of approach
+is that it depends
+on the scale of the reward.
+And there's actually
+a very simple thing
+that we can do to fix this.
+And so in particular,
+what we can do
+is when we are using
+this gradient, which is
+the expectation of p of tau--
+I'll maybe do the first version
+just to make it a bit shorter,
+but we get the gradient of
+log p of tau times r of tau.
+And what we can do is instead
+of having this be r of tau,
+we can actually
+subtract a constant,
+where that constant could be
+equal to the average reward.
+And if we subtract the
+average reward from this,
+this means that things that
+are better than average
+will increase the
+likelihood, and things
+that are below
+average will actually
+lead us to decrease likelihood.
+So this will be negative.
+Now, you might be wondering,
+can we just add this b here?
+Did I just make that up?
+Why can we do that?
+Why are we allowed to do that?
+We can see what the effect
+that this has on the gradient.
+And what we can show
+is we can actually
+show that if you subtract
+a constant in expectation,
+this has zero effect
+on the gradient.
+And in particular-- so
+this is the gradient of J.
+And if we look at what effect
+this has on the gradient
+and expectation, we can look
+at essentially the expectation
+of grad log p times b.
+And it's possible to show
+that this in expectation
+is actually equal to zero.
+And in particular, if we write
+this out as the gradient of--
+or sorry, the expectation
+is the integral
+of p of tau times grad
+log p of tau times bd tau.
+We can then use the
+same trick that we
+used before, but in reverse.
+This is equal to the integral
+of grad p-theta of tau times bd
+tau.
+I'm a little bit out of
+space, but the gradient
+can be moved to the
+outside of the integral
+because this is a
+linear operation.
+We can also move b
+outside the integral
+because it's a constant.
+And so this is equal
+to the gradient
+b times the gradient of the
+integral of p-theta of tau d
+tau.
+Now this integral is just equal
+to 1, and the gradient of 1
+is 0.
+So this is 1, this is
+0, and b times 0 is 0.
+And so this means that
+the expectation, this
+is going to have 0
+effect on the gradient.
+And so just to maybe write that
+out a little bit more cleanly,
+the expectation of the
+gradient of log p times
+b-- so basically, the
+fact that this baseline
+is having on this gradient.
+We can write that
+as the integral.
+We can then use the
+log trick in reverse.
+We can move b and the gradient
+outside of the integral.
+This integral is equal to
+1, the gradient of 1 is 0,
+and then we get 0.
+So this means that we
+can add this baseline.
+So the reason why this
+constant term-- the question
+was this constant term wouldn't
+be helpful if we could actually
+truly evaluate the expectation.
+And yeah, that's correct.
+So if we had this expectation
+and could measure this exactly,
+then we wouldn't need this.
+The reason why this is
+helpful is because we
+have this expectation.
+Basically, you can think
+of it as reducing--
+it's a way to reduce the
+variance of your estimate
+of this expectation, and it's
+an unbiased way to do that.
+So in particular, as long as
+the baseline is a constant,
+then it won't
+change the behavior
+of the gradient in expectation.
+This means that it's unbiased.
+This is a term from statistics,
+talking about effect
+on random variables.
+And you can show that it reduces
+the variance of your estimate
+of the gradient.
+So the question is,
+is b really a constant
+and seems to depend
+on the trajectories?
+We'll use the same value
+of b for an entire batch,
+for all of the examples.
+And so we'll collect a batch of
+data, then we will compute b,
+and we'll then use b
+for all of the updates
+on that batch of data.
+So how does it reduce the
+variance of the gradient?
+You can write down--
+so this is the expectation
+of the gradient.
+You can write down the
+variance analytically
+and show that it
+reduces the variance.
+I don't want to go
+through the math
+because we have some other
+stuff to get through.
+But intuitively, you
+can think about it
+in terms of this example of--
+it will encourage it to do
+more of the above-average stuff
+and less of the
+below-average stuff.
+I could also mention that
+average reward is actually
+not the optimal baseline.
+You can actually
+derive the variance,
+and then take the derivative
+of the variance side equal to 0
+to find the optimal baseline.
+But average reward
+is pretty good.
+The optimal baseline
+is something--
+it's very close
+to average reward,
+but there's some
+additional weighting terms.
+Cool.
+So we have one more episode
+of what does the gradient do.
+And we're going to look
+at a different example.
+In this case, the robot
+is folding a jacket.
+And the reward is 1
+if it's neatly folded,
+0.5 if it's folded
+with some wrinkles,
+and 0 if it's not folded.
+We're going to again
+sample from our policy.
+We have some samples of
+not touching the jacket,
+folding only the sleeves but
+not folding the full thing,
+flattening the jacket
+but not folding it,
+and one trajectory where
+it does fold the jacket.
+And my question is, with the
+baseline in here this time,
+what does the
+gradient look like?
+The rewards for 1, 2, and 3
+will be 0, and the reward for 4
+will be positive.
+And so this means that
+because of our baseline,
+the gradient for
+4 will be positive
+and will encourage
+this behavior.
+And then we'll discourage all
+the behavior for 1, 2, and 3.
+Now, in some ways,
+this is good because it
+means that we are encouraging
+the good behavior.
+But there are also
+some things that
+are a little bit
+dissatisfying about this.
+The first is that the
+gradient for 1, 2, and 3
+is going to be identical
+for all of them.
+There isn't any
+differentiation between them.
+And some of these are
+actually better than others.
+And this is, in some ways, a
+result of the reward function
+that we're using, which is
+more sparse than it could be.
+And the other thing
+is that we'll actually
+see some techniques in Friday's
+lecture that would actually
+be able to leverage
+some of the good parts
+of these trajectories,
+because there
+is a good thing about
+folding the sleeves,
+and it would be nice to
+be able to use that data
+to encourage the policy.
+And right now, it will
+actually be discouraged
+and have negative gradients
+for this trajectory.
+So in some ways, this is good.
+So it will encourage
+folding, but the gradient
+is constant for
+trajectories 1, 2, and 3.
+And on Friday, we'll see ways to
+make this a little bit better.
+And one of the takeaways
+here is that policy gradient
+is still noisy and is
+still high variance.
+And it really is
+going to work best
+if you have dense rewards rather
+than rewards that are sparse.
+And it'll work best if you
+have large batches of data,
+because if you didn't actually
+sample this fourth trajectory
+and you only sampled failures,
+then you would have 0 gradient.
+And you wouldn't actually
+be able to improve.
+So the question was, can we just
+improve the reward function?
+Yes.
+So if we had a more
+dense reward function,
+that would definitely
+help in these cases.
+There are actually scenarios
+still where we could do better.
+Especially if you, for
+example, folded the sleeves,
+you got positive
+reward for this,
+and then dropped it on
+the ground or something
+after that, then that's
+still dissatisfying
+because we wouldn't use the
+first part successfully.
+And we'll actually
+see how to get
+a good gradient for that first
+part on Friday, but yeah.
+If you had a more
+dense reward function
+for this particular
+set of trajectories,
+that would work a lot better.
+Oh, so the question here
+is, when we do the baseline,
+are we also using this trick
+to only use future rewards?
+You can combine them.
+You need to be a little bit--
+you need to think a little
+bit potentially more
+carefully about what
+the baseline will be,
+because some of the rewards--
+you'll be summing over
+fewer things or more things,
+depending on where you
+are in the trajectory,
+but you can definitely
+combine them.
+So the question was, if
+we're using average reward
+as the baseline, do we need
+to keep updating the term?
+Do we need to use
+data from the policy?
+So yes, you'll want
+to keep on updating it
+because as the policy
+gets better, above average
+and below average will change.
+And you'll want to recompute it
+on your latest batch of data.
+Cool.
+So one more thing on this
+version of the algorithm,
+and then we'll move on
+to one last version,
+in terms of how to
+implement it, we
+talked about-- we derived
+the gradient like this.
+And to actually implement
+this in practice,
+you could, in
+principle, actually
+just run a backward pass for
+all of these different terms.
+But if you computed all
+of these individually,
+then you'd have to do n
+times t backward passes,
+and this would be
+rather inefficient.
+And it'd be nice if we
+could just actually do
+automatic differentiation
+on the full objective
+and only do one forward
+pass and one backward pass.
+And we can do that.
+So it's possible to
+implement essentially
+a surrogate objective
+whose gradient
+is the same as this objective.
+I'm calling it surrogate
+because it's not
+the same as the very first
+objective of maximizing expected
+rewards.
+But you can write down
+a surrogate objective
+for this particular example.
+This is what the surrogate
+objective looks like.
+Note that I actually do have a
+typo on these equations, where
+this second sum should
+be inside the first sum.
+That's maybe a small note.
+I'll see if I can fix that.
+But, yeah, you can implement
+a surrogate objective,
+and then use backprop
+and autodiff software
+to just do one backward pass.
+And what this actually
+looks like in practice
+is this would actually look
+like a cross-entropy loss
+for a discrete action policy,
+or something like squared error
+for our Gaussian policy.
+You could also use more
+sophisticated policies,
+like diffusion or something
+like that as well.
+OK.
+So summary so far, we
+showed how to estimate
+the gradient of the RL objective
+using this log gradient trick.
+This corresponds to weighing
+the policy likelihood
+by future rewards.
+And we found that subtracting a
+baseline, like average reward,
+will also further
+improve the gradient.
+Even with these two things,
+the gradient is still noisy,
+and so it's best with large
+batches and dense rewards.
+This is also our first
+online reinforcement
+learning algorithm,
+where we iterate
+between collecting a batch
+of data with our policy
+and improve our policy.
+And it formalizes this
+trial-and-error learning
+process.
+And the intuition for
+everything we've done so far
+is do more of the
+high-reward stuff
+and less of the
+low-reward stuff.
+OK.
+Now, the last thing
+we'll talk about today
+is what else is troublesome
+about policy gradients?
+And one thing that we haven't
+really talked about that much
+is the details of
+the sampling process.
+And this is what our gradient
+and our algorithm looks like.
+And note that in
+this gradient, this
+assumes that we're
+sampling from pi-theta.
+And we change theta in step 3.
+And this means that every single
+time we take a single gradient
+step, we need to recollect
+data to estimate our gradient.
+And this is kind of
+sad because usually we
+do thousands and thousands
+of gradient steps
+on neural networks.
+So yeah, that seems
+like a problem.
+And what this is called
+is it's called on-policy.
+It means that the gradient
+that we are measuring
+requires data using
+our exact policy.
+And we can think about--
+this is an attribute of an
+online RL algorithm, where
+on-policy only uses data
+from the current policy,
+and off-policy means
+that you can reuse data
+from other past policies.
+So can we derive an off-policy
+version of the policy gradient?
+And it's only going to
+be a little off-policy.
+And by that, I mean,
+we're just going
+to try to be able to take
+more than one gradient
+step on a single batch of data.
+And to do this, we can
+use importance sampling.
+And importance sampling is
+actually a really cool technique
+that's useful outside of
+reinforcement learning as well.
+And it's thinking
+about this scenario
+where you want to estimate
+a quantity, an expectation,
+without actually sampling
+from that distribution.
+So say you have some expectation
+using samples from p of x,
+and you want to
+estimate some function
+f of x using those
+samples, but say
+that you only have access to the
+ability to sample from q of x.
+So this is usually called your
+proposal distribution that's
+able to propose samples to use.
+This is your old policy.
+We have samples
+from our old policy,
+but we want to be able to
+estimate a function of samples
+of our new policy after
+we've taken a gradient step.
+So what you can do in
+this case if we write down
+this expectation as an integral,
+it looks something like this.
+And as long as q of x
+has reasonable support,
+we can write this as--
+we can add in this term that
+equals 1 into our equation.
+And then we can now actually
+write this as an expectation
+with respect to q.
+So this is equal to an
+expectation with respect
+to q of p of x divided
+by q of x times f of x.
+And so this means that we
+can actually estimate--
+we can get this expectation
+by sampling from q
+and then weighting
+the quantity by p/q.
+[INAUDIBLE]
+So that's pretty cool.
+This means that we can
+use principal samples
+from our old policy
+q, weight them
+by the probability of the sample
+under our new policy divided
+by the probability under the
+old policy times the quantity.
+So we showed for
+this simple case
+of p of x and q of x in terms
+of actually applying this
+to our policy.
+We can take our expected rewards
+with regard to p of theta
+if we instead have some
+previous policy that we've
+collected samples from.
+We can then measure
+our objective
+in terms of the samples
+from that policy, where
+we weight the reward by the new
+policy divided by the old policy
+probability.
+Now, note that this requires
+your proposal distribution
+to have nonzero
+support in scenarios
+where your new policy
+has probability.
+This is actually very important
+for it to work if q of x is 0.
+This is not poorly defined.
+But that's really
+the only catch here.
+And in general, this
+importance sampling technique
+is really going to work
+best when p and q--
+or when your old policy
+and your new policy--
+are very similar to each other.
+Now there's some details--
+we've shown this in
+terms of p of tau,
+now how do we actually do this
+in terms of pi of a given S?
+That actually gets a
+little bit trickier.
+We can write down p
+of tau and this ratio
+as the product of these
+different probabilities.
+Unfortunately, some of the
+probabilities cancel out.
+But when we then try to
+put these probabilities
+into our update, we're
+going to get something
+like this, where we
+then have this product
+of these probability ratios.
+And now, unfortunately,
+this product
+can actually become
+very small or very large
+if the length of your
+trajectory is very large,
+because you're going
+to be multiplying
+many, many numbers together.
+If you have 100 numbers that
+you're multiplying together,
+if they're above 1, that
+might start to get very large.
+If they're below 1, that
+might get to 0 very quickly.
+And so in practice, we often
+will consider the expectations
+over time steps instead
+of trajectories.
+And that also has a little
+bit of a hitch, which
+is that this needs to be
+over state action pairs
+rather than actions
+given states.
+But often in practice,
+we can approximate
+this ratio as equal to 1.
+This is incorrect, but it's
+the best that we can do.
+And then we can
+get some final form
+where we get this ratio of
+new policy over old policy.
+Cool.
+The full algorithm
+looks the same,
+except now we can
+take multiple gradient
+steps on the same batch.
+This is good.
+And then we have this new
+form for our gradient.
+OK.
+We'll talk a little
+bit about some tricks.
+We don't have time to
+cover KL constraints today,
+but to review things, we
+talked about online RL.
+It's an on-policy algorithm.
+We talked about baselines
+for reducing variance.
+And we also just derived this
+off-policy policy gradient,
+which uses importance
+sampling and allows
+us to apply multiple
+gradient steps.
+The intuition is to do more
+high-reward stuff and less
+low-reward stuff.
+And the gradient is
+still very noisy and best
+with large batches
+and dense rewards.
+Cool.
+And that's it for today.
+Next time, we'll talk about
+actor-critic methods, which
+we'll build closely on
+what we talked about today,
+including PPO.

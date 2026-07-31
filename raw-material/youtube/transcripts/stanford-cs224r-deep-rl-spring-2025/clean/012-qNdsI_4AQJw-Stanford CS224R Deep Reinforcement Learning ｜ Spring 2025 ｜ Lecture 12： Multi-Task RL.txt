@@ -1,0 +1,2396 @@
+Now let's get started.
+And today we will be finishing
+up model-based reinforcement
+learning, specifically a
+way to use a learned model
+with synthetic data
+generation and when
+to use model-based
+reinforcement learning.
+And then we're going to
+be talking about multitask
+imitation learning
+and reinforcement
+learning, including ways
+to conditions on tasks,
+different tasks as
+goal-reaching tasks,
+and an approach called
+hindsight relabeling,
+which you'll be implementing.
+Cool.
+So let's get back to model-based
+reinforcement learning.
+So last time, we
+talked about a scenario
+where we learned some model.
+That model could be a
+deterministic model.
+It could also be modeling a
+distribution over next states.
+And in particular, you
+could think about it
+as trying to approximate
+the distribution
+over the next state, given
+the current state and action.
+And you can use this
+model to actually predict
+what will happen in the future.
+And for example, if you have
+an action that you think
+you might take or
+multiple actions
+you think you
+might take, you can
+use this estimated distribution
+to generate or imagine
+what might happen
+in the future if you
+were to take those actions.
+We talked about an
+approach to behavior
+that's quite different
+from learning a policy,
+where we're not actually
+explicitly learning
+a mapping from states to
+actions and instead, on the fly,
+we are thinking through,
+for a given state,
+what actions we should take.
+And we called this planning.
+And we talked about how
+this sort of planning
+can be done with gradient-based
+or sampling-based optimization
+over the next future horizon.
+Then we also talked
+about how it's
+important to update the model
+using the data collected
+because then you'll be
+able to actually learn
+a better model in the realms
+that you want to use that model.
+And then periodically,
+we also talked
+about how you can replan to
+help account for mistakes,
+account for errors in
+the model, and also react
+to changes in the environment.
+Cool.
+The pros of this sort
+of planning approach
+is that it's simple.
+It's easy to plug in
+different goals or rewards
+if you have a general
+enough model, possibly
+even at test time.
+And the downside is that it's
+compute intensive at test time.
+It requires a lot of test time
+compute at inference time.
+And this particular
+instantiation
+was only practical for
+short-horizon problems
+or for very shaped rewards,
+where you can plan over
+some shorter horizon
+rather than considering
+an extremely long horizon.
+And there's two reasons
+why this is only
+applicable to short horizons.
+One is that as you
+increase the horizon,
+it becomes even more
+compute intensive.
+And the second reason is that
+the model is not very accurate
+when you try to apply it
+multiple times to generate
+a long trajectory.
+Cool.
+Now, there's a second
+way that you can use
+these kinds of learned models.
+And that is to learn a policy.
+And so that's what we'll
+talk about right now.
+And the key idea is
+that we can actually
+use this model of the future,
+this kind of learned simulator,
+to augment any sort of
+data that we've collected.
+So say that in the real world
+or the real environment,
+we've collected some data.
+So we have some trajectories.
+Some of this data could also
+have been provided to us
+in an offline data set.
+And so maybe the data that we
+have in the real environment
+looks something like this.
+Does anyone have
+thoughts on ways
+in which we might want to use
+our learned model to augment
+this data set right here?
+Like, procedurally,
+what would we
+do to try to generate
+synthetic data?
+Yeah.
+So the thought there was
+that you could take--
+you said you could
+take the last state
+and then generate
+more from there.
+So you could add on to
+the last state here.
+So that's one
+thing you could do.
+Other thoughts on
+things you could do?
+Yeah?
+So something like dagger, where
+you take the first part that's
+run by the policy and then
+the second part that's
+from the model.
+So it's kind of
+similar to this, maybe.
+But maybe you do it earlier.
+Is that what you're saying?
+Yeah.
+So you don't just have
+to start at the end.
+You can also start anywhere
+in the middle as well.
+So you could, for example,
+generate trajectories
+from, really, any sort
+of state in your buffer,
+in your data set.
+And then if you were to
+do something like that,
+then you would be
+able to generate
+data that looks like this,
+where everything that is in red
+is synthetic data or data that
+was imagined using your model.
+And then everything in
+black is the real data
+from the environment.
+Now, one thing that
+we talked about before
+is that our model is
+not very good to be--
+like, you can't really
+trust it if you were
+to make a really long rollout.
+And so one thing that
+you can do is keep
+these trajectories very short.
+And so instead of having
+these be almost as
+long as your original
+trajectories,
+you could actually change them
+to be just little short rollouts
+that look something like
+this and that basically
+add a little bit more
+coverage around the trajectory
+in your data.
+And so that would look
+something like this.
+And something like this
+picture is often more
+like what people
+find works really
+well in practice because of
+inaccuracies in your model.
+And so specifically--
+say we have some example,
+real trajectory.
+Then maybe the first
+way that you could
+think about creating data--
+maybe it wasn't the first way
+that you guys thought about it.
+But one simple
+thing you could do
+is just start from
+initial states
+and generate full
+trajectories as if it
+were the real environment.
+But the downside there
+is that the model may not
+be accurate for long horizons.
+And so you won't be able to
+actually get very good state
+coverage if you only start at
+the initial state distribution
+and don't actually end,
+because you only want
+to use fairly short rollouts.
+You can also generate
+partial trajectories
+from the initial states.
+But this won't give you good
+coverage of the later states.
+And so one thing that gets
+the best of both worlds-- it
+gets you good coverage
+and also allows
+you to use short
+trajectories-- is
+to generate these
+partial trajectories
+from all of the states
+in your real data set.
+So then what the full
+algorithm looks like is,
+you will first
+collect real data.
+We can call this Denv, before.
+And then we will want to update
+our model using the real data
+so that our model is as
+accurate as it can be.
+And then we can generate data.
+And the way this generation
+process will look like
+is first sample some
+S from your real data.
+And then generate a short
+trajectory starting from S,
+where you will roll out your
+policy or whatever exploration
+policy you have,
+starting from S.
+But then we'll be
+doing this rollout
+inside your learned model.
+And so this will be
+inside the world that
+is instantiated from your
+learned model and not
+in the real environment.
+This data will go into
+some other data set.
+Maybe we can call it Dgen
+for D-generated data.
+And then at the
+end, you can simply
+update your policy
+using both the real data
+and the generated data.
+So update pi theta using
+Denv and D generated.
+And then repeat this process.
+Whoops.
+I misspelled real.
+So the question
+is, if you're only
+generating short trajectories,
+does that take longer
+to converge to some goal?
+So you can think of it
+as kind of supplementing
+the data that you have so far.
+And when you start from states
+that are closer to the goal
+from when you
+generate data there,
+then you'll be close
+to getting rewards.
+And you'll be able to update.
+When you're further,
+this doesn't mean that--
+this data won't
+necessarily reach the goal.
+But with reinforcement
+learning algorithms,
+you'll be able to
+understand-- some of this data
+might feed into states
+that are in the data.
+And when you use
+reinforcement learning,
+you can then learn that--
+like, as an example, maybe
+you have a real trajectory
+that takes a path that is
+maybe not the most direct path.
+And then you start learning
+a policy that knows,
+maybe I should shortcut this.
+Then your model,
+when you explore
+that in your
+synthetic data, this
+might actually help you
+learn a better policy
+by using this kind of data.
+In terms of convergence
+speed or speed
+in which you'll
+get a good policy,
+generally, the thing that
+we're often trying to minimize
+is the amount of real data
+that we need right here.
+And this will allow you to get a
+good policy with less real data
+by using these red trajectories.
+Yeah.
+So the question is, how do
+we get rewards in this case?
+So I haven't
+explicitly written it
+out here because
+sometimes you might
+know the form of
+the reward function.
+Or you might have
+learned a reward function
+in the original RL problem, in
+which case you can use that.
+If you didn't learn
+a reward function
+and the real world
+just gives you
+the rewards as
+part of this data,
+then when you train
+this model, you'll
+need for either this
+model or a separate model
+to also learn a reward function
+with supervised learning.
+So the question
+was about compute.
+So this is going to be
+more compute intensive
+during training than if you
+were to not use this, especially
+because sometimes the models
+that you might be learning--
+in some cases, the models
+that you're learning,
+usually rolling out through
+them, takes compute.
+You're kind of trading data in
+the environment for compute.
+And one of the reasons why that
+trade-off is often favorable
+is because collecting online
+data in the real environment
+might be unsafe,
+or it might just
+be really expensive if you
+have to run experiments
+on physical equipment.
+Unlike planning, however, this
+is not more compute intensive
+at test time.
+Because you're using
+the synthetic data
+to update a policy.
+And then at test time,
+you're running that policy
+as your final behavior.
+Cool.
+So the algorithm on the
+slides, we collect data.
+We update our model.
+This model may
+also model rewards
+by trying to mimic the
+data from the environment.
+Then we will collect these short
+rollouts by using our model,
+starting from states
+in the real data.
+And then we'll update the
+policy and, optionally,
+also update any sort
+of value function using
+the aggregated data.
+One other thing
+to note about this
+is that it is compatible with
+a variety of reinforcement
+learning algorithms.
+So step 4, you can use a
+variety of algorithms here.
+You can even use
+on-policy reinforcement
+learning algorithms as well.
+In particular, if you have
+an on-policy algorithm that
+needs data from
+the exact pi theta
+that you're taking
+a gradient step on,
+all that means is
+that pi theta has
+to be the policy that was
+collecting the synthetic data
+through the model.
+Cool.
+Yeah.
+So with regard to this
+last update, here,
+we're using both the data from
+the environment and the data
+from the model.
+There are actually also
+some policy updates
+that only use data
+from the model
+and find that that
+works fine as well.
+So you can choose
+to use either both
+or just use the
+data from the model.
+Yeah.
+So this only makes sense
+when you have an estimate
+of the reward function.
+And if you don't,
+then you won't be
+able to update your policy
+on the generated data.
+So the question-- is
+the learning stable
+when you use the synthetic data?
+Yeah, yeah.
+So you may be in a
+scenario where you're
+adding a lot of synthetic data.
+And so how much synthetic
+data you generate
+and how you balance that
+data in this last update
+might depend on how good
+you think your model is.
+In terms of stability,
+I think that--
+we'll talk about pros and
+cons on the next slide.
+But one downside of
+these kinds of algorithms
+is, they do introduce additional
+hyperparameters because you
+have to train this model.
+And if, for example, your model
+training, for whatever reason,
+it didn't do well, then you
+might end up in a scenario
+where the algorithm
+performs more
+poorly because those
+hyperparameters weren't
+well tuned.
+And so you can see issues there.
+But otherwise, if you have
+a fairly accurate model,
+you usually don't have issues
+otherwise with stability.
+So let's talk a
+little bit about when
+to use this sort
+of synthetic data
+and when to use model-based
+reinforcement learning.
+So generally, the
+way to think about it
+is that there's
+potentially really big
+upsides with model-based
+reinforcement learning
+and also potentially
+big downsides.
+The big upside is that if you
+can learn a pretty good model,
+then it is immensely useful to
+be able to predict the future.
+And you can get away with
+using far, far less real data
+by using the data
+that's generated.
+And so in domains where it's
+feasible to learn a model,
+it's really, really useful.
+You could also do the kind of
+test time planning as well.
+And generally, maybe
+one other point
+that's not on the slides
+with regard to upsides
+is that it seems like
+this notion of being
+able to anticipate future states
+as an outcome of your actions,
+that seems like a
+fairly fundamental thing
+that our models should at least
+have some understanding for.
+One other thing that we
+actually didn't talk about
+is, there are also scenarios
+where the model can be
+trained without reward labels.
+And, for example, if some of
+your real data has rewards
+and some of it
+doesn't have rewards,
+the part that
+doesn't have rewards,
+you can train your model on.
+And your model can actually
+leverage potentially more data
+than what a model-free
+reinforcement learning
+method can use.
+And so that's quite nice.
+And there are
+scenarios where you
+might be able to collect
+very large amounts of data
+without rewards and a small
+amount of data with rewards.
+And then the other thing is
+that the model is somewhat
+task agnostic.
+And so if it was trained on a
+broad enough data distribution,
+sometimes you can transfer this
+model across different tasks
+or across different rewards.
+And so, for example,
+if your goal isn't just
+to learn one task but to
+learn many different tasks,
+this sort of
+transferability is useful.
+So those are the big upsides.
+What about the big downsides?
+One downside is that the model
+doesn't optimize for task
+performance and errors.
+Because it's trying
+to-- for example,
+if you have image observations
+or your states are images,
+then it's trying to get the
+details in the pixels to line up
+and that, for example, the color
+of the sky is the correct color.
+And that, in some
+ways, oftentimes
+is not actually what
+you care about in terms
+of learning a good policy.
+So there's this
+mismatch between what
+you're optimizing for
+when you train a model
+and what you actually
+might care about,
+in terms of downstream
+policy performance.
+Sometimes it's really hard
+to learn a good model.
+Sometimes it's harder
+to learn a good model
+than it is to learn
+a good policy.
+In these cases,
+usually, you don't
+want to learn models because
+you're then presenting a harder
+problem than the actual
+downstream problem you
+might care about.
+And then the last
+thing that I alluded
+to before is that it's another
+thing you have to train.
+And so there's more
+hyperparameters,
+and it's also more
+compute intensive.
+And so because of these
+big upsides and downsides,
+generally, whether
+to try to learn
+this kind of predictive model
+depends a lot on the domain
+and how hard it is to
+learn that kind of model.
+Yeah.
+So the question was,
+what are a few examples
+of the additional
+hyperparameters?
+The main thing all comes down
+to this step 2 right here,
+which is that you need to design
+the architecture of the model,
+of this predictive model.
+And it might need to be
+a completely different
+architecture from
+the policy if you're
+going to be generating
+images or states.
+The second is that you
+need a learning rate.
+You need to know how
+long to train that for,
+like how many epochs, any
+regularization for that model,
+basically everything that
+might go into training
+a model like this.
+One more thing on that
+previous question--
+beyond training
+this model, there's
+also hyperparameters with regard
+to the length of these rollouts
+and how much synthetic
+data to generate.
+So the question is, do we
+keep on collecting data
+after each policy update?
+So as written, this is
+an online algorithm.
+You can actually also develop
+completely offline versions,
+model-based RL
+versions as well, where
+you have a fixed prior
+data set and you augment
+that data set with a model.
+And then you train a
+policy, and you're done.
+In this case, we have
+an online algorithm,
+where we then continue
+to collect real data,
+update our model, and so forth.
+This can be done in
+an off-policy way
+or an on-policy way.
+So that's going to come down
+to, when you do this update,
+is it going to only use the Denv
+and the Dgen from this iteration
+or also from
+previous iterations?
+And that's going to
+depend on what algorithm
+you use to update your policy.
+So generally, models
+are very flexible.
+You can use them
+offline, on policy,
+off policy, and so forth.
+Yeah.
+So the question
+is, how hard is it
+to learn a model
+compared to a policy?
+It's extremely domain dependent.
+So for example, say
+you're in a maze.
+So you're trying to learn
+how to get from here to here.
+Maybe there's some walls.
+And you need to
+figure out how to get
+through this sort
+of environment.
+And you're not able to
+go through the walls.
+In this case, the model
+might be quite easy to learn.
+You'll learn that if your
+action is to go right,
+then you'll go right,
+unless there's a wall there.
+If you're going to go up and
+so forth-- that's really easy.
+But the policy is
+really complicated.
+Because the policy is saying
+that, OK, if you're here,
+maybe you need to go in
+various different directions.
+And so this is a case where the
+policy is a lot more complicated
+than the model.
+And learning a model
+could be a good choice.
+As another example,
+say that you're
+trying to pour some
+water from one cup
+into a bowl or
+something like that.
+The policy might be
+potentially fairly simple.
+Like, maybe you're already even
+holding the cup in your hand.
+Then the policy might
+be as simple as just
+rotating your wrist.
+But the model in
+this sort of case
+might involve the fluid dynamics
+of how the water will pour
+and what will happen,
+for example, if it hits
+the edge of the bowl or
+the center of the bowl
+or something like that.
+And this is a scenario where the
+model is a lot more complicated
+than the policy.
+And it's possible
+that in this scenario,
+it might be a lot easier
+to just learn the policy
+without learning the model.
+So it really depends
+on the domain.
+Yeah.
+So the question is, how
+successful has model-based RL
+been in robotics scenarios?
+If you're dealing with
+high-dimensional image
+observations, it's arguably
+been less successful.
+If you have a more
+compact state space,
+like the positions of joints
+and positions of objects,
+then it's been a
+lot more successful.
+And with legged
+robots, for example,
+you can use model-based
+RL pretty successfully
+if you're mostly just trying
+to learn, like, a blind walking
+policy.
+Or we saw the dexterous--
+like, the hand manipulation,
+where you knew the
+position of the two balls.
+It was also very
+successful for that.
+And I haven't tried to do
+model-free RL for that problem.
+Or even imitation learning
+would be very, very challenging.
+And so it's been extremely
+successful there.
+In scenarios where you need
+to have image observations,
+it gets a lot harder.
+It doesn't mean that--
+video-generative models
+are getting a lot better.
+And so I could see a future
+where this sort of approach
+might also be quite
+successful in the future.
+But right now, it hasn't
+been super successful.
+The last thing I'll
+mention on model-based RL
+is that so far, we've been
+modeling this predictive model
+of the future.
+And there's actually
+a lot of other objects
+that you could learn.
+So you could learn what's
+called an inverse model.
+You could learn,
+for two states--
+like, if I'm
+currently in state st,
+what is the action that would
+lead to state st plus 1?
+You could learn a
+multistep inverse model,
+which is, if I'm going to
+end up at state st plus n,
+what action would lead me there?
+Or what are the
+sequence of actions
+that would lead me there?
+Both of these, in some ways,
+look closer to a policy,
+except you're passing as input
+some future state rather than
+just the current state.
+These are also things
+that can be learned
+without data with rewards.
+You're kind of just learning
+about the environment and not
+about the particular
+task at hand.
+You can predict futures
+without actions.
+And that can think about,
+what are the affordances
+in my environment?
+What are the things
+that could be
+possible to happen
+in the future,
+irrespective of the
+actions that I take?
+You could try to interpolate
+between two states.
+You could learn a generative
+model of transitions of st
+at st plus 1.
+There's some cool properties
+with that sort of model.
+And these kind of models
+can be pretty useful too.
+They have various purposes.
+There's lots of research on
+using different kinds of models
+like these.
+And so it's just
+something to think
+about in terms of in some
+domains you could imagine.
+Or with some data sources,
+you could imagine scenarios
+where these might be useful.
+Yeah.
+So the question
+is, if you use data
+that doesn't have rewards as
+part of your model training,
+is there going to be a
+mismatch between the accuracy
+of predicting next states
+and predicting rewards?
+There certainly could
+be a mismatch like that.
+Generally, rewards are
+a bit easier to learn
+how to predict
+than future states.
+And so even if you
+have a lot more data
+for learning the model,
+you could actually
+end up in a scenario
+where the model
+is less accurate than
+the estimated reward.
+But yeah, you can definitely
+end up with scenarios
+where the reward
+is less accurate
+and where you need to
+specifically gather
+data for that.
+Yeah.
+Cool.
+OK.
+So that's it for model-based RL.
+Now we're going to talk a
+bit about multitask learning
+and what that looks like and
+also different techniques
+that we can do, beyond a fairly
+naive and simple technique.
+So what is multitask
+reinforcement learning?
+The key idea is that we want to
+be able to learn a generalist
+policy that isn't just
+aiming to do one thing,
+like being able to pour
+water, for example,
+but that can do many
+different things.
+The examples of this--
+we might want a generalist
+language model assistant
+that can book
+travel for us, that
+can do online grocery shopping.
+We might want a legged robot
+that can walk, that can run,
+that can dance, that can crouch,
+maybe a mobile robot that
+can hang up a towel, unload
+a dishwasher, wipe a spill,
+maybe want a music recommender
+system that can personalize
+recommendations for
+one person and also
+be able to personalize
+recommendations
+to a different person.
+Or we might want
+something that can
+play lots of different
+games, like being
+able to play Pokemon and pinball
+and Flappy Bird and so forth.
+And there are
+scenarios where if you
+think about each of these tasks
+as their own reinforcement
+learning problem, they
+might have different reward
+functions from other tasks.
+They might, in some cases,
+have different dynamics,
+like the dynamics
+of different games
+or the dynamics of
+different people.
+They might have different
+action spaces, even.
+And so when you're
+trying to train policies
+across these different
+tasks, there's
+some considerations that come
+up when you try to do that.
+Now, the key idea that we'll see
+is that you can, in many cases,
+just go about
+normal reinforcement
+learning but
+condition on the task
+that you're trying to learn.
+So you're then going to be
+learning a policy that is not
+just conditioned on
+the state, but It's
+conditioned on the
+state and also the task
+that you want it to be
+performing for that state.
+Now, why do we care about
+multitask reinforcement
+learning?
+So if we go back to
+a lot of the topics
+that we've talked
+about in the course
+so far, like imitation learning,
+on-policy and off-policy RL,
+offline RL, model-based
+RL, reward functions,
+a big topic that's recurred
+in many of these lectures
+is talking about
+data efficiency.
+Like, how much data do we
+need to be able to calculate
+a gradient that is accurate?
+And if our ultimate goal
+is to train something
+that can do multiple
+tasks at once,
+then we can actually
+amortize the complexity
+of learning any one
+task by actually
+training that policy across
+tasks and across scenarios.
+So it could actually be a boost
+for data efficiency in the sense
+that the data efficiency
+for training any one task
+will be lower when
+you're actually trying
+to train everything together.
+And that's because
+tasks typically
+will have some sort
+of shared structure,
+if you're trying to be a
+language model assistant,
+there is going to be a shared
+structure with regard to grammar
+or maybe with regard
+to different websites.
+And if you learn how to
+interact with one website,
+that can teach you something
+about how to interact
+with other websites.
+Or with legged
+robots, if your goal
+is to be able to walk
+forward and walk backward,
+then this shared notion
+of staying balanced
+will be shared across
+tasks, among other things.
+Or if you're trying to develop
+a recommender system that's
+personalized to different
+users, then some users
+will share a lot
+of similarities,
+where if you try to learn to
+be a great recommender for one
+person, then there are other
+people that you could also
+probably be a recommender for.
+And then there's also a slightly
+deeper motivation as well,
+which is that when
+we actually try
+to change these general systems
+rather than systems that
+do one task, we often find
+that generalist systems end up
+being more reliable and
+more performant than if we
+were to just train on one task.
+And so I think that this is
+a pretty cool finding that
+has empirically been true
+in recent years in AI.
+And so it's extra motivation
+for not just training
+something for one particular
+task or problem or user.
+Let's maybe get into what
+this actually entails.
+And we actually
+need to think about,
+how do we think
+about what a task is?
+It's actually, in some
+ways, not very well defined,
+what makes something a
+different task versus not
+a different task.
+But one way to think about it
+is having different tasks just
+be different RL problems,
+different Markov decision
+processes.
+And so each task will have
+a state space, action space,
+an initial state distribution,
+a transition model, and a reward
+function.
+And I'm indexing
+these with index i
+to denote that this is the
+state space for task i.
+This is the action
+space for task i,
+the dynamics and reward
+for task i, and so forth.
+Now, with this
+definition, it's worth
+mentioning that when we think
+of the notion of a task,
+there's a meaning under
+the English word of task.
+And this notion of
+a task being an MDP
+is actually potentially
+quite different
+from that semantic
+notion of a task,
+where you could actually
+have different tasks that
+have potentially the
+same reward function
+and only have
+different dynamics.
+For example, if you're
+trying to walk forward
+on grass versus trying to
+walk forward on flat terrain,
+then that potentially could be
+considered two different tasks
+under this framework,
+even though they're both
+the task of walking forward.
+OK, so a few examples of
+multitask problems that we might
+think about.
+One is this personalized
+recommendation problem
+that I mentioned.
+In this case, different tasks
+would be different users
+or different people.
+And different people might have
+different reward functions.
+Like, if it's a
+music recommendation,
+someone might really
+love rock music.
+Another person really
+might love hip-hop music.
+And also, the dynamics with
+regard to how often they even
+listen to music and so forth
+might also change across users.
+Reinforcement learning-- this is
+an application we haven't really
+talked about, but it's often
+used in character animation
+in order to actually
+create animations
+of different kinds
+of characters,
+like people or other
+animated characters that
+appear in movies.
+And you might want
+to allow and be
+able to animate a character to
+do lots of different maneuvers.
+So you might want to be able
+to have your character be
+able to do a backflip
+or to be able to run
+or be able to do a cartwheel.
+And each of these would
+be different tasks.
+Does anyone have
+thoughts for these tasks?
+What is the thing that
+would vary across tasks
+versus be fixed across tasks?
+Yeah.
+So in this scenario, the reward
+will vary because in one case,
+you want it to run.
+In another case, you want
+it to do a cartwheel.
+And the dynamics or the
+physics of the simulator
+will stay the same.
+Cool.
+There's also been
+works that's trying
+to do character animation
+involving different garments,
+so like a character that can put
+on a shirt versus a long sleeve
+shirt versus a dress.
+Does anyone have
+thoughts on what
+would vary across these tasks?
+Yeah.
+So the policy might vary.
+The policy will
+also vary, actually,
+in all of these cases
+for different tasks.
+Yeah.
+So the physics of how
+a long-sleeve shirt
+versus a short-sleeve shirt will
+behave will vary across tasks.
+I think I also put the initial
+state distribution might also
+vary, whereas in
+the first example,
+maybe the initial
+state is always
+to, say, start standing
+up, for example,
+whereas here, you have different
+garments in the initial state.
+And then the last
+example I put is, maybe
+different tasks are controlling
+different robot arms.
+And maybe one robot arm
+looks like this with maybe 4
+degrees of freedom.
+This one has 6
+degrees of freedom.
+This one has 7
+degrees of freedom.
+Does anyone have
+thoughts on what
+would vary across
+tasks if one task is
+to control the first
+robot to grasp an object,
+the second task is to control
+the second robot to grasp
+an object, and so forth?
+Yeah.
+So the actions themselves--
+so you'll have different
+dimensions of actions.
+Yeah.
+So the dynamics will
+also be different.
+Because when you
+move one joint, that
+will affect the other
+joints differently.
+Yeah.
+So the states would
+also vary as well.
+So how you represent
+the arm, that
+will be a different dimension.
+What the actions even are will
+also be different dimensional.
+And then the dynamics will
+also vary quite a bit as well
+because how your
+actions affect the robot
+arm are going to change.
+Cool.
+So those are examples
+of different problems
+where we might want to be
+training different tasks.
+The last thing that
+we're missing here
+is, we need to figure
+out how to identify
+one task from another
+task so that we
+can tell our policy
+what task it should
+be doing at a given point.
+And one way to do this is
+to just assign an index.
+You could say this
+robot is task 0.
+This robot is task 1.
+This robot is task
+2 and so forth.
+If you don't have any other
+better way to identify a task,
+this is kind of
+what you resort to.
+You could also have a language
+description of the task.
+You could have a
+video illustration
+of what the task is.
+There's actually
+a number of ways
+to be creative with how you
+describe the task to the policy.
+And we'll refer to each of these
+as different task identifiers.
+So the task identifier
+for the task of--
+well, actually, we'll see some
+examples on the next slide.
+Now, once you have
+the task identifier,
+an alternative view on
+the multitask RL problem
+is simply just having
+the task identifier
+be part of the state,
+where we're writing
+s bar as the original state.
+And what this means
+is that before,
+we had a kind of a
+collection of MDPs.
+That's what's
+written at the top.
+And we can construct a
+single MDP that actually
+covers all of the tasks.
+We have, for example, the
+Pi of the initial state,
+Pi of s prime, given
+s, a and ri of s, a.
+And this is like the dynamics
+and the reward for each task.
+And we can think of
+it as like, our goal
+is to solve all of the
+MDPs for each of the tasks.
+But we can also think about
+it as just a single MDP, where
+the state is now defined
+as like, maybe this
+is the original state
+space of these tasks.
+And the state is now defined
+as the original state
+space and the task
+identifier for that task.
+And then the reward
+function, for example,
+in this modified MDP--
+that's just a single
+MDP for all the tasks--
+is then going to be equal to--
+let's say, just to be explicit,
+the reward for this
+state and this action
+would then be equal
+to ri of s bar a.
+And similarly, you can write
+something out for the dynamics
+as well, where the aggregate
+MDP for a given task,
+s prime given s bar zi comma a
+is equal to the kind of dynamics
+for that task.
+This gets a little
+bit more complicated
+if your tasks have different
+state spaces and action spaces.
+And so if they
+have, for example,
+different
+dimensionalities, then you
+need to think about how you
+would represent this state
+space in the MDP.
+If they have the same state
+space and action space,
+you can basically construct
+this aggregated Markov decision
+process with these
+equations here.
+Now, if we go back to what we
+think of as the single task
+reinforcement learning setting
+that we've talked about so far,
+we can then think
+about multitask RL
+but where the task identifier
+is part of the state, where
+the task identifier
+could be the task,
+like an index, a
+language description.
+It could also be some
+desired goal state
+as well that you want to reach.
+This is often referred to
+as goal-conditioned RL.
+But then once you
+do this, you're
+basically getting a modified MDP
+that covers each of these tasks.
+Now, in terms of the
+reward, like we talked about
+on the board, it's basically
+going to be the same as before.
+In this special case of
+goal-conditioned reinforcement
+learning, where you're trying to
+reach a goal, then oftentimes,
+you'll think about the reward
+as some negative distance
+between the state that you're
+currently at and the goal state.
+And distance functions
+can be Euclidean.
+It could be a sparse
+0, 1 and so forth.
+So we still get kind of a
+standard Markov decision process
+when we bring these
+tasks together.
+And you might ask, if we can get
+this standard Markov decision
+process that now has a task
+identifier, like a task string,
+as part of the state
+space, then why not
+apply standard reinforcement
+learning algorithms to them?
+And the answer is, you can.
+And in many cases,
+this is a great way
+to approach scenarios where you
+want to learn multiple tasks.
+But the reason why I'm
+bringing all this up
+is that in some cases,
+you can actually
+do better by leveraging
+the known structure
+between different tasks.
+And goal-conditioned RL
+is one of those cases
+where you're trying to
+reach different goals.
+And in the next
+few slides, we'll
+talk about one
+particular way that you
+can do a lot better by
+leveraging this fact
+that this MDP consists
+of these different tasks
+that you're trying to do.
+Yeah.
+Euclidean L2, that's
+just mean squared error.
+Yeah.
+So the question is, if different
+people are different tasks,
+then is there a better way
+to represent different people
+than a one hot--
+when I say one hot, by the
+way, I mean a vector like this
+where, if you're going to
+represent the number 2,
+you use a one-hot vector.
+So yeah, there are definitely
+better ways than just this.
+This is actually fairly common
+in a lot of reinforcement
+learning methods.
+For example, one
+thing you could do
+is, you could try
+to get a language
+description of the person
+or their preferences.
+You could also--
+this gets into stuff
+that we'll talk about next week.
+But you could also use
+some examples of things
+that they like and don't like
+as part of the task descriptor
+as well.
+And so you get something
+more like in-context learning
+in that case, where zi actually
+might contain some data
+about the task.
+So yeah, there are some
+better examples like that.
+So in terms of
+this problem setup,
+let's actually
+look at an example.
+So we can just start with
+multitask imitation learning.
+And in the multitask
+imitation learning
+setting, we can think of it as,
+if we have different tasks, i,
+if the number of tasks, i, is
+a relatively small number, then
+you can basically
+think of it as having
+some set of demonstrations that
+are demonstration trajectories
+for each task,
+where each of these
+contains expert demonstrations.
+So these are demos for task i.
+And this is for i equals 1 to N
+if you have N different tasks.
+And if we were to
+think about how
+to use this data for
+imitation learning,
+thinking back to
+the second lecture,
+we were doing
+imitation learning.
+We had this objective of
+minimizing the log probability
+of actions' given states.
+And if we just write this as
+minimizing the supervised loss
+function with respect to
+our policy parameters,
+then when we want to move to
+the multitask setting, what
+we can do is, we can simply try
+to now minimize a single policy
+set of policy parameters over
+the loss function averaged
+over all of the tasks.
+So this is basically like
+multitask imitation learning,
+pretty simple, hopefully.
+One useful trick for
+this sort of approach
+is that if tasks are very
+different, like if one task is
+telling you to go
+forward, one task is
+telling you to go backwards--
+maybe one task is
+telling you to lie down.
+They're telling the policy
+to do very different things.
+Then if you sampled one
+mini batch that's mostly
+going forward and a different
+mini batch of mostly laying
+down, for example, then from
+one gradient step to the next,
+you're actually going to
+have a lot of variance.
+Because the first
+mini batch is going
+to tell you to do
+something that's
+pretty different from
+the second mini batch.
+And hopefully, the
+policy should be
+able to use the task identifier
+to differentiate the two.
+But in some cases, it
+can be a little bit
+tricky for the
+network to do that.
+And so one thing
+that's quite useful
+is that when you
+sample a mini batch,
+you can stratify the
+mini batch and ensure
+that each mini batch of data
+has data from each task.
+And if you're trying to optimize
+for uniform distribution
+over your tasks, then your
+mini batch would be like--
+1/n of the data would
+be the first task.
+1/n of the mini batch would be
+the second task and so forth.
+And this will give you gradients
+that are lower variance.
+And it can be quite
+useful in practice
+to do something like this.
+Another thing that I didn't
+put on the slides that can also
+be useful is making sure that
+your states and actions are
+on similar scales across tasks.
+So per-task
+normalization can also
+be quite useful for
+the learning process.
+Now, we've talked about
+training this multitask policy.
+And when we do that,
+we're now going
+to have a policy that takes as
+input some state and some task
+descriptor and then needs
+to output some action.
+And you might have
+scenarios where
+this is like a language
+string or a one-hot vector
+and this is an image.
+And that's inherently a
+very multimodal problem.
+You have different
+data modalities.
+These are very
+different dimensions.
+And so in practice,
+there's a question of,
+how do you design
+architectures that
+take as input this kind
+of multimodal data?
+One example that I'll give
+that I like because it actually
+uses multiple different
+modalities of task descriptors
+is this paper here, where
+the goal is a multitask
+imitation learning system,
+is training a robot
+to do some simple
+manipulation tasks.
+And the way the
+architecture works--
+this paper is a little bit old,
+so it's not using a transformer.
+But here's the current
+state right here.
+It actually
+downsamples the image
+before passing it
+into the model.
+And then it also uses, actually,
+two different task descriptors.
+So it uses a language string as
+one task descriptor, which is
+put bottle in the ceramic bowl.
+And it also trains
+the model to be
+able to, instead of
+using the language,
+be able to use a video
+of how to do the task.
+In this case, the
+video is a video
+of a person placing
+the bottle in the bowl.
+And so you can design models
+that in this case then,
+for the language, use a language
+encoder, like things that
+are typically used in
+language models, for example,
+transformers.
+And actually, I think
+the language encoder here
+did actually use a transformer.
+And then, separately,
+for the video,
+it would be using a
+different kind of encoder
+because video data
+looks very different.
+And it uses a video encoder
+for the second part.
+And then it kind of
+multiplies these embeddings
+into different layers
+of the network,
+the backbone of the network
+that processes the state.
+And then the loss
+function corresponds
+to a behavior-cloning loss.
+And it either samples
+the task descriptor
+from the video encoder or
+from the language encoder.
+And then the whole model,
+including these encoders,
+is trained using the
+behavior-cloning loss.
+So this is one
+practical example.
+Now, we can also look at some
+more modern architectures.
+And first off, if
+you have something
+like a language model,
+the task descriptor,
+it's very natural for it
+just to be a language string.
+And you can think of that
+basically just as the prompt.
+And so one way to think about
+multitask imitation learning is,
+basically, all of the language
+model imitation learning
+or supervised fine-tuning
+is with different prompts.
+You can sort of think of
+those as different tasks.
+And it's very easy to just
+pass that into a transformer.
+And in terms of modern
+policy architectures
+for using task
+strings in robotics,
+it's often common to
+also use a transformer
+and find ways to
+use image encoders,
+in this case, pre-trained
+image encoders, project
+those into the input
+space of a language model,
+also use the task
+descriptor here,
+which is, what should
+the robot do to put
+the eggplant in the bowl?
+Pass those in as tokens
+to a language model.
+And then output the actions
+and train the whole model,
+including the image encoder and
+the text encoder end to end.
+So here, you can view
+the task identifier zi
+as basically the
+prompt for the model.
+The question is, how
+does this compare
+to traditional
+reinforcement learning
+in terms of task performance
+and success rate?
+So I guess there's a couple of
+things that are different here.
+We'll talk about multitask RL
+in a bit, right after this.
+And then so you can do this sort
+of prompt conditioning, task
+identifier conditioning
+both with imitation learning
+and with reinforcement learning.
+And generally,
+the considerations
+about imitation
+learning versus RL
+is very similar to what
+we've discussed so far, where
+with imitation
+learning, you're not
+able to use a reward function
+to improve over the expert data.
+But it's very simple
+and it's very easy
+to scale simple things
+to large data sets,
+whereas RL has a lot of
+potential and can help a lot
+when you have some
+reward information
+and you want to
+optimize those rewards.
+And you can actually
+do a lot better
+than some provided data set.
+And then just some
+examples of what
+multitask imitation learning
+policies might look like--
+the examples from those
+two prior architectures--
+the robots are doing
+very simple things.
+And so I wanted
+to pick something
+that's a bit more recent.
+So here, the task identifier
+is in the top left.
+In this video, there'll
+just be two tasks.
+One is to flatten the towel,
+and one is to hang the towel.
+And so for the first part, the
+task is to flatten the towel.
+And then here, we're
+actually stringing together
+multiple tasks.
+So at the point where the robot
+is at a point where the towel is
+in a more flattened state, the
+human actually switches the task
+and then tells the robot, now
+I want you to hang the towel.
+And this, again, is passed into
+a transformer for the robot
+to do that task.
+So this is a case where
+there's two tasks.
+You can also do, actually, a
+lot more tasks, potentially.
+So here's an example where
+there's I think more than 10
+tasks, 10 different
+language strings
+that the robot follows, so like,
+put the plate in the drawer.
+Close the microwave.
+Drive the base backward.
+Rotate the base left.
+And one of the things that's
+interesting to note here
+is that tasks can also have
+different levels of abstraction.
+So you might have a
+level of abstraction
+of just like, drive forward or
+move your right gripper lower.
+Or you might have
+something that's
+much higher, like
+throw the napkin away
+or something like that.
+The question is, if you had
+one policy for each task,
+would that run similar
+to this or different?
+Yeah.
+So in this case, it's one
+policy with the prompt as input.
+You could also have a different
+policy, one for each task.
+If you don't do any--
+what I would call weight
+sharing, like if you have,
+basically, completely
+different set
+of parameters for
+every single task,
+then you can't
+really make use of--
+the weights are only trained
+on data from that one task.
+And you're going to
+have a smaller data set.
+And so usually,
+in many scenarios
+that performs worse than
+training a single policy.
+Another consideration is that it
+ends up using a lot more memory
+to store all those weights.
+And you might actually need to
+reload the model into memory.
+And so it can take longer to
+switch between different tasks.
+But sometimes there are
+also optimization challenges
+with trying to fit multiple
+tasks into one model.
+And so sometimes there
+are some circumstances
+where training different
+policies for different tasks
+can be useful.
+Yeah.
+So the question is, are
+these systems hierarchical?
+Like, some of these tasks
+are fairly high level.
+So the next part
+of this slide is,
+what about even more
+high-level tasks?
+Like, what if you wanted to tell
+the robot, clean the kitchen?
+For the videos that
+I've shown here,
+this is just one single
+policy that's doing it.
+But hierarchy is very useful
+for higher-level tasks.
+And if you just told this
+robot to clean the kitchen,
+it wouldn't be able to do
+what it did in this video.
+And so we'll have a lecture
+on hierarchy in, I think,
+two-ish weeks.
+And we'll talk about
+exactly that and scenarios
+where we could try to do
+even higher-level tasks.
+But yeah, even with a single
+policy, a single flat policy
+without hierarchy, it is able to
+do reasonable actions for tasks
+that are somewhat high level.
+What does long-horizon
+task mean?
+By that, I mean a task that
+takes a long time, basically,
+where you takes many time steps.
+You have to take a lot
+of different actions
+in order to do that.
+And there's generally
+a number of challenges
+that can come up with
+long-horizon tasks, such
+as you have to be thinking
+about what you should be doing
+in order to complete that.
+And there's lots of things
+you could do to complete that.
+So there might be multimodality.
+In reinforcement
+learning settings,
+you might also have
+sparse rewards.
+And you might not get reward
+feedback for a very long time.
+Yeah.
+So the question is, a lot of
+these tasks are pretty similar.
+What if you wanted a task
+that's more vision based--
+I think you said.
+Yeah.
+So this particular
+model was actually
+also trained to do
+certain vision tasks,
+like asking questions
+about the image
+and captioning an image,
+that sort of stuff.
+And if you have a
+big enough model,
+it's not too hard to do that.
+But generally, you
+do need larger models
+to be able to do more things.
+Cool.
+So we've talked a bit about
+multi-task imitation learning.
+Now what about multitask RL?
+Basically, the story
+is pretty similar.
+We can feed as input a task
+descriptor into the policy,
+feed as input a task descriptor
+into a Q function or a value
+function.
+Whatever we're
+learning, we can pass
+in that prompt or some
+other descriptor of the task
+into the models.
+If you have a discrete
+number of tasks,
+then it can be useful to
+have a different replay
+buffer for each task,
+especially if you
+want to try to balance the
+sampling of each batch.
+And now there's this
+question of sharing data.
+And this comes up specifically
+in reinforcement learning,
+not in imitation learning.
+So in particular,
+if we collected
+some sort of exploratory
+data for a task when-- like,
+maybe our policy was told
+to pick up the sponge
+or something like that.
+Our policy did something.
+It might not have
+picked up the sponge
+because it might
+have made a mistake.
+That sort of experience might
+be useful for other task
+descriptors as well.
+And if we have a per-task replay
+buffer, like one for each task,
+then we're not
+actually going to be
+updating the policy for
+other tasks using that data.
+And we could actually
+think about scenarios
+where we might actually be able
+to reuse data from one task
+to actually more explicitly
+help the model or the policy
+learn something
+about another task.
+And if we were to
+do this, we actually
+have to relabel the data.
+So specifically, if the tasks
+have different reward functions
+but maybe the same
+dynamics, then you'd
+have to actually
+change the reward
+label in the data set
+for it to be the reward
+label for the other task.
+So let's walk
+through an example.
+So say that you are trying
+to learn to play hockey.
+And there's maybe some
+teammates in blue.
+There is a goalkeeper from
+the other team in orange.
+And maybe one task is passing.
+Another task is shooting a goal.
+And maybe you are trying to
+shoot a goal, but you messed up
+and you accidentally actually
+making a pretty good pass
+to your teammate.
+Then that data that you just
+collected, even though you
+were intending to shoot a goal,
+that data actually is probably
+pretty useful for learning
+how to be better at passing.
+And so what you could
+do is, you could
+store that experience as
+normal under the original task
+identifier.
+But you could also relabel
+the experience with task
+with the task 1
+ID, specifically,
+the passing ID--
+there's a typo there--
+and then store that in the
+replay buffer for that task.
+And so specifically what this
+algorithm would look like is--
+maybe you pick
+one of your tasks.
+And then we pick a
+corresponding task identifier.
+Then we're going
+to collect data.
+And we'll be collecting
+data from our policy.
+That's going to be
+then conditioned
+on that task identifier.
+And maybe let's refer
+to this data as--
+it'll have st,
+at, st plus 1, rt.
+And then it will also
+have the task identifier.
+We'll maybe put this into
+a replay buffer for task i.
+So we'll store this
+in the replay buffer.
+And then we could actually
+then potentially use
+this for another task as well.
+So that's what I'm
+calling relabeling.
+And we could consider this
+data-- so st, at, st plus 1.
+But we could actually consider
+it for a different task, maybe
+task j.
+And so the reward
+for task j would
+be r of j for st, at and the
+task identifier for task j.
+And we could take this
+data that's been relabeled
+and add this to either
+our shared replay
+buffer or our replay
+buffer for task j.
+And so then we're actually
+using experience for one task
+to learn another task.
+And then we might do
+this for multiple tasks.
+Eventually, we will update
+our policy, pi theta,
+and collect some more data.
+Yeah.
+So the question is, how do we
+decide if it's worth relabeling?
+And in particular, if we're
+doing this for task j,
+which task j should we pick?
+Should we do it for all j's?
+Should we only do
+it for some j's?
+Should we only do
+this some of the time?
+This ends up being somewhat
+kind of a heuristic process.
+Because it's a little bit
+hard to tell, generally,
+if data will be useful
+for learning one task
+or not because
+learning is somewhat
+of an amorphous process.
+The one heuristic is
+that if our j was high,
+then it might be good
+for learning that task.
+Because you actually might have
+accidentally done something good
+for a different task.
+So that's one heuristic.
+Another heuristic sometimes is
+just to also sample randomly
+and use it for all tasks
+at random and uniformly.
+How does this work
+for continuous state?
+There's nothing here that
+assumes discrete states.
+How do you reach--
+so what I've written here is
+like a relabeling algorithm
+for any sort of
+multitask system.
+We'll talk about what this looks
+like for goal-condition settings
+in a minute if that's what
+you're wondering about.
+Yeah.
+So this is a great point.
+You can't do this universally.
+And so this is something
+that's called hindsight
+relabeling because you
+look at what you did.
+If you did something
+good, then in hindsight,
+you can then relabel that
+to be a different task.
+So in terms of this
+algorithm on the slides,
+we collect some data
+using some policy.
+We store that data
+in a replay buffer.
+We are going to perform
+hindsight relabeling.
+And what this looks
+like is, we originally
+collected it for task i.
+We're going to relabel it
+with the reward for task j.
+And then we'll store
+that relabeled data
+in a replay buffer.
+The slides have this for a
+single combined replay buffer.
+You could also do this with
+different replay buffers
+for each task.
+Then you'll update your
+policy with the replay buffer
+and repeat this process.
+In terms of which
+tasks to choose,
+you can choose this randomly,
+task to get high rewards.
+The note here is
+also, you can actually
+do it for trajectories
+that get high rewards,
+not just transitions
+that get high rewards.
+Because if there's a high reward
+somewhere in the trajectory,
+then other parts
+of the trajectory
+might have done
+something good as well.
+Yeah.
+And then there's a question of,
+when can we apply relabeling?
+And in particular,
+there's actually
+restrictions on both the
+set of MDPs or the MDPs
+of the different tasks
+and also on the algorithm
+that you're using for
+reinforcement learning.
+So does anyone have
+thoughts on what
+has to be shared or not
+shared for this algorithm
+to make sense?
+Yeah, so a shared
+state action space.
+So you're going to want a
+shared state and action space.
+Anything else do you want
+that's shared and not shared?
+Yeah.
+So if you only have
+one replay buffer,
+then you want the dimensions
+of your state and actions
+to match and, generally, for
+the state space and action
+space to be the same.
+Yeah.
+So you probably want the
+initial state distribution
+to be similar.
+So you want p of s1 to be
+similar for different tasks.
+Because if it's drastically
+different, then probably,
+sharing data won't be as useful.
+So if one of them has dense
+rewards and one of them
+has sparse rewards,
+that might be a problem.
+That is true.
+Although, that might be a
+problem generally in multitask
+RL.
+But actually, in
+this case, I don't
+think it's going
+to be especially
+an issue in this case.
+Because you are going
+to be using the reward
+function for the task.
+But yeah, generally,
+for multitask RL,
+that makes things challenging.
+Yeah.
+So it's helpful for the
+rewards to be the same scale.
+What about the dynamics?
+Should they be the same
+or different across tasks?
+Same, yeah.
+So you want the
+dynamics to be the same.
+And that's actually
+really important.
+Because you're not
+relabeling the dynamics here.
+And because you're not
+relabeling the dynamics
+if they're different
+across tasks, then yeah,
+it's going to be a problem.
+And so this is only
+applicable-- because you're
+teaching the model and
+sharing data with the dynamics
+from the other task, it's really
+important for the dynamics
+to be the same.
+So the dynamics
+should be the same.
+And then this is also most
+useful if the reward functions
+are different.
+Otherwise, the data is
+already in the buffer
+with the original
+reward function.
+My last question is, do you
+need this to be an off-policy RL
+algorithm, or is it OK
+if this is on policy?
+Any thoughts on that?
+We'd like to have cover.
+So off policy is generally good.
+Yeah.
+So the action here--
+this was the action that
+was taken by the policy
+when conditioned on zi.
+And when conditioned
+on zj, the policy
+might have done
+something different.
+And so this data
+that we're relabeling
+is going to be off-policy data.
+And so that means that when
+we're updating pi theta,
+we really need to be using
+an off-policy algorithm
+because this data is not
+following the policy conditioned
+on zj.
+Yeah, exactly.
+So if you're going to be
+using importance weights,
+you need to store
+which policy collected
+the data in the first place.
+Well, actually, sorry.
+Let me think about that.
+This data is actually changed
+from the original data.
+And so actually, for
+the importance weights,
+you'll actually want to use
+zj, not zi, as the old policy.
+Because you're actually kind
+of creating synthetic data
+that is as if you were using zj.
+So yeah.
+Sorry, I misspoke.
+So you don't need to store
+which policy it came from.
+OK.
+Oh.
+The other thing is, you need
+the reward function form here.
+You need to actually compute
+the rewards for the new task.
+That's also important as well.
+Or you need to have learned
+the reward function.
+So you need the reward function.
+The dynamics has
+to be consistent.
+And you have to be using
+an off-policy algorithm.
+And then lastly is the
+goal-conditioned version.
+This is basically
+the same as before,
+but our reward function is
+now this negative distance
+between states.
+And for continuous
+states, this could
+be like mean squared error.
+It could be a distance
+in embedding space.
+Or it could be a 0, 1
+loss within some epsilon
+ball of the goal state.

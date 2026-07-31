@@ -1,0 +1,2064 @@
+So as a recap for the
+last couple lectures,
+we've talked a lot about value
+functions and Q-functions.
+We'll talk about
+them more today.
+And as a reminder, value
+functions and Q-functions
+are representing some
+future expected rewards,
+starting at some state.
+And value function will
+be future expected rewards
+we start at state and
+follow with policy.
+And a Q-function is if we start
+at a state, take an action,
+and then follow it.
+And so you can write
+these down mathematically
+as expected future rewards.
+And we've seen these
+diagrams a couple of times
+where you can think about value
+as the sum of future rewards,
+but think of Q-functions as
+policy rewards plus state.
+All right.
+We've talked about a
+couple methods so far.
+The first method
+that we talked about
+was policy gradients, where we
+alternate between collecting
+data and improving our policy.
+And we can think of it as trying
+to get samples for our policy
+and increasing the log
+likelihood of actions that
+have a higher reward in the
+future, where we subtract
+the baseline in order to
+encourage the policy to be more
+above average things than
+it did before, and less as
+of the below average stuff.
+We then started to talk
+about actor-critic methods.
+And in this part, we
+introduced an additional step
+of this loop, where we are first
+going to estimate the expected
+future reward for our policy and
+use that to improve the policy.
+So we had this revised
+form for our gradients,
+for our policy, where we
+are still taking samples,
+but increasing the likelihood on
+actions that we think are good,
+and decreasing the likelihood on
+actions that we think are bad.
+So these are the methods that
+we've talked about so far.
+We, last lecture,
+focused a lot on how
+to do this actor-critic
+algorithm in an off-policy way.
+So instead of only using the
+data from the current iteration,
+trying to be able to use all
+of the past data from all past
+iterations.
+And do that, we needed to be
+able to estimate a Q-function
+from past policy data.
+And to do that, we can
+use a neural network.
+Half of them put a state in
+action and output the value.
+And we derive this
+equation that's
+defining the
+Q-function recursively.
+Or we can think of the
+sum of future rewards
+as the reward at
+the first timestep,
+plus the Q-function starting
+at the next state and action.
+We found that this equation
+holds for any state and action,
+and that means that we can use
+previous state-action and next
+state pairs in order to
+try to learn a Q-function.
+And specifically the way
+that we did that is we
+would sample a
+state-action next state
+from our buffer
+of previous data.
+Then we'll sample a next
+action from the current policy,
+rather than from
+the past policy.
+And then we will try to
+do supervised learning
+on these targets,
+where the targets are
+using our current estimate of
+the Q-function for our policy.
+And we pass these inputs
+to state, the action,
+the next state and
+the next action
+that the sample [INAUDIBLE].
+And so once we formulate this
+objective using those two step
+Q-values, then we
+can use supervised
+learning to help with that to
+try to match the Q function.
+Then we also talked about
+for these yi's be accurate,
+you need to have sufficient
+coverage in your data set
+to cover actions that your
+newest policy [INAUDIBLE].
+So today, we're going to be
+covering value-based RL methods.
+And specifically,
+we'll be talking
+about what I think
+arguably was the very
+first deep reinforcement
+learning method,
+and it was based on
+Q-learning algorithm.
+And we'll be talking
+about Q-learning,
+and then we'll also
+be talking about how
+to implement Q-learning in
+practice, how to make it stable.
+And the goal for today is to
+think about how Q-functions
+relate to policies, how
+to do RL without learning
+an explicit policy, and
+how to stabilize Q-learning
+if you're actually [INAUDIBLE].
+Cool.
+So we're going to start
+out with a thought
+exercise, and a question for
+all of you to think about.
+So say we have some policy,
+and for your policy,
+you have a pretty good
+estimate of the Q-function.
+And as a reminder, I'll put
+the definition of Q-values
+up here, where it says future
+rewards for a state and action.
+And an object that we're going
+to be thinking about a lot today
+is if you have some estimate of
+the Q-function, in this case,
+for a policy, then one thing you
+could do is you could try to--
+instead of following some policy
+that you've already learned,
+you could potentially
+formulate a policy
+by choosing the action that
+maximizes this Q-value.
+So if you have a bunch of
+different states and actions,
+at a given state, instead
+of following your policy,
+you could pick the
+candidate action
+that has the highest Q-value.
+So to continue on
+this thought exercise,
+we'll define a policy
+that does exactly that.
+That policy has a
+probability of 1
+for taking the action that
+maximizes the Q-value,
+and has a probability
+of 0 otherwise.
+There's just a
+deterministic policy
+that always follows
+what the Q-value is
+telling you is the best.
+And then we'll look at this
+in the context of an example.
+So say that we have some
+2D navigation problem.
+We're going to be starting
+somewhere in this blue box,
+and our goal is to
+get to the star.
+We can move in 2D.
+The reward is 1 at the star,
+and 0 elsewhere, so very simple.
+And let's say that our current
+policy always goes to the right.
+And as one additional
+point of detail,
+if you're going to move
+up, it takes 1 timestep
+to move about this distance,
+and it takes about 2 timesteps
+to move this distance.
+So my question for you is, if
+you define this new policy--
+you have this current policy
+that always goes right.
+You have an accurate estimate
+of the Q-value for that policy.
+If you define this
+new policy, is that
+better than the current policy?
+Is worse than the
+current policy?
+Is it the same as
+the current policy?
+Is it the optimal policy,
+and why or why not?
+So I'll give you--
+well, first, any questions
+about this example?
+OK.
+I'll give you a
+few minutes to talk
+to your neighbor
+about these questions,
+and then we'll come back and
+talk through the answers.
+It seems like people are
+talking a little bit less,
+so maybe we can come back.
+Who wants to share
+their thoughts?
+Yeah?
+So let's summarize
+that, and then
+we'll talk about whether
+it's the optimal policy.
+So summarize the old
+policy is going right.
+And so that is not optimal
+because if you're starting here,
+then you're not actually
+going to hit the star.
+And if you think about what
+Q pi is for the old policy,
+everything in this
+region right here
+is going to have
+a Q pi equal to 1
+for all of these
+states and actions.
+Also, the-- yeah.
+And then if you start
+to think about what
+Q pi looks like right here,
+this is actually where it will--
+well, actually, sorry.
+Take that back.
+V pi is equal to 1 for
+everything in this row.
+It actually depends a little
+bit on the action what
+the Q-function actually is.
+For this row, if the action
+is the same as the policy,
+it's going to move right.
+Then if Q-value is 1--
+if it actually does something
+else-- if it goes up,
+for example--
+then it might
+actually miss the star
+if it follows the policy
+after taking that action.
+Now if you look at
+this row, for this row,
+Q pi of all the states in this
+row for the action of going
+right is going to be 0.
+But then if you look at
+the Q pi for all the states
+here for the action of going up,
+what is the Q value for that?
+For Q pi?
+1.
+Cool.
+And so that's because if we
+follow up and then follow
+the policy, we'll
+have a reward of 1.
+And then lastly, if we go
+to this row, if we have s
+and then going up,
+what is the key value?
+0.
+Cool.
+And so what this
+means is that we're
+going to get the new policy.
+What it's going to do is it's
+going to be going right here.
+And then for
+everything in this row,
+it will be going up
+because it's going
+to be choosing the action that
+has the maximum value of Q pi.
+But then for this row,
+all of the Q values
+are 0 because all of the
+Q values for the next one
+are also 0.
+And so if you default to
+the previous behavior,
+it'll stay going to the right.
+Does anyone want to discuss
+the second question?
+Is this the optimal policy?
+Yeah, so the new policy is
+better than the old one,
+but it's not the
+optimal policy because
+in these states, the optimal--
+the best policy should be
+the one that also is going up
+in order to get to the star.
+Yeah.
+So the question was if we
+iterate this and do it a couple
+times, this will become
+the optimal policy, right?
+And yes, you're a
+couple slides ahead,
+but we'll talk about
+doing this iteratively.
+Yeah, so we can
+get a reward of 1.
+The question was, why is
+this not the optimal policy?
+So we'll get a reward of
+1 here, which is great.
+But if we're starting
+at this initial state,
+we actually will just
+keep on going right.
+We won't go up after
+defining this new policy.
+And so therefore, it's not
+going to get a reward of 1
+from all states in [INAUDIBLE].
+Yeah.
+So the question,
+is there a sense
+of if you're getting
+closer to the star,
+the Q would be
+higher versus not?
+I actually didn't
+explicitly define this,
+but if you have a discount
+factor that is below 1,
+then it will get higher
+as you get closer.
+Everything I've shown here
+is with a discount factor
+of 1 for simplicity.
+But if you use a discount
+factor of 0.9, for example,
+then the Q-value here would be
+1, then it would be 0.9 here,
+then 0.8 here, 0.7
+here, and so forth.
+And then it would still
+be 0 for this entire row,
+just because you're still
+somewhat of a [? slope. ?]
+The other thing
+potentially to note here
+is that if your
+reward was denser--
+the reward function, instead
+of being 1 at the star and 0--
+or if it was, for example, the
+negative distance to the star,
+then you would actually--
+I won't go through that.
+I won't go through
+that on the board.
+But if you go
+through that example,
+you'll actually see that
+even in a single step,
+starting from this
+policy, you would actually
+get a policy that goes to
+the star from all states.
+The question is, if I wanted
+to get the optimal policy,
+I would need to iteratively
+do this and reconsider the Q
+pi for the latest
+policy every time.
+So yeah, that's correct.
+Yeah.
+So in this example--
+the question is,
+is it always better?
+And this example, the
+new policy was better
+than the current policy.
+And this is actually always
+going to be the case.
+So it's always going
+to be at least as
+good as the previous policy.
+And it's never going to-- well,
+assuming that Q pi is accurate,
+it's always going to
+be at least as good.
+It's never going to be worse.
+And now, if Q pi is
+already the optimal policy,
+then it will be the same.
+This is starting to think
+about, can we actually start
+omitting policies?
+So Q is the expected reward.
+When we do this arg
+max, we're going
+to be taking the best
+action from state
+s if we then follow
+the policy afterwards.
+And this is going to be at
+least as good as any action
+that the policy
+would have taken.
+And regardless of what the
+policy is, this is going to be,
+yeah, at least as good as what
+that policy would've been.
+We do that because it's
+taking the action that has
+the maximum expected reward.
+So potentially,
+we could actually
+just forget using
+policies and just
+do this rather than
+actually explicitly learning
+a neural network for the policy.
+And so what this looks like
+as an iterative algorithm is
+we would run our
+policy to collect data,
+then we would fit a
+model to estimate Q pi.
+According to that
+latest plot for data,
+you could also do this
+in your off-policy way,
+like we talked about
+in the last lecture.
+And then to improve
+your policy, you
+can just define the policy
+to be the policy that
+maximizes the Q pi.
+And then once you
+define that new policy,
+you can collect new data and
+then estimate again Q- pi.
+But in this case, Q
+pi for your new policy
+and not your old policy.
+The policy pi is equal
+to this, and so we're not
+learning a neural network
+for the policy pi.
+We're not explicitly
+representing it as a model.
+But it's helpful to
+have some notation
+to refer to the [INAUDIBLE].
+The only neural network
+here, the only model
+here is this Q pi [INAUDIBLE].
+Yeah.
+So the question is, how
+do we generalize this
+to continuous actions or more
+expressive action spaces?
+So this is generally
+going to be easiest
+when you have a discrete set
+of actions that you might face,
+like going up,
+going to the right.
+If you have continuous
+actions, you actually
+can still use this algorithm.
+Although, you need to figure
+out how to perform that
+max operation.
+There's a couple ways
+that you could conceivably
+run this operation right here.
+In principle, you
+could use something
+like gradient descent,
+although that turns out
+not to work very well.
+You can potentially-- there's
+a variety reasons why it cannot
+work very well.
+And if your actions are
+not very high dimensional,
+then it might actually
+be better just
+to simply try to sample a
+bunch of different actions
+and pick the one that
+has the highest Q value.
+You can also-- there's other
+sampling based optimization
+algorithms where you can
+iteratively sample and refine
+your estimates from there.
+Yeah, so there's a couple
+of things you can do there.
+If you have a discrete
+action space that's--
+like [INAUDIBLE], for example--
+in principle, you could do
+some sort of discrete search
+over things where the Q
+value is what you're trying
+to maximize in that system.
+Yeah, how does
+this work in cases
+where the rewards
+are very sparse?
+So we saw one example where
+the rewards are sparse,
+and it can still work
+in this scenario.
+The thing that you need to be
+aware of when the rewards are
+sparse is that you may need
+to do this loop of refitting
+the policy potentially
+a large number of times
+because each time you do
+this, you're actually-- like,
+the first time, we only
+got a good policy here.
+And now if this environment
+was much bigger,
+that means that you need to
+keep on doing it as you go down.
+And what is often
+referred to as a backup,
+you're backing up the rewards
+from here to the other state.
+And you'll need to do
+those backups for--
+essentially, it goes for as long
+as the horizon of the problem
+is.
+You just need to make
+sure that you're doing
+many iterations [INAUDIBLE].
+OK.
+Cool.
+So let's see.
+We can write this
+down as an algorithm.
+And so we can take
+our off policy
+actor-critic algorithm
+that is fitting Q pi.
+And then instead of using this
+policy gradient update, simply
+define a new policy that's
+taking actions according to
+[INAUDIBLE].
+And you can think of this as
+really having two key steps
+like what we talked about.
+One is estimating Q pi.
+This is often referred
+to as policy evaluation
+because you're learning what
+the values are for a policy.
+And note that you can do
+multiple gradient steps here
+because this is isn't on policy.
+We're just trying
+to fit our target.
+And then the second step
+is improving our policy,
+so you refer to it as
+policy improvement.
+And this two-step
+iterative procedure
+is often called
+policy iteration.
+It's on the way to
+an algorithm like Q.
+Cool.
+So on the--
+I'll write this
+out on the board.
+What this looks like
+is having a first step
+where you collect data.
+Oftentimes, you might
+collect data from pi.
+It might also be-- it
+could actually potentially
+be from some other policy.
+Then you have a next
+step where you're
+going to try to
+fit your estimated
+Q-function for that policy.
+And you can use the
+targets that we defined
+in the last lecture of r of
+sa plus gamma times Q, where
+these are from the buffer and
+this is sampled from our policy.
+And then lastly, we'll
+improve our policy
+by defining a new
+policy as being 1
+if [INAUDIBLE] is maximizing
+Q value, and 0 otherwise.
+The question is, is this
+policy deterministic?
+Yes, this policy
+is deterministic.
+This is actually one
+reason why you might not
+want to collect data
+from this policy
+because you're not going
+to have that much diversity
+in your actions.
+And we'll talk, in
+a couple slides,
+about what policy you might want
+to collect data from instead.
+Yeah.
+So the question is, when
+we're fitting these targets,
+why are we sampling
+from a prime?
+And why not do a maximum
+over actions or an average?
+So there's a couple
+of things here.
+So first, you can do an average
+and sample multiple times.
+And that can give you a better
+estimate of the target value.
+The second thing is that
+you can actually-- instead
+of sampling this from
+pi, you can actually
+do this improvement step in
+the Q-function target itself.
+So you can actually--
+instead of defining
+yi this way, you
+could consider a target
+for your Q-function
+to be the reward plus
+gamma times the max
+over a prime of Qs.
+And what this looks like
+is something like this.
+And this actually
+is what gets us Q.
+And one way to think about
+this is-- a couple ways
+to think about this.
+The first is that these targets
+are actually your Q-values
+for your new policy.
+So you're already putting
+the improvement steps
+in your Q-function update,
+and you're actually
+learning the Q-values
+associated with the new policy
+that you're going
+to be defining.
+And there's actually another
+way to look at this as well.
+So we previously
+defined this equation
+that's true for all
+states and actions.
+So we defined that
+the Q-function
+is equal to the reward plus the
+Q-function at the next state.
+This is true for all
+states and actions,
+and it's actually also true
+for any policy, including
+the optimal policy.
+And you could
+actually write down
+another equation
+that is specifically
+for the optimal policy.
+And in particular, we know that
+the optimal policy is always
+going to be taking
+the actions that
+maximize our future rewards.
+So the optimal policy
+is always going to be--
+the action that
+it picks is always
+going to be the one that
+maximizes the Q-value.
+And so we can write down
+an equation that holds just
+for the optimal policy which
+is the same equation as the one
+there, except instead
+of an expectation
+over the next action,
+it's a maximization
+over the next action.
+So what that looks
+like is we're defining
+the Q-function as the reward
+at the current timestep
+plus the sum of future rewards.
+And for that sum
+of future rewards,
+we have some expectation over
+the next state that will happen.
+And then because we know that
+the optimal policy or the best
+policy is going to be taking
+the action that is maximizing
+the Q-value, then we can
+write this as the max of Q
+at the next state.
+Yeah.
+So the question is, why
+are we talking all about Q,
+and why not V?
+So you can actually
+also write down
+these equations for V
+in a very similar way.
+The thing that's
+very nice about Q
+is that we can actually
+get a policy out of Q.
+So if we know what Q is, then we
+can do this arg max over actions
+to get a policy that's better
+than our previous policy.
+Whereas with the value function,
+if we only know V of s,
+then we don't know which action
+will lead to higher [INAUDIBLE].
+In principle, with
+the value function,
+you could try to
+do some look ahead.
+If you have a sense for
+what the dynamics are,
+you could try to
+predict what s prime is,
+and pick actions that
+are maximizing that.
+And so what that
+would look like is
+trying to pick actions
+that lead leads
+to an expectation like
+a high future value.
+So you could, in principle,
+do something like this with V.
+But we don't know what
+these dynamics are,
+and we can't
+necessarily predict what
+the next state will be as a
+consequence of our actions.
+And so in general,
+it's a lot harder
+to get a policy out
+of a value function
+than it is to improve
+our policy, ultimately,
+with the value function than
+it is with a Q function.
+So now going back
+to this equation,
+this is true for
+the optimal policy.
+And you can write Q
+for the optimal policy
+here, where I'm writing pi
+star as the optimal policy.
+And if you look at
+our update right here,
+we're trying to fit a Q-function
+that's predicting this.
+And essentially,
+with this equation,
+you can think about it as
+this update is actually trying
+to make this equation true.
+So we're trying to make the
+left side of the equation
+equal to the right
+side of the equation.
+And when this equation is
+true that means our policy
+is optimal.
+So essentially, one way
+to think about Q-learning
+is that when we're
+optimizing step 3,
+we're trying to find a
+Q-function such that it
+satisfies this
+equation, which is only
+true for the optimal policy.
+Yeah, sorry.
+This is-- it's an [INAUDIBLE].
+So this only holds for
+the optimal policy.
+And if you have the optimal
+policy, then [INAUDIBLE].
+Yeah, great question.
+So the question is if we have
+really good estimates of Q,
+will this converge?
+We'll talk about
+this in one minute.
+So let's first just talk about
+some terminology really quick.
+Reinforcement learning
+has a ton of terminology.
+It's useful to
+know some of it so
+that if someone's talking to
+you about reinforcement learning
+or you're reading a paper, you
+know what they're talking about.
+This first equation
+is often referred to
+as the Bellman equation.
+It's very useful
+objects, and it's
+what we were using
+to try to do policy
+evaluation for our policy.
+And the second equation is
+called the Bellman optimality
+equation because it's
+specifically for optimal policy.
+Sometimes people also informally
+might call the second one
+Bellman equation as well.
+But yeah, officially, the
+first one is Bellman equation.
+Second one is Bellman
+optimality equation.
+You can derive
+equations like this
+that are also for the
+value function V instead
+of the Q-function,
+and people also
+refer to those as Bellman
+equation and Bellman optimality.
+OK.
+So getting back to the question,
+if we do this iteratively,
+will we converge to
+the optimal policy?
+There's good news
+and bad news here.
+The good news is that if you're
+in a very simple setting where
+you can actually store
+all of your key values
+in a table for every
+single state and action,
+this would be for a very
+small, discrete state
+and maximum state.
+And if you have
+sufficient exploration,
+then this algorithm
+will converge.
+So that's the good news.
+The bad news is that basically
+in any other scenario,
+it is not guaranteed
+to converge.
+And you can construct
+scenarios when
+it diverges even
+with this linear Q
+function, which is kind of sad.
+I guess the flip side of
+that is that even though it
+can diverge in scenarios, it
+can be made to work very well.
+And we'll see some examples
+of it working very well
+at the end of lecture.
+Yeah, so the question
+is, what does this mean?
+What does this statement mean?
+And it is a bit vague.
+So specifically, it
+doesn't necessarily
+have to do with the
+accuracy of your Q values
+because you're actually
+going to be fitting your Q
+values through this process.
+It's more a statement of the
+size of your state and action
+space.
+And if it's small enough that
+you can maintain this table--
+and there's also a
+condition on exploration
+where you actually need to
+have full coverage of the state
+and actions in your data set--
+then it will convert.
+OK.
+So M note about this is
+Q-learning is off policy.
+And in particular,
+this equation holds
+for all states and actions.
+And it means that we don't
+have to have the actions coming
+from our current policy.
+And in particular, it might
+actually make a lot of sense
+for it to be broader
+than our current policy
+because we're going to be doing
+this maximization over our Q
+values.
+And so when we do
+this maximization,
+we're going to be
+considering a lot
+of different possible actions.
+And if we have a
+discrete action space,
+we might actually just consider
+all of the possible actions.
+And when we do that, we
+would want our Q values
+to be accurate when we're
+considering all of them.
+And if there's one action
+that we haven't collected
+data for that we're
+going to be considering
+in this maximization, it
+might be erroneously high
+because we didn't
+collect any data for it.
+And then you'll get an
+inaccurate target value
+when you are fitting your Q.
+And so instead of collecting
+data from our current policy,
+it'd be useful to collect data
+from some exploration policy,
+and specifically,
+a policy that's
+collecting a broader
+set of actions
+than our deterministic policy.
+So we want coverage for a
+lot of different actions,
+specifically for this term.
+And there's a couple
+of choices here.
+One choice is to follow our
+policy most of the time,
+but with some small probability,
+take a completely random action.
+And so what that would
+look like is a policy
+that with some probability--
+I would say maybe
+you can write it
+as take a random action with
+probability epsilon and follow--
+maybe we can call
+this pi exploration--
+and follow your current policy
+probability 1 minus epsilon.
+And you can write that out
+slightly more formally up here.
+And this can be a
+good choice because it
+means that when you take an
+actual uniform at random,
+it means that you'll get very
+good coverage of the actions
+that you consider.
+And oftentimes, as you
+proceed through training,
+you might start with
+a larger epsilon
+so that you have
+more exploration
+at the beginning of training.
+And then as your policy
+is getting better
+and as you're getting a better
+estimate of your Q-function,
+you can then make them
+smaller and explore
+less as you go through phase.
+So this is called
+epsilon-greedy because you're
+being greedy some of
+the time, and epsilon
+probability of the time, you're
+not being greedy and just taking
+a random [? function. ?]
+OK.
+And then another
+choice that's also
+somewhat reasonable, although
+a little bit more complicated,
+is to take actions
+with probability that
+is proportional to the Q value.
+And so if you have actions
+that have a higher Q value,
+then take those actions
+more frequently.
+And if you have actions
+with lower probability,
+then take those actions
+less frequently.
+One way to write this is you
+could exponentiate your Q values
+so that they're all
+positive, and then
+normalize in order
+to get a probability
+distribution over [INAUDIBLE].
+Sometimes this is called
+Boltzmann exploration,
+named after the
+Boltzmann distribution
+where you exponentiate
+a [INAUDIBLE].
+Yeah.
+So the question is, it's
+straightforward to do
+this with discrete actions.
+How do you do these
+kinds of approaches
+when you have
+continuous actions?
+The first one is indeed
+a lot more common
+with discrete actions.
+You can still do something like
+this with continuous actions,
+but you would need to define
+some uniform-ish distribution
+over your continuous actions.
+And for that, you would need
+some sort of range or something.
+Instead, you could also
+use a Gaussian distribution
+with a wide standard
+deviation, in principle,
+where you sample from that.
+I think in continuous
+action spaces,
+this second option
+is a bit more common.
+In terms of sampling from
+it, off the top of my head,
+I actually can't
+remember the details
+of how you would
+sample from this,
+but we can post on
+[? Ed ?] afterwards.
+It's possible that the way
+that you do it is actually just
+to try to fit a
+policy, but yeah, we
+can talk about it afterwards.
+OK, so putting the
+pieces together,
+what a full Q-learning
+algorithm looks like is we'll
+collect data using some policy.
+We'll add that data
+to our replay buffer,
+then we will sample
+a batch of data
+from our replay
+buffer uniformly.
+And this is useful to
+sample about separately
+from what we just
+collected so that we
+are de-correlating and sampling
+IID from our replay buffer.
+And then we will
+update our Q-function
+by taking the gradient of the L2
+loss with respect to the target.
+And so if you write
+that out, you'll
+get a gradient that
+looks like this, where--
+yeah, if you're taking the
+L2 loss, then on the inside,
+this is the inside of L2 loss.
+And then you use the chain
+rule to get the second term
+right here that's
+backpropagating
+into your parameter.
+You can repeat these
+multiple times.
+So you can actually take
+multiple gradient steps
+after collecting
+a batch of data.
+In practice, it's
+actually pretty common
+to set K equals to 1.
+But you're going to be more data
+efficient if you have a larger
+K, if you take more gradient
+steps for a given batch of data.
+And then you also
+iterate this process.
+After you're done
+taking gradient steps,
+then you can collect some
+more data and repeat.
+Yeah.
+So the question was, if you're
+collecting data from any policy,
+wouldn't that be less optimal
+than using a good policy
+or using your current policy?
+Yeah.
+So the reason why you might
+use a different policy is--
+the reason why you might
+use a different policy
+is specifically to learn a
+more accurate Q-function,
+and so it's actually
+going to help you learn
+a more optimal policy later.
+And essentially,
+there's this trade-off
+between collecting less
+optimal data at the beginning
+to help you be better later on.
+And one way to think
+about this is if you are--
+say you're reinforcement
+learning agent
+is trying to help you
+pick a restaurant.
+If you haven't really explored
+that many restaurants to know
+what is a good restaurant,
+then at the beginning,
+probably you want to explore
+and actually try things-- even
+restaurants that might
+be suboptimal-- in order
+to get a good estimate of
+what good restaurants are
+for a particular person.
+And then later on, once
+you have a good estimate
+for what good
+restaurants are, then
+you might want to
+then explore less.
+So visually, what
+this looks like is
+you have some environment.
+You'll initialize your
+replay buffer as empty.
+And then at this first step,
+you'll run your policy--
+like the epsilon-greedy policy--
+that's exploring
+in the environment.
+You'll then get some
+transitions that you
+put into your replay buffer.
+And then for this part, you'll
+then use your replay buffer
+to update your Q-function
+on the data that you see,
+with the goal of
+trying to get something
+that is not saying the
+Q-function of the [? optimal. ?]
+So the question is, when
+we combine this with 1,
+can we still call
+this off policy?
+Because we are collecting
+data potentially from a policy
+that's very similar
+to our current policy.
+Because we're using a
+replay buffer of essentially
+all of our past experience,
+when we do these updates,
+it's referred to as off policy.
+That doesn't mean
+that none of the data
+is from our current policies.
+So some of the data
+in the replay buffer
+will be from the current policy.
+But essentially,
+what off policy means
+is that you are not
+only using that data,
+you're also using data
+from other policies.
+In practice, what
+is the some policy?
+Yeah.
+So in practice, it's
+exactly what we talked about
+on the last slide.
+So it would either be
+something like epsilon-greedy,
+where with some
+small probability,
+you're taking a random action
+and otherwise following
+the policy.
+Or it's something where you're
+taking actions in proportion
+to the [INAUDIBLE].
+And it might actually,
+as you talked about it,
+might actually change
+during training.
+You might actually
+change epsilon
+during training so
+that you're doing
+more exploration at the
+beginning, and less exploration
+later on.
+Yeah.
+So the question is,
+are we resetting
+our learning of each iteration?
+Oftentimes, you'll keep your
+old Q parameters around,
+warm start them, and keep
+on training on top of them.
+One important thing-- so the
+results of this algorithm is Q.
+And then to extract
+a policy out of that,
+the final policy that you would
+then deploy is a policy that is
+acting according to--
+essentially, just
+be acting greedily,
+where it's taking the
+actions that maximize your Q.
+Oh, so if the size of the replay
+buffer is 1, then just-- like,
+yeah, 1 data point--
+then that would be on policy.
+So if it's tiny, then
+that's fully on policy.
+In practice, this replay
+buffer is a lot larger.
+Oh, oh, oh, sorry.
+Right.
+If the replay buffer size is 1,
+if this policy is not the same
+as this, then that's
+still off policy
+because the policy is different.
+Yeah, so good point.
+So yeah, this policy might
+be different from the one
+that directly [INAUDIBLE].
+Yeah, so how do we
+manage our replay buffer?
+Make sure that we're
+not oversampling states,
+and so forth?
+This is generally--
+it's actually
+an important consideration
+with Q-learning algorithms.
+And usually, you will
+discard old data.
+So you'll have a first
+in, first out principle
+where this buffer is
+not infinitely large.
+Oftentimes, with Q-learning,
+it is pretty large.
+But you can just
+pick a fixed size.
+And then once you have
+filled it to that size,
+start discarding data and
+discard the oldest data first.
+One other consideration is
+that at the very beginning
+of training, the replay
+buffer might be very small.
+Sometimes to handle
+that, you might
+try to collect more data in
+the very first iteration just
+to populate it.
+There are also algorithms
+that we won't quite
+cover that do asynchronous
+data collection and updates
+because data
+collection takes time.
+Updating a neural
+network takes time.
+And so you could actually have
+some threads that are actually
+adding to the replay buffer, and
+other threads that are running
+updates on your queue function.
+With those asynchronous
+algorithms,
+it's actually especially
+important to think about how
+the replay buffer is managed so
+that you're not running 1,000
+gradient steps on
+one data point,
+and 1 gradient step on another.
+Cool.
+That's Q-learning.
+Let's talk a little bit about
+what happens in practice when
+you use these methods.
+So we talked about how
+Q-learning can diverge.
+And in general, when you run
+Q-learning with neural networks,
+it can be unstable.
+And one of the reasons for that
+is you have this moving target.
+This max is [INAUDIBLE].
+And it means that our
+optimization process
+is very non-stationary,
+especially as K is 1.
+And one trick is
+to try to slow down
+how often we change the target.
+The target network.
+So instead of having the
+target change every single time
+you change your
+parameters, one idea
+is you could freeze the
+parameters of your target
+network and only update
+them periodically.
+Only update them once
+every 100 gradient steps,
+or something like that.
+So what this looks
+like is we can
+save a separate neural
+network, another copy
+of our Q-function parameters.
+We'll call this phi prime.
+And when we say this out, then
+just for this target right here,
+we can use these new parameters
+Q phi prime in our target.
+These parameters will
+be frozen, and so it
+means that inside
+this inner loop,
+the labels will not change.
+And so this inner
+loop is essentially
+going to be doing supervised
+learning with some data being
+added to the replay buffer.
+So this would be
+a lot more stable.
+Supervised learning is a
+lot more stable, generally.
+And then only periodically,
+then update our target network
+parameters be the same as
+our latest Q-function script.
+So once we use the
+target network,
+this is referred to
+as the DQN algorithm.
+It was introduced in 2013.
+It was basically like the
+first deep RL method, at least
+in my opinion.
+And they found that
+you could actually
+train neural networks to play
+a variety of different Atari
+games.
+And it was one of the first
+examples of using reinforcement
+learning to train
+neural networks to do
+a pretty complicated task.
+And they were actually
+training it directly
+from the pixel
+observations from the game.
+And prior to that, a lot of
+reinforcement learning examples
+were on varied [? toy ?]
+settings or very low
+dimensional settings,
+or something like that.
+If you take two
+tables of Q-values,
+will that be the
+same [INAUDIBLE]?
+Yeah, so that's actually
+not quite the case
+because you will
+actually be collecting
+new data in this loop.
+And so you can't just
+store all the Q-values.
+You actually do have
+to store the parameters
+so that you can then compute
+the Q-values for the new data.
+The target Q-values.
+And then [INAUDIBLE].
+So you can't just store
+these, the Q-values.
+You have to [INAUDIBLE] them.
+Cool.
+And so this is one
+of the algorithms
+that you'll implement
+in homework 2.
+OK, so that's the first trick
+is use a target network that you
+only periodically update.
+There's two more
+things that make
+Q-learning work a lot better.
+And the first one is actually
+looking at the accuracy
+of the Q-values.
+So if you plot the reward over
+training, the reward goes up,
+so that's good.
+This is a reward on
+the game of Breakout
+and the game of Seaquest.
+And if you also
+plot the Q-values
+over the course of training,
+they're also going up.
+And so that's typically
+what you expect
+because the Q-values
+is representing
+your average reward,
+so that's good.
+One other thing to note
+actually is a practical tip.
+When you're looking at the
+loss function on your Q values
+during training, when
+you train with DQN,
+the loss values will actually
+often go up through training.
+This is sometimes a
+little bit alarming
+because you're used to
+loss values going down.
+But the reason for that is
+you're collecting new data
+and that new data
+has higher Q-values,
+and so the scale of
+your loss function
+is decreasing
+throughout training.
+And at the very beginning,
+if you're getting zero reward
+everywhere, it might be
+very easy to get a loss
+function that's going up.
+So yeah, don't be alarmed if
+your loss function is going up.
+Sometimes that means
+that the policy
+is starting to [INAUDIBLE].
+So, cool.
+This looks pretty good.
+As we predicted, Q increases.
+So does the return.
+You can also look at
+the value over training.
+And you see that
+in the first case,
+the values right here
+are fairly uniform.
+But once you're in a state
+where you really have to go up,
+then the Q-value for the action
+of up is higher than going down
+or a no-op.
+Likewise, right here, it's
+really important to go up.
+And so the Q-value is
+higher for going up
+than the actions of
+going down are no-op.
+In the right case,
+it doesn't really
+matter because the ball is on
+the other side on the opponent's
+side, and so the Q-values
+are more uniform.
+So when you visualize
+these Q-values,
+they look pretty
+reasonable, which is good.
+But then if you actually plot
+like what the true returns are--
+the true returns
+are shown in red
+here on this red
+horizontal line,
+and the estimate of the values
+according to the Q-network
+are shown as this upper line.
+And you actually see
+this really huge gap
+between the estimate, where the
+estimate is always a lot higher
+than the true value.
+And so it seems
+like we're seeing
+a lot of what's
+called overestimation,
+where our Q-function
+is overestimating
+how good our policy is.
+And then there's this
+algorithm that I've
+introduced called
+double DQN that's
+able to get a much more
+accurate Q-function,
+and it's able to overestimate
+far, far less than DQN.
+So let's talk a little
+bit about double DQN,
+and overestimation in general.
+So our target value is--
+let's see.
+We're taking a max
+over action right here.
+And when we take this max,
+we're choosing an action
+that maximizes its Q-value.
+And another way to write this
+is you can think of it as--
+I might need a little bit.
+You can think about this
+quantity as Q of phi of s
+evaluated at the action that
+is maximizing our Q phi.
+And so we're both using an
+action that has a high Q-value,
+and evaluating the Q-value
+of that action using
+the same Q-function.
+And this means that if there
+is noise in our Q-function,
+then it's very easy.
+This noise is very
+easy to basically pick
+actions that are using that
+noise to get a higher Q-value.
+And so this last
+term right here is
+what's causing overestimation.
+It's not perfect.
+It has some noise in it, as
+neural networks generally do.
+And because the action
+selected according to Q
+is the same as what's
+being evaluated,
+then you can really
+exploit that noise
+and use actions that
+have higher value
+than they actually do
+because of the noise.
+Now, if you instead use
+a different Q-function
+for picking an action
+and evaluating it,
+then you can
+de-correlate the noise
+because if you had two
+different Q-functions,
+they would have,
+naturally, different noise
+and different
+errors [INAUDIBLE].
+And so if you have a way
+to use different Q-values,
+we can actually then eliminate
+this problem of overestimation
+by essentially
+de-correlating the noise
+by using a different Q-function
+to estimate the Q actions here
+as to evaluate the [? action. ?]
+And so the key idea
+behind double Q-learning
+is to use two different
+networks-- one network,
+network a, for picking
+the action, and network b
+for evaluating.
+And then if they're
+noisy in different ways,
+then we're not going
+to then be exploiting
+noise in our Q-values.
+And then, as a result, not
+overestimating our Q-values.
+The question is, can
+you guarantee that they
+don't have the same noise?
+I guess you definitely
+can't guarantee it,
+and there might be
+some noise that's
+a result of the
+architecture of the network.
+But in practice, this
+ends up making a really--
+if you are using different
+neural networks for this,
+it generally does
+a very good job.
+There's still some
+overestimation.
+And if we looked
+at these values--
+like here, in this
+game, the Q-values
+are still an overestimate,
+still an overestimate here,
+and also here as well.
+But it helps substantially
+compared to not doing it.
+So it's not perfect, but
+it helps quite a bit.
+The question is, what if you
+did triple DQN or quadruple
+DQN, used even more networks?
+So good question.
+I could see that, yeah, perhaps
+if the noise correlation--
+if you're able to get even
+more samples of noise,
+that could help.
+It could be interesting
+to try that in practice.
+If the noise is coming from--
+if it's instead coming from a
+source that's kept constant,
+like the architecture of the
+neural network or something
+like that, then it
+might not help until you
+start to introduce those.
+And then in practice, using
+more than two neural networks
+is very impressive.
+How do you ensure that
+they don't diverge?
+So let's actually talk
+about what we actually do.
+So we're actually already
+using two neural networks.
+We have the current neural
+networks and the target neural
+network that was
+periodically frozen.
+And so what we can actually do
+is when we do our Q updates,
+we can use the target network--
+Q phi prime-- for evaluating,
+and the current neural network
+for [INAUDIBLE].
+And-- yeah.
+So that's essentially what
+double Q-learning looks like,
+where instead of using the
+target network for both
+of these, we're going to use
+the current network to take
+the action to pick the best
+action, and then the target
+network [INAUDIBLE].
+Yeah, so it's always going
+to be your previous Q,
+and so you can't
+[INAUDIBLE] yeah.
+Yeah.
+So the question
+is, why does this
+help, especially if the
+previous Q is the same noise?
+So the previous Q
+will be outdated,
+and the new Q will have gotten
+a lot of gradient updates
+since then, and seen new
+data points recently.
+And so oftentimes,
+the noise isn't just
+about the initialization,
+But it also
+has to do with what
+updates were applied.
+And so yeah, it helps a lot.
+OK.
+The last trick
+we'll talk about--
+which we've already talked
+about in actor-critic methods--
+is n-step returns.
+So our Q-learning
+target looks like this--
+the reward plus the max of
+Q. If your Q-values are good,
+then this term is actually going
+to be really, really important
+in playing most of the
+roles in Q-learning update.
+But if your Q-function is
+bad, like at the beginning
+of training, then
+these are really
+the only values that
+are going to matter,
+and these are the
+values that are
+going to be giving your
+learning algorithms [INAUDIBLE].
+And if you just have a single
+reward function here, then
+that might be a bit troublesome
+because just a single reward
+function might not
+tell you that much
+about how good your Q-value is.
+So if you remember
+when we talked
+about actor-critic
+methods, we talked
+about using n-step returns.
+So if we use this Monte Carlo,
+we would use the sum of rewards.
+If we use bootstrapping,
+we just do r plus V--
+so r, the current timestep,
+plus the V at the next timestep.
+And instead, we talked
+about this thing
+that we could do in
+the middle, where
+we sum the rewards over
+the next n timesteps,
+and then use the value at
+the timestep after that.
+We talked about how this has
+less variance and lower bias,
+and lower bias in the sense
+that if your targets are bad,
+the reward function is
+going to be more accurate.
+So can we do this for Q-values?
+And what this would look
+like for Q-values is instead
+of having something like this,
+I say, this is the target for--
+you're trying to get
+the target for st, at.
+Then you would define yi to
+be r at the current timestep
+plus r at the next
+timestep, up until r
+at e plus n minus 1 timestep.
+And then at the timestep after
+that, use the max of Q of st
+plus n, at plus n, where this
+maximization is over at plus n.
+This is what n-step returns
+could look like for Q-learning.
+Does anyone see any potential
+issue with using this target?
+Yeah.
+So if you're doing
+this off policy,
+these r's will be coming
+from whatever policy
+you used in the replay buffer,
+rather than the optimal policy,
+which is what you're
+trying to estimate
+the Q-function for that.
+So there's pros and cons here.
+One is that it's a lot
+less biased, a lot faster
+to learn on,
+especially early on.
+But the downside is
+that these rewards
+are for the policy that
+collected the data, not
+for the optimal policy.
+And we're trying to
+estimate the Q-function
+for the optimal policy.
+So this is a downside when using
+n-step returns with Q-learning.
+And this is not an
+issue with n equals 1
+because there, the reward will
+just be a function of s and a,
+and we're estimated
+the Q-value of s and a.
+Now, what do we do about this?
+Maybe the unsatisfying answer
+is that most commonly, just
+ignore this.
+Pretend it isn't true, and
+still use an n greater than 1.
+And n-step returns
+truly are often--
+truly very often improve the
+performance of the algorithm,
+despite being incorrect.
+That said, there are
+other things you can do.
+You can dynamically
+choose n, and only
+use data that follows
+the current policy.
+Basically looking at
+what actions were taken
+and seeing if those
+actions actually agree
+with the maximal Q-values.
+You could also, in principle,
+dynamically choose n
+and have n be smaller
+later in training,
+where your Q-values are
+likely to be more accurate.
+Now, for this particular
+choosing of n,
+you really would
+want to do this only
+if the action space is small and
+the data is mostly on policy.
+And you can also do
+importance sampling as well
+and weight these
+rewards by [INAUDIBLE].
+Great.
+So those were the three tricks
+for Q-learning in practice.
+There's a couple
+examples of Q-learning
+that have been very successful
+that I put on this slide.
+I think there's
+other examples too.
+But one of the most prominent
+examples was for playing games.
+And if you want to train
+an agent to play a game,
+or either just for the sake
+of seeing how well you can do
+or to play against
+the human, Q-learning
+was able to outperform
+most people on Atari games.
+So this bar right here is--
+everything above this
+bar are the games
+that it is at human level or
+above human level performance.
+And everything below is worse
+than human level performance.
+And then it also was used to
+train a robot grasping system.
+So this is actually a
+case of continuous action.
+And the robot on the right
+is using a Q-function that
+was trained with Q-learning.
+And then it is doing a
+continuous optimization
+over actions that
+will try to find
+a good way to grasp the object.
+And we talked a bit last
+time about how with RL, you
+can get much higher success
+rate and more reliable policies.
+And we see that here
+too, where this system
+was able to get a 96% success
+rate, so quite high at being
+able to grasp objects.
+The other thing that's
+nice about using
+RL for this application
+is in order to grasp,
+you need to not just go
+down and pick something up,
+but you actually need to
+move around the object.
+It's also able to
+learn how to do
+that using the reinforcement
+learning because it's
+treating it as [INAUDIBLE].
+Cool.
+I think that one of the last
+things I figured I would cover
+is some of my advice on
+when to use one online RL
+algorithm versus another, since
+this is the last online RL
+method that we'll talk about.
+So we talked a bit
+about PPO, SAC, and DQN.
+Those are some of the three
+main technical algorithms
+we talked about.
+So PPO, this is great when
+you care about stability
+and ease-of-use.
+Generally, doesn't
+require too much tuning,
+but it's very data inefficient.
+And so it's great to use when
+you care about stability,
+ease-of-use, and
+you don't really
+care about data efficiency.
+DQN works quite
+well when you have
+discrete actions or low
+dimensional continuous actions.
+And so in those cases,
+it can be a great choice.
+It can be fairly data efficient,
+depending on some of the details
+and how off policy you make it.
+And then soft actor-critic
+and variants of it
+are great when you care
+most about data efficiency,
+but require a bit more tuning
+and are a bit less stable
+than something like DQN.
+So what we talked about is
+Q-learning, also Q-learning
+in practice with respect
+to target networks,
+double DQN, and n-step returns.
+We define things like
+the Bellman equation
+and Bellman optimality equation.
+Yeah, and that was
+essentially an overview
+of how to do RL without
+learning an explicit policy.
+We're done with online
+reinforcement learning
+algorithms for now.
+And yeah, we covered
+a lot of the basics
+of different online
+reinforcement learning
+algorithms.

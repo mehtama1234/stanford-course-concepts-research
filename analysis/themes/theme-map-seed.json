@@ -1,0 +1,103 @@
+[
+  {
+    "name": "representation as the internal workspace",
+    "concepts": [
+      "tokenization",
+      "embeddings",
+      "attention",
+      "transformer architecture"
+    ],
+    "core_problem": "How does messy input become internal information a model can reuse?",
+    "plain_language": "The model first makes things countable, then places them on maps, then repeatedly lets each item read and update those maps.",
+    "evidence_video_count_from_top_matches": 17,
+    "course_presence_from_top_matches": {
+      "stanford-cme295-transformers-llms-autumn-2025": 17,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 8,
+      "stanford-cs224r-deep-rl-spring-2025": 7
+    },
+    "status": "seed theme; requires transcript reading before publication"
+  },
+  {
+    "name": "learning from feedback",
+    "concepts": [
+      "pretraining",
+      "fine-tuning and preference learning",
+      "reward",
+      "policy gradients"
+    ],
+    "core_problem": "How does a model change after being wrong, unhelpful, or unrewarded?",
+    "plain_language": "Training turns feedback into small changes in what the model is likely to do next time.",
+    "evidence_video_count_from_top_matches": 18,
+    "course_presence_from_top_matches": {
+      "stanford-cme295-transformers-llms-autumn-2025": 12,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 1,
+      "stanford-cs224r-deep-rl-spring-2025": 19
+    },
+    "status": "seed theme; requires transcript reading before publication"
+  },
+  {
+    "name": "choosing actions that change the future",
+    "concepts": [
+      "policy",
+      "q-learning",
+      "offline reinforcement learning",
+      "model-based reinforcement learning"
+    ],
+    "core_problem": "How does a system learn when its choice changes what evidence it will see next?",
+    "plain_language": "An RL system must choose, observe the consequence, and improve future choices under uncertainty.",
+    "evidence_video_count_from_top_matches": 16,
+    "course_presence_from_top_matches": {
+      "stanford-cme295-transformers-llms-autumn-2025": 1,
+      "stanford-cs224r-deep-rl-spring-2025": 31
+    },
+    "status": "seed theme; requires transcript reading before publication"
+  },
+  {
+    "name": "spending more work at inference time",
+    "concepts": [
+      "chain-of-thought and reasoning",
+      "agents, retrieval, and tools"
+    ],
+    "core_problem": "When is one forward answer not enough?",
+    "plain_language": "The system can write intermediate steps, call tools, retrieve outside facts, and revise its next move.",
+    "evidence_video_count_from_top_matches": 11,
+    "course_presence_from_top_matches": {
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cs224r-deep-rl-spring-2025": 7
+    },
+    "status": "seed theme; requires transcript reading before publication"
+  },
+  {
+    "name": "turning noise into structured samples",
+    "concepts": [
+      "diffusion",
+      "score matching",
+      "flow matching",
+      "guidance"
+    ],
+    "core_problem": "How can a model generate a complex image or sample from a simple starting point?",
+    "plain_language": "Start from simple noise, learn directions or flows that make it more data-like, and steer the path toward the request.",
+    "evidence_video_count_from_top_matches": 14,
+    "course_presence_from_top_matches": {
+      "stanford-cme295-transformers-llms-autumn-2025": 1,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 23,
+      "stanford-cs224r-deep-rl-spring-2025": 7
+    },
+    "status": "seed theme; requires transcript reading before publication"
+  },
+  {
+    "name": "measurement as a claim with limits",
+    "concepts": [
+      "evaluation"
+    ],
+    "core_problem": "What does a score prove, and what does it hide?",
+    "plain_language": "A metric is a controlled sample of behavior, not the full truth about a model.",
+    "evidence_video_count_from_top_matches": 8,
+    "course_presence_from_top_matches": {
+      "stanford-cme295-transformers-llms-autumn-2025": 4,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 2,
+      "stanford-cs224r-deep-rl-spring-2025": 2
+    },
+    "status": "seed theme; requires transcript reading before publication"
+  }
+]

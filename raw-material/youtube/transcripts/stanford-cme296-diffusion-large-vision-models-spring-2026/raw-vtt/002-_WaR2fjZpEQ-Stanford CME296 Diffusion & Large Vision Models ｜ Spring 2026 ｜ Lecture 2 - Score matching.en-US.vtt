@@ -1,0 +1,6137 @@
+WEBVTT
+Kind: captions
+Language: en-US
+
+00:00:05.680 --> 00:00:12.000
+Hello, everyone, and welcome
+to lecture 2 of CME 296.
+
+00:00:12.000 --> 00:00:14.680
+So today is a very
+exciting day because we'll
+
+00:00:14.680 --> 00:00:18.000
+be talking about a new
+generation paradigm, which
+
+00:00:18.000 --> 00:00:21.160
+is going to be score matching.
+
+00:00:21.160 --> 00:00:26.360
+So if you remember last week, we
+saw a first generation paradigm
+
+00:00:26.360 --> 00:00:30.520
+which was diffusion with DDPM.
+
+00:00:30.520 --> 00:00:34.480
+So today we're going to
+see a new way of doing this
+
+00:00:34.480 --> 00:00:37.680
+and see how this relates
+to the way we were doing
+
+00:00:37.680 --> 00:00:41.520
+this with diffusion with DDPM.
+
+00:00:41.520 --> 00:00:43.840
+So before we start,
+I'm just going
+
+00:00:43.840 --> 00:00:47.800
+to recap what we saw last week.
+
+00:00:47.800 --> 00:00:52.240
+So if you remember, the
+first three lectures
+
+00:00:52.240 --> 00:00:58.720
+are all about understanding
+how we can generate new samples
+
+00:00:58.720 --> 00:01:03.350
+by trying to generate
+from a distribution pdata
+
+00:01:03.350 --> 00:01:07.670
+that we do not know that
+is potentially complicated.
+
+00:01:07.670 --> 00:01:10.210
+So here we have
+nothing as input.
+
+00:01:10.210 --> 00:01:13.710
+So it's unconditioned
+generation.
+
+00:01:13.710 --> 00:01:19.950
+And our goal is to learn a
+way to generate new images.
+
+00:01:19.950 --> 00:01:22.830
+So what did we see last time?
+
+00:01:22.830 --> 00:01:27.630
+So our strategy
+was to take images
+
+00:01:27.630 --> 00:01:30.910
+from the training set that
+we called clean because they
+
+00:01:30.910 --> 00:01:33.310
+did not have any kind of noise.
+
+00:01:33.310 --> 00:01:38.550
+And what we did is we
+defined a process q that
+
+00:01:38.550 --> 00:01:44.570
+added some noise progressively,
+such that at the end of the day,
+
+00:01:44.570 --> 00:01:49.550
+we ended up with just pure
+noise or almost pure noise.
+
+00:01:49.550 --> 00:01:55.870
+And the goal of DDPM was to
+learn a reverse process that
+
+00:01:55.870 --> 00:02:01.100
+was able to predict the noise
+to remove from the noisy image.
+
+00:02:01.100 --> 00:02:03.140
+So that was the strategy.
+
+00:02:03.140 --> 00:02:04.580
+You take an image.
+
+00:02:04.580 --> 00:02:06.580
+You gradually add some noise.
+
+00:02:06.580 --> 00:02:12.300
+And what you do is you try to
+learn how given a noisy image
+
+00:02:12.300 --> 00:02:15.900
+and given the noise
+level, how you can remove
+
+00:02:15.900 --> 00:02:19.540
+the noise from that image.
+
+00:02:19.540 --> 00:02:22.940
+So the way we went
+about doing this
+
+00:02:22.940 --> 00:02:26.660
+was through
+likelihood estimation.
+
+00:02:26.660 --> 00:02:31.020
+So we had our model p theta
+that we're trying to learn.
+
+00:02:31.020 --> 00:02:34.700
+And what we were doing
+is trying to maximize
+
+00:02:34.700 --> 00:02:38.100
+the probability of our model
+seeing the data from a training
+
+00:02:38.100 --> 00:02:39.340
+set.
+
+00:02:39.340 --> 00:02:42.040
+But we saw that it
+was intractable.
+
+00:02:42.040 --> 00:02:47.180
+So what we did is we derived
+a tractable lower bound
+
+00:02:47.180 --> 00:02:49.340
+that we could also
+maximize that could be
+
+00:02:49.340 --> 00:02:52.900
+a good proxy for our objective.
+
+00:02:52.900 --> 00:02:58.640
+And we ended up with
+this ELBO formulation.
+
+00:02:58.640 --> 00:03:05.600
+And what we did is we expanded
+the terms from the lower bound.
+
+00:03:05.600 --> 00:03:09.360
+And what we saw was that
+there was some nice terms that
+
+00:03:09.360 --> 00:03:10.540
+came out of it.
+
+00:03:10.540 --> 00:03:12.840
+So there was, for
+instance, a KL divergence
+
+00:03:12.840 --> 00:03:15.840
+between exactly what
+we wanted to learn
+
+00:03:15.840 --> 00:03:20.440
+and the forward process that
+we defined that was something
+
+00:03:20.440 --> 00:03:24.120
+that we could express.
+
+00:03:24.120 --> 00:03:28.200
+And then the third
+step was to indeed show
+
+00:03:28.200 --> 00:03:30.400
+that this was tractable.
+
+00:03:30.400 --> 00:03:35.080
+And we leveraged the fact
+that we were actually
+
+00:03:35.080 --> 00:03:38.160
+defining our forward
+process with Gaussian noise
+
+00:03:38.160 --> 00:03:40.200
+and with Gaussian distributions.
+
+00:03:40.200 --> 00:03:42.360
+And the good thing with
+Gaussian distributions
+
+00:03:42.360 --> 00:03:45.920
+is there's a lot of nice
+properties, which is things
+
+00:03:45.920 --> 00:03:47.640
+that we leverage here.
+
+00:03:47.640 --> 00:03:51.840
+And at the end of the day,
+we deduced a loss function
+
+00:03:51.840 --> 00:03:54.670
+that was actually very simple.
+
+00:03:54.670 --> 00:03:59.590
+It was a simple L2
+regression loss on the noise
+
+00:03:59.590 --> 00:04:03.510
+that we wanted to remove.
+
+00:04:03.510 --> 00:04:05.710
+All good so far?
+
+00:04:05.710 --> 00:04:07.990
+So this was last time.
+
+00:04:07.990 --> 00:04:10.210
+And so this was the
+loss that we had.
+
+00:04:10.210 --> 00:04:15.150
+So we had the the noised image
+as an input along with the noise
+
+00:04:15.150 --> 00:04:16.269
+level.
+
+00:04:16.269 --> 00:04:20.550
+And we had our model that we
+wanted to train which is here,
+
+00:04:20.550 --> 00:04:23.470
+the noise predictor--
+epsilon theta.
+
+00:04:23.470 --> 00:04:27.110
+And what we wanted
+to do is to have
+
+00:04:27.110 --> 00:04:33.110
+that match as close as possible
+the actual noise that we use.
+
+00:04:33.110 --> 00:04:38.350
+And as I mentioned, this way of
+doing things was just one way.
+
+00:04:38.350 --> 00:04:40.070
+And what we're
+going to see today
+
+00:04:40.070 --> 00:04:47.230
+is another way of doing this,
+which is called score matching.
+
+00:04:47.230 --> 00:04:50.670
+So I'm going to start
+with just taking
+
+00:04:50.670 --> 00:04:55.180
+another perspective of the
+problem that we have at stake.
+
+00:04:55.180 --> 00:04:58.100
+So remember that we
+have some training
+
+00:04:58.100 --> 00:05:02.100
+sets that contains some images.
+
+00:05:02.100 --> 00:05:05.400
+So these are for instance, the
+Teddy bear images that we have.
+
+00:05:05.400 --> 00:05:12.060
+And our goal is to sample a new
+image from that distribution.
+
+00:05:12.060 --> 00:05:18.860
+So this set of images, they
+come from a complex data
+
+00:05:18.860 --> 00:05:23.540
+distribution, let's say,
+pdata that we do not.
+
+00:05:23.540 --> 00:05:30.020
+And our goal is
+to sample from it.
+
+00:05:30.020 --> 00:05:35.180
+Now, a very common strategy
+that we will again reuse here
+
+00:05:35.180 --> 00:05:40.540
+is to sample from
+an easy distribution
+
+00:05:40.540 --> 00:05:43.900
+and then to recover
+the image that we
+
+00:05:43.900 --> 00:05:47.260
+want to sample towards the end.
+
+00:05:47.260 --> 00:05:54.330
+So here this cross this
+represents maybe an observation
+
+00:05:54.330 --> 00:05:56.750
+that we can sample that
+is not part of pdata
+
+00:05:56.750 --> 00:05:59.710
+but part of a distribution
+that is easy to sample from.
+
+00:05:59.710 --> 00:06:02.650
+So let's say Gaussian noise.
+
+00:06:02.650 --> 00:06:06.730
+So given that what
+we're wondering is,
+
+00:06:06.730 --> 00:06:10.530
+is there a way to
+go from something
+
+00:06:10.530 --> 00:06:14.050
+that is easy to sample
+towards something that
+
+00:06:14.050 --> 00:06:15.470
+is hard to sample?
+
+00:06:18.050 --> 00:06:20.010
+Does that make sense?
+
+00:06:20.010 --> 00:06:22.210
+It's going to be
+a bit more clear.
+
+00:06:22.210 --> 00:06:31.370
+So let's imagine you have p
+of x, which is the probability
+
+00:06:31.370 --> 00:06:36.690
+density function that takes in
+x, the representation of images
+
+00:06:36.690 --> 00:06:40.970
+as input, and that tells
+you the probability density
+
+00:06:40.970 --> 00:06:44.290
+of it happening at x.
+
+00:06:44.290 --> 00:06:47.870
+So this is what the
+figure is showing.
+
+00:06:47.870 --> 00:06:54.710
+So here darker colors mean
+higher values of p of x.
+
+00:06:54.710 --> 00:07:01.470
+So if you were over
+here, what would
+
+00:07:01.470 --> 00:07:07.070
+be a way for you to
+come closer to regions
+
+00:07:07.070 --> 00:07:09.370
+higher values of p of x?
+
+00:07:13.350 --> 00:07:18.870
+So the answer is, let's
+take the gradient.
+
+00:07:18.870 --> 00:07:23.870
+So just as a reminder,
+the gradient of a scalar
+
+00:07:23.870 --> 00:07:26.390
+function here that
+takes in as inputs
+
+00:07:26.390 --> 00:07:31.750
+x, which is multidimensional,
+and returns a scalar,
+
+00:07:31.750 --> 00:07:38.910
+so the gradient of the function
+is the vector of components,
+
+00:07:38.910 --> 00:07:41.390
+partial derivative of
+that function with respect
+
+00:07:41.390 --> 00:07:47.540
+to each dimension of the
+multidimensional space.
+
+00:07:47.540 --> 00:07:50.300
+And what the gradient
+here represents
+
+00:07:50.300 --> 00:07:58.020
+is the direction where this
+p of x is higher value.
+
+00:07:58.020 --> 00:08:02.500
+So here the idea is
+if we can have access
+
+00:08:02.500 --> 00:08:06.900
+to gradient of p of x,
+then from this starting
+
+00:08:06.900 --> 00:08:12.600
+point, we can maybe go towards
+regions higher density.
+
+00:08:17.990 --> 00:08:21.860
+But there is a problem.
+
+00:08:21.860 --> 00:08:28.460
+The problem is that estimating
+the gradient of the probability
+
+00:08:28.460 --> 00:08:32.059
+density function is actually
+a very hard thing to do.
+
+00:08:32.059 --> 00:08:34.620
+And there are a few
+reasons for that.
+
+00:08:34.620 --> 00:08:38.740
+So the first one is that
+probability density functions,
+
+00:08:38.740 --> 00:08:42.539
+by definition, they
+are normalized,
+
+00:08:42.539 --> 00:08:44.500
+meaning that if you
+take the integral
+
+00:08:44.500 --> 00:08:49.010
+towards the whole space,
+the integral of p of x
+
+00:08:49.010 --> 00:08:51.650
+needs to be equal to 1.
+
+00:08:51.650 --> 00:08:55.410
+So you have this
+constant, that maybe we
+
+00:08:55.410 --> 00:08:57.970
+can note here z,
+that is something
+
+00:08:57.970 --> 00:09:00.590
+that is very hard, intractable
+for you to compute,
+
+00:09:00.590 --> 00:09:04.170
+because you would need to sum
+across all possible values
+
+00:09:04.170 --> 00:09:04.990
+of your space.
+
+00:09:04.990 --> 00:09:07.850
+And space is
+multi-dimensional, and it's
+
+00:09:07.850 --> 00:09:09.370
+a lot of computation,
+not something
+
+00:09:09.370 --> 00:09:11.930
+that you can actually do.
+
+00:09:11.930 --> 00:09:13.790
+So this quantity is intractable.
+
+00:09:13.790 --> 00:09:19.530
+So if p of x is intractable,
+then if you take the gradient,
+
+00:09:19.530 --> 00:09:23.130
+it's also intractable.
+
+00:09:23.130 --> 00:09:24.430
+So that's the first reason.
+
+00:09:24.430 --> 00:09:30.250
+The second reason is different
+compared to the first one, which
+
+00:09:30.250 --> 00:09:36.290
+is due to the fact that the
+probability density function can
+
+00:09:36.290 --> 00:09:39.930
+take very low values in
+certain regions of space
+
+00:09:39.930 --> 00:09:41.690
+where there are very few data.
+
+00:09:41.690 --> 00:09:43.800
+So let's suppose here--
+
+00:09:43.800 --> 00:09:46.920
+let's say you have a point
+here, then the probability
+
+00:09:46.920 --> 00:09:49.080
+would be very small.
+
+00:09:49.080 --> 00:09:56.880
+And so this can cause some
+numerical stability issues.
+
+00:09:56.880 --> 00:10:00.200
+So because of these
+reasons, maybe we
+
+00:10:00.200 --> 00:10:05.360
+can take a look at another
+candidate of a way for you
+
+00:10:05.360 --> 00:10:09.480
+to go from a certain
+point towards regions
+
+00:10:09.480 --> 00:10:12.880
+of high density of the space.
+
+00:10:12.880 --> 00:10:16.680
+And that potential candidate
+can be the gradient
+
+00:10:16.680 --> 00:10:21.760
+of the log of the probability,
+as opposed to just the gradient
+
+00:10:21.760 --> 00:10:25.240
+of the probability.
+
+00:10:25.240 --> 00:10:31.240
+So why could that be-- why
+would that be a good candidate?
+
+00:10:31.240 --> 00:10:34.680
+Well, do you remember
+the first point
+
+00:10:34.680 --> 00:10:39.000
+I mentioned regarding
+the normalizing constant?
+
+00:10:39.000 --> 00:10:43.780
+Well, thanks to the properties
+of the logarithm function,
+
+00:10:43.780 --> 00:10:48.740
+if you take the logarithm of the
+numerator over the denominator,
+
+00:10:48.740 --> 00:10:52.140
+it's just the logarithm of the
+numerator minus the logarithm
+
+00:10:52.140 --> 00:10:53.860
+of the denominator.
+
+00:10:53.860 --> 00:10:57.020
+And given that the
+normalizing constant
+
+00:10:57.020 --> 00:11:03.540
+is constant with respect
+to x, the point in space,
+
+00:11:03.540 --> 00:11:08.380
+the gradient of log
+of z is actually 0.
+
+00:11:08.380 --> 00:11:14.220
+So what that means is in order
+to compute the gradient of log
+
+00:11:14.220 --> 00:11:18.020
+of p, you don't
+have to figure out
+
+00:11:18.020 --> 00:11:23.260
+how you want to compute
+that intractable quantity.
+
+00:11:23.260 --> 00:11:26.100
+So that's reason number 1.
+
+00:11:26.100 --> 00:11:29.120
+Reason number 2, I'm not sure
+if this was obvious to you,
+
+00:11:29.120 --> 00:11:33.420
+but just to emphasize
+on this a bit more,
+
+00:11:33.420 --> 00:11:36.500
+the gradient of
+the log is actually
+
+00:11:36.500 --> 00:11:40.850
+pointing in the same direction
+as the gradient of p.
+
+00:11:40.850 --> 00:11:44.450
+And the reason for that
+is just a calculus reason.
+
+00:11:44.450 --> 00:11:47.690
+So the gradient of log of
+p is equal to the gradient
+
+00:11:47.690 --> 00:11:50.490
+of p over p.
+
+00:11:50.490 --> 00:11:58.450
+And so what that means is
+up to some normalization,
+
+00:11:58.450 --> 00:12:01.210
+the gradient of the
+log of p is pointing
+
+00:12:01.210 --> 00:12:04.510
+towards the same direction
+of gradient of p.
+
+00:12:04.510 --> 00:12:05.590
+Because p is a scalar.
+
+00:12:05.590 --> 00:12:06.910
+Just remember p is a scalar.
+
+00:12:06.910 --> 00:12:13.970
+So it's as if you were dividing
+your vector by the same quantity
+
+00:12:13.970 --> 00:12:15.910
+across all dimensions.
+
+00:12:18.970 --> 00:12:21.890
+First reason, it is tractable.
+
+00:12:21.890 --> 00:12:24.850
+Second reason, it is pointing
+in the same direction
+
+00:12:24.850 --> 00:12:27.050
+as gradient of p.
+
+00:12:27.050 --> 00:12:31.130
+And then the third reason is
+that it is just more numerically
+
+00:12:31.130 --> 00:12:33.210
+stable.
+
+00:12:33.210 --> 00:12:38.760
+And the reason for that
+is when gradient of p
+
+00:12:38.760 --> 00:12:41.880
+is very, very small,
+then there are chances
+
+00:12:41.880 --> 00:12:44.200
+that p is also very small.
+
+00:12:44.200 --> 00:12:49.460
+And so if you take the
+ratio, it is not as small.
+
+00:12:52.120 --> 00:12:54.920
+So that's the third reason.
+
+00:12:54.920 --> 00:13:00.480
+So for all of these reasons,
+a possible strategy for you
+
+00:13:00.480 --> 00:13:04.680
+to go from one point
+in space towards region
+
+00:13:04.680 --> 00:13:10.960
+higher densities with respect to
+the probability density function
+
+00:13:10.960 --> 00:13:16.640
+can be to follow the direction
+given by gradient of log
+
+00:13:16.640 --> 00:13:22.160
+of p, which we call the score.
+
+00:13:22.160 --> 00:13:24.280
+So this is the reason
+why this lecture
+
+00:13:24.280 --> 00:13:26.360
+is called score matching.
+
+00:13:26.360 --> 00:13:29.200
+It is because we're interested
+in this quantity, which
+
+00:13:29.200 --> 00:13:32.520
+is the score, which is the
+gradient of the log of p.
+
+00:13:32.520 --> 00:13:37.870
+One note that I will add is
+just see that I said gradient
+
+00:13:37.870 --> 00:13:40.950
+of log of p with respect to x.
+
+00:13:40.950 --> 00:13:43.430
+So you may think
+it is redundant,
+
+00:13:43.430 --> 00:13:47.310
+but it is actually because
+we want to distinguish it
+
+00:13:47.310 --> 00:13:50.350
+from another score,
+which is with respect
+
+00:13:50.350 --> 00:13:54.590
+to the parameters of a model
+that sometimes people use.
+
+00:13:54.590 --> 00:13:57.270
+And so I just want
+to clarify here
+
+00:13:57.270 --> 00:13:59.550
+that we take the
+gradient with respect
+
+00:13:59.550 --> 00:14:03.010
+to x, which is the
+position in the space.
+
+00:14:06.390 --> 00:14:08.770
+Sounds good?
+
+00:14:08.770 --> 00:14:09.270
+OK.
+
+00:14:09.270 --> 00:14:09.770
+Cool.
+
+00:14:09.770 --> 00:14:13.090
+So this is how our score
+would look like in space.
+
+00:14:13.090 --> 00:14:16.790
+So here if you're further
+away, typically the score,
+
+00:14:16.790 --> 00:14:19.150
+the magnitude would
+be bigger because you
+
+00:14:19.150 --> 00:14:21.250
+have the gradient of p over p.
+
+00:14:21.250 --> 00:14:26.670
+And p is small, and it's
+smaller when you get closer
+
+00:14:26.670 --> 00:14:28.790
+to the distribution.
+
+00:14:28.790 --> 00:14:32.310
+So now a question that
+I have for you is,
+
+00:14:32.310 --> 00:14:36.860
+let's suppose we sample
+from this space, sample
+
+00:14:36.860 --> 00:14:40.740
+from a distribution that is easy
+to sample, which is somewhere
+
+00:14:40.740 --> 00:14:42.500
+in space.
+
+00:14:42.500 --> 00:14:46.180
+And if I were to tell
+you, if I were to ask you,
+
+00:14:46.180 --> 00:14:50.780
+how would you go from this
+point to higher density regions
+
+00:14:50.780 --> 00:14:54.260
+of the space using the score?
+
+00:14:54.260 --> 00:14:55.220
+How would you do it?
+
+00:14:55.220 --> 00:14:58.280
+[AUDIO OUT]
+
+00:14:58.780 --> 00:14:59.560
+Follow the score.
+
+00:14:59.560 --> 00:15:01.580
+Yeah.
+
+00:15:01.580 --> 00:15:03.503
+So you could follow the score.
+
+00:15:03.503 --> 00:15:05.420
+So the reason why I'm
+asking you this question
+
+00:15:05.420 --> 00:15:08.140
+is because there is a catch.
+
+00:15:08.140 --> 00:15:10.700
+Because if you
+follow the score, it
+
+00:15:10.700 --> 00:15:14.220
+means that you're going
+towards higher density
+
+00:15:14.220 --> 00:15:16.660
+regions of the space.
+
+00:15:16.660 --> 00:15:20.420
+But the problem is
+you may always go
+
+00:15:20.420 --> 00:15:23.420
+where the density is highest.
+
+00:15:23.420 --> 00:15:27.460
+And so here when you look
+at this illustration,
+
+00:15:27.460 --> 00:15:30.080
+there are places where
+density is not the highest,
+
+00:15:30.080 --> 00:15:34.800
+but it is still a valid
+sample from the distribution.
+
+00:15:34.800 --> 00:15:37.600
+So actually what
+we want is not only
+
+00:15:37.600 --> 00:15:42.180
+go towards higher density
+places of the region,
+
+00:15:42.180 --> 00:15:49.080
+but also to have some
+diversity, to not always go
+
+00:15:49.080 --> 00:15:51.440
+at the same place.
+
+00:15:51.440 --> 00:15:54.080
+So that's the reason why.
+
+00:15:54.080 --> 00:15:57.920
+Let's assume we know the score.
+
+00:15:57.920 --> 00:16:02.100
+We would use a sampling method
+that is very commonly used,
+
+00:16:02.100 --> 00:16:06.400
+and I'm going to call out now,
+which is called the Langevin
+
+00:16:06.400 --> 00:16:07.840
+sampling.
+
+00:16:07.840 --> 00:16:11.680
+And what that does
+is it not only allows
+
+00:16:11.680 --> 00:16:16.860
+you to go towards higher
+density regions of the space,
+
+00:16:16.860 --> 00:16:20.600
+but also have a
+stochastic term that
+
+00:16:20.600 --> 00:16:25.080
+allows you to go to explore
+a little bit the region.
+
+00:16:25.080 --> 00:16:28.960
+So I displayed the formula
+here on the slide a little bit
+
+00:16:28.960 --> 00:16:30.320
+out of nowhere.
+
+00:16:30.320 --> 00:16:32.950
+So we won't have
+time to derive it.
+
+00:16:32.950 --> 00:16:35.830
+But I just want to
+show you that there
+
+00:16:35.830 --> 00:16:40.750
+is a way for you to start
+from a starting point,
+
+00:16:40.750 --> 00:16:45.230
+and then use the score
+to end up with a sample
+
+00:16:45.230 --> 00:16:49.390
+from the probability
+distribution.
+
+00:16:49.390 --> 00:16:53.510
+And that method is
+called Langevin sampling.
+
+00:16:53.510 --> 00:16:57.110
+So if you know
+about MCMC methods,
+
+00:16:57.110 --> 00:17:00.310
+so Markov Chain Monte
+Carlo, so Langevin sampling
+
+00:17:00.310 --> 00:17:02.970
+is just one such methods.
+
+00:17:05.670 --> 00:17:06.970
+That sounds good?
+
+00:17:06.970 --> 00:17:07.470
+Yeah.
+
+00:17:07.470 --> 00:17:10.778
+[AUDIO OUT]
+
+00:17:12.190 --> 00:17:12.690
+Yep.
+
+00:17:12.690 --> 00:17:16.160
+[AUDIO OUT]
+
+00:17:26.069 --> 00:17:29.540
+Yeah, so the question is,
+are these coefficients
+
+00:17:29.540 --> 00:17:30.580
+coming out of nowhere?
+
+00:17:30.580 --> 00:17:32.860
+Are they're here for a reason?
+
+00:17:32.860 --> 00:17:33.960
+The answer is yes.
+
+00:17:33.960 --> 00:17:36.420
+They're here for a reason.
+
+00:17:36.420 --> 00:17:39.320
+And they can be derived
+using some equations.
+
+00:17:39.320 --> 00:17:41.660
+So if you've heard
+Fokker-Planck equation
+
+00:17:41.660 --> 00:17:44.260
+is something that you
+can use to derive this.
+
+00:17:44.260 --> 00:17:47.340
+We won't have time to derive
+it, but there is a reason.
+
+00:17:47.340 --> 00:17:48.780
+There is a reason for this.
+
+00:17:48.780 --> 00:17:50.280
+Yeah.
+
+00:17:50.280 --> 00:17:53.780
+[AUDIO OUT]
+
+00:17:58.420 --> 00:17:59.800
+Yes.
+
+00:17:59.800 --> 00:18:04.380
+So the question is, is
+there a convergence concern
+
+00:18:04.380 --> 00:18:06.740
+because the score
+is getting lower
+
+00:18:06.740 --> 00:18:08.680
+and you always go
+from one to the other?
+
+00:18:08.680 --> 00:18:09.980
+Is that the question?
+
+00:18:09.980 --> 00:18:13.940
+So we will see that
+later on and see how
+
+00:18:13.940 --> 00:18:15.980
+that is actually not a concern.
+
+00:18:15.980 --> 00:18:17.080
+But yeah, great question.
+
+00:18:17.080 --> 00:18:17.580
+Yeah.
+
+00:18:17.580 --> 00:18:21.050
+[AUDIO OUT]
+
+00:18:28.970 --> 00:18:32.470
+So the question is, how
+do you choose alpha?
+
+00:18:32.470 --> 00:18:34.970
+And we're going to
+also see that later.
+
+00:18:34.970 --> 00:18:36.630
+But it is something
+that you choose.
+
+00:18:40.690 --> 00:18:42.370
+Cool.
+
+00:18:42.370 --> 00:18:44.010
+Great questions.
+
+00:18:44.010 --> 00:18:47.930
+And with that, I for
+now assume that we
+
+00:18:47.930 --> 00:18:49.910
+knew how to get the score.
+
+00:18:49.910 --> 00:18:53.290
+But the reality is we don't.
+
+00:18:53.290 --> 00:18:57.170
+So we're going to spend
+this first part just trying
+
+00:18:57.170 --> 00:19:00.930
+to see how we can
+estimate the score.
+
+00:19:00.930 --> 00:19:04.810
+And it is actually
+not an easy problem,
+
+00:19:04.810 --> 00:19:07.250
+and we're going to see why.
+
+00:19:07.250 --> 00:19:11.410
+So first of all, the task
+of estimating the score
+
+00:19:11.410 --> 00:19:14.370
+is widely known
+as score matching,
+
+00:19:14.370 --> 00:19:17.330
+because you're trying
+to match the score.
+
+00:19:17.330 --> 00:19:21.850
+So here the way you want to do
+it is similar with the noise L2
+
+00:19:21.850 --> 00:19:22.850
+regression.
+
+00:19:22.850 --> 00:19:25.850
+You also want to have
+some L2 regression,
+
+00:19:25.850 --> 00:19:29.070
+but this time on the score.
+
+00:19:29.070 --> 00:19:35.030
+But the main problem is you
+don't know what pdata is,
+
+00:19:35.030 --> 00:19:40.190
+and you also do not know the
+score of the data distribution.
+
+00:19:40.190 --> 00:19:44.070
+So looking at this
+loss function,
+
+00:19:44.070 --> 00:19:50.910
+there's actually no way for
+you to estimate s theta of x.
+
+00:19:50.910 --> 00:19:53.310
+So that's the reason
+why there's been
+
+00:19:53.310 --> 00:19:56.670
+a few papers across the
+years, along the years, that
+
+00:19:56.670 --> 00:20:03.830
+have tried to estimate this
+score function without having
+
+00:20:03.830 --> 00:20:08.230
+the need to know the
+true score function.
+
+00:20:08.230 --> 00:20:13.630
+So I'm just going to enumerate a
+few methods that were out there.
+
+00:20:13.630 --> 00:20:16.330
+For instance, this
+one is back in 2005,
+
+00:20:16.330 --> 00:20:19.790
+there was a method called
+Implicit Score Matching that
+
+00:20:19.790 --> 00:20:22.150
+derived a loss that
+actually did not
+
+00:20:22.150 --> 00:20:25.580
+require you to have the
+knowledge of the true score
+
+00:20:25.580 --> 00:20:26.860
+function.
+
+00:20:26.860 --> 00:20:30.700
+And there is another method
+called Sliced Score Matching,
+
+00:20:30.700 --> 00:20:35.900
+which used the
+fact of projecting
+
+00:20:35.900 --> 00:20:40.780
+the score on different random
+vectors, random projections.
+
+00:20:40.780 --> 00:20:45.560
+So I put the papers at
+the bottom of the slide.
+
+00:20:45.560 --> 00:20:48.140
+We're not going to
+go into details just
+
+00:20:48.140 --> 00:20:51.140
+because these methods
+are not really
+
+00:20:51.140 --> 00:20:55.020
+commonly used like nowadays.
+
+00:20:55.020 --> 00:20:57.380
+But instead what
+we're going to do
+
+00:20:57.380 --> 00:21:01.800
+is to focus on the common
+method that is being used,
+
+00:21:01.800 --> 00:21:05.860
+which is called
+denoising score matching.
+
+00:21:05.860 --> 00:21:11.260
+And it relies on the
+following observation.
+
+00:21:11.260 --> 00:21:13.420
+So I told you that
+we do not have
+
+00:21:13.420 --> 00:21:17.460
+the knowledge of the score
+of the true distribution,
+
+00:21:17.460 --> 00:21:22.260
+because the true distribution
+is a complex distribution.
+
+00:21:22.260 --> 00:21:26.090
+But I also told you that
+Gaussian distributions
+
+00:21:26.090 --> 00:21:28.730
+have very nice properties.
+
+00:21:28.730 --> 00:21:31.650
+So one idea that we
+can have is let's
+
+00:21:31.650 --> 00:21:34.570
+try to see if we can compute
+the score of a Gaussian
+
+00:21:34.570 --> 00:21:37.130
+distribution.
+
+00:21:37.130 --> 00:21:39.450
+So let's assume that we
+have a random variable
+
+00:21:39.450 --> 00:21:43.930
+x that is drawn from a normal
+distribution of mean mu
+
+00:21:43.930 --> 00:21:46.190
+and variance sigma squared.
+
+00:21:46.190 --> 00:21:50.890
+So here I'm taking an example
+in 1D just so that we're--
+
+00:21:50.890 --> 00:21:53.890
+so that it's easier.
+
+00:21:53.890 --> 00:21:57.010
+So the probability distribution
+function or probability density
+
+00:21:57.010 --> 00:22:01.870
+function is given
+by this formula,
+
+00:22:01.870 --> 00:22:05.790
+which is analytically explicit.
+
+00:22:05.790 --> 00:22:08.570
+It is something
+that is given here.
+
+00:22:08.570 --> 00:22:12.610
+Well, it turns out
+that if you take
+
+00:22:12.610 --> 00:22:17.010
+the gradient of
+the log of p, then
+
+00:22:17.010 --> 00:22:24.320
+you end up with this very
+nice formulation of minus x
+
+00:22:24.320 --> 00:22:26.980
+minus mu over sigma squared.
+
+00:22:30.680 --> 00:22:36.920
+Should we derive it, or is
+it, quote unquote, "obvious"?
+
+00:22:36.920 --> 00:22:38.500
+You want to derive it?
+
+00:22:38.500 --> 00:22:39.000
+No?
+
+00:22:39.000 --> 00:22:40.360
+OK.
+
+00:22:40.360 --> 00:22:46.520
+Maybe one thing I will
+do is to just tell you
+
+00:22:46.520 --> 00:22:49.840
+why this formula makes sense.
+
+00:22:49.840 --> 00:22:57.680
+So if you consider a
+Gaussian distribution,
+
+00:22:57.680 --> 00:23:01.040
+the probability density function
+would be something like this.
+
+00:23:01.040 --> 00:23:04.980
+You'll have high densities
+towards the mean.
+
+00:23:04.980 --> 00:23:08.480
+And then you will have lower
+values of the densities
+
+00:23:08.480 --> 00:23:10.760
+as you go away.
+
+00:23:10.760 --> 00:23:12.680
+So here what you're
+saying is if you
+
+00:23:12.680 --> 00:23:19.700
+take some x in space,
+what it is saying
+
+00:23:19.700 --> 00:23:26.540
+is the score at that point
+x is given by minus x
+
+00:23:26.540 --> 00:23:29.900
+minus mu over sigma squared.
+
+00:23:29.900 --> 00:23:35.920
+So what that means is, so
+minus x minus mu is mu minus x.
+
+00:23:35.920 --> 00:23:36.420
+Oops.
+
+00:23:36.420 --> 00:23:38.840
+So it's supposed to
+be a straight line.
+
+00:23:38.840 --> 00:23:40.658
+So let's suppose
+it's a straight line.
+
+00:23:40.658 --> 00:23:42.200
+It's going to be
+somewhere like this.
+
+00:23:46.940 --> 00:23:49.360
+Sigma squared is positive.
+
+00:23:49.360 --> 00:23:53.060
+So it's going to be
+pointing towards the mean.
+
+00:23:53.060 --> 00:23:56.220
+And just remember
+that the score is
+
+00:23:56.220 --> 00:24:01.380
+a quantity that gives us the
+direction of higher densities
+
+00:24:01.380 --> 00:24:04.060
+in the space.
+
+00:24:04.060 --> 00:24:08.040
+So just to tell you that
+this formula makes sense.
+
+00:24:12.340 --> 00:24:16.980
+So back to our original goal.
+
+00:24:16.980 --> 00:24:22.770
+So what we want is to
+find a way to compute
+
+00:24:22.770 --> 00:24:25.610
+the score of a distribution.
+
+00:24:25.610 --> 00:24:29.490
+And we saw that computing the
+score of a Gaussian distribution
+
+00:24:29.490 --> 00:24:30.210
+is easy.
+
+00:24:32.810 --> 00:24:39.690
+So how about we take one
+point from our training
+
+00:24:39.690 --> 00:24:43.650
+set and we noise it.
+
+00:24:43.650 --> 00:24:49.050
+So let's suppose we're given
+x from our training set.
+
+00:24:49.050 --> 00:24:52.250
+And let's suppose we
+add some Gaussian noise,
+
+00:24:52.250 --> 00:24:55.850
+and we scale it with sigma.
+
+00:24:55.850 --> 00:25:02.570
+Then we have x tilde, which is
+equal to x plus sigma epsilon.
+
+00:25:02.570 --> 00:25:07.530
+So x tilde follows a
+normal distribution
+
+00:25:07.530 --> 00:25:12.130
+of mean x and variance
+sigma squared I.
+
+00:25:12.130 --> 00:25:23.240
+And using exactly these results,
+you get that the score of--
+
+00:25:23.240 --> 00:25:27.840
+so we're calling that q
+sigma of x tilde given x.
+
+00:25:27.840 --> 00:25:30.980
+So this quantity is actually
+something that is tractable.
+
+00:25:35.986 --> 00:25:42.960
+So now the question is,
+how can we use that result
+
+00:25:42.960 --> 00:25:46.640
+in order to go back to our
+initial objective, which
+
+00:25:46.640 --> 00:25:51.060
+is to determine the score of the
+data distribution of interest?
+
+00:25:54.000 --> 00:25:58.120
+So just remember at the
+first starting point
+
+00:25:58.120 --> 00:26:04.720
+we want to estimate the score
+of pdata, which is like this.
+
+00:26:04.720 --> 00:26:10.840
+Well, the key idea here is to
+take that data distribution
+
+00:26:10.840 --> 00:26:13.800
+and to noise it.
+
+00:26:13.800 --> 00:26:18.390
+So for that, we're
+going to introduce
+
+00:26:18.390 --> 00:26:22.690
+q sigma of x tilde,
+which is this quantity.
+
+00:26:22.690 --> 00:26:25.330
+And I'm going to explain
+what that quantity is.
+
+00:26:29.950 --> 00:26:35.830
+So what I'm going to do is to
+just rewrite the expression
+
+00:26:35.830 --> 00:26:39.550
+on the blackboard.
+
+00:26:39.550 --> 00:26:40.650
+And maybe it's here.
+
+00:26:40.650 --> 00:26:42.690
+[AUDIO OUT]
+
+00:26:42.690 --> 00:26:43.190
+OK.
+
+00:26:43.190 --> 00:26:45.030
+Thank you.
+
+00:26:45.030 --> 00:26:52.710
+So you have q sigma of x tilde.
+
+00:26:52.710 --> 00:26:55.390
+Whoops.
+
+00:26:55.390 --> 00:27:03.665
+So it is a function
+of this perturbation.
+
+00:27:03.665 --> 00:27:05.290
+So it's called the
+perturbation kernel.
+
+00:27:05.290 --> 00:27:09.890
+So you take one data point
+from your data distribution.
+
+00:27:09.890 --> 00:27:11.550
+And then you noise it.
+
+00:27:11.550 --> 00:27:13.350
+So this is the one.
+
+00:27:13.350 --> 00:27:15.290
+And what you're
+actually doing is
+
+00:27:15.290 --> 00:27:20.010
+you're repeating that
+procedure for all elements
+
+00:27:20.010 --> 00:27:23.610
+of your training set.
+
+00:27:23.610 --> 00:27:32.450
+Which is why you're ending
+up with this distribution.
+
+00:27:32.450 --> 00:27:35.090
+So this is an
+expression that takes
+
+00:27:35.090 --> 00:27:39.750
+in each point of
+your training set.
+
+00:27:39.750 --> 00:27:41.450
+And that noises it.
+
+00:27:41.450 --> 00:27:44.450
+And you just repeat that process
+for all points of your training
+
+00:27:44.450 --> 00:27:46.850
+set.
+
+00:27:46.850 --> 00:27:54.770
+And this you can interpret it as
+a joint probability distribution
+
+00:27:54.770 --> 00:28:02.050
+that you can also note q
+sigma of x tilde and x,
+
+00:28:02.050 --> 00:28:03.970
+which is a valid one.
+
+00:28:03.970 --> 00:28:10.470
+Because if you integrate over
+x tilde and x, you get one.
+
+00:28:13.280 --> 00:28:15.960
+So I just want you to
+look at this formula
+
+00:28:15.960 --> 00:28:19.340
+and just not be scared
+about what that means.
+
+00:28:19.340 --> 00:28:21.280
+I think it's quite easy.
+
+00:28:21.280 --> 00:28:25.960
+Another way of seeing
+this is in practice,
+
+00:28:25.960 --> 00:28:30.680
+what you have is only a few data
+points from your distribution.
+
+00:28:30.680 --> 00:28:35.000
+So it's as if you were saying
+you take the finite set of data
+
+00:28:35.000 --> 00:28:38.160
+points that you have from your
+distribution, and what you do
+
+00:28:38.160 --> 00:28:40.640
+is you noise each of it.
+
+00:28:40.640 --> 00:28:45.880
+So it's as if you were obtaining
+a mixture of Gaussians.
+
+00:28:45.880 --> 00:28:51.160
+It's as if you were obtaining--
+you have your different points.
+
+00:28:51.160 --> 00:28:59.880
+And what you do is you
+noise, you noise each point.
+
+00:28:59.880 --> 00:29:03.040
+And so we're going
+to call q sigma of x
+
+00:29:03.040 --> 00:29:08.160
+tilde the noisy distribution.
+
+00:29:08.160 --> 00:29:10.510
+Yeah?
+
+00:29:10.510 --> 00:29:11.110
+Cool.
+
+00:29:11.110 --> 00:29:18.270
+So as you can tell, q sigma
+is a function of sigma.
+
+00:29:18.270 --> 00:29:20.950
+And sigma tells you
+how much noise you're
+
+00:29:20.950 --> 00:29:23.030
+adding to the distribution.
+
+00:29:23.030 --> 00:29:27.910
+So if you have, let's say, a
+small sigma, your distribution
+
+00:29:27.910 --> 00:29:29.290
+is just a little bit noisy.
+
+00:29:29.290 --> 00:29:32.950
+So it just spreads a little bit.
+
+00:29:32.950 --> 00:29:37.110
+But then as you add
+more and more noise,
+
+00:29:37.110 --> 00:29:43.750
+it just spreads out and
+takes much more space.
+
+00:29:43.750 --> 00:29:48.590
+So how can you use these
+definitions in order
+
+00:29:48.590 --> 00:29:52.550
+for us to compute
+the true score?
+
+00:29:52.550 --> 00:29:56.270
+So we're going to see it now.
+
+00:29:56.270 --> 00:30:01.350
+So let's consider the
+score matching objective
+
+00:30:01.350 --> 00:30:04.750
+not on the original
+data distribution
+
+00:30:04.750 --> 00:30:07.820
+but on the noisy distribution.
+
+00:30:07.820 --> 00:30:12.300
+So if we take q
+sigma of x tilde,
+
+00:30:12.300 --> 00:30:17.700
+we have the squared
+distance between the score
+
+00:30:17.700 --> 00:30:21.340
+of x tilde and the--
+
+00:30:21.340 --> 00:30:25.740
+sorry, the predicted score
+and the true score of x tilde.
+
+00:30:25.740 --> 00:30:31.620
+Well, there is a paper that
+showed that this is actually
+
+00:30:31.620 --> 00:30:37.460
+equivalent to optimizing for
+another loss function, which
+
+00:30:37.460 --> 00:30:45.100
+is this one, which is s theta
+of x tilde minus the score,
+
+00:30:45.100 --> 00:30:50.980
+but conditioned on each data
+points of your training set.
+
+00:30:50.980 --> 00:30:53.860
+And so why is this good news?
+
+00:30:53.860 --> 00:30:57.860
+It is because that
+conditional score is something
+
+00:30:57.860 --> 00:31:00.140
+that we already saw.
+
+00:31:00.140 --> 00:31:08.090
+It is tractable, but
+we have a problem.
+
+00:31:08.090 --> 00:31:10.650
+And the problem we're
+going to see later.
+
+00:31:10.650 --> 00:31:12.610
+Before we do that,
+I'm just trying
+
+00:31:12.610 --> 00:31:15.630
+to see if we have
+time to derive it.
+
+00:31:15.630 --> 00:31:21.310
+So the derivation is in between
+being trivial and not trivial.
+
+00:31:21.310 --> 00:31:22.730
+It's in the middle.
+
+00:31:22.730 --> 00:31:25.410
+I would say the
+proof is quite nice.
+
+00:31:25.410 --> 00:31:28.572
+It is not required for
+you to know for the exam.
+
+00:31:28.572 --> 00:31:30.030
+So I think in the
+interest of time,
+
+00:31:30.030 --> 00:31:31.590
+I'm not going to
+do the full proof,
+
+00:31:31.590 --> 00:31:36.130
+but I'm going to show you
+how you can derive it just
+
+00:31:36.130 --> 00:31:38.730
+through the main step.
+
+00:31:38.730 --> 00:31:46.090
+So what we're saying is we have
+the original score matching
+
+00:31:46.090 --> 00:31:55.890
+function, which is the
+one at the top, which
+
+00:31:55.890 --> 00:32:00.770
+is the squared distance
+between the score of the noise
+
+00:32:00.770 --> 00:32:08.750
+observation minus the
+true score of q sigma.
+
+00:32:14.110 --> 00:32:18.670
+What we're saying is optimizing
+for these loss function
+
+00:32:18.670 --> 00:32:20.850
+is the same as
+optimizing for this one.
+
+00:32:23.990 --> 00:32:29.010
+So the expectation is over
+x over your training set
+
+00:32:29.010 --> 00:32:34.590
+and then x tilde,
+which is given x.
+
+00:32:34.590 --> 00:32:39.050
+And so it's
+expectation of, again,
+
+00:32:39.050 --> 00:32:41.690
+the score of the
+noisy observation,
+
+00:32:41.690 --> 00:32:46.790
+but this one minus
+the true score
+
+00:32:46.790 --> 00:32:51.690
+of the conditional
+observation condition on x.
+
+00:32:55.630 --> 00:32:57.830
+So what you want to
+show this is the same
+
+00:32:57.830 --> 00:33:01.350
+as optimizing for this,
+which is tractable.
+
+00:33:01.350 --> 00:33:05.020
+So the trick here is
+to recognize the fact
+
+00:33:05.020 --> 00:33:10.580
+that you have a distance of
+two quantities, let's say, a
+
+00:33:10.580 --> 00:33:22.500
+and b, which is something that
+you can expand as follows.
+
+00:33:22.500 --> 00:33:26.140
+So the distance
+between a and b squared
+
+00:33:26.140 --> 00:33:30.980
+is a squared minus 2
+dot product of a and b
+
+00:33:30.980 --> 00:33:39.700
+plus this square norm of b.
+
+00:33:39.700 --> 00:33:43.020
+And what you see is--
+
+00:33:43.020 --> 00:33:44.940
+so these two loss
+functions, you want
+
+00:33:44.940 --> 00:33:48.300
+to optimize them with
+respect to the parameters
+
+00:33:48.300 --> 00:33:51.140
+of the model, which is theta.
+
+00:33:51.140 --> 00:33:56.420
+And so you first realize
+that the b term in both loss
+
+00:33:56.420 --> 00:34:01.610
+functions, they are not
+a function of theta.
+
+00:34:01.610 --> 00:34:04.330
+So actually you don't care.
+
+00:34:04.330 --> 00:34:06.310
+So this one you ignore.
+
+00:34:08.929 --> 00:34:12.969
+And then you look at just
+the first term, the a term.
+
+00:34:12.969 --> 00:34:16.810
+And you just realize that
+these terms are the same.
+
+00:34:16.810 --> 00:34:20.010
+So this one you also don't care.
+
+00:34:20.010 --> 00:34:22.489
+The only thing that
+you care is showing
+
+00:34:22.489 --> 00:34:26.090
+that the expectation
+across x tilde of the dot
+
+00:34:26.090 --> 00:34:31.610
+product between the two is
+the same as the expectation
+
+00:34:31.610 --> 00:34:40.409
+of over x and x tilde of the dot
+product between these prediction
+
+00:34:40.409 --> 00:34:43.770
+model and this
+conditional score.
+
+00:34:43.770 --> 00:34:47.610
+You want to show that
+these two are equal.
+
+00:34:47.610 --> 00:34:51.130
+And this is what the
+proof is showing.
+
+00:34:51.130 --> 00:34:55.510
+So if you're interested
+in the details,
+
+00:34:55.510 --> 00:34:57.730
+I would highly encourage
+you to take a look
+
+00:34:57.730 --> 00:35:00.680
+at the original paper, which
+is the denoising score matching
+
+00:35:00.680 --> 00:35:02.760
+paper in the appendix.
+
+00:35:02.760 --> 00:35:06.440
+So it's maybe a five
+or six-line derivation.
+
+00:35:06.440 --> 00:35:10.000
+And what it does is
+it just leverages
+
+00:35:10.000 --> 00:35:13.320
+the definition of q
+sigma and then just does
+
+00:35:13.320 --> 00:35:20.760
+some nice term expansion
+and term identification.
+
+00:35:20.760 --> 00:35:27.240
+So all I want to say is
+that this equivalence is not
+
+00:35:27.240 --> 00:35:28.100
+pure magic.
+
+00:35:28.100 --> 00:35:30.560
+It's just math, math.
+
+00:35:30.560 --> 00:35:33.560
+And what is great
+about it is that we're
+
+00:35:33.560 --> 00:35:38.440
+able to optimize the loss
+of the score matching
+
+00:35:38.440 --> 00:35:43.180
+for the noisy distribution
+using a tractable loss.
+
+00:35:43.180 --> 00:35:46.656
+[AUDIO OUT]
+
+00:35:53.120 --> 00:35:56.280
+So the question is, the
+score of the noisy data
+
+00:35:56.280 --> 00:35:59.400
+is equal to the score
+of the conditional.
+
+00:35:59.400 --> 00:36:06.580
+Well, not exactly, but what your
+model s theta of x tilde learns
+
+00:36:06.580 --> 00:36:09.020
+ends up being the same.
+
+00:36:09.020 --> 00:36:14.460
+And the reason for that is
+because here what you care about
+
+00:36:14.460 --> 00:36:17.880
+is the direction where
+you're optimizing your model.
+
+00:36:17.880 --> 00:36:19.940
+So you do gradient
+descent typically.
+
+00:36:19.940 --> 00:36:23.140
+And what you care
+about is the gradient
+
+00:36:23.140 --> 00:36:26.780
+of that loss with
+respect to theta.
+
+00:36:26.780 --> 00:36:29.940
+And so that's why we have
+this whole derivation
+
+00:36:29.940 --> 00:36:35.580
+to just show that the
+loss at the bottom
+
+00:36:35.580 --> 00:36:39.820
+is equal to the one at the top,
+plus some constant that is not
+
+00:36:39.820 --> 00:36:42.460
+a function of theta.
+
+00:36:42.460 --> 00:36:45.180
+And for that reason,
+if you optimize
+
+00:36:45.180 --> 00:36:47.940
+the loss that is
+tractable from the bottom,
+
+00:36:47.940 --> 00:36:50.880
+it's the same as optimizing
+the loss from the top.
+
+00:36:50.880 --> 00:36:52.500
+[AUDIO OUT]
+
+00:36:52.500 --> 00:36:53.320
+They're not equal.
+
+00:36:53.320 --> 00:36:54.200
+Yes, exactly.
+
+00:36:54.200 --> 00:36:55.330
+Yeah, yeah.
+
+00:36:55.330 --> 00:36:56.690
+Great question.
+
+00:36:56.690 --> 00:36:58.470
+Any other questions on this?
+
+00:36:58.470 --> 00:36:58.970
+Yeah.
+
+00:36:58.970 --> 00:37:02.470
+[AUDIO OUT]
+
+00:37:23.970 --> 00:37:24.925
+Yeah, yeah, yeah.
+
+00:37:24.925 --> 00:37:25.550
+Great question.
+
+00:37:25.550 --> 00:37:27.258
+So the question is,
+what is the intuition
+
+00:37:27.258 --> 00:37:28.930
+behind this being the same?
+
+00:37:28.930 --> 00:37:31.010
+So I think the
+intuition goes back
+
+00:37:31.010 --> 00:37:35.570
+to the way you define
+q sigma and the way
+
+00:37:35.570 --> 00:37:37.470
+taking the expectation works.
+
+00:37:40.370 --> 00:37:49.650
+So here what you're saying is
+if you take a look at scores
+
+00:37:49.650 --> 00:37:53.310
+conditioned on points
+from the training sets,
+
+00:37:53.310 --> 00:37:58.800
+so if you take a look at
+this, and then if you somehow
+
+00:37:58.800 --> 00:38:02.640
+see all the different scores
+from all the different points
+
+00:38:02.640 --> 00:38:06.720
+conditioned on these
+points, then on average
+
+00:38:06.720 --> 00:38:08.880
+is going to be
+the same as if you
+
+00:38:08.880 --> 00:38:12.920
+were to actually take the
+score from the overall noisy
+
+00:38:12.920 --> 00:38:14.360
+distribution.
+
+00:38:14.360 --> 00:38:15.740
+That's the rough intuition.
+
+00:38:22.000 --> 00:38:23.600
+Does that make sense?
+
+00:38:23.600 --> 00:38:25.020
+OK.
+
+00:38:25.020 --> 00:38:25.620
+OK, cool.
+
+00:38:25.620 --> 00:38:27.800
+I'm looking at the time.
+
+00:38:27.800 --> 00:38:31.160
+So let's see.
+
+00:38:31.160 --> 00:38:34.480
+Yeah, so again, the
+proof is not something
+
+00:38:34.480 --> 00:38:36.860
+that we will expect in the exam.
+
+00:38:36.860 --> 00:38:41.760
+So feel free to just take a look
+at it if you're just curious.
+
+00:38:41.760 --> 00:38:45.800
+But it's not required.
+
+00:38:45.800 --> 00:38:55.070
+So this is also called L of DSM,
+so Denoising Score Matching.
+
+00:38:55.070 --> 00:38:58.590
+And again this loss is
+tractable because you
+
+00:38:58.590 --> 00:39:04.110
+know the score of q sigma
+of x tilde conditional
+
+00:39:04.110 --> 00:39:08.710
+on x, because this is
+a score of a Gaussian.
+
+00:39:08.710 --> 00:39:13.950
+So just recapping where we
+are, what we wanted to do
+
+00:39:13.950 --> 00:39:19.150
+is to estimate the score
+of the true distribution.
+
+00:39:19.150 --> 00:39:21.510
+So what we said was,
+OK, it's actually
+
+00:39:21.510 --> 00:39:23.070
+not something we can do.
+
+00:39:23.070 --> 00:39:26.070
+Let's fall back on
+an easier setup.
+
+00:39:26.070 --> 00:39:29.630
+And what we said was that
+the easier setup was that
+
+00:39:29.630 --> 00:39:34.950
+in the Gaussian case, you are
+able to analytically compute
+
+00:39:34.950 --> 00:39:37.110
+the true score.
+
+00:39:37.110 --> 00:39:42.030
+So what we did is we took
+the true data distribution,
+
+00:39:42.030 --> 00:39:44.230
+and we noised it.
+
+00:39:44.230 --> 00:39:48.870
+And what we showed
+was that optimizing
+
+00:39:48.870 --> 00:39:51.610
+for the loss that
+is not tractable
+
+00:39:51.610 --> 00:39:56.530
+is the same as optimizing
+for loss that is tractable.
+
+00:39:56.530 --> 00:40:02.570
+So in other words, you are
+able to estimate the score
+
+00:40:02.570 --> 00:40:06.690
+of a noisy data distribution.
+
+00:40:06.690 --> 00:40:12.010
+But it is still not equal to
+pdata, because what you want
+
+00:40:12.010 --> 00:40:12.630
+is pdata.
+
+00:40:12.630 --> 00:40:16.690
+You don't want the
+noisy data distribution.
+
+00:40:16.690 --> 00:40:20.575
+So it's only something
+that is going
+
+00:40:20.575 --> 00:40:21.950
+in the direction
+of what we want,
+
+00:40:21.950 --> 00:40:25.530
+but it's not exactly
+what we want.
+
+00:40:25.530 --> 00:40:31.210
+So let's see what this
+q sigma looks like.
+
+00:40:31.210 --> 00:40:36.970
+So what we want, again, is
+to go from a starting point
+
+00:40:36.970 --> 00:40:40.050
+towards the data distribution.
+
+00:40:40.050 --> 00:40:42.370
+But here we do not have
+the score of the true data
+
+00:40:42.370 --> 00:40:44.090
+distribution.
+
+00:40:44.090 --> 00:40:49.680
+So how about if we take
+a noisy distribution
+
+00:40:49.680 --> 00:40:55.280
+that we can compute where
+sigma is very, very small.
+
+00:40:55.280 --> 00:40:57.060
+So when sigma is
+very, very small,
+
+00:40:57.060 --> 00:41:00.280
+q sigma is very close
+to pdata distribution,
+
+00:41:00.280 --> 00:41:04.320
+because we noise it
+just a little bit.
+
+00:41:04.320 --> 00:41:09.360
+Well, the problem is that if
+we take q sigma with sigma
+
+00:41:09.360 --> 00:41:13.680
+that is very small,
+then we'll just
+
+00:41:13.680 --> 00:41:18.860
+have poor estimations of the
+score in low-density regions.
+
+00:41:22.120 --> 00:41:25.240
+Do you see why?
+
+00:41:25.240 --> 00:41:27.540
+So I'm probably going
+to just explain this.
+
+00:41:27.540 --> 00:41:29.840
+So the good thing is
+it's already there.
+
+00:41:29.840 --> 00:41:37.200
+So I'm just going to fall back
+on the definition of the loss
+
+00:41:37.200 --> 00:41:37.780
+here.
+
+00:41:42.280 --> 00:41:45.440
+So this is the loss
+that we're optimizing.
+
+00:41:45.440 --> 00:41:51.030
+So what that means
+is that we want
+
+00:41:51.030 --> 00:41:55.670
+to optimize on the loss
+that is around the distance
+
+00:41:55.670 --> 00:42:01.390
+between the predicted
+score and the score
+
+00:42:01.390 --> 00:42:17.430
+of the noisy distribution
+q, which is equal to this.
+
+00:42:17.430 --> 00:42:23.350
+So you're weighting your
+loss function with respect
+
+00:42:23.350 --> 00:42:32.230
+to how likely your points
+x tilde are to appear.
+
+00:42:32.230 --> 00:42:40.270
+So in other words, if x tilde
+is not likely to appear,
+
+00:42:40.270 --> 00:42:44.800
+then the fact that it is
+off from the true value
+
+00:42:44.800 --> 00:42:47.820
+is not something that is
+going to be materially
+
+00:42:47.820 --> 00:42:50.300
+noticeable in the loss.
+
+00:42:50.300 --> 00:42:54.140
+So the model will not
+really be incentivized
+
+00:42:54.140 --> 00:42:59.420
+to make predictions
+accurate for x tilde
+
+00:42:59.420 --> 00:43:03.300
+that are not likely to appear.
+
+00:43:03.300 --> 00:43:05.240
+OK.
+
+00:43:05.240 --> 00:43:06.800
+So does this part make sense?
+
+00:43:06.800 --> 00:43:10.660
+So what I'm saying
+here is we are
+
+00:43:10.660 --> 00:43:16.620
+able to estimate the score of
+this noisy data distribution,
+
+00:43:16.620 --> 00:43:20.500
+but we're not able to
+estimate it accurately
+
+00:43:20.500 --> 00:43:24.900
+in places of the
+space that are not
+
+00:43:24.900 --> 00:43:28.740
+likely to appear under q sigma.
+
+00:43:28.740 --> 00:43:31.940
+That's what I'm saying.
+
+00:43:31.940 --> 00:43:35.340
+And the problem
+with that is if you
+
+00:43:35.340 --> 00:43:37.540
+sample from a
+distribution that is
+
+00:43:37.540 --> 00:43:41.020
+easy to sample from, for
+instance, a Gaussian,
+
+00:43:41.020 --> 00:43:47.050
+well, most of the time you're
+in regions that are low density.
+
+00:43:47.050 --> 00:43:53.090
+So if you use the score
+of a noisy distribution
+
+00:43:53.090 --> 00:43:55.050
+with a small noise,
+then you will not
+
+00:43:55.050 --> 00:43:57.250
+have estimations
+of that score that
+
+00:43:57.250 --> 00:44:00.230
+will be accurate in those
+low density regions.
+
+00:44:00.230 --> 00:44:04.370
+So you will not be
+to accurately go
+
+00:44:04.370 --> 00:44:07.810
+towards the
+high-density regions.
+
+00:44:07.810 --> 00:44:16.770
+So in other words,
+I'm going just
+
+00:44:16.770 --> 00:44:25.090
+to explain this a bit more
+on an illustration here.
+
+00:44:25.090 --> 00:44:31.970
+So it's as if we were saying
+that we have our complicated
+
+00:44:31.970 --> 00:44:35.750
+data distribution here that we
+have maybe noise a little bit.
+
+00:44:35.750 --> 00:44:38.450
+So it's like this.
+
+00:44:38.450 --> 00:44:45.710
+So this one is pdata,
+and this one is q sigma.
+
+00:44:45.710 --> 00:44:48.030
+So what I'm saying
+here is we are
+
+00:44:48.030 --> 00:44:54.750
+able to compute the
+score of this q sigma,
+
+00:44:54.750 --> 00:44:56.590
+but we're not able
+to estimate it
+
+00:44:56.590 --> 00:45:01.310
+accurately in spaces of low
+density, so for instance, here.
+
+00:45:01.310 --> 00:45:06.030
+So what that means is if
+I sample an observation
+
+00:45:06.030 --> 00:45:11.590
+from an easy distribution that
+is in a low-density region,
+
+00:45:11.590 --> 00:45:15.230
+then when I'm going
+to use the score
+
+00:45:15.230 --> 00:45:21.403
+to get closer to that
+region, those estimates
+
+00:45:21.403 --> 00:45:24.990
+they may be super off.
+
+00:45:24.990 --> 00:45:30.710
+So I won't be able to
+come towards where I want.
+
+00:45:30.710 --> 00:45:34.050
+And that is the problem with
+a small amount of noise.
+
+00:45:34.050 --> 00:45:39.480
+So what do you do, well, you can
+tell me just increase the noise,
+
+00:45:39.480 --> 00:45:40.420
+then.
+
+00:45:40.420 --> 00:45:43.220
+Because if you
+increase the noise,
+
+00:45:43.220 --> 00:45:48.860
+then if you add
+enough noise, like,
+
+00:45:48.860 --> 00:46:02.300
+let's suppose q sigma with sigma
+big, then that point in space
+
+00:46:02.300 --> 00:46:04.900
+will be covered with
+a high enough density
+
+00:46:04.900 --> 00:46:09.580
+such that you can have
+more accurate estimations
+
+00:46:09.580 --> 00:46:12.160
+of the score of the
+noisy distribution.
+
+00:46:12.160 --> 00:46:14.380
+But the problem is
+that now q sigma is
+
+00:46:14.380 --> 00:46:18.460
+too different from your p data.
+
+00:46:18.460 --> 00:46:20.260
+So in other terms,
+what you're learning
+
+00:46:20.260 --> 00:46:21.720
+is not exactly what you want.
+
+00:46:21.720 --> 00:46:24.860
+It's like something
+that's different.
+
+00:46:24.860 --> 00:46:27.740
+So you have this trade-off.
+
+00:46:27.740 --> 00:46:32.280
+If you have too little
+noise, then it's good.
+
+00:46:32.280 --> 00:46:35.500
+What you're trying to learn is
+very close to what you actually
+
+00:46:35.500 --> 00:46:38.710
+want to learn, which a the score
+of the true data distribution.
+
+00:46:38.710 --> 00:46:41.730
+But the problem is you do
+not have good estimates
+
+00:46:41.730 --> 00:46:44.490
+in low-density regions.
+
+00:46:44.490 --> 00:46:49.370
+But at the same time, if you
+have too high of a noise,
+
+00:46:49.370 --> 00:46:52.730
+well, the distribution now is
+too different from the true data
+
+00:46:52.730 --> 00:46:53.710
+distribution.
+
+00:46:53.710 --> 00:46:59.130
+But you now can have
+good estimations.
+
+00:46:59.130 --> 00:47:03.050
+So it's a little bit
+like the bias variance
+
+00:47:03.050 --> 00:47:05.490
+trade-off in a sense.
+
+00:47:05.490 --> 00:47:08.410
+You just don't have
+both at the same time
+
+00:47:08.410 --> 00:47:13.910
+in this case, which is making
+the situation complicated.
+
+00:47:13.910 --> 00:47:14.410
+Yeah.
+
+00:47:14.410 --> 00:47:17.796
+[AUDIO OUT]
+
+00:47:23.570 --> 00:47:26.530
+So the question is, if we
+configure the Langevin sampling
+
+00:47:26.530 --> 00:47:31.990
+in a way that can work,
+then we can make this work?
+
+00:47:31.990 --> 00:47:33.350
+So the answer is yes.
+
+00:47:33.350 --> 00:47:36.520
+So it's the next part.
+
+00:47:36.520 --> 00:47:39.160
+And we're going to see
+how we can do that.
+
+00:47:39.160 --> 00:47:40.660
+But yeah, that's
+a good intuition.
+
+00:47:40.660 --> 00:47:44.124
+[AUDIO OUT]
+
+00:47:53.520 --> 00:47:57.800
+So the question is, why is
+it poor of an estimation
+
+00:47:57.800 --> 00:48:00.480
+in low-density scores?
+
+00:48:00.480 --> 00:48:03.060
+This is true.
+
+00:48:03.060 --> 00:48:04.460
+It's correct, this one.
+
+00:48:04.460 --> 00:48:08.220
+Not this one actually, the
+tractable one is the true one.
+
+00:48:08.220 --> 00:48:13.680
+But the only problem is that
+the tractability of your loss
+
+00:48:13.680 --> 00:48:18.840
+function is also a function
+of how you configured it
+
+00:48:18.840 --> 00:48:20.340
+in terms of the expectation.
+
+00:48:20.340 --> 00:48:24.600
+So the expectation
+here is over q sigma,
+
+00:48:24.600 --> 00:48:31.200
+meaning that if you have an x
+tilde, which is in low-density
+
+00:48:31.200 --> 00:48:35.380
+regions, then it's just not
+going to have a high weight
+
+00:48:35.380 --> 00:48:40.980
+loss, which is just not
+incentivizing your model
+
+00:48:40.980 --> 00:48:43.580
+to actually properly learn it.
+
+00:48:43.580 --> 00:48:47.680
+So in a sense, it's a
+loss-weighting problem.
+
+00:48:47.680 --> 00:48:50.780
+[AUDIO OUT]
+
+00:48:50.780 --> 00:48:52.640
+So the predicted score
+will be inaccurate.
+
+00:48:52.640 --> 00:48:53.420
+Yes.
+
+00:48:53.420 --> 00:48:53.920
+Yeah.
+
+00:48:53.920 --> 00:48:57.408
+[AUDIO OUT]
+
+00:49:07.740 --> 00:49:08.240
+Yeah.
+
+00:49:08.240 --> 00:49:12.740
+So the question is, how about
+the regularity conditions
+
+00:49:12.740 --> 00:49:14.080
+of the function?
+
+00:49:14.080 --> 00:49:16.818
+So here let's assume that
+this is not a problem.
+
+00:49:16.818 --> 00:49:18.360
+Here let's assume
+it's not a problem.
+
+00:49:18.360 --> 00:49:22.220
+But you're right that, for
+instance, for sigma very small
+
+00:49:22.220 --> 00:49:24.740
+you have indeed very spiky ones.
+
+00:49:24.740 --> 00:49:26.420
+This is the correct intuition.
+
+00:49:26.420 --> 00:49:26.960
+So yeah.
+
+00:49:26.960 --> 00:49:28.700
+[AUDIO OUT]
+
+00:49:28.700 --> 00:49:29.640
+Yes, exactly.
+
+00:49:29.640 --> 00:49:31.260
+So high noise smoothens it.
+
+00:49:31.260 --> 00:49:35.610
+Low noise produces
+some spikiness
+
+00:49:35.610 --> 00:49:38.630
+around those
+training data points.
+
+00:49:41.730 --> 00:49:42.230
+OK, cool.
+
+00:49:42.230 --> 00:49:44.313
+I think this is probably
+the most challenging part
+
+00:49:44.313 --> 00:49:44.990
+of the lecture.
+
+00:49:44.990 --> 00:49:46.690
+So yeah, hope you
+got the intuition
+
+00:49:46.690 --> 00:49:50.210
+as to why that is a problem.
+
+00:49:50.210 --> 00:49:52.350
+So what are we going to do?
+
+00:49:52.350 --> 00:49:55.130
+And you had the right
+intuition in terms
+
+00:49:55.130 --> 00:49:59.090
+of making some tweaks to
+the Langevin sampling.
+
+00:49:59.090 --> 00:50:03.130
+So what we're going
+to do is now we're not
+
+00:50:03.130 --> 00:50:07.010
+going to learn the score
+of one distribution.
+
+00:50:07.010 --> 00:50:11.130
+We're going to learn the
+score of several distributions
+
+00:50:11.130 --> 00:50:14.770
+of several noise levels.
+
+00:50:14.770 --> 00:50:17.950
+So instead of
+predicting s theta of x,
+
+00:50:17.950 --> 00:50:22.570
+we're going to predict s theta
+of x where you're in space
+
+00:50:22.570 --> 00:50:26.850
+and sigma your noise level.
+
+00:50:26.850 --> 00:50:35.280
+And the idea here is to consider
+several distributions, one
+
+00:50:35.280 --> 00:50:37.965
+with a small amount of noise,
+then bigger, then bigger, then
+
+00:50:37.965 --> 00:50:39.320
+bigger.
+
+00:50:39.320 --> 00:50:45.080
+And the way you're going to use
+those different score estimates
+
+00:50:45.080 --> 00:50:48.560
+is at the very beginning--
+
+00:50:48.560 --> 00:50:54.000
+so if I show you my
+beautiful charts here.
+
+00:50:54.000 --> 00:50:56.880
+At the very beginning,
+what you care
+
+00:50:56.880 --> 00:51:01.200
+about is knowing
+roughly where to go,
+
+00:51:01.200 --> 00:51:03.520
+where to go in space, roughly.
+
+00:51:03.520 --> 00:51:09.000
+So here it's fine if you have
+the score of a distribution that
+
+00:51:09.000 --> 00:51:13.520
+is quite approximate from
+the true one, as long
+
+00:51:13.520 --> 00:51:16.440
+as you know roughly
+where you need to go.
+
+00:51:16.440 --> 00:51:20.120
+So the idea is
+here, you will use
+
+00:51:20.120 --> 00:51:24.800
+the score of a distribution
+that has been very noisy.
+
+00:51:24.800 --> 00:51:31.030
+And let's say you're going
+to go somewhere here.
+
+00:51:31.030 --> 00:51:32.750
+And then at that
+point, you're going
+
+00:51:32.750 --> 00:51:36.150
+to use the score
+of a distribution
+
+00:51:36.150 --> 00:51:39.310
+with less noise, because maybe
+that distribution with less
+
+00:51:39.310 --> 00:51:44.070
+noise covers that region.
+
+00:51:44.070 --> 00:51:47.510
+And now you know maybe
+a little bit better
+
+00:51:47.510 --> 00:51:50.430
+where the actual high-density
+regions of the true data
+
+00:51:50.430 --> 00:51:52.230
+distribution is.
+
+00:51:52.230 --> 00:51:57.070
+And you're going to go again
+with lower amount of noise
+
+00:51:57.070 --> 00:52:02.750
+again and again and
+again until coming here.
+
+00:52:02.750 --> 00:52:04.470
+So that is the idea.
+
+00:52:04.470 --> 00:52:08.830
+You're not going to only rely on
+one kind of noisy distribution
+
+00:52:08.830 --> 00:52:11.310
+with a small amount
+of noise or one
+
+00:52:11.310 --> 00:52:13.150
+with a higher amount of noise.
+
+00:52:13.150 --> 00:52:15.870
+You're going to actually
+rely on all of them
+
+00:52:15.870 --> 00:52:19.770
+in a way that will make
+this problem easy for you.
+
+00:52:19.770 --> 00:52:22.110
+So at the very beginning,
+what you care about
+
+00:52:22.110 --> 00:52:24.230
+is roughly where to go.
+
+00:52:24.230 --> 00:52:26.910
+And then the more
+you get closer,
+
+00:52:26.910 --> 00:52:32.210
+you care more and more
+about the little details.
+
+00:52:32.210 --> 00:52:36.370
+And these methods is
+something that you
+
+00:52:36.370 --> 00:52:40.530
+will recognize with the
+following name, so NCSN, Noise
+
+00:52:40.530 --> 00:52:43.250
+Conditional Score Network.
+
+00:52:43.250 --> 00:52:47.850
+So is this framework of learning
+scores of different noise
+
+00:52:47.850 --> 00:52:50.130
+levels.
+
+00:52:50.130 --> 00:52:53.350
+So I just want to reiterate
+what I drew on the blackboard.
+
+00:52:53.350 --> 00:52:58.290
+So let's suppose you sample an
+observation from a distribution
+
+00:52:58.290 --> 00:53:01.690
+that is easy to sample from that
+is far from your actual data
+
+00:53:01.690 --> 00:53:03.130
+distribution.
+
+00:53:03.130 --> 00:53:05.770
+So what you do is
+you will actually
+
+00:53:05.770 --> 00:53:11.970
+rely on the predicted score from
+a noised data distribution that
+
+00:53:11.970 --> 00:53:14.050
+is very noisy.
+
+00:53:14.050 --> 00:53:19.170
+And you're going
+to go step by step
+
+00:53:19.170 --> 00:53:22.570
+by relying on scores
+from distribution that
+
+00:53:22.570 --> 00:53:29.560
+are less and less noise until
+coming to your last point, which
+
+00:53:29.560 --> 00:53:33.560
+is something that hopefully will
+be very, very close to the pdata
+
+00:53:33.560 --> 00:53:36.240
+distribution, which is
+going to be a noise data
+
+00:53:36.240 --> 00:53:38.500
+distribution with
+a very low sigma.
+
+00:53:41.900 --> 00:53:42.400
+OK.
+
+00:53:42.400 --> 00:53:44.060
+So does that make sense?
+
+00:53:47.820 --> 00:53:48.320
+Yeah?
+
+00:53:50.800 --> 00:53:51.300
+OK.
+
+00:53:51.300 --> 00:53:53.880
+Cool
+
+00:53:53.880 --> 00:53:59.400
+So back to your intuition
+on the Langevin sampling.
+
+00:53:59.400 --> 00:54:01.800
+So your intuition
+was 100% correct.
+
+00:54:01.800 --> 00:54:07.560
+This way of sampling things that
+I explained with varying noise
+
+00:54:07.560 --> 00:54:13.960
+levels is actually called
+annealed Langevin dynamics.
+
+00:54:13.960 --> 00:54:18.920
+And it's this idea of starting
+with a high amount of noise
+
+00:54:18.920 --> 00:54:23.400
+and decreasing the
+noise progressively.
+
+00:54:23.400 --> 00:54:28.490
+So you will also see that
+in the literature as ALD.
+
+00:54:28.490 --> 00:54:28.990
+Yeah.
+
+00:54:28.990 --> 00:54:32.466
+[AUDIO OUT]
+
+00:54:36.430 --> 00:54:36.930
+Yeah.
+
+00:54:36.930 --> 00:54:40.385
+[AUDIO OUT]
+
+00:54:48.750 --> 00:54:51.530
+So the question is, what is
+exactly the trade-off here?
+
+00:54:51.530 --> 00:54:55.170
+So the idea is with a
+high amount of noise,
+
+00:54:55.170 --> 00:54:59.430
+if you add a high
+enough amount of noise,
+
+00:54:59.430 --> 00:55:04.550
+then previous low-density
+regions will be covered
+
+00:55:04.550 --> 00:55:06.670
+by the noisy distribution.
+
+00:55:06.670 --> 00:55:10.390
+And if you add
+enough noise, like,
+
+00:55:10.390 --> 00:55:13.770
+with a very high amount of
+sigma, then you will cover it.
+
+00:55:13.770 --> 00:55:15.750
+The only problem is--
+
+00:55:15.750 --> 00:55:20.930
+so you can learn the score of
+that very noisy distribution.
+
+00:55:20.930 --> 00:55:23.780
+But the problem is that the true
+score of that noisy distribution
+
+00:55:23.780 --> 00:55:27.458
+is going to be far from the
+score of the data distribution.
+
+00:55:27.458 --> 00:55:28.500
+So that is the trade-off.
+
+00:55:28.500 --> 00:55:31.780
+[AUDIO OUT]
+
+00:55:37.520 --> 00:55:38.020
+Right.
+
+00:55:38.020 --> 00:55:40.540
+So the direction that
+it will be pointing
+
+00:55:40.540 --> 00:55:45.140
+will be roughly where you
+want to go, but not exactly.
+
+00:55:45.140 --> 00:55:48.100
+But the idea here is that
+the very beginning you
+
+00:55:48.100 --> 00:55:49.160
+don't really care.
+
+00:55:49.160 --> 00:55:51.880
+So for instance, if
+from here from Stanford,
+
+00:55:51.880 --> 00:55:56.700
+I want to go to New York, I know
+roughly I want to go this way.
+
+00:55:56.700 --> 00:55:57.840
+And then I go this way.
+
+00:55:57.840 --> 00:55:59.580
+And then the more I
+get closer, the more
+
+00:55:59.580 --> 00:56:02.720
+I want to refine exactly
+where New York is.
+
+00:56:02.720 --> 00:56:03.220
+Yeah.
+
+00:56:06.140 --> 00:56:08.220
+OK, cool.
+
+00:56:08.220 --> 00:56:10.240
+There is something
+else I wanted to say.
+
+00:56:13.960 --> 00:56:14.460
+OK.
+
+00:56:14.460 --> 00:56:17.160
+So there's something
+else I wanted to say,
+
+00:56:17.160 --> 00:56:19.860
+which I think we'll
+cover a little bit later.
+
+00:56:19.860 --> 00:56:22.650
+But first, we're
+going to cover how
+
+00:56:22.650 --> 00:56:25.250
+we're going to sample
+new observations
+
+00:56:25.250 --> 00:56:28.930
+using this annealed
+Langevin dynamics.
+
+00:56:28.930 --> 00:56:32.370
+So here what you
+would do is sample
+
+00:56:32.370 --> 00:56:38.250
+some noise from
+very noisy Gaussian
+
+00:56:38.250 --> 00:56:40.890
+with a high amount of noise.
+
+00:56:40.890 --> 00:56:46.730
+And what you're going to do
+is for every noise level,
+
+00:56:46.730 --> 00:56:50.810
+you're going to run
+your Langevin sampling.
+
+00:56:50.810 --> 00:56:54.370
+And this is the formula that we
+saw at the very beginning, which
+
+00:56:54.370 --> 00:56:59.950
+is you add the point that you're
+at with the predicted score,
+
+00:56:59.950 --> 00:57:02.570
+which is where you
+want to go, and then
+
+00:57:02.570 --> 00:57:08.170
+some amount of noise, which
+allows for a bit of diversity.
+
+00:57:08.170 --> 00:57:11.450
+And once you do that
+for all noise levels
+
+00:57:11.450 --> 00:57:15.490
+until coming to a very
+small noise level,
+
+00:57:15.490 --> 00:57:20.090
+then you end up with
+the actual image.
+
+00:57:23.110 --> 00:57:27.110
+So one thing that I want
+to say regarding the score,
+
+00:57:27.110 --> 00:57:32.070
+you can think of the
+score as being a compass.
+
+00:57:32.070 --> 00:57:33.750
+Now, when you are in
+the forest and you
+
+00:57:33.750 --> 00:57:36.710
+want to see where
+the city is, just
+
+00:57:36.710 --> 00:57:39.890
+follow the direction
+of the compass.
+
+00:57:39.890 --> 00:57:42.470
+It's the same idea here.
+
+00:57:42.470 --> 00:57:45.510
+So we're in the space,
+space of images.
+
+00:57:45.510 --> 00:57:50.070
+A lot of these regions
+of space are images that
+
+00:57:50.070 --> 00:57:51.950
+are actually not real images.
+
+00:57:51.950 --> 00:57:56.510
+But what you want is
+to go towards regions
+
+00:57:56.510 --> 00:58:02.750
+of high density with respect to
+your target data distribution.
+
+00:58:02.750 --> 00:58:05.550
+So it's as if you were
+following a compass
+
+00:58:05.550 --> 00:58:07.050
+to come at your destination.
+
+00:58:09.990 --> 00:58:10.650
+OK, cool.
+
+00:58:10.650 --> 00:58:13.610
+So last time-- you
+had a question?
+
+00:58:13.610 --> 00:58:17.026
+[AUDIO OUT]
+
+00:58:22.860 --> 00:58:23.560
+Oh, yeah.
+
+00:58:23.560 --> 00:58:25.740
+So the question is
+data distribution
+
+00:58:25.740 --> 00:58:27.200
+can be any data distribution?
+
+00:58:27.200 --> 00:58:28.120
+Yes, yes.
+
+00:58:30.960 --> 00:58:31.460
+OK.
+
+00:58:31.460 --> 00:58:38.060
+So now what I want to tell you
+is how what I'm telling you
+
+00:58:38.060 --> 00:58:42.860
+now here relates to
+what we saw last week.
+
+00:58:42.860 --> 00:58:50.140
+So if you remember, DDPM was
+all about taking a clean image
+
+00:58:50.140 --> 00:58:52.340
+and then noising it.
+
+00:58:52.340 --> 00:58:56.740
+So if you remember, we
+had these coefficients.
+
+00:58:56.740 --> 00:58:59.380
+And for instance, in this
+case, the noised image
+
+00:58:59.380 --> 00:59:03.540
+was the square root of alpha
+t bar times your clean image
+
+00:59:03.540 --> 00:59:09.900
+plus square root of 1 minus
+alpha t bar times the noise.
+
+00:59:09.900 --> 00:59:15.170
+What I told you here
+also involves noise.
+
+00:59:15.170 --> 00:59:18.430
+So a natural question
+that you may ask is,
+
+00:59:18.430 --> 00:59:24.370
+how does the score relate
+to the noise prediction task
+
+00:59:24.370 --> 00:59:27.130
+that we saw last week?
+
+00:59:27.130 --> 00:59:34.090
+Well, the forward
+process of xt given x0,
+
+00:59:34.090 --> 00:59:36.850
+you just see that it is a
+normal distribution centered
+
+00:59:36.850 --> 00:59:42.010
+on the square root of
+alpha t bar times x0.
+
+00:59:42.010 --> 00:59:49.970
+And you actually realize that
+the score of that distribution
+
+00:59:49.970 --> 00:59:57.190
+is equal to minus the noise that
+you added over some coefficient.
+
+01:00:00.050 --> 01:00:03.230
+So in other words,
+these two quantities,
+
+01:00:03.230 --> 01:00:05.130
+so the score meaning
+where you should
+
+01:00:05.130 --> 01:00:09.250
+go to end up where
+the clean images are
+
+01:00:09.250 --> 01:00:13.050
+and the noise that you
+added, are actually
+
+01:00:13.050 --> 01:00:16.400
+two quantities that are linked.
+
+01:00:16.400 --> 01:00:18.200
+And they are linked
+such that the score
+
+01:00:18.200 --> 01:00:21.900
+is equal to minus the
+noise that you added.
+
+01:00:21.900 --> 01:00:24.280
+And that makes sense.
+
+01:00:24.280 --> 01:00:26.440
+So why does that make sense?
+
+01:00:26.440 --> 01:00:32.120
+So I'm just going
+to clean that part.
+
+01:00:32.120 --> 01:00:32.720
+Whoops.
+
+01:00:38.960 --> 01:00:40.500
+So why does that make sense?
+
+01:00:43.440 --> 01:00:46.920
+So here if you have
+your clean image
+
+01:00:46.920 --> 01:00:52.400
+and then if you noised,
+so it's as if you added
+
+01:00:52.400 --> 01:00:58.540
+some amount of something noise.
+
+01:00:58.540 --> 01:01:04.200
+But then if you want to go
+back to high-density regions
+
+01:01:04.200 --> 01:01:07.240
+it's basically your score.
+
+01:01:07.240 --> 01:01:10.980
+So it makes sense that the two
+are in opposite directions.
+
+01:01:13.500 --> 01:01:15.960
+So by the way, does that make
+sense that it is the formula?
+
+01:01:15.960 --> 01:01:17.980
+So maybe I can also derive it.
+
+01:01:17.980 --> 01:01:27.980
+So remember that the score
+of a normal distribution
+
+01:01:27.980 --> 01:01:37.040
+is equal to minus x minus
+the mean over the variance.
+
+01:01:37.040 --> 01:01:46.220
+So in this case, we have--
+
+01:01:46.220 --> 01:01:47.360
+so x, what is x?
+
+01:01:47.360 --> 01:01:49.540
+It's a noisy image.
+
+01:01:49.540 --> 01:01:53.040
+And the noisy image has
+the following formula.
+
+01:01:53.040 --> 01:01:56.420
+So noisy image is
+the square root
+
+01:01:56.420 --> 01:01:59.900
+of alpha t bar times
+x0 plus square root
+
+01:01:59.900 --> 01:02:03.580
+of 1 minus alpha t
+bar times epsilon.
+
+01:02:03.580 --> 01:02:07.720
+You subtract the mean of
+the normal distribution,
+
+01:02:07.720 --> 01:02:13.530
+which is this square root
+of alpha t bar times x0.
+
+01:02:13.530 --> 01:02:16.610
+So this gives you minus.
+
+01:02:16.610 --> 01:02:23.930
+And then this is square root
+of 1 minus alpha t bar epsilon
+
+01:02:23.930 --> 01:02:28.350
+over your variance, which
+is 1 minus alpha t bar.
+
+01:02:32.250 --> 01:02:35.430
+Which is exactly what
+you have on the slides.
+
+01:02:41.930 --> 01:02:42.870
+Does that make sense?
+
+01:02:45.670 --> 01:02:46.170
+OK.
+
+01:02:46.170 --> 01:02:46.670
+Cool.
+
+01:02:46.670 --> 01:02:54.970
+So this is just to give you a
+parallel between NCSN and DDPM.
+
+01:02:54.970 --> 01:02:59.970
+So these two methods are
+just two different ways
+
+01:02:59.970 --> 01:03:05.470
+of noising your sample at the
+end of the day, because one
+
+01:03:05.470 --> 01:03:11.120
+is taking some weighted average
+between the clean sample
+
+01:03:11.120 --> 01:03:14.720
+x0 and the noise, and the
+other one is just adding noise
+
+01:03:14.720 --> 01:03:16.360
+with just sigma.
+
+01:03:16.360 --> 01:03:21.840
+So that is the reason
+why this, so DDPM, you
+
+01:03:21.840 --> 01:03:27.400
+will see it be characterized
+as being variance preserving.
+
+01:03:27.400 --> 01:03:29.880
+Because if you take
+the variance of xt
+
+01:03:29.880 --> 01:03:34.280
+is going to be
+roughly equal to 1.
+
+01:03:34.280 --> 01:03:38.620
+And this is assuming that
+your x0 are normalized.
+
+01:03:38.620 --> 01:03:40.960
+They have a mean of
+0 and variance of 1.
+
+01:03:40.960 --> 01:03:42.760
+So if you take the
+variance of xt,
+
+01:03:42.760 --> 01:03:48.600
+it's roughly alpha t bar plus--
+so square root of alpha t bar
+
+01:03:48.600 --> 01:03:53.620
+squared plus square root of
+1 minus alpha t bar squared,
+
+01:03:53.620 --> 01:03:56.360
+which is equal to 1 roughly.
+
+01:03:56.360 --> 01:04:02.360
+And this formulation,
+the NCSN one
+
+01:04:02.360 --> 01:04:08.830
+is going to be mentioned as
+being variants exploding.
+
+01:04:08.830 --> 01:04:12.130
+Oh, I have to go way
+back in the slides.
+
+01:04:12.130 --> 01:04:16.150
+This one is going to be variance
+exploding because you're going
+
+01:04:16.150 --> 01:04:18.210
+to add more and more noise.
+
+01:04:18.210 --> 01:04:21.110
+And the noise is going
+to just increase a lot.
+
+01:04:21.110 --> 01:04:23.010
+So it's not bounded by 1.
+
+01:04:27.230 --> 01:04:27.750
+OK.
+
+01:04:27.750 --> 01:04:29.750
+Cool.
+
+01:04:29.750 --> 01:04:35.390
+So, so far what
+we've seen is noising
+
+01:04:35.390 --> 01:04:42.750
+images using a discrete
+set of noise increments.
+
+01:04:42.750 --> 01:04:50.990
+But one could argue that these
+discretization is arbitrary.
+
+01:04:50.990 --> 01:04:54.950
+It is something that you need
+to decide before starting
+
+01:04:54.950 --> 01:04:56.910
+your training process.
+
+01:04:56.910 --> 01:05:02.390
+So one idea is to actually
+consider continuous evolution
+
+01:05:02.390 --> 01:05:04.810
+instead of discrete one.
+
+01:05:04.810 --> 01:05:07.410
+So the reason why you would
+be interested in doing that
+
+01:05:07.410 --> 01:05:11.790
+is because we also
+have a field of math,
+
+01:05:11.790 --> 01:05:15.250
+which is in differential
+equations that
+
+01:05:15.250 --> 01:05:19.890
+have a bunch of very
+convenient toolkits to solve
+
+01:05:19.890 --> 01:05:21.690
+these kinds of equations.
+
+01:05:21.690 --> 01:05:25.730
+So one idea is to
+actually start from what
+
+01:05:25.730 --> 01:05:32.850
+we saw in DDPM and NCSN and
+try to see how they would be
+
+01:05:32.850 --> 01:05:36.650
+like in the continuous world.
+
+01:05:36.650 --> 01:05:41.010
+So in order to do
+that, we first need
+
+01:05:41.010 --> 01:05:45.810
+to have an equivalent
+of noise increments.
+
+01:05:45.810 --> 01:05:51.250
+Because up until now, the way
+we added noise to clean images
+
+01:05:51.250 --> 01:05:55.550
+was via sampling from a
+Gaussian distribution.
+
+01:05:55.550 --> 01:05:58.090
+So it's like normal
+distribution of mean 0
+
+01:05:58.090 --> 01:06:01.530
+and covariance
+matrix, the identity,
+
+01:06:01.530 --> 01:06:04.880
+and then just adding
+noise like this.
+
+01:06:04.880 --> 01:06:11.480
+But what you want is to have a
+continuous equivalent of having
+
+01:06:11.480 --> 01:06:13.600
+these noise increments.
+
+01:06:13.600 --> 01:06:18.560
+And this is where the
+Wiener process comes in.
+
+01:06:18.560 --> 01:06:23.100
+So who has heard of the
+Wiener process before?
+
+01:06:23.100 --> 01:06:23.600
+Yeah.
+
+01:06:23.600 --> 01:06:24.640
+No one?
+
+01:06:24.640 --> 01:06:25.220
+Maybe one.
+
+01:06:25.220 --> 01:06:25.880
+OK.
+
+01:06:25.880 --> 01:06:31.300
+So the Wiener process is a
+type of stochastic process.
+
+01:06:31.300 --> 01:06:36.400
+So stochastic process is a
+family of random variables
+
+01:06:36.400 --> 01:06:41.480
+that are indexed by some
+index t, let's say, the time.
+
+01:06:41.480 --> 01:06:45.320
+And a Wiener process
+is a stochastic process
+
+01:06:45.320 --> 01:06:49.520
+that follows the
+following properties.
+
+01:06:49.520 --> 01:06:55.120
+So we have W0 by definition
+that is equal to 0.
+
+01:06:55.120 --> 01:07:03.790
+And the difference between Wt
+and Ws, which is an increment,
+
+01:07:03.790 --> 01:07:06.870
+follows a normal
+distribution of mean 0
+
+01:07:06.870 --> 01:07:14.250
+and variance t minus s times
+I. And these increments,
+
+01:07:14.250 --> 01:07:16.470
+so these differences
+are actually
+
+01:07:16.470 --> 01:07:20.830
+independent from one another.
+
+01:07:20.830 --> 01:07:24.590
+So you can think of the
+equivalent of a random walk.
+
+01:07:24.590 --> 01:07:26.710
+So you walk one
+here and then one
+
+01:07:26.710 --> 01:07:32.870
+there but in the
+continuous world.
+
+01:07:32.870 --> 01:07:37.510
+So one thing that I want to
+say is that what is independent
+
+01:07:37.510 --> 01:07:43.230
+is the increments and not the
+value of the ability itself.
+
+01:07:43.230 --> 01:07:49.430
+Because you can imagine that
+Wt will depend on Wt minus 1
+
+01:07:49.430 --> 01:07:50.170
+and so on.
+
+01:07:50.170 --> 01:07:52.510
+So what we're saying is
+that the increments are
+
+01:07:52.510 --> 01:07:56.110
+independent from one another.
+
+01:07:56.110 --> 01:07:59.700
+So with that in
+mind, what we can do
+
+01:07:59.700 --> 01:08:07.140
+is to derive a continuous
+formulation of DDPM and NCSN.
+
+01:08:07.140 --> 01:08:10.660
+So in the interest of
+time, what I'm going to do
+
+01:08:10.660 --> 01:08:17.000
+is to only derive the DDPM case.
+
+01:08:21.380 --> 01:08:25.460
+So what we're saying
+is we're starting
+
+01:08:25.460 --> 01:08:29.060
+from the update
+formula that adds noise
+
+01:08:29.060 --> 01:08:31.899
+to a less noisy image.
+
+01:08:31.899 --> 01:08:36.300
+And what we want is to
+obtain a continuous way
+
+01:08:36.300 --> 01:08:37.920
+of expressing that.
+
+01:08:37.920 --> 01:08:40.500
+So I'm just going to rewrite
+what is on the slide.
+
+01:08:40.500 --> 01:08:48.020
+So xt is equal to square root
+of 1 minus beta of xt minus 1
+
+01:08:48.020 --> 01:08:51.920
+plus square root of
+beta times epsilon.
+
+01:08:51.920 --> 01:08:55.460
+So if you remember, beta
+is your noise schedule.
+
+01:08:55.460 --> 01:09:00.490
+It's the amount of noise that
+you add at each time step.
+
+01:09:00.490 --> 01:09:10.130
+And so what you want is to have
+an expression of a differential
+
+01:09:10.130 --> 01:09:16.890
+evolution in x as a
+function of everything else.
+
+01:09:16.890 --> 01:09:20.370
+So what I'm going to do
+is subtract that quantity
+
+01:09:20.370 --> 01:09:26.830
+with xt minus 1 And then
+have t and t minus 1
+
+01:09:26.830 --> 01:09:28.770
+be very, very
+small so that I can
+
+01:09:28.770 --> 01:09:31.490
+consider this to be continuous.
+
+01:09:31.490 --> 01:09:35.370
+So what I'm going to do
+here is just some math.
+
+01:09:35.370 --> 01:09:42.850
+So I'm taking xt and I'm
+subtracting xt minus 1.
+
+01:09:42.850 --> 01:09:50.370
+So it's going to be square
+root of 1 minus beta minus 1,
+
+01:09:50.370 --> 01:10:01.270
+xt minus 1 plus square
+root of beta t epsilon.
+
+01:10:01.270 --> 01:10:03.630
+So beta t is the
+quantity of noise
+
+01:10:03.630 --> 01:10:07.830
+that you add between
+two discrete steps.
+
+01:10:07.830 --> 01:10:13.550
+What I'm going to do
+is to define a quantity
+
+01:10:13.550 --> 01:10:17.190
+that I'm going to
+write beta parenthesis
+
+01:10:17.190 --> 01:10:24.910
+t, which is the rate of
+noise at time t times
+
+01:10:24.910 --> 01:10:28.470
+dt, an increment of time.
+
+01:10:28.470 --> 01:10:30.230
+So what this is
+saying is when we're
+
+01:10:30.230 --> 01:10:35.530
+going to have t10 to 0-- so
+this is going to 10 to 0,
+
+01:10:35.530 --> 01:10:38.830
+but we're going to have
+some rates of noise that's
+
+01:10:38.830 --> 01:10:43.710
+going to be nonzero, that's
+going to be your schedule.
+
+01:10:43.710 --> 01:10:56.180
+So if I pause that, so this
+becomes xt minus xt minus 1
+
+01:10:56.180 --> 01:11:13.060
+is equal to, so 1 minus
+beta t dt minus 1 xt minus 1
+
+01:11:13.060 --> 01:11:18.600
+plus square root--
+
+01:11:18.600 --> 01:11:20.700
+I'm going to also
+replace it here--
+
+01:11:20.700 --> 01:11:24.980
+of beta t dt epsilon.
+
+01:11:28.416 --> 01:11:32.680
+So far I've just plugged in
+the new beta t expression.
+
+01:11:35.260 --> 01:11:42.172
+So what we're
+going to obtain now
+
+01:11:42.172 --> 01:11:45.120
+is actually something that's
+going to be quite nice.
+
+01:11:57.170 --> 01:12:05.930
+So if we tend t to 0, so if we
+consider a continuous evolution,
+
+01:12:05.930 --> 01:12:08.970
+xt minus xt minus
+1 is also going
+
+01:12:08.970 --> 01:12:13.410
+to be a differential evolution.
+
+01:12:13.410 --> 01:12:18.830
+So here, I'm going to rewrite xt
+minus xt minus 1 as just d of x.
+
+01:12:22.530 --> 01:12:30.570
+So when dt tends to 0, you have
+Taylor expansion formulas that
+
+01:12:30.570 --> 01:12:34.730
+tells you that square root of 1
+minus something that tends to 0,
+
+01:12:34.730 --> 01:12:41.450
+which is equal to 1 minus
+1/2 of that something.
+
+01:12:41.450 --> 01:12:43.850
+So this is just
+Taylor expansion.
+
+01:12:43.850 --> 01:12:52.520
+So here, I'm going to say it's
+roughly equal to 1 minus 1/2
+
+01:12:52.520 --> 01:12:57.160
+of beta t dt.
+
+01:12:57.160 --> 01:12:59.940
+xt minus 1 is roughly
+going to be x.
+
+01:13:03.600 --> 01:13:07.640
+So this is 1 minus this
+minus 1, because you
+
+01:13:07.640 --> 01:13:13.080
+have the 1 here, times x plus--
+
+01:13:13.080 --> 01:13:18.400
+so you have square
+root of beta t.
+
+01:13:18.400 --> 01:13:22.360
+But then the Wiener
+process that we defined
+
+01:13:22.360 --> 01:13:30.000
+is such that a small increment
+in the Wiener process
+
+01:13:30.000 --> 01:13:32.960
+is actually something
+that you can rewrite
+
+01:13:32.960 --> 01:13:36.900
+as being square root
+of dt times epsilon,
+
+01:13:36.900 --> 01:13:40.800
+because it follows a normal
+distribution of variance dt
+
+01:13:40.800 --> 01:13:44.280
+times I.
+
+01:13:44.280 --> 01:13:50.060
+So here, I'm going to recognize
+the square root of dt times e.
+
+01:13:50.060 --> 01:13:50.920
+That's right.
+
+01:13:50.920 --> 01:13:57.200
+Square root of dt times epsilon
+as being dW, which is equal--
+
+01:13:57.200 --> 01:14:01.360
+so it's as if it was
+equal to d of x is equal,
+
+01:14:01.360 --> 01:14:11.220
+so this is going to cancel out,
+1/2 of beta x dt plus square
+
+01:14:11.220 --> 01:14:13.456
+root of B dW.
+
+01:14:16.220 --> 01:14:17.740
+And now you may
+be wondering, why
+
+01:14:17.740 --> 01:14:19.940
+am I writing all
+these equations?
+
+01:14:19.940 --> 01:14:21.860
+Why are we doing this?
+
+01:14:21.860 --> 01:14:26.540
+Well, you're going to see
+that when we rewrite this,
+
+01:14:26.540 --> 01:14:33.180
+for instance, for DDPM and
+then for NCSN, what we realize
+
+01:14:33.180 --> 01:14:39.100
+is that we have an expression
+of dx equal to something times
+
+01:14:39.100 --> 01:14:45.980
+dt plus something times dW.
+
+01:14:45.980 --> 01:14:50.410
+So these two terms have
+very specific names.
+
+01:14:50.410 --> 01:14:52.610
+So one is called the drift.
+
+01:14:52.610 --> 01:14:54.430
+So this quantity is
+called the drift.
+
+01:14:54.430 --> 01:14:56.450
+So it's deterministic.
+
+01:14:56.450 --> 01:14:59.070
+And this one is
+called the diffusion,
+
+01:14:59.070 --> 01:15:02.210
+which is what is stochastic.
+
+01:15:02.210 --> 01:15:06.450
+And you actually have a
+nice intuition about it
+
+01:15:06.450 --> 01:15:11.890
+when it comes to how
+x varies in space.
+
+01:15:11.890 --> 01:15:15.250
+So if you suppose x
+to start from here
+
+01:15:15.250 --> 01:15:19.250
+and you only have
+a drift term, what
+
+01:15:19.250 --> 01:15:25.930
+you're going to have is just
+deterministic evolution using
+
+01:15:25.930 --> 01:15:28.570
+f of x and t.
+
+01:15:28.570 --> 01:15:30.410
+So you're going
+to go from x to x
+
+01:15:30.410 --> 01:15:34.230
+plus dx using f of xt times dt.
+
+01:15:34.230 --> 01:15:37.490
+And then you're going to repeat
+this process again and again
+
+01:15:37.490 --> 01:15:40.450
+in a deterministic fashion.
+
+01:15:40.450 --> 01:15:45.130
+So this first term
+is deterministic.
+
+01:15:45.130 --> 01:15:48.960
+Now let's look at what
+the second term does.
+
+01:15:48.960 --> 01:15:53.440
+So here you start
+from a point x,
+
+01:15:53.440 --> 01:16:00.480
+and you add some quantity
+that is a function of noise,
+
+01:16:00.480 --> 01:16:02.440
+Gaussian noise.
+
+01:16:02.440 --> 01:16:05.760
+So here it's going to be
+something that is noisy, so
+
+01:16:05.760 --> 01:16:08.920
+the stochastic part.
+
+01:16:08.920 --> 01:16:13.120
+Which means that if you
+take the whole expression,
+
+01:16:13.120 --> 01:16:16.840
+you're going to end
+up with something--
+
+01:16:16.840 --> 01:16:22.120
+so one step from
+x to x plus dx is
+
+01:16:22.120 --> 01:16:25.880
+going to be including
+a deterministic step
+
+01:16:25.880 --> 01:16:28.640
+and a stochastic step.
+
+01:16:28.640 --> 01:16:34.040
+And this is something that
+will follow the slides here.
+
+01:16:34.040 --> 01:16:41.080
+So all I want to say is that
+DDPM and NCSN can actually
+
+01:16:41.080 --> 01:16:45.310
+be transcribed from their
+discrete formulations
+
+01:16:45.310 --> 01:16:47.630
+to a continuous one.
+
+01:16:47.630 --> 01:16:49.510
+So when you see
+these formulas, just
+
+01:16:49.510 --> 01:16:52.910
+know that it is
+just us transcribing
+
+01:16:52.910 --> 01:16:54.930
+them to be continuous.
+
+01:16:54.930 --> 01:16:56.790
+And the reason why
+we want to do that
+
+01:16:56.790 --> 01:17:01.870
+is because this is going
+to be an SDE, so Stochastic
+
+01:17:01.870 --> 01:17:07.070
+Differential Equation, for
+which the field already
+
+01:17:07.070 --> 01:17:11.990
+has a lot of techniques
+to solve them.
+
+01:17:11.990 --> 01:17:14.590
+And I'm just going
+to tell you now
+
+01:17:14.590 --> 01:17:21.630
+about why the DDPM
+formula makes sense just
+
+01:17:21.630 --> 01:17:23.010
+from an intuitive perspective.
+
+01:17:23.010 --> 01:17:28.410
+So what we're saying is in a 2D
+space, so this is the origin.
+
+01:17:28.410 --> 01:17:30.910
+This is 0.
+
+01:17:30.910 --> 01:17:34.750
+And then we have a vector x.
+
+01:17:34.750 --> 01:17:38.510
+So what we're saying is
+that an increment in x
+
+01:17:38.510 --> 01:17:43.590
+is going to be negative
+with respect to where x is.
+
+01:17:43.590 --> 01:17:47.210
+So it's going to be
+somewhere like this.
+
+01:17:47.210 --> 01:17:50.090
+And then we're going to have
+a little bit of noise added
+
+01:17:50.090 --> 01:17:52.830
+to it, so maybe like this.
+
+01:17:55.890 --> 01:17:59.030
+So in other words
+the noising process,
+
+01:17:59.030 --> 01:18:06.930
+the forward process is
+bringing x closer to 0
+
+01:18:06.930 --> 01:18:11.530
+and adding some
+noise so that this
+
+01:18:11.530 --> 01:18:16.810
+converges to a variance of 1,
+which is what DDPM is about.
+
+01:18:16.810 --> 01:18:20.730
+Because the DDPM you
+take a clean image,
+
+01:18:20.730 --> 01:18:26.690
+and then you noise it with
+convenience coefficients
+
+01:18:26.690 --> 01:18:31.610
+such that after t steps, it
+becomes a normal distribution
+
+01:18:31.610 --> 01:18:35.050
+of mean 0 and variance 1.
+
+01:18:35.050 --> 01:18:36.770
+And this is exactly
+what you're also
+
+01:18:36.770 --> 01:18:40.070
+seeing by interpreting the
+terms of this equation.
+
+01:18:43.560 --> 01:18:44.460
+Does that make sense?
+
+01:18:44.460 --> 01:18:47.800
+So I just want to tell
+you this to just tell you
+
+01:18:47.800 --> 01:18:50.060
+that these formulas
+are not just formulas.
+
+01:18:50.060 --> 01:18:54.520
+They have a meaning if
+you think about each term.
+
+01:18:54.520 --> 01:18:59.400
+And here this expression
+of the continuous evolution
+
+01:18:59.400 --> 01:19:05.000
+of the forward process for DDPM
+actually makes intuitive sense
+
+01:19:05.000 --> 01:19:06.620
+when you're just
+writing things down.
+
+01:19:09.520 --> 01:19:12.976
+[AUDIO OUT]
+
+01:19:12.976 --> 01:19:15.260
+So question is,
+why is it useful?
+
+01:19:15.260 --> 01:19:17.120
+We're going to see
+it exactly now.
+
+01:19:17.120 --> 01:19:20.660
+So I'm going to tell
+you now what is useful.
+
+01:19:20.660 --> 01:19:24.320
+So the reason why
+it's useful is 1,
+
+01:19:24.320 --> 01:19:29.920
+you're not going to have
+to necessarily define
+
+01:19:29.920 --> 01:19:34.625
+discretization steps
+between each noised images.
+
+01:19:34.625 --> 01:19:36.000
+So you're not
+going to say, OK, I
+
+01:19:36.000 --> 01:19:38.950
+need let's say t steps to do
+the whole noising process.
+
+01:19:38.950 --> 01:19:40.670
+So that's the number 1.
+
+01:19:40.670 --> 01:19:44.230
+And number 2 is there's
+a number of results
+
+01:19:44.230 --> 01:19:47.750
+in the field of stochastic
+differential equations, which
+
+01:19:47.750 --> 01:19:50.790
+is essentially what this is.
+
+01:19:50.790 --> 01:19:53.870
+There's a number of
+results that will allow you
+
+01:19:53.870 --> 01:19:57.870
+to solve the reverse process.
+
+01:19:57.870 --> 01:20:03.910
+Because what you want is to
+be able to denoise images.
+
+01:20:03.910 --> 01:20:06.170
+So here what we're doing is
+we're just noising images.
+
+01:20:06.170 --> 01:20:08.890
+But what we care about
+is how to denoise images,
+
+01:20:08.890 --> 01:20:11.150
+which is the reverse process.
+
+01:20:11.150 --> 01:20:14.790
+And the reason why it
+is convenient for us
+
+01:20:14.790 --> 01:20:18.830
+to think in the
+continuous world is
+
+01:20:18.830 --> 01:20:21.910
+for us to be able to
+leverage these results.
+
+01:20:21.910 --> 01:20:28.110
+And we're going to see these
+results in a few minutes.
+
+01:20:28.110 --> 01:20:28.970
+OK, cool.
+
+01:20:28.970 --> 01:20:32.230
+So here I just want to
+say that this drift term
+
+01:20:32.230 --> 01:20:37.720
+f and the diffusion g is
+the following for DDPM,
+
+01:20:37.720 --> 01:20:41.720
+but it is this form for NCSN.
+
+01:20:41.720 --> 01:20:44.040
+And you see that there
+is no drift term,
+
+01:20:44.040 --> 01:20:47.280
+and it is mainly because
+we're only adding noise.
+
+01:20:49.980 --> 01:20:57.540
+And the idea behind
+DDPM and score matching
+
+01:20:57.540 --> 01:21:01.020
+is actually something that
+was developed in parallel.
+
+01:21:01.020 --> 01:21:05.620
+So here what I want to say is
+just a historical evolution
+
+01:21:05.620 --> 01:21:08.460
+of how things happened
+and how we came up
+
+01:21:08.460 --> 01:21:13.060
+to that unified view of
+describing the forward process
+
+01:21:13.060 --> 01:21:14.720
+in order to solve
+the reverse process.
+
+01:21:14.720 --> 01:21:19.060
+So on the one side, the
+diffusion literature
+
+01:21:19.060 --> 01:21:22.340
+had this given branch
+with a 2015 paper
+
+01:21:22.340 --> 01:21:27.740
+just describing how you can
+derive a tractable loss in order
+
+01:21:27.740 --> 01:21:30.597
+to solve for this,
+the diffusion problem.
+
+01:21:30.597 --> 01:21:32.180
+And then you have
+the DDPM paper which
+
+01:21:32.180 --> 01:21:34.940
+came out in 2020
+that successfully
+
+01:21:34.940 --> 01:21:37.760
+applied that for images.
+
+01:21:37.760 --> 01:21:39.900
+That was on the one side.
+
+01:21:39.900 --> 01:21:43.720
+And on the other side in
+to score matching world,
+
+01:21:43.720 --> 01:21:47.280
+you had this principle
+of using the score
+
+01:21:47.280 --> 01:21:51.800
+to go from a starting point to
+the distribution and the fact
+
+01:21:51.800 --> 01:21:56.280
+that it alleviated this
+intractable normalizing
+
+01:21:56.280 --> 01:21:57.480
+constant.
+
+01:21:57.480 --> 01:22:00.720
+And then there was a
+paper that described
+
+01:22:00.720 --> 01:22:04.920
+how to do that in the case
+of a noise distribution.
+
+01:22:04.920 --> 01:22:07.480
+And then the NCSN
+method is actually
+
+01:22:07.480 --> 01:22:11.560
+something that came
+out with a later paper.
+
+01:22:11.560 --> 01:22:15.400
+And there is one
+paper that unified
+
+01:22:15.400 --> 01:22:19.960
+both of these paradigms, which
+is a paper called Score-Based
+
+01:22:19.960 --> 01:22:22.200
+Generative Modeling Through
+Stochastic Differential
+
+01:22:22.200 --> 01:22:25.560
+Equation, which is a paper
+I highly recommend reading.
+
+01:22:25.560 --> 01:22:28.720
+It's actually written
+by folks from Stanford,
+
+01:22:28.720 --> 01:22:34.190
+so Yang Song and coauthors.
+
+01:22:34.190 --> 01:22:40.390
+And it is from that moment that
+the community has seen these two
+
+01:22:40.390 --> 01:22:43.630
+paradigms as being unified.
+
+01:22:43.630 --> 01:22:50.550
+And this is the way we
+have seen this play out.
+
+01:22:50.550 --> 01:22:54.430
+So now why did we do
+this in the first place?
+
+01:22:54.430 --> 01:23:01.070
+So our goal is to
+recover clean images.
+
+01:23:01.070 --> 01:23:04.950
+So we know how to noise them
+through this forward process
+
+01:23:04.950 --> 01:23:09.150
+that we now are able to
+express in continuous term.
+
+01:23:09.150 --> 01:23:15.230
+What we care about is to
+denoise into clean images.
+
+01:23:15.230 --> 01:23:23.790
+And so here what we're doing
+again predicting the score.
+
+01:23:23.790 --> 01:23:27.030
+So this score
+formulation is just
+
+01:23:27.030 --> 01:23:30.070
+a regression on the
+conditional score which
+
+01:23:30.070 --> 01:23:35.180
+we saw was tractable,
+which is, as we saw,
+
+01:23:35.180 --> 01:23:40.140
+minus epsilon over
+some coefficients.
+
+01:23:40.140 --> 01:23:43.340
+And the way you would
+train such a model
+
+01:23:43.340 --> 01:23:46.820
+is following this
+loss function, which
+
+01:23:46.820 --> 01:23:51.340
+is an expectation over
+clean images that you noise.
+
+01:23:51.340 --> 01:23:56.380
+And so what you do is you
+sample a clean image and then
+
+01:23:56.380 --> 01:23:58.460
+some noise and time step.
+
+01:23:58.460 --> 01:24:01.820
+And then what you do is you
+obtain your noised image.
+
+01:24:01.820 --> 01:24:05.180
+And so here noised image
+is just a combination
+
+01:24:05.180 --> 01:24:09.720
+of the clean image and the noise
+with some alpha and sigma t,
+
+01:24:09.720 --> 01:24:14.740
+which can be chosen either in
+the DDPM way or another way.
+
+01:24:14.740 --> 01:24:20.260
+And what you do is
+you predict the score
+
+01:24:20.260 --> 01:24:26.260
+that you know is tractable using
+your noised image and your time
+
+01:24:26.260 --> 01:24:29.020
+step.
+
+01:24:29.020 --> 01:24:35.530
+But now you may be
+asking, well, why do
+
+01:24:35.530 --> 01:24:37.930
+you want to predict the score?
+
+01:24:37.930 --> 01:24:44.570
+Because we saw that for
+NCSN, we had the score
+
+01:24:44.570 --> 01:24:48.890
+that we used in order to sample
+new observations from the data
+
+01:24:48.890 --> 01:24:49.550
+distribution.
+
+01:24:49.550 --> 01:24:53.770
+But we saw in the case
+of DDPM that we actually
+
+01:24:53.770 --> 01:24:58.210
+predicted the noise to remove.
+
+01:24:58.210 --> 01:25:00.850
+So we had these two
+different formulations.
+
+01:25:00.850 --> 01:25:03.370
+So now the question
+that you may ask is,
+
+01:25:03.370 --> 01:25:08.210
+why do you want to
+focus on the score here?
+
+01:25:08.210 --> 01:25:14.250
+And the answer to that is
+that the forward process that
+
+01:25:14.250 --> 01:25:22.450
+is described by the SDE can be
+reversed through a reverse SDE
+
+01:25:22.450 --> 01:25:25.470
+that involves the score.
+
+01:25:28.960 --> 01:25:32.120
+So I'm just going to
+repeat exactly what I said.
+
+01:25:32.120 --> 01:25:35.880
+So the forward process, which
+is described by the SDE,
+
+01:25:35.880 --> 01:25:40.200
+is something that you can
+reverse through a reverse SDE
+
+01:25:40.200 --> 01:25:43.080
+which involves the score.
+
+01:25:43.080 --> 01:25:46.200
+And the reason why the
+score is popping up here
+
+01:25:46.200 --> 01:25:50.860
+is due to some derivations that
+we're not going to go here,
+
+01:25:50.860 --> 01:25:57.220
+but this is just a result that
+comes from a paper from 1982.
+
+01:25:57.220 --> 01:25:59.560
+So it's a result
+from the SDE world
+
+01:25:59.560 --> 01:26:01.620
+that were just leveraging here.
+
+01:26:04.960 --> 01:26:07.640
+So that is one of
+the points why we're
+
+01:26:07.640 --> 01:26:09.680
+caring about the
+continuous formulation
+
+01:26:09.680 --> 01:26:12.920
+is because we want to
+be able to leverage
+
+01:26:12.920 --> 01:26:16.860
+results around these SDEs,
+and this is one of them.
+
+01:26:20.560 --> 01:26:25.640
+And so now I want to
+walk you through what
+
+01:26:25.640 --> 01:26:29.700
+that reverse process
+equation is about.
+
+01:26:29.700 --> 01:26:36.300
+So I told you that the forward
+process was composed of a drift
+
+01:26:36.300 --> 01:26:39.940
+term and a diffusion term.
+
+01:26:39.940 --> 01:26:43.460
+So it was dx equal
+to f of x and t times
+
+01:26:43.460 --> 01:26:48.260
+dt, which is the drift,
+and then plus gt times
+
+01:26:48.260 --> 01:26:52.740
+dW, which is the stochastic
+term, the diffusion term.
+
+01:26:52.740 --> 01:26:57.900
+And what we're saying is that in
+order to do the reverse process,
+
+01:26:57.900 --> 01:27:02.660
+we actually cannot just
+have the same equation.
+
+01:27:02.660 --> 01:27:08.100
+We need to add a correction
+in the drift that
+
+01:27:08.100 --> 01:27:10.260
+involves the score.
+
+01:27:10.260 --> 01:27:12.540
+And here is the intuition.
+
+01:27:12.540 --> 01:27:16.580
+The intuition is that
+in the forward process,
+
+01:27:16.580 --> 01:27:24.540
+we have added some stochasticity
+that made us deviate from where
+
+01:27:24.540 --> 01:27:27.890
+the actual data point was.
+
+01:27:27.890 --> 01:27:30.370
+So as a result of
+that, when we want
+
+01:27:30.370 --> 01:27:33.970
+to reverse that process,
+what we actually
+
+01:27:33.970 --> 01:27:39.690
+want to counteract
+this phenomenon
+
+01:27:39.690 --> 01:27:45.730
+is to go towards the regions
+of high density scaled
+
+01:27:45.730 --> 01:27:47.230
+by that diffusion factor.
+
+01:27:50.210 --> 01:27:52.610
+So what I'm telling you is
+that the reverse process
+
+01:27:52.610 --> 01:27:56.650
+SDE is obtained through
+some derivation.
+
+01:27:56.650 --> 01:27:59.090
+But the way you
+would interpret it
+
+01:27:59.090 --> 01:28:04.650
+is that the correction to
+the drift is due to the fact
+
+01:28:04.650 --> 01:28:07.790
+that you diffused in
+the forward process.
+
+01:28:07.790 --> 01:28:14.610
+And this made you be further
+from high-density regions.
+
+01:28:14.610 --> 01:28:16.510
+So this is what the
+reverse process is like.
+
+01:28:16.510 --> 01:28:19.010
+So it's dx times
+the drift, which
+
+01:28:19.010 --> 01:28:22.960
+is the original drift
+minus the diffusion
+
+01:28:22.960 --> 01:28:29.720
+coefficient times the score
+times dt plus your diffusion
+
+01:28:29.720 --> 01:28:30.380
+term.
+
+01:28:30.380 --> 01:28:35.880
+And here we noted dW bar
+because the Wiener process
+
+01:28:35.880 --> 01:28:40.160
+from the reverse process
+is actually different
+
+01:28:40.160 --> 01:28:43.600
+compared to the one from the
+forward process, which is
+
+01:28:43.600 --> 01:28:47.880
+why we noted this with the bar.
+
+01:28:47.880 --> 01:28:51.260
+And we're just going to conclude
+with how you would do inference.
+
+01:28:51.260 --> 01:28:55.240
+So to do inference, you
+just sample some noise.
+
+01:28:55.240 --> 01:29:00.320
+And then again what you do is
+you leverage the nice results
+
+01:29:00.320 --> 01:29:03.120
+from the fact that
+you are handling SDEs,
+
+01:29:03.120 --> 01:29:04.540
+Stochastic
+Differential Equations.
+
+01:29:04.540 --> 01:29:08.960
+So you, for instance, will use
+a solver called Euler-Maruyama
+
+01:29:08.960 --> 01:29:13.800
+that is able to numerically
+solve the reverse process.
+
+01:29:13.800 --> 01:29:18.560
+So here you can think of it
+as a numerical method that
+
+01:29:18.560 --> 01:29:23.470
+will let you go from your
+original ex back to the endpoint
+
+01:29:23.470 --> 01:29:28.250
+using the reverse
+process equation.
+
+01:29:28.250 --> 01:29:33.310
+And you will obtain your final
+image, which will hopefully
+
+01:29:33.310 --> 01:29:36.790
+be an image that is satisfying.
+
+01:29:36.790 --> 01:29:40.570
+And that's going to
+be your final image.
+
+01:29:40.570 --> 01:29:41.070
+Yeah.
+
+01:29:41.070 --> 01:29:43.530
+[AUDIO OUT]
+
+01:29:43.530 --> 01:29:45.190
+Yes, so this one-- yeah.
+
+01:29:45.190 --> 01:29:47.470
+[AUDIO OUT]
+
+01:29:47.470 --> 01:29:48.070
+Yeah.
+
+01:29:48.070 --> 01:29:51.630
+So here, you can
+think of this equation
+
+01:29:51.630 --> 01:29:57.670
+as being a discretization of
+the reverse SDE which is here.
+
+01:29:57.670 --> 01:30:01.730
+So this is exactly this SDE, but
+you're doing it step by step.
+
+01:30:01.730 --> 01:30:04.850
+[AUDIO OUT]
+
+01:30:05.350 --> 01:30:07.150
+So the question is,
+what is fx of t?
+
+01:30:07.150 --> 01:30:07.650
+What is g?
+
+01:30:07.650 --> 01:30:10.070
+So these are the
+coefficients that are here.
+
+01:30:10.070 --> 01:30:15.110
+So for instance, in this case, f
+of x and t is minus 1/2 of beta
+
+01:30:15.110 --> 01:30:16.470
+times x.
+
+01:30:16.470 --> 01:30:19.250
+And g is square root of b.
+
+01:30:19.250 --> 01:30:21.170
+[AUDIO OUT]
+
+01:30:21.170 --> 01:30:22.130
+It is the same.
+
+01:30:22.130 --> 01:30:24.550
+So the question is,
+this is for the forward.
+
+01:30:24.550 --> 01:30:28.430
+But this f and g are the same
+in the forward and backwards.
+
+01:30:28.430 --> 01:30:30.270
+Yep.
+
+01:30:30.270 --> 01:30:34.010
+And with that, I'm going
+to give it to Shervine.
+
+01:30:34.010 --> 01:30:35.810
+Thank you, Afshine.
+
+01:30:35.810 --> 01:30:40.330
+So I'm going to come here
+and sing a very similar song
+
+01:30:40.330 --> 01:30:43.170
+as the one I sang last
+week when we transitioned
+
+01:30:43.170 --> 01:30:45.850
+from DDPM to DDIM.
+
+01:30:45.850 --> 01:30:50.010
+So we're going to look at
+this reverse SDE equation
+
+01:30:50.010 --> 01:30:52.730
+and look at what is
+not optimal in practice
+
+01:30:52.730 --> 01:30:55.090
+and see what we can do about it.
+
+01:30:55.090 --> 01:30:59.570
+So as Afshine mentioned, you
+have this Brownian motion.
+
+01:30:59.570 --> 01:31:04.130
+That is one term of that
+reverse is the equation.
+
+01:31:04.130 --> 01:31:07.010
+And what problem do
+we have with that?
+
+01:31:07.010 --> 01:31:12.970
+So as you saw in the transition
+from x and x plus dx,
+
+01:31:12.970 --> 01:31:18.520
+you have all these spikes that
+happen due to the stochasticity.
+
+01:31:18.520 --> 01:31:22.720
+And this process is the reason
+why we cannot take large steps
+
+01:31:22.720 --> 01:31:25.200
+when resolving it, because
+otherwise you would be
+
+01:31:25.200 --> 01:31:29.920
+approximating a movement that
+is something that you look
+
+01:31:29.920 --> 01:31:32.400
+at the microscopic level.
+
+01:31:32.400 --> 01:31:35.240
+So you need a high
+number of steps
+
+01:31:35.240 --> 01:31:37.760
+in your solver to start with.
+
+01:31:37.760 --> 01:31:40.520
+And also the second
+point is that when
+
+01:31:40.520 --> 01:31:43.440
+you look at your
+errors that you do
+
+01:31:43.440 --> 01:31:46.300
+when you solve these
+reverse SDE equation,
+
+01:31:46.300 --> 01:31:48.360
+you have now two sources.
+
+01:31:48.360 --> 01:31:50.360
+You have the first
+source that comes
+
+01:31:50.360 --> 01:31:53.420
+from the regular
+discretization step.
+
+01:31:53.420 --> 01:31:57.120
+And then you have the
+stochastic error that comes in,
+
+01:31:57.120 --> 01:32:00.240
+and they accumulate.
+
+01:32:00.240 --> 01:32:04.320
+So just like last
+week, I'm going
+
+01:32:04.320 --> 01:32:08.320
+to paint the picture of what
+we would like to have and see
+
+01:32:08.320 --> 01:32:10.240
+if we can get there.
+
+01:32:10.240 --> 01:32:14.240
+So what would be the
+right counterpart
+
+01:32:14.240 --> 01:32:17.230
+of an SDE in a nicer world?
+
+01:32:17.230 --> 01:32:18.510
+It would be an ODE.
+
+01:32:18.510 --> 01:32:22.610
+So the ODE does have
+this term on the left
+
+01:32:22.610 --> 01:32:24.950
+but doesn't have
+any stochasticity.
+
+01:32:24.950 --> 01:32:27.310
+And going through each
+point that I mentioned,
+
+01:32:27.310 --> 01:32:31.750
+you would be able to
+gauge how fast you
+
+01:32:31.750 --> 01:32:36.590
+go depending on the regularity
+on the function of the left.
+
+01:32:36.590 --> 01:32:41.150
+So you have some methods
+that can take adaptive steps.
+
+01:32:41.150 --> 01:32:43.710
+And then the second
+point is that in terms
+
+01:32:43.710 --> 01:32:47.430
+of errors that you're
+committing, once you solve
+
+01:32:47.430 --> 01:32:51.670
+that equation, they are only
+focused on the discretization
+
+01:32:51.670 --> 01:32:52.970
+of the left part.
+
+01:32:52.970 --> 01:32:56.310
+So you have less
+sources of error.
+
+01:32:56.310 --> 01:33:02.470
+And I'm going to sketch you
+a derivation for which only
+
+01:33:02.470 --> 01:33:05.590
+the high-level gist
+is what I want you to.
+
+01:33:05.590 --> 01:33:09.030
+So there are going to be
+some intermediary results
+
+01:33:09.030 --> 01:33:11.390
+that I'm just going to state.
+
+01:33:11.390 --> 01:33:15.140
+And some equations we don't
+need to know necessarily
+
+01:33:15.140 --> 01:33:16.320
+how they are derived.
+
+01:33:16.320 --> 01:33:19.540
+I'm just telling you
+that they are there.
+
+01:33:19.540 --> 01:33:23.540
+So let's start from
+the forward SDE.
+
+01:33:23.540 --> 01:33:27.260
+As Afshine had
+mentioned it, you have
+
+01:33:27.260 --> 01:33:31.380
+this f of x and t term, the
+drift term, and the diffusion
+
+01:33:31.380 --> 01:33:32.740
+term.
+
+01:33:32.740 --> 01:33:35.540
+So it turns out
+that for equations
+
+01:33:35.540 --> 01:33:41.300
+that verify this equality, you
+can apply the Fokker-Planck
+
+01:33:41.300 --> 01:33:46.320
+equation, where you have
+this pt of x that comes up.
+
+01:33:46.320 --> 01:33:49.820
+That is the probability
+of the flow.
+
+01:33:49.820 --> 01:33:52.700
+And you have two terms
+on the right that
+
+01:33:52.700 --> 01:33:56.060
+could be interpreted
+in physical terms
+
+01:33:56.060 --> 01:33:59.340
+by the term on the left
+that is a transport
+
+01:33:59.340 --> 01:34:04.340
+term and the one on the right
+that you see g squared on, which
+
+01:34:04.340 --> 01:34:07.020
+is the diffusion term.
+
+01:34:07.020 --> 01:34:09.820
+So the derivation
+of such an equation
+
+01:34:09.820 --> 01:34:12.020
+is non-trivial and
+is out of scope here.
+
+01:34:12.020 --> 01:34:18.360
+I'm just going to state that we
+are going through that results.
+
+01:34:18.360 --> 01:34:22.280
+And then by
+rearranging the terms
+
+01:34:22.280 --> 01:34:31.200
+and using an identity
+on pt, we can
+
+01:34:31.200 --> 01:34:34.200
+come to another equation
+that is called the continuity
+
+01:34:34.200 --> 01:34:38.040
+equation that I'm
+just going to tell you
+
+01:34:38.040 --> 01:34:40.200
+that it's going to
+be something that we
+
+01:34:40.200 --> 01:34:45.480
+see in more details at the
+beginning of next lecture.
+
+01:34:45.480 --> 01:34:49.760
+But what's interesting about
+that continuity equation is
+
+01:34:49.760 --> 01:34:54.640
+that on the right
+side, there is a factor
+
+01:34:54.640 --> 01:34:57.680
+that is to be interpreted
+as a velocity.
+
+01:34:57.680 --> 01:35:02.000
+And the velocity is dx over dt.
+
+01:35:02.000 --> 01:35:04.800
+So once you identify
+that factor,
+
+01:35:04.800 --> 01:35:09.400
+you can come up with an
+equation that this term that
+
+01:35:09.400 --> 01:35:13.950
+has been identified as the
+velocity needs to verify.
+
+01:35:13.950 --> 01:35:18.950
+And you come up with an
+equation that is indeed an ODE,
+
+01:35:18.950 --> 01:35:21.910
+and we call it the PF-ODE.
+
+01:35:21.910 --> 01:35:24.370
+PF stands for Probability Flows.
+
+01:35:28.110 --> 01:35:31.790
+And let's look at that
+equation for a bit.
+
+01:35:31.790 --> 01:35:35.550
+So just like we mentioned
+a short time ago,
+
+01:35:35.550 --> 01:35:38.910
+f and g are modeling
+assumptions that
+
+01:35:38.910 --> 01:35:43.290
+are the ones that we
+had as assumptions
+
+01:35:43.290 --> 01:35:48.350
+once you derive this
+diffusion concept.
+
+01:35:48.350 --> 01:35:51.070
+And what about the score?
+
+01:35:51.070 --> 01:35:53.070
+So the score is also
+something that we can know.
+
+01:35:53.070 --> 01:35:57.790
+Because once you have a model
+that can approximate this score,
+
+01:35:57.790 --> 01:36:01.890
+you just have to
+put x as inputs,
+
+01:36:01.890 --> 01:36:03.210
+and you can get the score.
+
+01:36:03.210 --> 01:36:08.980
+So what I want to say is that
+this whole term that popped up
+
+01:36:08.980 --> 01:36:12.860
+is all composed of
+components that we can know.
+
+01:36:16.660 --> 01:36:17.940
+OK, great.
+
+01:36:17.940 --> 01:36:21.020
+And now I'm going
+to re-emphasize
+
+01:36:21.020 --> 01:36:24.060
+each side of that PF-ODE.
+
+01:36:24.060 --> 01:36:26.380
+So it's an ODE we
+said because we
+
+01:36:26.380 --> 01:36:31.260
+don't have a stochastic term,
+and it's probability flow
+
+01:36:31.260 --> 01:36:36.580
+because it's an ODE that comes
+from verifying the continuity
+
+01:36:36.580 --> 01:36:39.580
+equation, that is, an
+equation that is focused
+
+01:36:39.580 --> 01:36:42.340
+on the probability flow.
+
+01:36:42.340 --> 01:36:45.900
+And one interesting
+thing about that equation
+
+01:36:45.900 --> 01:36:50.460
+is that once you have an
+initial condition on PT,
+
+01:36:50.460 --> 01:36:56.100
+you can fully
+characterize what P is.
+
+01:36:56.100 --> 01:37:00.900
+But this is something that
+you cannot say about x.
+
+01:37:00.900 --> 01:37:06.860
+Because as you can see here, if
+you have v that is solution--
+
+01:37:06.860 --> 01:37:11.850
+that is part of this
+equation, then if you add--
+
+01:37:11.850 --> 01:37:18.290
+if you do v plus v null, where
+v null verifies divergence
+
+01:37:18.290 --> 01:37:22.570
+of v null and pt equals
+0, then v plus v null also
+
+01:37:22.570 --> 01:37:25.810
+can be plugged in here.
+
+01:37:25.810 --> 01:37:29.290
+So all of that to say
+that the probability flow
+
+01:37:29.290 --> 01:37:33.850
+between the reverse SDE
+and here are preserved.
+
+01:37:33.850 --> 01:37:38.110
+But the trajectories are not.
+
+01:37:38.110 --> 01:37:38.610
+OK.
+
+01:37:38.610 --> 01:37:40.670
+So I went through a lot so far.
+
+01:37:40.670 --> 01:37:42.270
+Any questions?
+
+01:37:42.270 --> 01:37:42.770
+Yeah.
+
+01:37:42.770 --> 01:37:45.710
+[AUDIO OUT]
+
+01:37:59.890 --> 01:38:00.470
+Yeah, fair.
+
+01:38:00.470 --> 01:38:02.890
+So the question is, what's
+the interpretation here?
+
+01:38:02.890 --> 01:38:07.760
+So we did all these equations to
+conserve the probability flow,
+
+01:38:07.760 --> 01:38:10.340
+and the trajectories are
+going to be different.
+
+01:38:10.340 --> 01:38:14.480
+And they are characterized
+with this modified
+
+01:38:14.480 --> 01:38:16.900
+term on the v side.
+
+01:38:16.900 --> 01:38:21.200
+So instead of having these--
+
+01:38:21.200 --> 01:38:24.160
+so you have this one
+half that came in,
+
+01:38:24.160 --> 01:38:27.600
+and that compensates for
+the stochasticity part
+
+01:38:27.600 --> 01:38:28.920
+that disappears.
+
+01:38:28.920 --> 01:38:31.360
+So you're going to
+still have trajectories
+
+01:38:31.360 --> 01:38:35.840
+that verify in aggregate the
+probability flow conditions,
+
+01:38:35.840 --> 01:38:37.760
+but they are going
+to be different.
+
+01:38:37.760 --> 01:38:44.820
+And the interpretation is not
+average or anything specific.
+
+01:38:44.820 --> 01:38:47.400
+I would say it's just
+that in aggregate, they
+
+01:38:47.400 --> 01:38:53.220
+verify the probability flow
+property at each time t and x.
+
+01:38:53.220 --> 01:38:56.020
+[AUDIO OUT]
+
+01:38:56.020 --> 01:38:56.520
+Yeah.
+
+01:38:56.520 --> 01:38:59.966
+[AUDIO OUT]
+
+01:39:00.948 --> 01:39:02.920
+Yeah, yeah, yeah.
+
+01:39:02.920 --> 01:39:06.620
+So the question is, will they
+end up with the same properties
+
+01:39:06.620 --> 01:39:09.920
+that you have the
+distribution at the end?
+
+01:39:09.920 --> 01:39:13.400
+And the answer is yes,
+because PT is preserved.
+
+01:39:13.400 --> 01:39:13.900
+OK.
+
+01:39:13.900 --> 01:39:14.520
+Awesome.
+
+01:39:17.140 --> 01:39:21.340
+And so I'm going to
+draw a comparison
+
+01:39:21.340 --> 01:39:26.780
+between solving that reverse
+SDE equation and using PF-ODE.
+
+01:39:26.780 --> 01:39:32.220
+So exactly as we mentioned
+here, the term on the left,
+
+01:39:32.220 --> 01:39:35.700
+like the drift term, is
+compensated for that lack
+
+01:39:35.700 --> 01:39:38.840
+of stochastic term.
+
+01:39:38.840 --> 01:39:41.660
+And then the great
+point that you made
+
+01:39:41.660 --> 01:39:44.400
+is that we no longer have
+something that is stochastic.
+
+01:39:44.400 --> 01:39:50.100
+But once you have an
+initial condition,
+
+01:39:50.100 --> 01:39:53.300
+you deterministically
+know where you're going.
+
+01:39:53.300 --> 01:39:56.100
+So that's one big
+difference that you
+
+01:39:56.100 --> 01:39:58.793
+might remember from last
+time resembles something
+
+01:39:58.793 --> 01:40:00.500
+that you know.
+
+01:40:00.500 --> 01:40:05.010
+And as a result, since the
+only source of diversity
+
+01:40:05.010 --> 01:40:11.570
+is now your initial draw, you
+have less sampling diversity.
+
+01:40:11.570 --> 01:40:15.970
+And interestingly, when
+you look at experiments,
+
+01:40:15.970 --> 01:40:18.730
+you have higher sample quality.
+
+01:40:18.730 --> 01:40:23.650
+And that could be explained
+intuitively by the fact
+
+01:40:23.650 --> 01:40:27.090
+that you introduce
+noise at each time step
+
+01:40:27.090 --> 01:40:30.330
+enables you to explore
+regions of the space
+
+01:40:30.330 --> 01:40:33.730
+that you wouldn't have explored
+with a deterministic path.
+
+01:40:33.730 --> 01:40:38.890
+And you may self-correct
+your trajectory, as opposed
+
+01:40:38.890 --> 01:40:43.610
+to resolving an ODE
+that is only conditioned
+
+01:40:43.610 --> 01:40:46.850
+on your initial points
+and all the errors
+
+01:40:46.850 --> 01:40:51.290
+that you accumulate by
+solving the ODE numerically.
+
+01:40:51.290 --> 01:40:54.890
+So you have a nice
+interpretation there.
+
+01:40:54.890 --> 01:40:58.730
+And of course, now that
+we have an ODE where
+
+01:40:58.730 --> 01:41:03.200
+we can adapt step
+sizes, you can now
+
+01:41:03.200 --> 01:41:06.880
+resolve this faster,
+which is a nice property.
+
+01:41:06.880 --> 01:41:08.840
+And the fact that
+I told you that I'm
+
+01:41:08.840 --> 01:41:11.960
+drawing a very similar
+parallel between PF-ODE
+
+01:41:11.960 --> 01:41:16.480
+and the reverse SDE as the one
+I drew last week between DDIM
+
+01:41:16.480 --> 01:41:20.160
+and DDPM, we can see a lot
+of shared commonalities
+
+01:41:20.160 --> 01:41:24.840
+that I've put here
+for reference.
+
+01:41:24.840 --> 01:41:29.260
+And now let's look at how we can
+solve this equation in practice
+
+01:41:29.260 --> 01:41:33.280
+and if we can do even
+better than regular solvers.
+
+01:41:33.280 --> 01:41:37.080
+In order to do that, I'm
+going to introduce a way
+
+01:41:37.080 --> 01:41:39.920
+to assess complexity
+that is widely used
+
+01:41:39.920 --> 01:41:42.560
+in these papers called NFE.
+
+01:41:42.560 --> 01:41:45.000
+So it's the number of
+function evaluations.
+
+01:41:45.000 --> 01:41:48.080
+And what we want to
+do is for a sampler
+
+01:41:48.080 --> 01:41:53.640
+to get good quality results
+with a minimum amount of NFEs.
+
+01:41:53.640 --> 01:41:56.960
+So it's a measure that makes
+intuitive sense in the sense
+
+01:41:56.960 --> 01:42:00.350
+that we want to minimize
+the number of forward passes
+
+01:42:00.350 --> 01:42:04.030
+that you perform on your model.
+
+01:42:04.030 --> 01:42:09.790
+And I'm going to introduce
+this notion of solving
+
+01:42:09.790 --> 01:42:12.950
+an ODE by the very simple
+method that some of you
+
+01:42:12.950 --> 01:42:16.230
+might know already,
+so Euler's method.
+
+01:42:16.230 --> 01:42:22.630
+If you consider this ODE
+dx equals v of x and t dt,
+
+01:42:22.630 --> 01:42:25.350
+you can, based on
+your initial point
+
+01:42:25.350 --> 01:42:27.430
+and the derivative
+at that point,
+
+01:42:27.430 --> 01:42:33.270
+approximate the next point.
+
+01:42:33.270 --> 01:42:37.490
+But the issue with that is that
+there is quite a bit of errors.
+
+01:42:37.490 --> 01:42:39.650
+Even though it's just
+one NFE per step,
+
+01:42:39.650 --> 01:42:43.950
+you end up with the results
+that might be imprecise.
+
+01:42:43.950 --> 01:42:48.830
+So people to account for
+that fact are using a fancier
+
+01:42:48.830 --> 01:42:54.510
+techniques, so Runge-Kutta
+4 is one of them that--
+
+01:42:54.510 --> 01:42:58.390
+so I represent it here on this
+graph the intuition of it.
+
+01:42:58.390 --> 01:43:03.890
+So you look at midpoints,
+measure the derivative,
+
+01:43:03.890 --> 01:43:06.790
+have some derivative measurement
+on the endpoint as well.
+
+01:43:06.790 --> 01:43:10.210
+And if you do some weighting
+out of all of this,
+
+01:43:10.210 --> 01:43:16.350
+you obtain an update step
+that is of low error rate.
+
+01:43:16.350 --> 01:43:22.490
+I think here it's O of delta
+t to the power of 5, which
+
+01:43:22.490 --> 01:43:23.110
+is nice.
+
+01:43:23.110 --> 01:43:26.610
+So you might tell me,
+OK, hey, Shervine, we
+
+01:43:26.610 --> 01:43:27.670
+have solved everything.
+
+01:43:27.670 --> 01:43:30.370
+We have a nice sampling method.
+
+01:43:30.370 --> 01:43:33.530
+What could we do better?
+
+01:43:33.530 --> 01:43:38.330
+So actually let's look
+again at v of x and t.
+
+01:43:38.330 --> 01:43:44.150
+So I told you it's f of x and
+t minus this term on the right
+
+01:43:44.150 --> 01:43:46.250
+that is divided by 2.
+
+01:43:46.250 --> 01:43:48.970
+But if you look at
+all the equations
+
+01:43:48.970 --> 01:43:51.530
+that we use in the
+diffusion world,
+
+01:43:51.530 --> 01:44:02.960
+you see that f and x and t can
+be rewritten as f of t times x.
+
+01:44:02.960 --> 01:44:04.800
+So what does that tell you?
+
+01:44:04.800 --> 01:44:10.920
+So that tells you that
+this ODE is linear in x.
+
+01:44:10.920 --> 01:44:12.460
+So it has a linear term.
+
+01:44:15.400 --> 01:44:18.200
+And what can you say about
+the term on the right?
+
+01:44:18.200 --> 01:44:21.880
+Is it linear or--
+
+01:44:21.880 --> 01:44:26.440
+so you would have x
+as an input to where?
+
+01:44:26.440 --> 01:44:27.980
+What is the term on the right?
+
+01:44:27.980 --> 01:44:31.320
+The one in the rectangle.
+
+01:44:31.320 --> 01:44:33.120
+It's the score.
+
+01:44:33.120 --> 01:44:35.240
+So the score is what
+we try to estimate
+
+01:44:35.240 --> 01:44:39.320
+as part of our reverse
+diffusion process.
+
+01:44:39.320 --> 01:44:41.040
+And it's typically
+something that you
+
+01:44:41.040 --> 01:44:43.280
+would approximate
+with a neural network.
+
+01:44:43.280 --> 01:44:46.800
+And neural networks,
+are they linear?
+
+01:44:46.800 --> 01:44:48.940
+No, they're highly nonlinear.
+
+01:44:48.940 --> 01:44:51.440
+After the first layer and
+first activation function,
+
+01:44:51.440 --> 01:44:53.870
+it's no longer linear.
+
+01:44:53.870 --> 01:44:57.310
+So you have a
+nonlinear term there.
+
+01:44:57.310 --> 01:45:01.470
+And one thing we
+could do is instead
+
+01:45:01.470 --> 01:45:04.550
+of trying to discretize
+this whole equation
+
+01:45:04.550 --> 01:45:09.550
+without leveraging the fact
+that part of it is linear,
+
+01:45:09.550 --> 01:45:13.630
+we can use some
+math properties that
+
+01:45:13.630 --> 01:45:17.750
+says that with methods like
+the variations of constants
+
+01:45:17.750 --> 01:45:19.310
+that some of you
+might have heard of,
+
+01:45:19.310 --> 01:45:23.430
+you can derive an exact
+solution to part of it
+
+01:45:23.430 --> 01:45:28.790
+and focus the discretization
+process on the other part.
+
+01:45:28.790 --> 01:45:32.670
+And that's what DPM
+solver is all about.
+
+01:45:32.670 --> 01:45:35.930
+And I'm going to spare you
+the details of the derivation.
+
+01:45:35.930 --> 01:45:36.990
+It's quite long.
+
+01:45:36.990 --> 01:45:39.270
+I have attached the paper
+at the bottom in case
+
+01:45:39.270 --> 01:45:40.630
+you're interested.
+
+01:45:40.630 --> 01:45:41.910
+It's a bit involved.
+
+01:45:41.910 --> 01:45:48.350
+You get an update formula that
+has this exact term on the left
+
+01:45:48.350 --> 01:45:50.910
+and then some
+integral on the right.
+
+01:45:50.910 --> 01:45:57.460
+And the integral on the right
+focuses On the nonlinear term
+
+01:45:57.460 --> 01:45:59.980
+that we saw.
+
+01:45:59.980 --> 01:46:02.820
+And one highlight
+that I'll mention here
+
+01:46:02.820 --> 01:46:06.240
+is that we are not solving
+this in the time space.
+
+01:46:06.240 --> 01:46:07.880
+There has been a
+change of variables,
+
+01:46:07.880 --> 01:46:10.940
+and this is what the lambda
+that you see in this equation
+
+01:46:10.940 --> 01:46:12.220
+stands for.
+
+01:46:12.220 --> 01:46:13.940
+And there is a
+one-to-one mapping
+
+01:46:13.940 --> 01:46:16.980
+between time steps and lambdas.
+
+01:46:16.980 --> 01:46:21.980
+Because lambda is
+strictly monotonic here.
+
+01:46:21.980 --> 01:46:27.020
+So yeah, this is one
+interesting thing to note.
+
+01:46:27.020 --> 01:46:33.340
+And the question now is, how
+do we discretize this equation?
+
+01:46:33.340 --> 01:46:36.220
+Because we have this
+integral now left.
+
+01:46:36.220 --> 01:46:41.060
+And we cannot integrate
+something that is approximated
+
+01:46:41.060 --> 01:46:45.980
+by a neural network
+over a continuous range.
+
+01:46:45.980 --> 01:46:48.460
+So what we do is that
+this is the part that
+
+01:46:48.460 --> 01:46:50.360
+is going to be discretized.
+
+01:46:50.360 --> 01:46:54.000
+And you have variants
+of DPM solver
+
+01:46:54.000 --> 01:46:57.460
+that discretize it at different
+levels of granularity.
+
+01:46:57.460 --> 01:47:00.560
+So the first one is DPM
+solver 1 that the paper
+
+01:47:00.560 --> 01:47:06.120
+shows gives an equation that
+is equivalent to DDIM actually.
+
+01:47:06.120 --> 01:47:11.240
+And DPM solver 2 uses
+Taylor's expansion
+
+01:47:11.240 --> 01:47:15.520
+at higher levels
+up to any number k.
+
+01:47:15.520 --> 01:47:20.960
+And the number-- so the NFE
+for each is of I plus 1--
+
+01:47:23.760 --> 01:47:24.900
+is of I, sorry.
+
+01:47:28.000 --> 01:47:32.640
+And so to recap what we
+did is that we started
+
+01:47:32.640 --> 01:47:37.680
+from the forward SDE, rearranged
+terms using properties
+
+01:47:37.680 --> 01:47:38.960
+that we knew of.
+
+01:47:38.960 --> 01:47:42.120
+Came up with a PF-ODE that
+verified the same probability
+
+01:47:42.120 --> 01:47:42.840
+flow.
+
+01:47:42.840 --> 01:47:46.800
+And that enabled us to
+generate new samples.
+
+01:47:46.800 --> 01:47:50.790
+And then we leveraged
+the format of the PF-ODE
+
+01:47:50.790 --> 01:47:56.670
+to further optimize the
+way we would resolve it
+
+01:47:56.670 --> 01:48:01.870
+by focusing our NFEs on the
+discretization parts that really
+
+01:48:01.870 --> 01:48:03.510
+matters here.
+
+01:48:03.510 --> 01:48:09.910
+And here you see that DPM
+solver resolves the ODE
+
+01:48:09.910 --> 01:48:14.630
+with a much better trade-off
+between budget and quality.
+
+01:48:14.630 --> 01:48:16.310
+And the difference
+on the paper you
+
+01:48:16.310 --> 01:48:19.350
+can see it at low
+number of steps
+
+01:48:19.350 --> 01:48:22.550
+they're quite huge
+in terms of N metric.
+
+01:48:22.550 --> 01:48:24.390
+And then just like
+DDIM, you don't
+
+01:48:24.390 --> 01:48:27.190
+need to retrain the
+network when you
+
+01:48:27.190 --> 01:48:32.030
+want to sample with this solver
+because the objective function
+
+01:48:32.030 --> 01:48:33.190
+is the same.
+
+01:48:33.190 --> 01:48:36.370
+And in practice, with
+only tens of NFEs,
+
+01:48:36.370 --> 01:48:39.550
+you can get good results.
+
+01:48:39.550 --> 01:48:40.490
+And that was it.
+
+01:48:40.490 --> 01:48:42.660
+I hope you have a great weekend.
+

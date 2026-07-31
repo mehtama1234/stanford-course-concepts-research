@@ -1,0 +1,2446 @@
+OK, let's get started.
+Cool.
+So as a recap of
+last week, we talked
+about multi-task
+reinforcement learning
+and how we might want to
+have reinforcement learning
+agents not learn just one task,
+but multiple different things
+that might correspond to
+multiple different reward
+functions.
+And we saw that we can
+formulate an aggregated MDP that
+encapsulates all of the
+different tasks, where you now
+are augmenting your state with
+some sort of task descriptor,
+like a prompt or a goal or just
+an index corresponding to what
+the agent should do.
+And the way that
+this worked is we'd
+sample some task, run the
+policy in the MDP for that task,
+sample another
+task, and so forth.
+And we would then
+get a policy that
+could be able to successfully
+achieve high reward
+in a number of different MDPs.
+Or another way to
+view it, as single,
+aggregated MDP with
+this augmented state.
+This is going to be a little
+bit different from meta-RL.
+So we'll see some differences
+here later in this lecture.
+And we also somewhat
+briefly talked
+about goal-conditioned
+reinforcement learning.
+And it could just
+be simply viewed
+as a special case of multi-task
+reinforcement learning,
+where each task is trying
+to reach a goal state.
+And the task descriptor
+corresponds to that goal state.
+And so if your states
+are images, for example,
+then now you'll be
+passing as input
+to the policy, both the current
+image and the goal image.
+And you'll be trying to
+reach that goal image.
+Or if your state, for
+example, is a vector,
+you'll be passing
+in two vectors.
+And the task is trying
+to reach some goal state.
+And you can construct
+different reward functions,
+if you have discrete states
+or continuous states,
+as some sort of, did
+you reach that goal
+or reach close to that goal.
+And one of the
+things that's kind
+of nice about this
+goal-conditioned formulation
+of reinforcement learning
+is that you can actually
+do it in a self-supervised way.
+You don't need task descriptors.
+You don't need a
+different set of tasks
+that you've manually defined.
+You can just use a bunch
+of different states
+as the tasks themselves.
+And a lot of different tasks
+can be formulated as goal
+reaching tasks.
+One thing to note here is it
+can be pretty hard to train.
+But you'll be experimenting
+with a simple, goal-conditioned
+reinforcement learning
+setting in your homework.
+OK, so for today we're going
+to be talking about meta
+reinforcement learning.
+And specifically, we'll be
+talking about what that problem
+statement looks like and
+a class of meta-RL methods
+that I like to refer to as
+black-box meta-RL methods.
+We'll start to get into
+what these methods look like
+and also some of the
+challenges that they face.
+So what's the problem?
+Why do we care about meta-RL?
+Why not just do vanilla RL?
+So say that you're
+trying to figure out
+how to operate an espresso
+machine that you've never
+used before.
+If you wanted to do
+that, well, first,
+if you wanted a robot
+or a reinforcement
+learning agent to do
+that, it would probably
+take a lot of data,
+a lot of attempts
+to try to figure out
+how to make coffee.
+Because it's a pretty
+complicated task,
+lots of different
+steps involved.
+You have to do the
+steps in sequence.
+And also, the reward signal that
+you get for this sort of task
+probably isn't going
+to be super detailed.
+But as a human, if you
+were to attempt this task,
+probably if you had a
+little bit of instruction
+or some previous
+experience making espresso,
+then you could probably learn it
+in minutes, or maybe even less
+than a minute.
+So if you think about
+reinforcement learning, this gap
+between how quickly a
+human could learn something
+and how slowly it would take a
+reinforcement learning system
+to learn it, this is
+rather unsatisfying.
+And if we think about what is
+the difference between a person
+and a reinforcement
+learning system,
+one of the big
+differences is that people
+aren't starting from scratch.
+People already know how to move
+objects around with their hands.
+They might already know how
+to make coffee in other ways
+or with other machines.
+And they can leverage
+that experience and also
+some notion of semantic
+knowledge of what
+to do if someone tells
+you to pick up a cup
+and put it somewhere,
+or to turn a knob.
+And I can leverage that
+previous experience in order
+to solve this problem
+really, really quickly,
+compared to training a
+reinforcement learning system
+from scratch.
+And so experience
+with similar tasks,
+other espresso-making machines,
+either espresso making
+on other machines or just
+general motor control,
+following instructions,
+that sort of thing
+can be very useful when
+trying to solve a new task.
+And I mentioned this as kind of
+an example with espresso making,
+but this framework of
+not starting from scratch
+is really general.
+So it applies to
+robotics problems
+where you're facing
+a new environment
+or facing a new task.
+But it's also really faced by
+many reinforcement learning
+systems.
+As another example, say you
+want to solve a challenging math
+problem that you
+haven't solved before.
+If you have experience solving
+previous math problems,
+then you can use that
+to more quickly solve
+a new problem, because you've
+learned some sort of strategies
+that you might be able to
+apply to the new scenario.
+OK, we're framing
+this question of,
+can reinforcement learning
+algorithms leverage experience
+from previous tasks in order
+to learn a new task with less
+data and less experience?
+In many ways, this
+problem is thought
+of as a transfer
+learning problem, where
+we want to transfer
+knowledge, information,
+experience from previous
+tasks to new tasks.
+And there are a few
+different formulations
+and a few different
+problem settings
+that the research community
+has thought about.
+One is a fairly standard,
+a fairly simple setup
+where you learn one task and
+then want to learn a new task.
+And you can just, for
+example, train on one task
+and then fine-tune
+on the new task.
+And notions of fine-tuning that
+we use in supervised learning
+are also applicable to
+reinforcement learning settings,
+where you could fine-tune
+a Q-function to a new task,
+or fine-tune a
+policy to a new task.
+Although, for this to
+work well, the tasks
+need to be quite
+similar to each other.
+We also talked about
+multi-task learning.
+And you could also use
+multi-task learning for transfer
+to new tasks.
+And in particular, if your
+prompt shares some structure,
+if it's just like a
+task 1, task 2, task 3;
+transfer is going to be harder.
+But if it's something that
+has a lot of structure,
+like pick up a water
+bottle, pick up a phone,
+pick up a pen, and so forth;
+then you might actually
+be able to have
+things transfer what's
+called zero-shot, without
+any new experience
+at all, simply by passing
+that prompt to the system
+and having it act
+according to that prompt.
+And then meta-learning is
+often concerned with, instead
+of zero-shot transfer, something
+that's called few-shot transfer,
+where with a little
+bit of experience,
+a few examples or a
+few trials of a task,
+can you adapt to that task?
+And essentially the difference
+between multi-task learning
+and meta-learning is that
+it accounts for the fact
+that we're going to
+be trying to adapt
+with a small amount of data.
+And it does that during the
+original training process.
+And another way of
+thinking about this
+is that instead of having
+the task descriptor be
+a prompt or an index, the
+task descriptor might actually
+be a dataset itself,
+like a set of trials
+that you're going
+to be adapting to
+in the context of some policy.
+Another word for this is
+sometimes in-context learning
+or few-shot learning.
+Now, for this to work, for
+the first scenario to work,
+you must have very similar
+source and target tasks.
+Whereas, in some ways, things
+get a little bit easier
+and a little bit harder
+for number 2 and number 3.
+They get easier in the
+sense that you no longer
+have to have an
+extremely similar task.
+You, instead, just need to
+have a distribution of tasks
+and be similar to that
+distribution, such
+that conceivably, the new task
+that you're trying to solve
+should be within the
+distribution of the task
+that you've seen
+during training.
+It gets a little bit harder
+because you do actually
+need a number of training tasks,
+not just a single training task,
+in order to get
+effective transfer.
+OK, before we jump into
+meta-RL, let's just
+look at a couple few-shot
+learning examples outside of RL,
+and then go back
+to the RL setting.
+So actually, I
+picked this example
+so that it's not trivial.
+There's other test data points
+that are much, much easier.
+Cool.
+So that's the essence of a
+few-shot image classification
+problem, where you have a
+small number of data points.
+And your goal is to
+classify a new data point.
+And typically, if you were to
+train from scratch on just six
+images, you'd have
+no hope of being
+able to learn a
+classifier, especially
+on high-dimensional images.
+But the way that
+meta-learning works is you
+can construct other tasks for
+the machine learning system
+to solve that have
+a similar structure,
+like other image
+classification tasks,
+train it to be able to take
+as input a training dataset
+and a query image or a test
+input, and then predict a label.
+And basically, constructing
+each of these few-shot learning
+problems as a data
+point themselves.
+Now, another example of
+few-shot learning outside
+of reinforcement
+learning is in-context
+learning in large
+language models.
+And what this looks like
+is, here's just one example.
+There's lots of examples of
+different tasks you could do.
+In this case, the goal is, given
+a sentence that's poor English
+input, like, "I eated
+the purple berries,"
+output good English input like,
+"I ate the purple berries."
+It gives it, in
+this case, I think
+four or three different
+examples of input-outputs.
+This is the training dataset.
+And the goal is for
+a new input to be
+able to predict a good
+output for that example.
+So here's another example of
+a few-shot learning problem.
+And again, language
+models get things that
+look like this during training.
+One thing that's a little bit
+special about language models
+is that this sort of
+in-context learning,
+you don't explicitly set up
+your training dataset exactly
+to match all of this.
+And it turns out that a lot
+of the statistics of data
+on the internet
+leads to this ability
+to react to these few-shot
+examples effectively.
+This is actually
+just a base model.
+I think this is from GPT-3.
+And so even without any
+additional supervised training,
+you get something like this.
+It's not perfect.
+It doesn't work all the time.
+But this is another example
+of few-shot learning.
+And then in each
+of these examples,
+you can think of
+the goal as trying
+to train this model that
+takes as input a training
+dataset and a new
+example x, and makes
+a prediction for that
+example, based on both x
+and on the training data.
+Yeah, so the question is, in
+in-context learning in LLMs,
+typically you achieve
+this sort of model,
+this few-shot learning
+through prompting,
+by putting the
+dataset in a context
+or as part of the
+prompt into the model.
+Is that also how it
+works in meta-RL?
+Generally, yes, we're
+going to be looking
+at that case in meta-RL.
+There are actually other methods
+where you can accomplish this,
+actually, with gradient
+updates as well,
+or with something that looks
+like nearest neighbors.
+The most successful method in
+meta-RL looks like prompting.
+And so that's what we'll
+be talking about today.
+Now, let's look at
+a meta-RL example.
+So, say that we want
+to navigate mazes.
+And so our goal is, we
+want to solve a new maze.
+And we're an agent
+that's in this maze.
+We don't get to see.
+We actually don't even
+see this top-down view.
+Maybe we just have a
+first-person perspective.
+And our goal is, because this
+is a reinforcement learning
+problem, it's not just
+about outputting a label.
+It's actually also about
+collecting experience
+in the environment.
+And so the goal
+is, we'd like to be
+able to very quickly solve a
+reinforcement learning problem.
+And we'll frame this as
+collecting a very small training
+dataset of one episode
+or a few episodes.
+In this case, it's
+exploring the maze,
+trying to find
+where the goal is.
+And it starts in the middle
+right here, explores over here.
+And it eventually goes
+to the goal, right here.
+And after we explore,
+we'd like to be
+able to have a policy
+that is able to solve
+the maze, in this case,
+just with a single episode
+of experience.
+And again, if you were
+to do this sort of thing
+from scratch that
+tries to use just
+a single episode of
+experience to get
+a policy that can
+solve the task,
+this would be very, very hard.
+And instead, the way
+that meta-RL frames
+this is by trying to
+construct examples
+and trying to construct a
+set of training environments
+that facilitates this
+kind of fast adaptation.
+Now, in comparison to the
+supervised learning scenarios,
+like I mentioned,
+we're now going
+to be faced with this
+exploration problem.
+We're not just given
+a training dataset
+and then make a prediction
+based on that training dataset.
+We're actually constructing
+the training dataset ourselves
+through exploration.
+And we need to figure
+out how best to trade-off
+between exploring in the
+environment versus being
+able to then solve the task; and
+how much time we should spend
+exploring versus
+trying to exploit what
+we know about the environment.
+So this is our goal.
+This is what we'd like to
+be able to do at test time.
+We'd like to be able to
+quickly learn a new maze.
+Then, to set our agent up for
+success at meta-training time,
+before we try to
+adapt to a new maze,
+we'll try to learn how to
+efficiently explore and solve
+many other MDPs
+that are related.
+In this case, they can be other
+mazes like this, and so forth.
+And these are each of
+the tasks that we'll
+be training on in order
+to adapt to a new maze.
+Cool.
+The other thing, one
+key assumption here
+is that you need to have--
+these new MDPs
+can't be completely
+different from the MDPs
+that you saw before.
+And the way that we can
+think about that is we
+should have some sort of
+distribution over tasks.
+And these new MDPs that
+we're trying to adapt to
+should be within the
+distribution of tasks
+that we saw during training.
+Maze navigation is one
+example of a meta-RL task.
+There's lots of other
+scenarios as well.
+So one useful scenario
+that we've seen in robotics
+is being able to
+adapt very quickly
+to different terrains, different
+slopes for legged robot systems.
+This is actually a really
+small legged robot,
+but it's also applicable to
+larger legged robots as well.
+And sometimes you
+might actually be
+training on different
+environments in simulation
+and then adapting
+in the real world
+as just another environment.
+You could also have
+object manipulation
+as different tasks, as well,
+in manipulation scenarios.
+And then there's also a number
+of language modeling scenarios
+where this is quite applicable.
+One example where
+meta-RL has been relevant
+is adapting to different users
+with different preferences,
+where you give examples
+of the kinds of responses
+that they want in context.
+And we'll also later see an
+example in reasoning as well.
+Yeah, so the question is,
+what is the key difference
+between this sort
+of meta-RL approach
+and transfer learning
+where you're training
+and then fine-tuning?
+And there's a couple
+of ways to view it.
+One is that during
+the training process,
+you're actually explicitly
+optimizing for transferability.
+You're optimizing
+for the ability
+to adapt with a small dataset.
+And as a result of that, you
+can get much faster transfer.
+You can use a much
+smaller dataset.
+And there are examples
+of, if you use fine-tuning
+versus if you use few-shot
+in-context learning
+or few-shot
+adaptation, you can get
+much more efficient transfer.
+So you get much
+greater efficiency.
+And the way that you
+get that is by providing
+the algorithm with a number
+of different training tasks,
+rather than just one training
+task that you're feeding off of.
+So slightly more
+formally, we've talked
+about multi-task
+learning, where you
+try to solve multiple
+tasks at once.
+You might try to transfer
+to a new task from that.
+But you're not optimizing
+for transferability.
+With transfer
+learning, you're trying
+to solve some target task
+after solving some source
+task, typically by fine-tuning.
+Whereas, in the
+meta-learning problem,
+we have experience from
+some training tasks
+and we want to very
+quickly solve a new task.
+And in the reinforcement
+learning scenario,
+these tasks are going to be
+MDPs, each with their own state
+space, action space,
+dynamics, reward.
+And we see meta-learning
+and supervised learning.
+And also there's a nice
+analogy between the two,
+where the main
+difference with meta-RL
+is this exploration challenge.
+And then diving
+into some notation
+here, we can view the
+meta-RL problem as basically,
+with a small amount
+of experience,
+be able to learn a policy
+that can solve the task,
+and also to be able to collect
+this experience itself.
+And so this training
+data, there's
+two different variants
+of the meta-RL problem.
+In the first case, this can
+correspond to multiple rollouts
+from some exploration policy.
+And instead, you
+could also consider
+this to be just actually a few
+time steps from your exploration
+policy.
+There's a bit of a continuum
+between these two scenarios.
+You might want to
+be able to adapt
+both online with
+a few time steps,
+and with more and more episodes,
+with basically a growing
+dataset, but writing
+it explicitly
+as two different things
+here to make it clear
+that there are some problem
+settings where you want
+to adapt really quickly
+online within an episode,
+and other scenarios
+where you're caring
+a lot more about multiple
+trials of experience.
+The last thing that
+I'll mention is
+I've been writing it as an
+exploration policy and a task
+policy.
+There are some scenarios
+where you might train these
+and these might be
+separate networks.
+There's other
+scenarios where these
+could share parameters and
+basically be the same network.
+So they don't necessarily
+need to be separated
+like they are on this slide.
+And then the last
+thing is, insofar
+as we're learning
+this policy that's
+conditioning on a
+training dataset,
+you can view this as
+a task identifier.
+And from that
+standpoint, we're then
+more in a setting that looks
+like multi-task learning.
+So the question is, when
+I say that the test has
+to be in distribution
+compared to the training task,
+does that mean it has
+to be the same as one
+of the training tasks?
+Or can it be a bit different?
+It can be a bit different.
+And we'll see examples where
+it is different as well.
+So let's talk about how
+to address these problems.
+So the good news is that there's
+a very conceptually simple way
+to address this general
+problem statement.
+The bad news is that it can
+be challenging to optimize,
+in practice.
+And we'll talk about some of
+those challenges in a bit.
+But conceptually,
+we can essentially
+train a sequence model.
+It could be a
+transformer, any sort
+of neural network with memory,
+a recurrent neural network.
+And use this, where
+basically everything that's
+being passed into this policy
+corresponds to the experience
+that the agent has collected.
+And so you're basically
+conditioning your policy
+on this training dataset.
+And then having a policy output
+actions based off of the data
+that it's seen so
+far in that MDP.
+And then training the
+sequence model policy
+across all of the set of
+training MDPs that we have.
+So here, this is
+the current state.
+This sort of context
+or training dataset
+is going to get larger
+over time as we collect
+more experience in a given MDP.
+Now, a question for you.
+There are a couple
+of differences
+between this and simply
+using a recurrent policy
+in a standard RL setup--
+or using a sequence model
+in a standard RL setup,
+like using a transformer.
+Does anyone have
+thoughts on what
+are some of the
+differences between what
+I'm starting to talk about here
+and simply using a sequence
+model as your policy
+in a standard RL setup?
+Memory.
+Yeah, so typically in RL,
+we often don't use memory.
+And here we're using memory.
+So that's one thing.
+But compared to if we had used
+memory in a standard RL setup,
+what else is different here?
+Yeah, so one thing
+that we're doing here
+is we're actually passing the
+reward as input into the memory.
+And that's a little bit
+different in the sense
+that you're actually
+using reward information
+from the current MDP in order to
+try to get better at the task.
+This also means that
+actually at test time
+or when we're trying
+to adapt to a new task,
+we're also going to
+be using the reward.
+And in RL settings,
+oftentimes we
+don't necessarily assume that we
+have the reward when we're just
+deploying our policy.
+So that was one main difference.
+Any other differences?
+Yeah, so the question is,
+why are we also not passing
+as input the actions?
+You can pass as
+input the actions.
+It depends on, if your policy
+is mostly deterministic,
+then information
+about past actions
+could be stored in
+the memory as well.
+Because you were predicting,
+you generated those actions.
+And so in those cases, you
+don't need the actions.
+If you have a more
+stochastic policy,
+then that sampling process won't
+be necessarily in the memory.
+And in those cases, it's good
+to pass as input the actions
+as well.
+Right, so the note was that the
+states and actions might not be
+the same for different tasks.
+And so one of the
+things that's different
+here is we're actually training
+this model across MDPs.
+And so you might have a
+different state and action
+space.
+You might have
+different dynamics.
+And so one of the big
+differences compared
+to standard RL is that actually
+we're training this across MDPs.
+And there's going to be
+differences in states, actions,
+dynamics, and rewards
+across those MDPs.
+Cool.
+There's actually also
+one other difference.
+But the first thing
+that we talked about
+is, we see that the
+reward is passed as input.
+You might also be
+passing as input actions.
+And this is trained
+across multiple MDPs.
+And that's quite different
+from the typical reinforcement
+learning setup.
+Now, the second thing
+that's also different
+is that your memory
+is also going
+to span across multiple
+episodes, potentially.
+If you're trying
+to actually learn
+not just within an episode,
+but learn across episodes, then
+rather than having your current
+policy simply have memory
+within an episode, you
+will be maintaining
+any sort of hidden state
+or any sort of memory,
+not just within your episode,
+but across multiple episodes.
+Maybe I'll leave this up
+here in case it's useful.
+In terms of the algorithm,
+what this looks like is,
+we will sample a task or an MDP.
+So maybe let's call this MDP Ti.
+And then we're going to
+run our policy in that MDP
+for multiple episodes.
+So let's say, run pi in our
+task or MDP for n episodes.
+So this is rolling
+out this right here.
+And it's going to have memory
+across those N episodes.
+And then, optionally, if we're
+using an off-policy algorithm
+with a replay buffer, then
+we would store the episodes
+in a replay buffer.
+And then lastly, we're
+going to update our policy
+to optimize the rewards.
+And so we will be updating pi.
+And specifically, we are
+going to be maximizing
+the sum of rewards, like
+the typical RL objective,
+but it's going to be across
+all of the tasks in our task
+distribution.
+So we'll have some sum over
+tasks i, in some mini-batch,
+and then also the
+expected sum of rewards.
+So this would be an
+expectation under our policy
+of the sum of rewards
+over different time steps.
+Now, this is a pretty
+simple algorithm.
+It looks a lot like
+reinforcement learning,
+where simply the main
+thing that's different
+is that we're going to be
+doing this optimization
+across multiple MDPs.
+And our policy will have memory
+across a set of episodes.
+Usually N, usually this is
+going to be pretty small.
+Because if it was large, if
+it was like 1,000 episodes,
+it's going to be hard to store
+that in the context of a model,
+just because your memory will
+start to increase substantially.
+So what that looks like is
+you have this neural network.
+It has multiple episodes.
+And then you'll be rolling
+it out for multiple episodes,
+taking actions, and then you'll
+start collecting for a new MDP.
+So you'll cut your
+memory when you
+start to collect for the
+new MDP that you've sampled.
+So you sample a task, roll
+out the policy for n episodes.
+In this case, n equals
+2 in this diagram,
+under the dynamics and
+reward function for that MDP.
+Then, store in
+your replay buffer.
+Oftentimes, you'll have a
+replay buffer for each task.
+And then update your policy to
+maximize the discounted return
+for all tasks that
+you've collected for.
+And then repeat this
+process in order
+to continuously
+get a policy that's
+better at doing this
+in-context adaptation.
+Yeah, so that's a good question.
+So the question is,
+does it know that it's
+starting a new episode, like
+at this position right here?
+You could use a
+position encoding.
+In practice, you're also
+going to probably have
+a discontinuity in your state.
+And so you might
+just be able to see
+that your current state is very
+different from the past state.
+And that might also tell it.
+But yeah, you could
+have some sort of token
+to also tell it that
+it's a new episode.
+The question is, are
+we randomizing S1
+across the different episodes?
+When you're rolling
+out the policy, when
+you start a new
+episode, that will
+be a different sample from the
+initial state distribution.
+And so, S1, I guess it's
+maybe a little confusing.
+S1 here might be
+different from S1 here.
+S2 is very likely different
+from S2 here, and so forth.
+Cool.
+And then the outcome
+of this is you'll
+have a policy that should be
+able to adapt across episodes
+with experience
+from those episodes.
+And it should be
+able to, on its own,
+actually decide on the best
+exploration/exploitation
+trade-off.
+And the best
+exploration/exploitation
+trade-off is going to depend
+on the number of episodes
+that you give it.
+If N is 2, then it
+has two episodes
+to maximize rewards as
+quickly as possible.
+And if and if it
+needs to explore,
+it'll explore as
+quickly as possible.
+If N is a little bit
+larger, then you've
+given it a little
+bit more budget--
+it still wants to explore
+quickly and efficiently,
+if it can, because then it
+can get higher rewards later.
+But it might have slightly
+more budget to explore.
+And so one of the things that's
+pretty cool about this, when you
+optimize this whole
+thing end-to-end,
+is that it will make
+decisions on whether or not
+to explore or to exploit.
+And it'll make those
+decisions in a way
+that's informed by whatever
+gets it the highest reward.
+Then, after this
+training process,
+after you've trained
+it on multiple MDPs,
+you can actually then roll
+out your policy in a new task.
+So at test time, you will
+then give it a new task.
+So you're in some new MDP, Tj.
+And you can take the
+policy that was trained
+and roll it out in that MDP.
+So roll out pi in that MDP
+with those states, actions,
+and rewards, and so forth.
+And so sample new task,
+roll out that policy.
+You want to roll this
+out for up to N episodes.
+If you roll it out
+for longer, all bets
+are off, in terms
+of what it might do.
+You could also have a
+variable number of episodes
+that you use during
+training, if you
+want it to be able to handle
+variable numbers of episodes.
+But yeah, this would be like
+for N episodes or for up to N
+episodes.
+Cool.
+So in terms of actually
+implementing this,
+there's a few
+different architectures
+and optimizers you could use.
+So you could use a vanilla
+recurrent neural network.
+Some of the first works on meta
+reinforcement learning did this.
+And they used algorithms.
+This is, I think, before PPO
+existed or was introduced.
+They used an algorithm
+that's somewhat
+similar in nature, in terms
+of the assumptions, as PPO.
+There's is also a paper that
+before transformers were really
+popular, used self-attention
+and also 1D convolutions.
+You can think of it
+sort of a transformer.
+It optimized this.
+And you can actually
+note that they do also
+pass the actions as input
+in this particular scenario.
+One other thing, we'll talk
+about this a bit more later.
+But you can also, instead of
+using a transformer or an RNN,
+you could also use a feedforward
+network and then average across,
+average the embedding.
+This is sometimes
+called a deep set.
+And it has its own benefits.
+It's actually pretty
+computationally fast,
+because you can
+parallelize everything.
+And also, actually,
+it's surprisingly
+expressive for what it can do.
+So let's look at some examples.
+So we'll look at this example
+that was using something that's
+a bit like a transformer.
+And they were
+trying to learn how
+to visually navigate a maze--
+specifically, new mazes that the
+agent had never been in before.
+They trained it on
+1,000 small mazes.
+And they tested it
+on held-out mazes
+that the agent
+hadn't seen before.
+And they tested it actually
+both on small mazes
+and on large mazes.
+So this is actually
+a scenario where
+they were able to see some
+extrapolation to tasks
+that were outside of
+the distribution of what
+it was trained on.
+So this is what it looks like.
+So this is at test time.
+And you can see that
+the agent, it just
+is exploring around
+this environment,
+looking for where the goal is.
+It only gets these
+images as input.
+And on the right, we can see
+the trace of the exploration.
+So it started in the
+middle, explored over here,
+it explored down here, and
+eventually found the goal.
+And then after that
+exploration episode,
+we still have memory from
+that previous episode.
+And using that memory,
+it's able to then
+be able to go
+directly to the goal,
+based on this
+experience in that maze.
+So watching that again, whoops.
+This is the first episode.
+And so this is the first episode
+of rolling out this policy.
+It's choosing to explore
+because it doesn't know
+where the goal is in this maze.
+It also doesn't know
+the layout of the maze.
+And so we see it explore here.
+And then in the
+second episode, it
+chooses to go
+straight to the goal
+because it decided that
+it already explored
+the extent of the maze.
+Here's an example
+in a larger maze.
+So the agent starts over here.
+And it explores in the top
+part, doesn't see the goal.
+It realizes that
+this is a dead end.
+It doesn't need to
+explore it further.
+And then it ends up
+seeing the goal here.
+And then after that, it
+goes straight to the goal
+after that first episode.
+And so in this training
+example, N equals 2.
+So they trained it just to be
+able to explore and exploit
+after two episodes.
+Cool.
+And then quantitatively, they
+looked at the average time
+to find the goal in
+both the first episode
+and the second episode.
+They compared to using a random
+policy, which occasionally does
+happen upon the goal,
+and using an LSTM
+architecture and this more
+self-attention and convolution
+architecture.
+And they found that with
+the small mazes, even
+within the first episode, they
+were able to do a lot better
+than random.
+That's because it's actually
+exploring efficiently and then
+eventually often
+finding the goal.
+And then it's able to
+find the goal faster
+in the second episode,
+after learning
+where the goal is and about
+the maze in the first episode.
+We also see that it does
+significantly better
+than a random agent
+in the large mazes.
+And in both cases, using the
+self-attention architecture
+is better than using an
+LSTM architecture, which
+is another memory architecture.
+Yeah, so the question is, is
+the reward to find the goal?
+And if so, why is it optimized
+to find it as fast as possible?
+So the reward is
+to find the goal.
+I don't remember the exact
+structure of the reward.
+It's optimized to
+find it quickly.
+There's a couple of
+ways that lead to it
+to optimize to find it quickly.
+In this particular
+case, I believe they're
+using discounted rewards.
+And so the discount factor,
+instead of being like this,
+you're optimizing for
+discounted rewards.
+So there's a discount
+factor right there.
+And the discount
+factor is not 1.
+It's probably like 0.95 or 0.99.
+And so that objective
+will be higher
+if you get the reward
+sooner rather than later.
+Yeah, so the question is, what
+is passed as input to the model?
+Yeah, exactly, so it's video
+from the previous episode,
+the actions from the
+previous episode.
+Basically, everything up
+until the current time step,
+which is any previous
+episodes and everything
+so far in that episode.
+So it's all of the video frames
+and then also all of the actions
+and all of the rewards as well.
+Yeah, so the question is,
+where in the algorithm
+are we exploring exploration
+versus exploitation?
+And, here, it basically
+all comes down
+to this objective
+for both of them.
+And the insight is that
+the agent doesn't know much
+about the task.
+It doesn't know.
+Well, depending on the
+training tasks, in this case,
+it doesn't know
+what maze it's in.
+It doesn't know the structure of
+the maze and that sort of thing.
+And so actually it's not
+able to get high reward
+until it starts to
+explore, until it finds
+where the goal is, for example.
+And so by optimizing just
+end-to-end for reward,
+you're incentivizing it to--
+it's not going to get high
+reward without exploration,
+essentially.
+Yeah, we will talk about
+that soon in a few lectures.
+But yeah, there's
+lots of problems here.
+Because when your policy
+is bad and you're not
+getting good rewards, it ends up
+being very difficult to figure
+out a good policy.
+Yeah, so the question
+is, instead of
+doing what we're doing,
+could we just do regular RL
+and then do test-time training?
+So in some ways, language
+models with recurrence,
+it depends on how you
+view it, but in some ways
+you are already doing
+something that kind of looks
+like meta-RL, if it has memory.
+It basically has the
+ability to adapt,
+depending on the task
+that you're giving it.
+And then one important
+component is,
+if you're doing
+test-time compute,
+you're allowing it to actually
+think through the problem.
+Now, test-time compute
+is a very broad term.
+So on the next slide, we'll
+talk about how meta-RL is
+relevant for test-time compute.
+So let's talk about that now.
+So say that we're solving
+different math problems.
+This is the canonical language
+model example, especially
+for test-time compute.
+And one example
+of a math problem
+is trying to show
+this inequality.
+This is actually the same, I
+think, possibly the same math
+problem that [INAUDIBLE]
+showed in his lecture.
+And in some ways, trying
+to solve this math problem,
+you can think of it
+in some ways as an MDP
+itself, in that there's
+different strategies that you
+might try to take to
+solve this math problem.
+And you don't know, a priori,
+which strategy is going
+to help you solve that problem.
+Where do you start?
+Do you try to, for example,
+do you guess and check?
+Do you try to eliminate terms
+in the equation and so forth.
+And ideally, you'd
+be able to explore
+those different strategies and
+then produce an answer based off
+of the best strategy.
+So DeepSeekR1 is
+a language model
+that uses test-time compute in
+order to solve math problems.
+And if you give R1 different
+math problems to solve,
+if you give it a hard problem,
+it thinks for a while.
+At some point, it cuts
+off its test-time compute
+because it doesn't
+want to be thinking
+for too long for the user.
+And then it outputs some
+explanation for the user.
+And then also, if you give
+it a really easy problem,
+like 2 plus 2 equals
+question mark,
+it actually also kind of thinks
+through what the solution might
+be and then gives a step-by-step
+explanation for the answer.
+And so this is something that
+is clearly somewhat wasteful
+to do, probably, unless this is
+somehow a challenging problem.
+And so you can actually
+use this notion of meta-RL
+to try to optimize
+for test-time compute.
+And if you know
+that you're going
+to be doing test-time
+compute at test time,
+then basically bring that
+into the training process
+and encourage the model
+to efficiently use
+that test-time
+compute, efficiently
+explore different
+strategies, such that,
+ideally, on easy
+problems, it is trying
+to output an answer as
+quickly as possible.
+And for harder
+problems, it's thinking
+as much as it needs, including
+possible exploration,
+until it then tries to exploit
+and give an explanation.
+And so this paper here was
+a paper that explored that.
+They found that when they were
+trying to explicitly optimize
+for effective use of
+test-time compute,
+they were able to get higher
+performance with the same number
+of tokens, and also actually
+reduce the number of tokens
+needed to get the same
+performance so that you aren't,
+for example, using up a ton
+of tokens on simple problems.
+So that's a use case
+of meta-RL or ideas
+for meta-RL in language models.
+Now, a quick
+digression, and this
+will actually lead us
+into a different way
+of thinking about meta-RL.
+So we've talked about
+multi-task policies
+where we condition
+on a task descriptor.
+So maybe we want
+a robot to stack
+in different
+locations or a robot
+to walk in different directions.
+And we've talked about policies
+that take as input experience
+and then generate actions
+based off of that dataset.
+And if you were to think about
+how this relates to multi-task
+learning policies, one
+way to think about it
+is that we're just doing
+multi-task learning,
+but now this data is
+our task identifier.
+And this is something that
+actually changes within a task.
+So the analogy is not perfect.
+It's not actually
+fixed for a given task.
+You can think about it as
+conditioning on the task,
+insofar as experience tells
+you what the task you're
+trying to do is.
+Cool.
+And if you think about
+goal-conditioned policies,
+rewards, you can
+also view meta-RL
+as kind of a generalization
+of goal-conditioned policies.
+Because there's a set of MDPs
+that are goal-reaching MDPs.
+And then there's a
+broader set of MDPs
+that are reward-maximizing MDPs.
+And then the other way
+to think about this
+is instead of trying to
+generalize to new goals,
+you can think about meta-RL as
+trying to adapt to new tasks
+with a small amount
+of experience.
+And this would be the difference
+between zero-shot generalization
+and the goal-conditioned
+case and k-shot
+generalization with k
+episodes or k time steps
+in the meta-RL case.
+So we've talked
+about how we could
+view the experience as the
+task descriptors [INAUDIBLE]
+the prompt, essentially.
+But there's actually
+another way to look
+at it, which is that if we think
+about this policy with memory
+that has the past memory
+and then our current policy,
+if we were to think about what
+information is being passed
+right here to the policy;
+this information is presumably
+information about the task.
+And specifically when zi
+isn't part of the state,
+there's ambiguity about what
+MDP you're trying to solve.
+And you're using that
+experience to try to identify
+the MDP that you're in.
+And you can think
+about it as the policy
+needs to infer the task.
+It needs to infer specifically
+some sort of latent task
+descriptor from its experience.
+And so another way
+of looking at meta-RL
+is something where you
+are using your experience
+to infer what the task
+is, and then conditioning
+your policy that's acting
+at the current time
+step on your current
+estimate of what the task is.
+So you can think
+about it essentially,
+as meta-RL is trying to explore,
+to infer this unknown task,
+and then perform the task.
+I see.
+So you're asking, because we're
+going to be inferring the task
+identifier, why don't we just
+give it to the learning system?
+Yeah, so the main
+reason is that if we
+don't have a compact
+way of describing
+the task that the
+agent is doing, then
+it may actually be challenging.
+If we don't have a good
+way to represent it,
+then we're not sure what
+to pass into the policy.
+And if we don't have a good
+way of representing it,
+we can always resort
+to just using an index,
+saying this is task 1, this
+is task 2, this is task 3.
+But if you do that
+and then at test time
+you say this is
+task 100, it's not
+going to be able to
+generalize in that scenario
+and do anything about that task.
+Whereas, conditioning
+on experience
+is something that
+could generalize,
+where it can actually be able
+to use the more continuous space
+of states, rewards,
+and so forth in order
+to figure out a new task.
+So it comes down
+to representations.
+And you could view this as
+learning a z representation,
+like learning like a
+continuous vector that's
+representing our tasks.
+Now, in multi-task RL,
+we talked about how
+if you formulate
+some state space,
+that it corresponds
+to the original state
+space and the z vector.
+Then, you get this
+aggregate MDP.
+And so the result of this
+is still an MDP, just with
+a new state space
+and new dynamics
+to account for this
+new state space.
+And so there's a question
+of, for meta-RL, is there
+an aggregate MDP?
+And this would be for meta-RL.
+And in this case, we're not
+providing zi in the state.
+And so actually,
+inherently, it's
+actually partially observed.
+You don't actually
+know what the task is.
+You're trying to explore and
+figure that out from experience.
+And so there isn't
+actually an aggregate
+MDP that you can think about.
+Instead, if you wanted
+to try to aggregate it
+into a single
+decision process, it
+would have to be a partially
+observable MDP, or POMDP.
+And it's actually a
+special kind of POMDP,
+where we talked
+about before, where
+you have some partially
+observable Markov decision
+process where you can't actually
+observe S. And you have actions.
+And instead of observing S,
+you observe some observations
+that are some function of S.
+That would be the
+general POMDP case.
+One thing that's a little bit
+special about the meta-RL thing
+is the only thing that you can't
+observe is what the task is.
+And so it's basically a
+POMDP where this hidden state
+space can be defined as the
+observation and the task
+identifier.
+And if you can infer the task
+identifier from experience,
+then you can essentially
+view it as a way
+of trying to infer the
+underlying state space as a way
+to solve the POMDP.
+So this is basically
+another way of looking
+at the meta-RL
+problem, as basically
+like a partially observable
+Markov decision process.
+Now, there's a meta-RL method
+that we actually talked about.
+I showed an architecture diagram
+that was actually explicitly
+trying to output z's, And it
+was actually outputting some
+distribution over z's.
+Because at the very
+beginning, you actually
+don't know what z is.
+You have some kind of prior
+belief over what z is.
+And then as you get
+more experience,
+you're going to have a better
+and better estimate of what z
+is.
+And so if you represent
+a distribution
+over this kind of latent
+task representation,
+then you can do cool
+things with that.
+And we'll see that in a bit.
+So this particular algorithm is
+looking at continuous control
+problems where different
+tasks correspond
+to walking in
+different directions,
+running at different velocities;
+and also different physical
+dynamics-- so being able to
+adapt when the friction is
+different or the inertia of
+the robot system is different.
+The other thing was
+that everything,
+what we saw before was using
+a PPO-style algorithm, which
+is somewhat off-policy
+but not very off-policy.
+It's more on-policy than
+off-policy in some ways,
+because it's not using a
+replay buffer of past data.
+And with meta-training
+algorithms,
+you can adapt really,
+really quickly.
+But the training process
+might be really slow
+if your base algorithm
+is fairly on-policy.
+And so as a question,
+hopefully, this
+should be a
+straightforward question,
+if your base algorithm for
+updating the policy at step
+four, if that's an
+off-policy algorithm,
+do you expect that to be more
+or less efficient than if you
+used an on-policy-based method?
+Yeah, more efficient.
+So if you're using
+a replay buffer
+and using that replay buffer to
+update your policy with memory,
+that should be a lot more
+data efficient during
+this meta-training process.
+At test time, when
+you're adapting,
+the efficiency is
+going to be similar.
+So this is just talking
+about the efficiency
+for actually training this
+in-context learning system.
+And so if you actually look at
+the curves over this training
+process right here, the amount
+of data that you need in
+order to meta-learn in
+these kinds of systems.
+You can see that
+in blue, if we're
+using an off-policy algorithm
+with a replay buffer,
+it's a lot more data
+efficient, learns
+a lot more quickly
+than RL2 and ProMP.
+I want to say all three
+of these are using base RL
+algorithms that are more
+on-policy and more like PPO,
+for example.
+Yeah, so the question is, can I
+elaborate on what specifically
+is in the replay buffer?
+Well, so each replay buffer will
+have a sequence of episodes.
+Basically, each thing
+in the replay buffer
+will be a sequence of
+episodes from a given MDP.
+And that includes the states,
+the actions, the rewards.
+And when you optimize
+this, oftentimes, you'll
+have a different
+replay buffer per task
+so that you can sample a
+task here and then optimize
+the reward for that task using
+the memory from that trajectory.
+Typically, the buffer,
+instead of just storing
+states and actions, you're
+storing full trajectories
+together because you're going to
+be training a model with memory.
+And you need to be able to
+provide that trajectory as input
+to the policy.
+Cool.
+So summary so far, we've talked
+about using these models to be
+able to adapt to new MDPs.
+They're general.
+They're quite expressive.
+And there's also a variety of
+choices in the architecture.
+One thing is they're
+hard to optimize.
+Because actually it
+needs to figure out
+how to adapt from data.
+And there's lots of
+different input features
+here that you could try
+to pay attention to.
+And the model has to figure out
+what about those input videos
+that you're passing as input
+for the maze navigation
+is useful when you're then
+trying to exploit and learn
+a policy.
+Because you're passing in
+so many things as input,
+it's such a big model, it
+can be hard to optimize
+for that reason.
+And it can also be hard to
+optimize from an exploration
+standpoint, which we'll
+talk about right after this.
+And then the sample efficiency
+of the meta-learning process
+is going to be inherited from
+whatever optimizer you use
+in this last step right here.
+And so if you use something
+like vanilla policy gradient,
+it'll be extremely
+data inefficient.
+If you use something
+like PPO, it'll
+be more stable, but
+still fairly inefficient.
+If you use something
+like SAC, it
+will be probably a
+lot more efficient,
+although you might need to
+tune the hyperparameters more.
+So now let's talk a
+bit about exploration.
+By exploration, I
+mean exploration
+in context,
+exploration when you're
+trying to explore a new task.
+What we've talked
+about so far is
+trying to optimize
+end-to-end for exploration
+and exploitation, with respect
+to the final sum of rewards.
+Simple, in principle,
+it could actually
+yield the optimal
+exploration-exploitation
+trade-off because you're
+optimizing directly
+for the sum of rewards.
+And that's really, really nice.
+But it can be a really
+challenging optimization.
+And let's talk about
+why that's the case.
+So let's look at
+a running example.
+So say that you have some
+robot that looks like this.
+And the robot needs
+to find something.
+And there are some
+hallways that the robot
+might need to go
+down in order to try
+to find the thing that
+it's trying to find.
+And different tasks correspond
+to different locations
+of the object that
+it's trying to find.
+So in one task or
+in one scenario,
+it might be all
+the way over here.
+In another scenario, it might
+be over here, and so forth.
+And to help the robot
+out a little bit,
+we're going to introduce
+one other thing, which
+is that there's going to be
+some piece of paper over here.
+And that paper actually says
+where the object is in words.
+Maybe it's trying to find
+a replacement light bulb
+or something like that.
+And it says, the light bulb
+is in the fourth hallway
+at the end.
+OK, so here's our robot.
+Here are the hallways.
+Different tasks
+correspond to navigating
+to the ends of the
+different halls.
+And we have some information
+about where to go.
+And if we look at
+that, information
+will be in the state about where
+the reward is for this task.
+Now, how do we actually
+learn how to explore?
+So say that we were trying
+to collect trajectories
+and trying to learn
+how to explore such
+that we can get good behavior.
+Let's start with the scenario
+where we sampled a task.
+And maybe the task was to go to
+the end of this hallway right
+here.
+And say that we
+actually just got lucky.
+We collected a trajectory
+that just went straight
+to that reward.
+Now, in some ways,
+that seems good
+because we got reward for that.
+And so that gave us some reward.
+And that's optimizing
+the objective
+that we care about ultimately.
+But the thing that's
+bad about this
+is that the robot got lucky.
+And it doesn't actually know how
+to repeat that in the future,
+because it didn't actually
+explore any other alternatives.
+And so the way that
+we can view this
+is if it goes to the end
+of the correct hallway,
+it'll get positive reward.
+But the context leading up to
+getting that positive reward
+doesn't actually look
+different than any other task.
+It went through here.
+And there's nothing
+that differentiates
+what it did there, which was
+like zero reward, zero reward,
+than if the task, for
+example, had been to go here
+or to go here.
+And as a result, it didn't
+actually learn how to explore
+and it didn't learn how to use
+exploration information in order
+to solve the task.
+And so this trajectory
+might not actually
+be very helpful for
+learning how to explore
+and learning how to exploit.
+Now, let's say that we had
+a different trajectory.
+So we're exploring.
+And let's say that the
+agent, instead of doing that,
+it maybe sampled the same task.
+And it went to the
+end of this trajectory
+and then continued,
+didn't see that,
+and then went to the
+end of this trajectory.
+So that would be good, in the
+sense that it has experience
+that ruled out one task.
+And then it got rewarded
+for a different task.
+And so it's going
+to be teaching it
+something about an exploration
+strategy that works.
+The downside is that exploration
+strategy is quite suboptimal.
+Because it would have been a
+lot more efficient to first look
+at the instructions and then
+go to the correct position.
+And so it's somewhat
+good, somewhat bad.
+It provides signal on a
+suboptimal exploration
+and exploitation strategy.
+And so it's perhaps better
+than the first trajectory
+that it did, but
+still not ideal.
+Now, let's consider
+a third trajectory.
+Say that we are again collecting
+data for the meta-RL process.
+And let's say that
+the agent decided
+to look at the instructions
+and then just stay and watch
+the instructions.
+Does anyone have
+thoughts on whether that
+would be a useful trajectory or
+not for the learning process?
+Yeah, exactly.
+So it did something
+useful, but it doesn't
+get any reward for that.
+It only gets reward if it
+did that and then went here.
+And so that's also not going to
+be very useful for the learning
+problem.
+And basically, in the
+problem like this,
+you're only going to actually
+be learning something
+useful about how to explore and
+exploit if you successfully did
+the proper exploration behavior
+and then did the exploitation
+behavior.
+And if you do them
+in separate episodes,
+then you're not actually
+getting good learning signal.
+And that means that you have
+this kind of sample complexity
+where you need to actually get
+lucky and do both of the two
+things at the same time in
+order to get signal that
+helps you learn the problem.
+So basically, it's hard to
+learn how to explore and exploit
+at the same time.
+Another example of
+this is say that you're
+trying to learn how to cook.
+You have data in
+previous kitchens.
+Your goal is to then be
+able to quickly learn
+how to cook in a new kitchen.
+Now, in order to
+learn how to cook,
+you need to find
+the ingredients.
+And if you haven't
+yet figured out
+how to find the ingredients
+because you have
+bad exploration,
+then you can't learn
+how to cook because you don't
+have the ingredients with you.
+And then you're going
+to get a low reward.
+And then also, if
+you don't yet know
+how to cook because you
+haven't collected experience
+on that, then regardless
+of the exploration you do,
+you're going to get low reward.
+And so you have this
+chicken and egg problem
+between learning how
+to explore and learning
+how to solve the task
+using that information.
+And so there's another way to
+view this coupling problem where
+exploration and
+execution or exploitation
+depend on each other in order
+to be jointly successful.
+So then the way to view
+end-to-end training
+is that it's great
+in that you can
+learn this optimal trade-off.
+But it can be
+extremely challenging
+if you have a hard exploration
+problem, because you
+need to figure out how to
+explore and exploit and get
+learning signal that way.
+The question is, is the
+ultimate challenge here
+that the reward is sparse?
+So it's true that if
+you had a dense reward,
+you'd be in a much
+better place, basically,
+because you wouldn't
+really have to explore.
+Well, you wouldn't
+have to explicitly take
+actions to explore.
+And this really comes
+down to a problem
+when exploration is hard.
+If exploration is easy,
+this really isn't a problem.
+Because you no longer have
+to solve both exploration
+and exploitation.
+You only have to
+solve exploitation.
+So there's a couple
+solutions to this.
+And we'll start to talk
+about one solution today.
+And then on Friday, we'll
+talk about more solutions.
+So the second solution, I'm not
+going to go into complete detail
+on how these work.
+But one solution here is,
+instead of optimizing just
+for end-to-end reward, you can
+add in auxiliary exploration
+objectives to encourage it
+to try to actually figure out
+something more meaningful
+about the task.
+And one approach
+here is to use what's
+called posterior sampling,
+also called Thompson sampling.
+And the way that
+this works is that we
+talked about an algorithm
+where you're trying
+to infer what the task is.
+And if you've collected
+some experience so
+far and you've inferred some
+distribution over your task--
+in this case, zi is now
+some latent representation,
+it's not a representation
+that's known--
+then what you could
+do is you could then
+sample from this
+distribution and then act as
+if that was the correct task.
+So if you have this
+task inference procedure
+and then you also have a policy
+that, given an estimate of z,
+is able to generate actions,
+then what you can do
+is you can sample a z from this
+distribution and then sample
+from this policy.
+This starts to decouple
+the problem a little bit.
+Because if you have policies
+that for a given z do the task,
+then you would basically
+learn an exploration strategy
+that is trying to go down the
+different corridors to find
+the solution.
+So as an example,
+this is actually
+a problem that looks somewhat
+similar to the corridors, where
+you get a sparse reward if you
+reach one of these circles.
+And the different circles
+correspond to different tasks.
+And in this case, we've
+sampled this task right here.
+And first, we sample a z
+from our prior over tasks.
+We haven't collected
+any data yet.
+So we sample z.
+We then run our policy based
+on those different z's.
+And we get exploration
+based on these.
+And then we use that to
+infer what the task might be.
+And so now we know that
+the task is probably
+either over here or over here.
+And so now you'll
+collect trajectories
+that are lighter in color that
+are like this one, this one,
+and going over here.
+And then once you've actually
+collected this trajectory,
+then you should actually have
+a much narrower distribution
+over the task because you
+get positive reward here.
+And so then your z distribution
+will be narrowed out here.
+And you'll execute your
+policy according to those z's.
+And so that's one approach for
+addressing this exploration
+problem--
+basically, learning this latent
+representation over tasks
+and then sampling
+from that distribution
+and acting according to
+your policy for that task.
+So there's some scenarios
+where this is great
+and scenarios where
+this is not so great.
+Does anyone have thoughts on
+when this sort of sampling
+might be bad, like
+what sort of MDPs
+this might not work well in?
+"If you have a
+large action space."
+That could contribute.
+Although, it isn't just having
+to do with the action space.
+Because if you have a dense
+reward and a large action space,
+you'd be probably OK.
+So if these are out
+of distribution,
+certainly things
+will be problematic.
+But even in
+distribution, there's
+scenarios where this exploration
+strategy will be really bad.
+Yeah, so one scenario where
+this might work poorly
+is if you start to
+see some reward,
+but there might actually
+be an even better reward
+in another scenario,
+you might start
+to exploit a little
+bit too early.
+Although, it won't rule out
+those higher reward scenarios
+if it knows that
+there are other tasks
+that might have higher rewards.
+So I guess the scenario
+that I was thinking
+of where I think
+that this can be
+quite bad is actually a lot
+like this scenario right here.
+So the strategy that
+posterior sampling
+will learn in this
+scenario is, instead
+of looking at the
+instructions, it's
+instead going to go down
+each of the hallways
+and try to find the reward.
+Because it's trying
+to explicitly explore
+by executing policies
+corresponding
+to different tasks.
+And this will be especially bad
+if the hallways are very long.
+So if the hallways are
+really, really long,
+take days to traverse,
+then what it's going to do
+is it's going to spend
+days going down one of them
+and then figuring out that
+it's not the right one.
+And then spend days
+going down another one,
+rather than trying to
+seek out information that
+might tell it about what to do.
+So, for example, if these
+goals are very far away
+and there is some
+sign that tells you
+what the correct goal is,
+then this is a bad strategy.
+Now, if that sign doesn't
+exist, then it actually
+would be a good strategy,
+because you have to go down
+those different corridors.
+There's a couple
+of other approaches
+that we can use as well
+that include [INAUDIBLE]
+intrinsic rewards
+that try to encourage
+it to visit new states, and also
+trying to visit states that help
+you distinguish the
+dynamics and reward
+models for different tasks.
+So we try to collect data
+so that our model of rewards
+and states are accurate.
+And with this sort
+of approach, you
+could actually get
+exploration strategy
+that looks a lot more efficient,
+that looks something like this,
+compared to posterior
+sampling, that's
+trying to just sample the
+different trajectories
+for the different tasks.
+There's also scenarios
+where this might be bad,
+if there's lots of distractors
+or really complex state
+dynamics.
+But unfortunately, I
+don't have too much time
+to go over that now.
+So these sorts of
+approaches are easier
+to optimize than end-to-end.
+A lot of them have some
+principle behind them,
+but they can be very suboptimal
+in certain environments.
+And it kind of depends on the
+environment or the domain.

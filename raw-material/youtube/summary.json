@@ -1,0 +1,35 @@
+[
+  {
+    "slug": "stanford-cme295-transformers-llms-autumn-2025",
+    "title": "Stanford CME295 Transformers & LLMs | Autumn 2025",
+    "kind": "video-list",
+    "expected_videos": 9,
+    "raw_vtt": 28,
+    "clean_txt": 9,
+    "metadata_json": 9,
+    "manifest": "raw-material/youtube/course-manifests/stanford-cme295-transformers-llms-autumn-2025.json",
+    "playlist_manifest": "raw-material/youtube/playlists/stanford-cme295-transformers-llms-autumn-2025.json"
+  },
+  {
+    "slug": "stanford-cs224r-deep-rl-spring-2025",
+    "title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025",
+    "kind": "video-list",
+    "expected_videos": 19,
+    "raw_vtt": 57,
+    "clean_txt": 19,
+    "metadata_json": 19,
+    "manifest": "raw-material/youtube/course-manifests/stanford-cs224r-deep-rl-spring-2025.json",
+    "playlist_manifest": "raw-material/youtube/playlists/stanford-cs224r-deep-rl-spring-2025.json"
+  },
+  {
+    "slug": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026",
+    "kind": "playlist",
+    "expected_videos": 8,
+    "raw_vtt": 24,
+    "clean_txt": 8,
+    "metadata_json": 8,
+    "manifest": "raw-material/youtube/course-manifests/stanford-cme296-diffusion-large-vision-models-spring-2026.json",
+    "playlist_manifest": "raw-material/youtube/playlists/stanford-cme296-diffusion-large-vision-models-spring-2026.json"
+  }
+]
