@@ -1,0 +1,2688 @@
+[
+  {
+    "id": "ev-tokenization-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers & Large Language Models.txt",
+    "timestamp_start": "00:02:36.320",
+    "timestamp_end": "00:02:39.560",
+    "paraphrased_claim": "The transcript gives course-level support for Tokenization through discussion cues such as token, tokens, tokenization; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 134
+  },
+  {
+    "id": "ev-tokenization-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "00:35:56.570",
+    "timestamp_end": "00:36:04.010",
+    "paraphrased_claim": "The transcript gives course-level support for Tokenization through discussion cues such as token, tokens, tokenization; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 33
+  },
+  {
+    "id": "ev-tokenization-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:02:11.350",
+    "timestamp_end": "00:02:14.310",
+    "paraphrased_claim": "The transcript gives course-level support for Tokenization through discussion cues such as token, tokens, tokenization; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 28
+  },
+  {
+    "id": "ev-tokenization-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:02:20.620",
+    "timestamp_end": "00:02:26.780",
+    "paraphrased_claim": "The transcript gives course-level support for Tokenization through discussion cues such as token, tokens, tokenization; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 22
+  },
+  {
+    "id": "ev-tokenization-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:31:10.350",
+    "timestamp_end": "00:31:12.550",
+    "paraphrased_claim": "The transcript gives course-level support for Tokenization through discussion cues such as token, tokens, tokenization; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 24
+  },
+  {
+    "id": "ev-tokenization-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:04:40.470",
+    "timestamp_end": "00:04:46.550",
+    "paraphrased_claim": "The transcript gives course-level support for Tokenization through discussion cues such as token, tokens, tokenization; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "tokenization"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 18
+  },
+  {
+    "id": "ev-embeddings-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:05:16.580",
+    "timestamp_end": "00:05:20.740",
+    "paraphrased_claim": "The transcript gives course-level support for Embeddings through discussion cues such as embedding, embeddings, vector; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "embeddings"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 125
+  },
+  {
+    "id": "ev-embeddings-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models & Tricks.txt",
+    "timestamp_start": "00:10:39.810",
+    "timestamp_end": "00:10:44.930",
+    "paraphrased_claim": "The transcript gives course-level support for Embeddings through discussion cues such as embedding, embeddings, vector; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "embeddings"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 111
+  },
+  {
+    "id": "ev-embeddings-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 14： Exploration.txt",
+    "timestamp_start": "00:40:26.570",
+    "timestamp_end": "00:40:30.410",
+    "paraphrased_claim": "The transcript gives course-level support for Embeddings through discussion cues such as embedding, embeddings, vector; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "embeddings"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 42
+  },
+  {
+    "id": "ev-embeddings-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "00:02:30.490",
+    "timestamp_end": "00:02:35.690",
+    "paraphrased_claim": "The transcript gives course-level support for Embeddings through discussion cues such as embedding, embeddings, vector; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "embeddings"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 36
+  },
+  {
+    "id": "ev-embeddings-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers & Large Language Models.txt",
+    "timestamp_start": "00:02:20.200",
+    "timestamp_end": "00:02:24.840",
+    "paraphrased_claim": "The transcript gives course-level support for Embeddings through discussion cues such as embedding, embeddings, vector; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "embeddings"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 30
+  },
+  {
+    "id": "ev-embeddings-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:20:34.500",
+    "timestamp_end": "00:20:37.260",
+    "paraphrased_claim": "The transcript gives course-level support for Embeddings through discussion cues such as embedding, embeddings, vector; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "embeddings"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 29
+  },
+  {
+    "id": "ev-positional_encoding-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models & Tricks.txt",
+    "timestamp_start": "00:10:39.810",
+    "timestamp_end": "00:10:44.930",
+    "paraphrased_claim": "The transcript gives course-level support for Position And Order through discussion cues such as position, positional, rope; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "positional_encoding"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 55
+  },
+  {
+    "id": "ev-positional_encoding-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "01:05:31.720",
+    "timestamp_end": "01:05:37.500",
+    "paraphrased_claim": "The transcript gives course-level support for Position And Order through discussion cues such as position, positional, rope; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "positional_encoding"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
+    "id": "ev-positional_encoding-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 1： Class Intro.txt",
+    "timestamp_start": "00:15:37.720",
+    "timestamp_end": "00:15:41.040",
+    "paraphrased_claim": "The transcript gives course-level support for Position And Order through discussion cues such as position, positional, rope; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "positional_encoding"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 10
+  },
+  {
+    "id": "ev-positional_encoding-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "00:28:19.780",
+    "timestamp_end": "00:28:21.820",
+    "paraphrased_claim": "The transcript gives course-level support for Position And Order through discussion cues such as position, positional, rope; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "positional_encoding"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-positional_encoding-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers & Large Language Models.txt",
+    "timestamp_start": "01:36:08.290",
+    "timestamp_end": "01:36:15.710",
+    "paraphrased_claim": "The transcript gives course-level support for Position And Order through discussion cues such as position, positional, rope; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "positional_encoding"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-positional_encoding-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": null,
+    "timestamp_end": null,
+    "paraphrased_claim": "The transcript gives course-level support for Position And Order through discussion cues such as position, positional, rope; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "positional_encoding"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
+  },
+  {
+    "id": "ev-attention-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models & Tricks.txt",
+    "timestamp_start": "00:01:32.760",
+    "timestamp_end": "00:01:38.120",
+    "paraphrased_claim": "The transcript gives course-level support for Attention through discussion cues such as attention, query, key; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "attention"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 128
+  },
+  {
+    "id": "ev-attention-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt",
+    "timestamp_start": "00:03:33.590",
+    "timestamp_end": "00:03:35.830",
+    "paraphrased_claim": "The transcript gives course-level support for Attention through discussion cues such as attention, query, key; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "attention"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 93
+  },
+  {
+    "id": "ev-attention-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:17:40.580",
+    "timestamp_end": "00:17:45.860",
+    "paraphrased_claim": "The transcript gives course-level support for Attention through discussion cues such as attention, query, key; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "attention"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
+    "id": "ev-attention-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:00:09.520",
+    "timestamp_end": "00:00:12.480",
+    "paraphrased_claim": "The transcript gives course-level support for Attention through discussion cues such as attention, query, key; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "attention"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 30
+  },
+  {
+    "id": "ev-attention-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "00:25:02.880",
+    "timestamp_end": "00:25:04.800",
+    "paraphrased_claim": "The transcript gives course-level support for Attention through discussion cues such as attention, query, key; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "attention"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-attention-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "00:01:50.560",
+    "timestamp_end": "00:01:52.640",
+    "paraphrased_claim": "The transcript gives course-level support for Attention through discussion cues such as attention, query, key; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "attention"
+    ],
+    "supports_subthemes": [
+      "selective_context"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-transformer_block-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "00:05:55.580",
+    "timestamp_end": "00:06:01.180",
+    "paraphrased_claim": "The transcript gives course-level support for Transformer Block through discussion cues such as transformer, block, layer norm; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "transformer_block"
+    ],
+    "supports_subthemes": [
+      "stacked_computation"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 48
+  },
+  {
+    "id": "ev-transformer_block-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:35:05.103",
+    "timestamp_end": "00:35:06.770",
+    "paraphrased_claim": "The transcript gives course-level support for Transformer Block through discussion cues such as transformer, block, layer norm; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "transformer_block"
+    ],
+    "supports_subthemes": [
+      "stacked_computation"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
+    "id": "ev-transformer_block-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt",
+    "timestamp_start": "00:48:04.220",
+    "timestamp_end": "00:48:07.240",
+    "paraphrased_claim": "The transcript gives course-level support for Transformer Block through discussion cues such as transformer, block, layer norm; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "transformer_block"
+    ],
+    "supports_subthemes": [
+      "stacked_computation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-transformer_block-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": null,
+    "timestamp_end": null,
+    "paraphrased_claim": "The transcript gives course-level support for Transformer Block through discussion cues such as transformer, block, layer norm; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "transformer_block"
+    ],
+    "supports_subthemes": [
+      "stacked_computation"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
+  },
+  {
+    "id": "ev-transformer_block-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 1： Class Intro.txt",
+    "timestamp_start": "00:12:53.970",
+    "timestamp_end": "00:12:57.770",
+    "paraphrased_claim": "The transcript gives course-level support for Transformer Block through discussion cues such as transformer, block, layer norm; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "transformer_block"
+    ],
+    "supports_subthemes": [
+      "stacked_computation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-transformer_block-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt",
+    "timestamp_start": "00:20:49.840",
+    "timestamp_end": "00:20:51.400",
+    "paraphrased_claim": "The transcript gives course-level support for Transformer Block through discussion cues such as transformer, block, layer norm; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "transformer_block"
+    ],
+    "supports_subthemes": [
+      "stacked_computation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-pretraining-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:02:20.620",
+    "timestamp_end": "00:02:26.780",
+    "paraphrased_claim": "The transcript gives course-level support for Pretraining through discussion cues such as pretrain, pretraining, next token; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "pretraining"
+    ],
+    "supports_subthemes": [
+      "prediction_as_practice"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 44
+  },
+  {
+    "id": "ev-pretraining-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:10:36.420",
+    "timestamp_end": "00:10:40.860",
+    "paraphrased_claim": "The transcript gives course-level support for Pretraining through discussion cues such as pretrain, pretraining, next token; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "pretraining"
+    ],
+    "supports_subthemes": [
+      "prediction_as_practice"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 35
+  },
+  {
+    "id": "ev-pretraining-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 2： Imitation Learning.txt",
+    "timestamp_start": "00:06:31.150",
+    "timestamp_end": "00:06:34.170",
+    "paraphrased_claim": "The transcript gives course-level support for Pretraining through discussion cues such as pretrain, pretraining, next token; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "pretraining"
+    ],
+    "supports_subthemes": [
+      "prediction_as_practice"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 25
+  },
+  {
+    "id": "ev-pretraining-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers & Large Language Models.txt",
+    "timestamp_start": "00:04:11.430",
+    "timestamp_end": "00:04:15.550",
+    "paraphrased_claim": "The transcript gives course-level support for Pretraining through discussion cues such as pretrain, pretraining, next token; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "pretraining"
+    ],
+    "supports_subthemes": [
+      "prediction_as_practice"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 28
+  },
+  {
+    "id": "ev-pretraining-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "00:03:47.640",
+    "timestamp_end": "00:03:51.840",
+    "paraphrased_claim": "The transcript gives course-level support for Pretraining through discussion cues such as pretrain, pretraining, next token; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "pretraining"
+    ],
+    "supports_subthemes": [
+      "prediction_as_practice"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 27
+  },
+  {
+    "id": "ev-pretraining-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "00:05:36.260",
+    "timestamp_end": "00:05:41.740",
+    "paraphrased_claim": "The transcript gives course-level support for Pretraining through discussion cues such as pretrain, pretraining, next token; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "pretraining"
+    ],
+    "supports_subthemes": [
+      "prediction_as_practice"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 26
+  },
+  {
+    "id": "ev-fine_tuning-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt",
+    "timestamp_start": "00:00:05.480",
+    "timestamp_end": "00:00:07.960",
+    "paraphrased_claim": "The transcript gives course-level support for Fine-Tuning And Preference Learning through discussion cues such as fine-tuning, finetuning, instruction; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "fine_tuning"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 98
+  },
+  {
+    "id": "ev-fine_tuning-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:02:35.700",
+    "timestamp_end": "00:02:40.420",
+    "paraphrased_claim": "The transcript gives course-level support for Fine-Tuning And Preference Learning through discussion cues such as fine-tuning, finetuning, instruction; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "fine_tuning"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 73
+  },
+  {
+    "id": "ev-fine_tuning-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:44:53.910",
+    "timestamp_end": "00:44:57.810",
+    "paraphrased_claim": "The transcript gives course-level support for Fine-Tuning And Preference Learning through discussion cues such as fine-tuning, finetuning, instruction; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "fine_tuning"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 10
+  },
+  {
+    "id": "ev-fine_tuning-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt",
+    "timestamp_start": "00:54:38.290",
+    "timestamp_end": "00:54:42.110",
+    "paraphrased_claim": "The transcript gives course-level support for Fine-Tuning And Preference Learning through discussion cues such as fine-tuning, finetuning, instruction; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "fine_tuning"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
+  },
+  {
+    "id": "ev-fine_tuning-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 17: Advancing Robot Intelligence",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/017-Hp1WBWghrak-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 17： Advancing Robot Intelligence.txt",
+    "timestamp_start": "00:47:40.660",
+    "timestamp_end": "00:47:43.840",
+    "paraphrased_claim": "The transcript gives course-level support for Fine-Tuning And Preference Learning through discussion cues such as fine-tuning, finetuning, instruction; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "fine_tuning"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-fine_tuning-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt",
+    "timestamp_start": "00:28:33.940",
+    "timestamp_end": "00:28:37.240",
+    "paraphrased_claim": "The transcript gives course-level support for Fine-Tuning And Preference Learning through discussion cues such as fine-tuning, finetuning, instruction; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "fine_tuning"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-reasoning_traces-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "00:00:18.960",
+    "timestamp_end": "00:00:23.440",
+    "paraphrased_claim": "The transcript gives course-level support for Reasoning Traces through discussion cues such as reasoning, chain of thought, cot; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reasoning_traces"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 100
+  },
+  {
+    "id": "ev-reasoning_traces-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:00:07.020",
+    "timestamp_end": "00:00:12.160",
+    "paraphrased_claim": "The transcript gives course-level support for Reasoning Traces through discussion cues such as reasoning, chain of thought, cot; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reasoning_traces"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 24
+  },
+  {
+    "id": "ev-reasoning_traces-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "00:09:23.130",
+    "timestamp_end": "00:09:24.430",
+    "paraphrased_claim": "The transcript gives course-level support for Reasoning Traces through discussion cues such as reasoning, chain of thought, cot; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reasoning_traces"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 28
+  },
+  {
+    "id": "ev-reasoning_traces-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers & Large Language Models.txt",
+    "timestamp_start": "00:16:51.970",
+    "timestamp_end": "00:16:55.490",
+    "paraphrased_claim": "The transcript gives course-level support for Reasoning Traces through discussion cues such as reasoning, chain of thought, cot; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reasoning_traces"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 19
+  },
+  {
+    "id": "ev-reasoning_traces-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:08:17.680",
+    "timestamp_end": "00:08:20.080",
+    "paraphrased_claim": "The transcript gives course-level support for Reasoning Traces through discussion cues such as reasoning, chain of thought, cot; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reasoning_traces"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-reasoning_traces-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:02:19.400",
+    "timestamp_end": "00:02:23.880",
+    "paraphrased_claim": "The transcript gives course-level support for Reasoning Traces through discussion cues such as reasoning, chain of thought, cot; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reasoning_traces"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 21
+  },
+  {
+    "id": "ev-agents_and_tools-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:00:45.040",
+    "timestamp_end": "00:00:49.200",
+    "paraphrased_claim": "The transcript gives course-level support for Agents, Retrieval, And Tools through discussion cues such as agent, agents, tool; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "agents_and_tools"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 130
+  },
+  {
+    "id": "ev-agents_and_tools-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 16： RL for Robots.txt",
+    "timestamp_start": "00:01:19.350",
+    "timestamp_end": "00:01:23.550",
+    "paraphrased_claim": "The transcript gives course-level support for Agents, Retrieval, And Tools through discussion cues such as agent, agents, tool; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "agents_and_tools"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-agents_and_tools-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "01:33:41.150",
+    "timestamp_end": "01:33:46.670",
+    "paraphrased_claim": "The transcript gives course-level support for Agents, Retrieval, And Tools through discussion cues such as agent, agents, tool; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "agents_and_tools"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
+  },
+  {
+    "id": "ev-agents_and_tools-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt",
+    "timestamp_start": "00:01:13.380",
+    "timestamp_end": "00:01:15.240",
+    "paraphrased_claim": "The transcript gives course-level support for Agents, Retrieval, And Tools through discussion cues such as agent, agents, tool; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "agents_and_tools"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 3
+  },
+  {
+    "id": "ev-agents_and_tools-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:01:19.840",
+    "timestamp_end": "00:01:22.520",
+    "paraphrased_claim": "The transcript gives course-level support for Agents, Retrieval, And Tools through discussion cues such as agent, agents, tool; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "agents_and_tools"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 3
+  },
+  {
+    "id": "ev-agents_and_tools-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt",
+    "timestamp_start": "00:24:23.400",
+    "timestamp_end": "00:24:27.782",
+    "paraphrased_claim": "The transcript gives course-level support for Agents, Retrieval, And Tools through discussion cues such as agent, agents, tool; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "agents_and_tools"
+    ],
+    "supports_subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-evaluation-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "00:00:11.880",
+    "timestamp_end": "00:00:16.239",
+    "paraphrased_claim": "The transcript gives course-level support for Evaluation through discussion cues such as evaluation, benchmark, metric; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "evaluation"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 77
+  },
+  {
+    "id": "ev-evaluation-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:05:22.240",
+    "timestamp_end": "00:05:25.400",
+    "paraphrased_claim": "The transcript gives course-level support for Evaluation through discussion cues such as evaluation, benchmark, metric; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "evaluation"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 64
+  },
+  {
+    "id": "ev-evaluation-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt",
+    "timestamp_start": "00:00:28.100",
+    "timestamp_end": "00:00:32.960",
+    "paraphrased_claim": "The transcript gives course-level support for Evaluation through discussion cues such as evaluation, benchmark, metric; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "evaluation"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 10
+  },
+  {
+    "id": "ev-evaluation-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "00:12:04.240",
+    "timestamp_end": "00:12:09.680",
+    "paraphrased_claim": "The transcript gives course-level support for Evaluation through discussion cues such as evaluation, benchmark, metric; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "evaluation"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 9
+  },
+  {
+    "id": "ev-evaluation-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 16： RL for Robots.txt",
+    "timestamp_start": "00:12:40.630",
+    "timestamp_end": "00:12:42.450",
+    "paraphrased_claim": "The transcript gives course-level support for Evaluation through discussion cues such as evaluation, benchmark, metric; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "evaluation"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-evaluation-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:04:23.380",
+    "timestamp_end": "00:04:27.080",
+    "paraphrased_claim": "The transcript gives course-level support for Evaluation through discussion cues such as evaluation, benchmark, metric; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "evaluation"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 7
+  },
+  {
+    "id": "ev-policy-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:00:28.100",
+    "timestamp_end": "00:00:30.320",
+    "paraphrased_claim": "The transcript gives course-level support for Policy through discussion cues such as policy, policies, pi; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 291
+  },
+  {
+    "id": "ev-policy-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:19:05.010",
+    "timestamp_end": "00:19:09.290",
+    "paraphrased_claim": "The transcript gives course-level support for Policy through discussion cues such as policy, policies, pi; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 58
+  },
+  {
+    "id": "ev-policy-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "01:15:33.210",
+    "timestamp_end": "01:15:39.680",
+    "paraphrased_claim": "The transcript gives course-level support for Policy through discussion cues such as policy, policies, pi; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 10
+  },
+  {
+    "id": "ev-policy-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "00:04:19.980",
+    "timestamp_end": "00:04:23.900",
+    "paraphrased_claim": "The transcript gives course-level support for Policy through discussion cues such as policy, policies, pi; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 9
+  },
+  {
+    "id": "ev-policy-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "00:24:33.380",
+    "timestamp_end": "00:24:39.300",
+    "paraphrased_claim": "The transcript gives course-level support for Policy through discussion cues such as policy, policies, pi; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-policy-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:02:14.630",
+    "timestamp_end": "00:02:19.150",
+    "paraphrased_claim": "The transcript gives course-level support for Policy through discussion cues such as policy, policies, pi; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-reward-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:04:57.250",
+    "timestamp_end": "00:05:01.670",
+    "paraphrased_claim": "The transcript gives course-level support for Reward through discussion cues such as reward, rewards, return; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reward"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 183
+  },
+  {
+    "id": "ev-reward-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt",
+    "timestamp_start": "00:00:05.480",
+    "timestamp_end": "00:00:07.960",
+    "paraphrased_claim": "The transcript gives course-level support for Reward through discussion cues such as reward, rewards, return; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reward"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 173
+  },
+  {
+    "id": "ev-reward-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:55:00.920",
+    "timestamp_end": "00:55:05.960",
+    "paraphrased_claim": "The transcript gives course-level support for Reward through discussion cues such as reward, rewards, return; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reward"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 30
+  },
+  {
+    "id": "ev-reward-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 2： Imitation Learning.txt",
+    "timestamp_start": "00:00:49.397",
+    "timestamp_end": "00:00:51.980",
+    "paraphrased_claim": "The transcript gives course-level support for Reward through discussion cues such as reward, rewards, return; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reward"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 11
+  },
+  {
+    "id": "ev-reward-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "00:28:27.450",
+    "timestamp_end": "00:28:29.730",
+    "paraphrased_claim": "The transcript gives course-level support for Reward through discussion cues such as reward, rewards, return; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reward"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 13
+  },
+  {
+    "id": "ev-reward-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:02:51.790",
+    "timestamp_end": "00:02:56.610",
+    "paraphrased_claim": "The transcript gives course-level support for Reward through discussion cues such as reward, rewards, return; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "reward"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-credit_assignment-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:40:42.083",
+    "timestamp_end": "00:40:44.250",
+    "paraphrased_claim": "The transcript gives course-level support for Credit Assignment through discussion cues such as credit assignment, delayed reward, discount; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 39
+  },
+  {
+    "id": "ev-credit_assignment-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:17:00.230",
+    "timestamp_end": "00:17:02.750",
+    "paraphrased_claim": "The transcript gives course-level support for Credit Assignment through discussion cues such as credit assignment, delayed reward, discount; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 14
+  },
+  {
+    "id": "ev-credit_assignment-03",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "00:22:59.210",
+    "timestamp_end": "00:23:04.190",
+    "paraphrased_claim": "The transcript gives course-level support for Credit Assignment through discussion cues such as credit assignment, delayed reward, discount; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 7
+  },
+  {
+    "id": "ev-credit_assignment-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt",
+    "timestamp_start": "00:47:32.690",
+    "timestamp_end": "00:47:37.450",
+    "paraphrased_claim": "The transcript gives course-level support for Credit Assignment through discussion cues such as credit assignment, delayed reward, discount; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-credit_assignment-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:11:12.520",
+    "timestamp_end": "00:11:16.560",
+    "paraphrased_claim": "The transcript gives course-level support for Credit Assignment through discussion cues such as credit assignment, delayed reward, discount; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-credit_assignment-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "01:23:32.650",
+    "timestamp_end": "01:23:36.250",
+    "paraphrased_claim": "The transcript gives course-level support for Credit Assignment through discussion cues such as credit assignment, delayed reward, discount; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "credit_assignment"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-policy_gradient-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt",
+    "timestamp_start": "00:01:07.797",
+    "timestamp_end": "00:01:09.880",
+    "paraphrased_claim": "The transcript gives course-level support for Policy Gradient through discussion cues such as policy gradient, reinforce, gradient; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 118
+  },
+  {
+    "id": "ev-policy_gradient-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "00:07:13.350",
+    "timestamp_end": "00:07:18.870",
+    "paraphrased_claim": "The transcript gives course-level support for Policy Gradient through discussion cues such as policy gradient, reinforce, gradient; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 27
+  },
+  {
+    "id": "ev-policy_gradient-03",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "00:05:21.360",
+    "timestamp_end": "00:05:27.040",
+    "paraphrased_claim": "The transcript gives course-level support for Policy Gradient through discussion cues such as policy gradient, reinforce, gradient; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 25
+  },
+  {
+    "id": "ev-policy_gradient-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt",
+    "timestamp_start": "00:01:04.040",
+    "timestamp_end": "00:01:09.040",
+    "paraphrased_claim": "The transcript gives course-level support for Policy Gradient through discussion cues such as policy gradient, reinforce, gradient; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-policy_gradient-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:58:09.160",
+    "timestamp_end": "00:58:13.950",
+    "paraphrased_claim": "The transcript gives course-level support for Policy Gradient through discussion cues such as policy gradient, reinforce, gradient; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 23
+  },
+  {
+    "id": "ev-policy_gradient-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:15:04.580",
+    "timestamp_end": "00:15:07.620",
+    "paraphrased_claim": "The transcript gives course-level support for Policy Gradient through discussion cues such as policy gradient, reinforce, gradient; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "policy_gradient"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 13
+  },
+  {
+    "id": "ev-actor_critic-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt",
+    "timestamp_start": "00:00:48.680",
+    "timestamp_end": "00:00:51.280",
+    "paraphrased_claim": "The transcript gives course-level support for Actor-Critic through discussion cues such as actor critic, actor-critic, critic; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 74
+  },
+  {
+    "id": "ev-actor_critic-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "00:05:21.360",
+    "timestamp_end": "00:05:27.040",
+    "paraphrased_claim": "The transcript gives course-level support for Actor-Critic through discussion cues such as actor critic, actor-critic, critic; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 32
+  },
+  {
+    "id": "ev-actor_critic-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "01:44:31.850",
+    "timestamp_end": "01:44:33.990",
+    "paraphrased_claim": "The transcript gives course-level support for Actor-Critic through discussion cues such as actor critic, actor-critic, critic; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-actor_critic-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "01:02:09.170",
+    "timestamp_end": "01:02:11.230",
+    "paraphrased_claim": "The transcript gives course-level support for Actor-Critic through discussion cues such as actor critic, actor-critic, critic; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-actor_critic-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:22:32.910",
+    "timestamp_end": "00:22:37.750",
+    "paraphrased_claim": "The transcript gives course-level support for Actor-Critic through discussion cues such as actor critic, actor-critic, critic; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "actor_critic"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-q_learning-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:00:30.320",
+    "timestamp_end": "00:00:33.110",
+    "paraphrased_claim": "The transcript gives course-level support for Q-Learning through discussion cues such as q-learning, q learning, q-function; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "q_learning"
+    ],
+    "supports_subthemes": [
+      "delayed_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 72
+  },
+  {
+    "id": "ev-offline_rl-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt",
+    "timestamp_start": "00:07:44.840",
+    "timestamp_end": "00:07:47.200",
+    "paraphrased_claim": "The transcript gives course-level support for Offline Reinforcement Learning through discussion cues such as offline rl, offline reinforcement, batch rl; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 29
+  },
+  {
+    "id": "ev-offline_rl-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "01:21:57.490",
+    "timestamp_end": "01:22:00.370",
+    "paraphrased_claim": "The transcript gives course-level support for Offline Reinforcement Learning through discussion cues such as offline rl, offline reinforcement, batch rl; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-offline_rl-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:53:45.490",
+    "timestamp_end": "00:53:49.230",
+    "paraphrased_claim": "The transcript gives course-level support for Offline Reinforcement Learning through discussion cues such as offline rl, offline reinforcement, batch rl; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "offline_rl"
+    ],
+    "supports_subthemes": [
+      "learning_from_logged_worlds"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-model_based_rl-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt",
+    "timestamp_start": "00:04:50.450",
+    "timestamp_end": "00:04:52.700",
+    "paraphrased_claim": "The transcript gives course-level support for Model-Based Reinforcement Learning through discussion cues such as model-based, model based, dynamics model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 53
+  },
+  {
+    "id": "ev-model_based_rl-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "01:19:13.250",
+    "timestamp_end": "01:19:15.750",
+    "paraphrased_claim": "The transcript gives course-level support for Model-Based Reinforcement Learning through discussion cues such as model-based, model based, dynamics model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-model_based_rl-03",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models & Tricks.txt",
+    "timestamp_start": "01:00:00.150",
+    "timestamp_end": "01:00:02.530",
+    "paraphrased_claim": "The transcript gives course-level support for Model-Based Reinforcement Learning through discussion cues such as model-based, model based, dynamics model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-model_based_rl-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "01:09:00.670",
+    "timestamp_end": "01:09:03.630",
+    "paraphrased_claim": "The transcript gives course-level support for Model-Based Reinforcement Learning through discussion cues such as model-based, model based, dynamics model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-model_based_rl-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "01:31:07.010",
+    "timestamp_end": "01:31:12.970",
+    "paraphrased_claim": "The transcript gives course-level support for Model-Based Reinforcement Learning through discussion cues such as model-based, model based, dynamics model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-model_based_rl-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "01:39:33.590",
+    "timestamp_end": "01:39:37.790",
+    "paraphrased_claim": "The transcript gives course-level support for Model-Based Reinforcement Learning through discussion cues such as model-based, model based, dynamics model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "model_based_rl"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-exploration-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 14： Exploration.txt",
+    "timestamp_start": "00:00:07.040",
+    "timestamp_end": "00:00:09.200",
+    "paraphrased_claim": "The transcript gives course-level support for Exploration through discussion cues such as exploration, explore, epsilon; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 117
+  },
+  {
+    "id": "ev-exploration-02",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:12:06.480",
+    "timestamp_end": "00:12:12.400",
+    "paraphrased_claim": "The transcript gives course-level support for Exploration through discussion cues such as exploration, explore, epsilon; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-exploration-03",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "01:27:51.760",
+    "timestamp_end": "01:27:55.680",
+    "paraphrased_claim": "The transcript gives course-level support for Exploration through discussion cues such as exploration, explore, epsilon; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-exploration-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt",
+    "timestamp_start": "00:30:36.750",
+    "timestamp_end": "00:30:38.922",
+    "paraphrased_claim": "The transcript gives course-level support for Exploration through discussion cues such as exploration, explore, epsilon; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-exploration-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "01:05:19.920",
+    "timestamp_end": "01:05:24.380",
+    "paraphrased_claim": "The transcript gives course-level support for Exploration through discussion cues such as exploration, explore, epsilon; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-exploration-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt",
+    "timestamp_start": "00:35:21.640",
+    "timestamp_end": "00:35:23.860",
+    "paraphrased_claim": "The transcript gives course-level support for Exploration through discussion cues such as exploration, explore, epsilon; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "exploration"
+    ],
+    "supports_subthemes": [
+      "imagined_futures"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-rl_for_llms-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt",
+    "timestamp_start": "00:00:18.960",
+    "timestamp_end": "00:00:23.440",
+    "paraphrased_claim": "The transcript gives course-level support for RL For LLMs through discussion cues such as rl for llm, rl for llms, language model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 136
+  },
+  {
+    "id": "ev-rl_for_llms-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:00:07.020",
+    "timestamp_end": "00:00:12.160",
+    "paraphrased_claim": "The transcript gives course-level support for RL For LLMs through discussion cues such as rl for llm, rl for llms, language model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 28
+  },
+  {
+    "id": "ev-rl_for_llms-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "01:12:54.750",
+    "timestamp_end": "01:12:59.010",
+    "paraphrased_claim": "The transcript gives course-level support for RL For LLMs through discussion cues such as rl for llm, rl for llms, language model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
+  },
+  {
+    "id": "ev-rl_for_llms-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt",
+    "timestamp_start": "01:15:25.770",
+    "timestamp_end": "01:15:29.410",
+    "paraphrased_claim": "The transcript gives course-level support for RL For LLMs through discussion cues such as rl for llm, rl for llms, language model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
+  },
+  {
+    "id": "ev-rl_for_llms-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models & Tricks.txt",
+    "timestamp_start": "01:18:20.710",
+    "timestamp_end": "01:18:25.650",
+    "paraphrased_claim": "The transcript gives course-level support for RL For LLMs through discussion cues such as rl for llm, rl for llms, language model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-rl_for_llms-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "01:37:55.150",
+    "timestamp_end": "01:38:00.750",
+    "paraphrased_claim": "The transcript gives course-level support for RL For LLMs through discussion cues such as rl for llm, rl for llms, language model; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "rl_for_llms"
+    ],
+    "supports_subthemes": [
+      "human_feedback"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-diffusion-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "00:00:26.360",
+    "timestamp_end": "00:00:30.520",
+    "paraphrased_claim": "The transcript gives course-level support for Diffusion through discussion cues such as diffusion, denoise, denoising; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 138
+  },
+  {
+    "id": "ev-diffusion-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "01:02:29.320",
+    "timestamp_end": "01:02:33.600",
+    "paraphrased_claim": "The transcript gives course-level support for Diffusion through discussion cues such as diffusion, denoise, denoising; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 42
+  },
+  {
+    "id": "ev-diffusion-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 2: Imitation Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 2： Imitation Learning.txt",
+    "timestamp_start": "00:21:25.420",
+    "timestamp_end": "00:21:28.620",
+    "paraphrased_claim": "The transcript gives course-level support for Diffusion through discussion cues such as diffusion, denoise, denoising; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 18
+  },
+  {
+    "id": "ev-diffusion-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt",
+    "timestamp_start": "00:48:24.800",
+    "timestamp_end": "00:48:29.700",
+    "paraphrased_claim": "The transcript gives course-level support for Diffusion through discussion cues such as diffusion, denoise, denoising; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-diffusion-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 14： Exploration.txt",
+    "timestamp_start": "00:16:49.390",
+    "timestamp_end": "00:16:53.550",
+    "paraphrased_claim": "The transcript gives course-level support for Diffusion through discussion cues such as diffusion, denoise, denoising; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 17
+  },
+  {
+    "id": "ev-diffusion-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:02:05.240",
+    "timestamp_end": "00:02:10.520",
+    "paraphrased_claim": "The transcript gives course-level support for Diffusion through discussion cues such as diffusion, denoise, denoising; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "diffusion"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-score_matching-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": "00:00:18.000",
+    "timestamp_end": "00:00:21.160",
+    "paraphrased_claim": "The transcript gives course-level support for Score Matching through discussion cues such as score matching, score, gradient of log; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 136
+  },
+  {
+    "id": "ev-score_matching-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt",
+    "timestamp_start": "00:13:23.890",
+    "timestamp_end": "00:13:26.850",
+    "paraphrased_claim": "The transcript gives course-level support for Score Matching through discussion cues such as score matching, score, gradient of log; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 28
+  },
+  {
+    "id": "ev-score_matching-03",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt",
+    "timestamp_start": "00:12:14.120",
+    "timestamp_end": "00:12:18.000",
+    "paraphrased_claim": "The transcript gives course-level support for Score Matching through discussion cues such as score matching, score, gradient of log; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 24
+  },
+  {
+    "id": "ev-score_matching-04",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "00:21:42.620",
+    "timestamp_end": "00:21:47.710",
+    "paraphrased_claim": "The transcript gives course-level support for Score Matching through discussion cues such as score matching, score, gradient of log; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 22
+  },
+  {
+    "id": "ev-score_matching-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:29:17.410",
+    "timestamp_end": "00:29:20.450",
+    "paraphrased_claim": "The transcript gives course-level support for Score Matching through discussion cues such as score matching, score, gradient of log; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 19
+  },
+  {
+    "id": "ev-score_matching-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "00:12:59.980",
+    "timestamp_end": "00:13:05.220",
+    "paraphrased_claim": "The transcript gives course-level support for Score Matching through discussion cues such as score matching, score, gradient of log; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "score_matching"
+    ],
+    "supports_subthemes": [
+      "denoising_paths"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 7
+  },
+  {
+    "id": "ev-flow_matching-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:00:15.600",
+    "timestamp_end": "00:00:19.040",
+    "paraphrased_claim": "The transcript gives course-level support for Flow Matching through discussion cues such as flow matching, flow, vector field; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 189
+  },
+  {
+    "id": "ev-flow_matching-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt",
+    "timestamp_start": "00:27:08.790",
+    "timestamp_end": "00:27:11.110",
+    "paraphrased_claim": "The transcript gives course-level support for Flow Matching through discussion cues such as flow matching, flow, vector field; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 4
+  },
+  {
+    "id": "ev-flow_matching-03",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers & Large Language Models.txt",
+    "timestamp_start": "00:10:40.260",
+    "timestamp_end": "00:10:48.500",
+    "paraphrased_claim": "The transcript gives course-level support for Flow Matching through discussion cues such as flow matching, flow, vector field; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-flow_matching-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 1： Class Intro.txt",
+    "timestamp_start": "00:30:51.270",
+    "timestamp_end": "00:30:53.030",
+    "paraphrased_claim": "The transcript gives course-level support for Flow Matching through discussion cues such as flow matching, flow, vector field; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-flow_matching-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt",
+    "timestamp_start": "00:27:53.940",
+    "timestamp_end": "00:27:57.260",
+    "paraphrased_claim": "The transcript gives course-level support for Flow Matching through discussion cues such as flow matching, flow, vector field; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-flow_matching-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "01:37:56.630",
+    "timestamp_end": "01:38:00.790",
+    "paraphrased_claim": "The transcript gives course-level support for Flow Matching through discussion cues such as flow matching, flow, vector field; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "flow_matching"
+    ],
+    "supports_subthemes": [
+      "continuous_transport"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-guidance-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:12:11.050",
+    "timestamp_end": "00:12:23.770",
+    "paraphrased_claim": "The transcript gives course-level support for Guidance through discussion cues such as guidance, classifier-free, classifier free; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 56
+  },
+  {
+    "id": "ev-guidance-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt",
+    "timestamp_start": "00:01:20.500",
+    "timestamp_end": "00:01:24.780",
+    "paraphrased_claim": "The transcript gives course-level support for Guidance through discussion cues such as guidance, classifier-free, classifier free; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 38
+  },
+  {
+    "id": "ev-guidance-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt",
+    "timestamp_start": "00:54:18.980",
+    "timestamp_end": "00:54:23.980",
+    "paraphrased_claim": "The transcript gives course-level support for Guidance through discussion cues such as guidance, classifier-free, classifier free; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 9
+  },
+  {
+    "id": "ev-guidance-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt",
+    "timestamp_start": "00:00:36.620",
+    "timestamp_end": "00:00:42.800",
+    "paraphrased_claim": "The transcript gives course-level support for Guidance through discussion cues such as guidance, classifier-free, classifier free; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-guidance-05",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "00:27:31.150",
+    "timestamp_end": "00:27:35.070",
+    "paraphrased_claim": "The transcript gives course-level support for Guidance through discussion cues such as guidance, classifier-free, classifier free; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-guidance-06",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 1： Class Intro.txt",
+    "timestamp_start": "00:10:46.590",
+    "timestamp_end": "00:10:48.150",
+    "paraphrased_claim": "The transcript gives course-level support for Guidance through discussion cues such as guidance, classifier-free, classifier free; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "guidance"
+    ],
+    "supports_subthemes": [
+      "controlled_generation"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 6
+  },
+  {
+    "id": "ev-latent_space-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space & Guidance.txt",
+    "timestamp_start": "00:15:08.170",
+    "timestamp_end": "00:15:13.290",
+    "paraphrased_claim": "The transcript gives course-level support for Latent Space through discussion cues such as latent, latent space, vae; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 137
+  },
+  {
+    "id": "ev-latent_space-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models & Tricks.txt",
+    "timestamp_start": "00:03:03.520",
+    "timestamp_end": "00:03:07.680",
+    "paraphrased_claim": "The transcript gives course-level support for Latent Space through discussion cues such as latent, latent space, vae; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 47
+  },
+  {
+    "id": "ev-latent_space-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt",
+    "timestamp_start": "00:49:56.140",
+    "timestamp_end": "00:50:01.260",
+    "paraphrased_claim": "The transcript gives course-level support for Latent Space through discussion cues such as latent, latent space, vae; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 8
+  },
+  {
+    "id": "ev-latent_space-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 14： Exploration.txt",
+    "timestamp_start": "00:50:53.140",
+    "timestamp_end": "00:50:56.540",
+    "paraphrased_claim": "The transcript gives course-level support for Latent Space through discussion cues such as latent, latent space, vae; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 5
+  },
+  {
+    "id": "ev-latent_space-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": null,
+    "timestamp_end": null,
+    "paraphrased_claim": "The transcript gives course-level support for Latent Space through discussion cues such as latent, latent space, vae; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
+  },
+  {
+    "id": "ev-latent_space-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt",
+    "timestamp_start": null,
+    "timestamp_end": null,
+    "paraphrased_claim": "The transcript gives course-level support for Latent Space through discussion cues such as latent, latent space, vae; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "latent_space"
+    ],
+    "supports_subthemes": [
+      "learned_geometry"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 0
+  },
+  {
+    "id": "ev-vision_transformers-01",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:01:51.640",
+    "timestamp_end": "00:01:55.080",
+    "paraphrased_claim": "The transcript gives course-level support for Vision Transformers through discussion cues such as vision transformer, vit, patch; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 127
+  },
+  {
+    "id": "ev-vision_transformers-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap & Current Trends.txt",
+    "timestamp_start": "00:51:26.940",
+    "timestamp_end": "00:51:29.880",
+    "paraphrased_claim": "The transcript gives course-level support for Vision Transformers through discussion cues such as vision transformer, vit, patch; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 60
+  },
+  {
+    "id": "ev-vision_transformers-03",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt",
+    "timestamp_start": "00:22:36.830",
+    "timestamp_end": "00:22:40.210",
+    "paraphrased_claim": "The transcript gives course-level support for Vision Transformers through discussion cues such as vision transformer, vit, patch; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 22
+  },
+  {
+    "id": "ev-vision_transformers-04",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt",
+    "timestamp_start": "00:18:36.250",
+    "timestamp_end": "00:18:39.640",
+    "paraphrased_claim": "The transcript gives course-level support for Vision Transformers through discussion cues such as vision transformer, vit, patch; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 10
+  },
+  {
+    "id": "ev-vision_transformers-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "00:01:30.560",
+    "timestamp_end": "00:01:34.920",
+    "paraphrased_claim": "The transcript gives course-level support for Vision Transformers through discussion cues such as vision transformer, vit, patch; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 9
+  },
+  {
+    "id": "ev-vision_transformers-06",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt",
+    "timestamp_start": "01:36:03.900",
+    "timestamp_end": "01:36:06.940",
+    "paraphrased_claim": "The transcript gives course-level support for Vision Transformers through discussion cues such as vision transformer, vit, patch; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "vision_transformers"
+    ],
+    "supports_subthemes": [
+      "text_and_patch_interfaces"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 2
+  },
+  {
+    "id": "ev-scaling_laws-01",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "00:04:50.840",
+    "timestamp_end": "00:04:54.900",
+    "paraphrased_claim": "The transcript gives course-level support for Scaling Laws through discussion cues such as scaling, scaling law, scale; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "scaling_laws"
+    ],
+    "supports_subthemes": [
+      "what_changes_with_size"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 59
+  },
+  {
+    "id": "ev-scaling_laws-02",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt",
+    "timestamp_start": "00:00:28.920",
+    "timestamp_end": "00:00:31.380",
+    "paraphrased_claim": "The transcript gives course-level support for Scaling Laws through discussion cues such as scaling, scaling law, scale; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "scaling_laws"
+    ],
+    "supports_subthemes": [
+      "what_changes_with_size"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 31
+  },
+  {
+    "id": "ev-scaling_laws-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt",
+    "timestamp_start": "00:17:45.860",
+    "timestamp_end": "00:17:50.500",
+    "paraphrased_claim": "The transcript gives course-level support for Scaling Laws through discussion cues such as scaling, scaling law, scale; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "scaling_laws"
+    ],
+    "supports_subthemes": [
+      "what_changes_with_size"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 26
+  },
+  {
+    "id": "ev-scaling_laws-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt",
+    "timestamp_start": "00:16:17.080",
+    "timestamp_end": "00:16:23.480",
+    "paraphrased_claim": "The transcript gives course-level support for Scaling Laws through discussion cues such as scaling, scaling law, scale; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "scaling_laws"
+    ],
+    "supports_subthemes": [
+      "what_changes_with_size"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 23
+  },
+  {
+    "id": "ev-scaling_laws-05",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt",
+    "timestamp_start": "00:01:29.430",
+    "timestamp_end": "00:01:32.710",
+    "paraphrased_claim": "The transcript gives course-level support for Scaling Laws through discussion cues such as scaling, scaling law, scale; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "scaling_laws"
+    ],
+    "supports_subthemes": [
+      "what_changes_with_size"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-scaling_laws-06",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:08:11.640",
+    "timestamp_end": "00:08:16.760",
+    "paraphrased_claim": "The transcript gives course-level support for Scaling Laws through discussion cues such as scaling, scaling law, scale; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "scaling_laws"
+    ],
+    "supports_subthemes": [
+      "what_changes_with_size"
+    ],
+    "confidence": "strong",
+    "keyword_hits": 20
+  },
+  {
+    "id": "ev-generalization-01",
+    "course": "stanford-cs224r-deep-rl-spring-2025",
+    "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt",
+    "timestamp_start": "00:22:49.090",
+    "timestamp_end": "00:22:51.930",
+    "paraphrased_claim": "The transcript gives course-level support for Generalization through discussion cues such as generalization, generalize, overfit; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "generalization"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 19
+  },
+  {
+    "id": "ev-generalization-02",
+    "course": "stanford-cme295-transformers-llms-autumn-2025",
+    "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers & LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt",
+    "timestamp_start": "00:08:06.720",
+    "timestamp_end": "00:08:10.280",
+    "paraphrased_claim": "The transcript gives course-level support for Generalization through discussion cues such as generalization, generalize, overfit; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "generalization"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "moderate",
+    "keyword_hits": 15
+  },
+  {
+    "id": "ev-generalization-03",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt",
+    "timestamp_start": "01:33:34.160",
+    "timestamp_end": "01:33:36.180",
+    "paraphrased_claim": "The transcript gives course-level support for Generalization through discussion cues such as generalization, generalize, overfit; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "generalization"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-generalization-04",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt",
+    "timestamp_start": "01:13:19.220",
+    "timestamp_end": "01:13:20.900",
+    "paraphrased_claim": "The transcript gives course-level support for Generalization through discussion cues such as generalization, generalize, overfit; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "generalization"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  },
+  {
+    "id": "ev-generalization-05",
+    "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+    "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+    "transcript_path": "raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion & Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt",
+    "timestamp_start": "00:10:27.480",
+    "timestamp_end": "00:10:30.760",
+    "paraphrased_claim": "The transcript gives course-level support for Generalization through discussion cues such as generalization, generalize, overfit; this record supports the atlas explanation without treating the transcript as a verbatim source.",
+    "supports_concepts": [
+      "generalization"
+    ],
+    "supports_subthemes": [
+      "scores_are_samples"
+    ],
+    "confidence": "weak",
+    "keyword_hits": 1
+  }
+]

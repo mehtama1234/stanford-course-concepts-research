@@ -1,0 +1,200 @@
+[
+  {
+    "id": "compression",
+    "name": "Compression",
+    "plain_language": "Keep the parts that matter for the next decision and let go of the rest.",
+    "why_it_exists": "Inputs, memories, images, and action histories are too large to carry forward unchanged.",
+    "shows_up_in": [
+      "tokenization",
+      "embeddings",
+      "latent_space",
+      "state_abstraction",
+      "distillation"
+    ],
+    "concepts_in_atlas": [
+      "tokenization",
+      "embeddings",
+      "attention",
+      "latent_space"
+    ]
+  },
+  {
+    "id": "assignment",
+    "name": "Assignment",
+    "plain_language": "Decide which piece of evidence should be connected to which cause, label, action, or memory.",
+    "why_it_exists": "Many causes can produce the same observation, so learning has to sort responsibility.",
+    "shows_up_in": [
+      "attention",
+      "credit_assignment",
+      "reward_learning",
+      "score_matching"
+    ],
+    "concepts_in_atlas": [
+      "attention",
+      "fine_tuning",
+      "credit_assignment",
+      "score_matching"
+    ]
+  },
+  {
+    "id": "credit",
+    "name": "Credit",
+    "plain_language": "Decide which earlier choice deserves blame or praise for something that happened later.",
+    "why_it_exists": "Consequences arrive after chains of actions, not immediately after the action that mattered.",
+    "shows_up_in": [
+      "policy_gradient",
+      "q_learning",
+      "actor_critic",
+      "rl_for_llms"
+    ],
+    "concepts_in_atlas": [
+      "reward",
+      "credit_assignment",
+      "policy_gradient",
+      "actor_critic",
+      "q_learning",
+      "rl_for_llms"
+    ]
+  },
+  {
+    "id": "geometry",
+    "name": "Geometry",
+    "plain_language": "Arrange things so nearby points mean similar things and directions mean useful changes.",
+    "why_it_exists": "A machine needs a numerical space where comparison and movement can be computed.",
+    "shows_up_in": [
+      "embeddings",
+      "positional_encoding",
+      "latent_space",
+      "flow_matching"
+    ],
+    "concepts_in_atlas": [
+      "embeddings",
+      "positional_encoding",
+      "score_matching",
+      "flow_matching",
+      "latent_space"
+    ]
+  },
+  {
+    "id": "search",
+    "name": "Search",
+    "plain_language": "Try to move through possible answers, actions, or images toward ones that satisfy a goal.",
+    "why_it_exists": "Hard problems rarely reveal the right answer in one step.",
+    "shows_up_in": [
+      "chain_of_thought",
+      "agents_and_tools",
+      "exploration",
+      "planning"
+    ],
+    "concepts_in_atlas": [
+      "reasoning_traces",
+      "agents_and_tools",
+      "policy",
+      "q_learning",
+      "model_based_rl",
+      "exploration",
+      "diffusion",
+      "flow_matching",
+      "guidance"
+    ]
+  },
+  {
+    "id": "uncertainty",
+    "name": "Uncertainty",
+    "plain_language": "Keep track of many possible futures or explanations instead of pretending there is only one.",
+    "why_it_exists": "Observations are incomplete, and the same present can lead to many futures.",
+    "shows_up_in": [
+      "diffusion",
+      "model_based_rl",
+      "offline_rl",
+      "evaluation"
+    ],
+    "concepts_in_atlas": [
+      "evaluation",
+      "policy",
+      "offline_rl",
+      "model_based_rl",
+      "exploration",
+      "diffusion",
+      "generalization"
+    ]
+  },
+  {
+    "id": "feedback",
+    "name": "Feedback",
+    "plain_language": "Use a signal after an attempt to change what the system does next time.",
+    "why_it_exists": "A learner cannot improve unless something tells it how its guesses or actions worked out.",
+    "shows_up_in": [
+      "pretraining",
+      "fine_tuning",
+      "reward_modeling",
+      "policy_gradient"
+    ],
+    "concepts_in_atlas": [
+      "transformer_block",
+      "pretraining",
+      "fine_tuning",
+      "agents_and_tools",
+      "evaluation",
+      "reward",
+      "policy_gradient",
+      "actor_critic",
+      "offline_rl",
+      "rl_for_llms",
+      "guidance",
+      "scaling_laws"
+    ]
+  },
+  {
+    "id": "scale",
+    "name": "Scale",
+    "plain_language": "Ask what changes when data, model size, compute, or test-time work becomes much larger.",
+    "why_it_exists": "Some behavior is invisible at small size because the system has too little capacity or practice.",
+    "shows_up_in": [
+      "scaling_laws",
+      "emergence",
+      "in_context_learning",
+      "inference_time_compute"
+    ],
+    "concepts_in_atlas": [
+      "pretraining",
+      "rl_for_llms",
+      "scaling_laws"
+    ]
+  },
+  {
+    "id": "invariance",
+    "name": "Invariance",
+    "plain_language": "Preserve the meaning while surface details such as position, wording, or style change.",
+    "why_it_exists": "The same idea can appear in many forms, and a useful model should not relearn it from scratch every time.",
+    "shows_up_in": [
+      "positional_encoding",
+      "data_augmentation",
+      "vision_transformers",
+      "generalization"
+    ],
+    "concepts_in_atlas": [
+      "positional_encoding",
+      "vision_transformers",
+      "generalization"
+    ]
+  },
+  {
+    "id": "composition",
+    "name": "Composition",
+    "plain_language": "Build complex behavior by connecting reusable smaller operations.",
+    "why_it_exists": "Large tasks are too varied to solve as one giant special case.",
+    "shows_up_in": [
+      "transformer_block",
+      "agents_and_tools",
+      "hierarchical_rl",
+      "unet_architecture"
+    ],
+    "concepts_in_atlas": [
+      "transformer_block",
+      "reasoning_traces",
+      "agents_and_tools",
+      "vision_transformers"
+    ]
+  }
+]

@@ -1,0 +1,806 @@
+[
+  {
+    "id": "tokenization",
+    "name": "Tokenization",
+    "plain_language_definition": "Turning text into reusable pieces a model can count.",
+    "everyday_problem": "The problem is that a model cannot read raw text as meaning; it first needs stable pieces that can be given numbers.",
+    "first_principles_reason": "Computation needs finite symbols. Human language is open-ended, so the first constraint is to choose a manageable set of chunks that can cover new text.",
+    "mathematical_principle": "A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary.",
+    "why_it_matters": "It sets the length of the model's working memory and controls how rare words, code, numbers, and names are broken apart.",
+    "what_breaks_without_it": "The model would have no consistent input units, and every later layer would receive a different kind of object each time.",
+    "related_concepts": [
+      "embeddings",
+      "positional_encoding",
+      "pretraining"
+    ],
+    "theme_id": "representation_workspace",
+    "mathematical_primitives": [
+      "compression"
+    ],
+    "course_evidence_ids": [
+      "ev-tokenization-01",
+      "ev-tokenization-02",
+      "ev-tokenization-03",
+      "ev-tokenization-04",
+      "ev-tokenization-05",
+      "ev-tokenization-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "embeddings",
+    "name": "Embeddings",
+    "plain_language_definition": "Learned coordinates that let a model compare things by arithmetic.",
+    "everyday_problem": "The problem is that IDs like 17 or 9421 do not say what a word, patch, state, or action means.",
+    "first_principles_reason": "A learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.",
+    "mathematical_principle": "An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.",
+    "why_it_matters": "Embeddings turn symbols into a shared workspace for attention, prediction, retrieval, and generation.",
+    "what_breaks_without_it": "The model would treat related symbols as unrelated labels and could not smoothly share what it learns.",
+    "related_concepts": [
+      "tokenization",
+      "latent_space",
+      "representation_learning"
+    ],
+    "theme_id": "representation_workspace",
+    "mathematical_primitives": [
+      "geometry",
+      "compression"
+    ],
+    "course_evidence_ids": [
+      "ev-embeddings-01",
+      "ev-embeddings-02",
+      "ev-embeddings-03",
+      "ev-embeddings-04",
+      "ev-embeddings-05",
+      "ev-embeddings-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "positional_encoding",
+    "name": "Position And Order",
+    "plain_language_definition": "A way to tell the model where each piece sits in a sequence or image.",
+    "everyday_problem": "The problem is that the same words or image patches mean different things depending on where they appear.",
+    "first_principles_reason": "Attention compares items as a set unless order information is added. Order must be represented explicitly if order matters.",
+    "mathematical_principle": "Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.",
+    "why_it_matters": "It lets transformers handle grammar, layout, time, and spatial structure.",
+    "what_breaks_without_it": "The model may know which pieces exist but lose the arrangement that makes them meaningful.",
+    "related_concepts": [
+      "attention",
+      "transformer_block",
+      "vision_transformers"
+    ],
+    "theme_id": "representation_workspace",
+    "mathematical_primitives": [
+      "geometry",
+      "invariance"
+    ],
+    "course_evidence_ids": [
+      "ev-positional_encoding-01",
+      "ev-positional_encoding-02",
+      "ev-positional_encoding-03",
+      "ev-positional_encoding-04",
+      "ev-positional_encoding-05",
+      "ev-positional_encoding-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "attention",
+    "name": "Attention",
+    "plain_language_definition": "A learned way for each piece to decide which other pieces matter right now.",
+    "everyday_problem": "The problem is that the input is too large to treat every earlier word, patch, or memory as equally important.",
+    "first_principles_reason": "Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.",
+    "mathematical_principle": "Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.",
+    "why_it_matters": "It gives transformers their main communication channel and lets the same model use different context for different tokens.",
+    "what_breaks_without_it": "Long-range dependencies become hard, and the model must rely on fixed local patterns or compressed memory.",
+    "related_concepts": [
+      "retrieval",
+      "credit_assignment",
+      "transformer_block"
+    ],
+    "theme_id": "representation_workspace",
+    "mathematical_primitives": [
+      "assignment",
+      "compression"
+    ],
+    "course_evidence_ids": [
+      "ev-attention-01",
+      "ev-attention-02",
+      "ev-attention-03",
+      "ev-attention-04",
+      "ev-attention-05",
+      "ev-attention-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "transformer_block",
+    "name": "Transformer Block",
+    "plain_language_definition": "A repeated update step where tokens read from each other and then rewrite their own state.",
+    "everyday_problem": "The problem is that one lookup is not enough; understanding needs many rounds of communication and local computation.",
+    "first_principles_reason": "A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.",
+    "mathematical_principle": "A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.",
+    "why_it_matters": "It is the reusable unit behind modern language, vision, and multimodal models.",
+    "what_breaks_without_it": "The system loses the scalable recipe for building many layers of context-dependent computation.",
+    "related_concepts": [
+      "attention",
+      "normalization",
+      "residual_connections",
+      "vision_transformers"
+    ],
+    "theme_id": "representation_workspace",
+    "mathematical_primitives": [
+      "composition",
+      "feedback"
+    ],
+    "course_evidence_ids": [
+      "ev-transformer_block-01",
+      "ev-transformer_block-02",
+      "ev-transformer_block-03",
+      "ev-transformer_block-04",
+      "ev-transformer_block-05",
+      "ev-transformer_block-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "pretraining",
+    "name": "Pretraining",
+    "plain_language_definition": "Large-scale practice before the model is asked to be useful in a specific way.",
+    "everyday_problem": "The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.",
+    "first_principles_reason": "A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.",
+    "mathematical_principle": "Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.",
+    "why_it_matters": "It creates broad reusable knowledge that later tuning can steer.",
+    "what_breaks_without_it": "Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.",
+    "related_concepts": [
+      "fine_tuning",
+      "scaling_laws",
+      "generalization"
+    ],
+    "theme_id": "learning_from_feedback",
+    "mathematical_primitives": [
+      "feedback",
+      "scale"
+    ],
+    "course_evidence_ids": [
+      "ev-pretraining-01",
+      "ev-pretraining-02",
+      "ev-pretraining-03",
+      "ev-pretraining-04",
+      "ev-pretraining-05",
+      "ev-pretraining-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "fine_tuning",
+    "name": "Fine-Tuning And Preference Learning",
+    "plain_language_definition": "Steering a broad model toward behavior people actually want.",
+    "everyday_problem": "The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.",
+    "first_principles_reason": "Raw imitation learns what appears in data. Usefulness requires extra feedback about which possible responses people prefer.",
+    "mathematical_principle": "Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal.",
+    "why_it_matters": "It is the bridge between a base model and an assistant, tutor, coder, or agent.",
+    "what_breaks_without_it": "The model may be fluent but misaligned with the task, the user, or the deployment setting.",
+    "related_concepts": [
+      "reward_modeling",
+      "rl_for_llms",
+      "evaluation"
+    ],
+    "theme_id": "learning_from_feedback",
+    "mathematical_primitives": [
+      "feedback",
+      "assignment"
+    ],
+    "course_evidence_ids": [
+      "ev-fine_tuning-01",
+      "ev-fine_tuning-02",
+      "ev-fine_tuning-03",
+      "ev-fine_tuning-04",
+      "ev-fine_tuning-05",
+      "ev-fine_tuning-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "reasoning_traces",
+    "name": "Reasoning Traces",
+    "plain_language_definition": "Using written intermediate work as temporary memory for hard problems.",
+    "everyday_problem": "The problem is that some answers require several dependent steps, and the first likely sentence may skip a necessary intermediate fact.",
+    "first_principles_reason": "A system with limited internal working memory can externalize partial results into tokens and condition on them later.",
+    "mathematical_principle": "The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.",
+    "why_it_matters": "It turns generation into a multi-step computation instead of a single response reflex.",
+    "what_breaks_without_it": "Tasks needing arithmetic, planning, proof, or careful decomposition often collapse into plausible but unsupported guesses.",
+    "related_concepts": [
+      "inference_time_compute",
+      "rl_for_llms",
+      "agents_and_tools"
+    ],
+    "theme_id": "inference_time_work",
+    "mathematical_primitives": [
+      "search",
+      "composition"
+    ],
+    "course_evidence_ids": [
+      "ev-reasoning_traces-01",
+      "ev-reasoning_traces-02",
+      "ev-reasoning_traces-03",
+      "ev-reasoning_traces-04",
+      "ev-reasoning_traces-05",
+      "ev-reasoning_traces-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "agents_and_tools",
+    "name": "Agents, Retrieval, And Tools",
+    "plain_language_definition": "Putting a model in a loop where it can look things up, call tools, and react to results.",
+    "everyday_problem": "The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.",
+    "first_principles_reason": "A useful system often needs perception, memory, action, and correction, not only prediction.",
+    "mathematical_principle": "The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.",
+    "why_it_matters": "It connects language models to search, code execution, databases, browsers, and multi-step workflows.",
+    "what_breaks_without_it": "The model is limited to stale internal knowledge and cannot verify or change the outside world.",
+    "related_concepts": [
+      "policy",
+      "retrieval",
+      "planning"
+    ],
+    "theme_id": "inference_time_work",
+    "mathematical_primitives": [
+      "search",
+      "composition",
+      "feedback"
+    ],
+    "course_evidence_ids": [
+      "ev-agents_and_tools-01",
+      "ev-agents_and_tools-02",
+      "ev-agents_and_tools-03",
+      "ev-agents_and_tools-04",
+      "ev-agents_and_tools-05",
+      "ev-agents_and_tools-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "evaluation",
+    "name": "Evaluation",
+    "plain_language_definition": "A controlled way to ask what a model can and cannot do.",
+    "everyday_problem": "The problem is that a model can look impressive on examples while failing in places the test did not cover.",
+    "first_principles_reason": "Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.",
+    "mathematical_principle": "A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.",
+    "why_it_matters": "It decides what work is rewarded, what systems ship, and which failures stay hidden.",
+    "what_breaks_without_it": "Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.",
+    "related_concepts": [
+      "generalization",
+      "reward_modeling",
+      "scaling_laws"
+    ],
+    "theme_id": "measurement_limits",
+    "mathematical_primitives": [
+      "uncertainty",
+      "feedback"
+    ],
+    "course_evidence_ids": [
+      "ev-evaluation-01",
+      "ev-evaluation-02",
+      "ev-evaluation-03",
+      "ev-evaluation-04",
+      "ev-evaluation-05",
+      "ev-evaluation-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "policy",
+    "name": "Policy",
+    "plain_language_definition": "The rule an agent uses to choose what to do next.",
+    "everyday_problem": "The problem is that the output is an action, and that action changes what happens afterward.",
+    "first_principles_reason": "In a changing environment, the learner must connect what it can see now to a choice under uncertainty.",
+    "mathematical_principle": "A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.",
+    "why_it_matters": "It is the central object being learned in reinforcement learning and agentic LLM systems.",
+    "what_breaks_without_it": "There is no explicit way to discuss or improve the system's behavior over time.",
+    "related_concepts": [
+      "reward",
+      "policy_gradient",
+      "q_learning"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "search",
+      "uncertainty"
+    ],
+    "course_evidence_ids": [
+      "ev-policy-01",
+      "ev-policy-02",
+      "ev-policy-03",
+      "ev-policy-04",
+      "ev-policy-05",
+      "ev-policy-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "reward",
+    "name": "Reward",
+    "plain_language_definition": "A signal that says which outcomes should become more likely.",
+    "everyday_problem": "The problem is that an agent needs to know not just what happened, but whether it was better or worse.",
+    "first_principles_reason": "Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.",
+    "mathematical_principle": "Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.",
+    "why_it_matters": "It turns behavior into something trainable when direct answers are unavailable.",
+    "what_breaks_without_it": "The agent can collect experience but has no preference over outcomes.",
+    "related_concepts": [
+      "reward_modeling",
+      "credit_assignment",
+      "policy_gradient"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "feedback",
+      "credit"
+    ],
+    "course_evidence_ids": [
+      "ev-reward-01",
+      "ev-reward-02",
+      "ev-reward-03",
+      "ev-reward-04",
+      "ev-reward-05",
+      "ev-reward-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "credit_assignment",
+    "name": "Credit Assignment",
+    "plain_language_definition": "Figuring out which earlier choices caused a later success or failure.",
+    "everyday_problem": "The problem is that the important mistake may happen long before the bad outcome appears.",
+    "first_principles_reason": "Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.",
+    "mathematical_principle": "Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.",
+    "why_it_matters": "It makes long-horizon learning possible in games, robotics, dialogue, and reasoning.",
+    "what_breaks_without_it": "The system overreacts to the last action or misses the earlier decision that mattered.",
+    "related_concepts": [
+      "attention",
+      "q_learning",
+      "actor_critic"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "credit",
+      "assignment"
+    ],
+    "course_evidence_ids": [
+      "ev-credit_assignment-01",
+      "ev-credit_assignment-02",
+      "ev-credit_assignment-03",
+      "ev-credit_assignment-04",
+      "ev-credit_assignment-05",
+      "ev-credit_assignment-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "policy_gradient",
+    "name": "Policy Gradient",
+    "plain_language_definition": "Changing an action rule toward sampled choices that worked better.",
+    "everyday_problem": "The problem is that the correct action is not provided; the agent only sees outcomes after trying things.",
+    "first_principles_reason": "When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.",
+    "mathematical_principle": "The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.",
+    "why_it_matters": "It lets agents learn flexible behavior even when actions are continuous or too many to enumerate.",
+    "what_breaks_without_it": "Learning is limited to settings where every action value can be directly estimated.",
+    "related_concepts": [
+      "policy",
+      "reward",
+      "actor_critic"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "feedback",
+      "credit"
+    ],
+    "course_evidence_ids": [
+      "ev-policy_gradient-01",
+      "ev-policy_gradient-02",
+      "ev-policy_gradient-03",
+      "ev-policy_gradient-04",
+      "ev-policy_gradient-05",
+      "ev-policy_gradient-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "actor_critic",
+    "name": "Actor-Critic",
+    "plain_language_definition": "A learner split into a chooser and a judge.",
+    "everyday_problem": "The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.",
+    "first_principles_reason": "Decision making improves when action choice and outcome evaluation can help each other.",
+    "mathematical_principle": "The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.",
+    "why_it_matters": "It reduces noise in learning and underlies many practical RL methods.",
+    "what_breaks_without_it": "Policy updates can be too unstable or data-hungry for complex environments.",
+    "related_concepts": [
+      "policy_gradient",
+      "value_functions",
+      "rl_for_llms"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "feedback",
+      "credit"
+    ],
+    "course_evidence_ids": [
+      "ev-actor_critic-01",
+      "ev-actor_critic-02",
+      "ev-actor_critic-03",
+      "ev-actor_critic-04",
+      "ev-actor_critic-05"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "q_learning",
+    "name": "Q-Learning",
+    "plain_language_definition": "Learning a table or function that estimates how good each action is from each situation.",
+    "everyday_problem": "The problem is that an agent must choose now while caring about later consequences.",
+    "first_principles_reason": "A decision can be valued by immediate payoff plus the value of the future it leads to.",
+    "mathematical_principle": "Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today's action value equals immediate reward plus the best estimated future value.",
+    "why_it_matters": "It is the cleanest route from delayed reward to a practical decision rule.",
+    "what_breaks_without_it": "The agent cannot compare actions by their long-term consequences.",
+    "related_concepts": [
+      "value_functions",
+      "offline_rl",
+      "credit_assignment"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "credit",
+      "search"
+    ],
+    "course_evidence_ids": [
+      "ev-q_learning-01"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "offline_rl",
+    "name": "Offline Reinforcement Learning",
+    "plain_language_definition": "Learning from logged experience without freely trying new actions during training.",
+    "everyday_problem": "The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.",
+    "first_principles_reason": "The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.",
+    "mathematical_principle": "The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.",
+    "why_it_matters": "It lets RL use large historical datasets where online exploration would be expensive or dangerous.",
+    "what_breaks_without_it": "The agent can exploit errors in its own value estimates for actions the dataset barely contains.",
+    "related_concepts": [
+      "q_learning",
+      "generalization",
+      "evaluation"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "uncertainty",
+      "feedback"
+    ],
+    "course_evidence_ids": [
+      "ev-offline_rl-01",
+      "ev-offline_rl-02",
+      "ev-offline_rl-03"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "model_based_rl",
+    "name": "Model-Based Reinforcement Learning",
+    "plain_language_definition": "Learning or using a simulator of what might happen next.",
+    "everyday_problem": "The problem is that real-world trial and error can be slow, costly, or risky.",
+    "first_principles_reason": "If the agent can imagine consequences, it can compare possible futures before acting.",
+    "mathematical_principle": "A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.",
+    "why_it_matters": "It can make learning more data-efficient and connects RL to control.",
+    "what_breaks_without_it": "The agent must learn mainly by direct experience and may waste attempts.",
+    "related_concepts": [
+      "planning",
+      "policy",
+      "uncertainty"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "search",
+      "uncertainty"
+    ],
+    "course_evidence_ids": [
+      "ev-model_based_rl-01",
+      "ev-model_based_rl-02",
+      "ev-model_based_rl-03",
+      "ev-model_based_rl-04",
+      "ev-model_based_rl-05",
+      "ev-model_based_rl-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "exploration",
+    "name": "Exploration",
+    "plain_language_definition": "Trying actions to learn what would otherwise remain unknown.",
+    "everyday_problem": "The problem is that doing the currently best-known thing can prevent the agent from discovering something better.",
+    "first_principles_reason": "Information has value. Some actions are useful because they reveal the world, not because they immediately pay off.",
+    "mathematical_principle": "Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.",
+    "why_it_matters": "It prevents premature habits and makes sparse-reward problems learnable.",
+    "what_breaks_without_it": "The system can get stuck repeating a mediocre behavior because it never tests alternatives.",
+    "related_concepts": [
+      "policy",
+      "model_based_rl",
+      "generalization"
+    ],
+    "theme_id": "action_and_consequence",
+    "mathematical_primitives": [
+      "search",
+      "uncertainty"
+    ],
+    "course_evidence_ids": [
+      "ev-exploration-01",
+      "ev-exploration-02",
+      "ev-exploration-03",
+      "ev-exploration-04",
+      "ev-exploration-05",
+      "ev-exploration-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "rl_for_llms",
+    "name": "RL For LLMs",
+    "plain_language_definition": "Using outcome feedback to steer a language model's choices.",
+    "everyday_problem": "The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.",
+    "first_principles_reason": "Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.",
+    "mathematical_principle": "The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.",
+    "why_it_matters": "It connects reinforcement learning to instruction following, preference optimization, and reasoning models.",
+    "what_breaks_without_it": "A model may imitate text but fail to optimize for useful task outcomes.",
+    "related_concepts": [
+      "fine_tuning",
+      "policy",
+      "reasoning_traces"
+    ],
+    "theme_id": "learning_from_feedback",
+    "mathematical_primitives": [
+      "feedback",
+      "credit",
+      "scale"
+    ],
+    "course_evidence_ids": [
+      "ev-rl_for_llms-01",
+      "ev-rl_for_llms-02",
+      "ev-rl_for_llms-03",
+      "ev-rl_for_llms-04",
+      "ev-rl_for_llms-05",
+      "ev-rl_for_llms-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "diffusion",
+    "name": "Diffusion",
+    "plain_language_definition": "Generating by starting from noise and repeatedly making it more like data.",
+    "everyday_problem": "The problem is that realistic images or videos are too complex to create in one jump from a prompt.",
+    "first_principles_reason": "A hard generation problem can be broken into many easier cleanup steps.",
+    "mathematical_principle": "A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.",
+    "why_it_matters": "It is a major recipe for high-quality image, video, and multimodal generation.",
+    "what_breaks_without_it": "Generation must rely on harder one-shot mappings or unstable adversarial training.",
+    "related_concepts": [
+      "score_matching",
+      "guidance",
+      "latent_space"
+    ],
+    "theme_id": "generative_paths",
+    "mathematical_primitives": [
+      "uncertainty",
+      "search"
+    ],
+    "course_evidence_ids": [
+      "ev-diffusion-01",
+      "ev-diffusion-02",
+      "ev-diffusion-03",
+      "ev-diffusion-04",
+      "ev-diffusion-05",
+      "ev-diffusion-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "score_matching",
+    "name": "Score Matching",
+    "plain_language_definition": "Learning which direction points toward more data-like samples.",
+    "everyday_problem": "The problem is that the model needs a local compass for improving a noisy sample.",
+    "first_principles_reason": "In a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.",
+    "mathematical_principle": "The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.",
+    "why_it_matters": "It gives diffusion models the step-by-step direction used for denoising.",
+    "what_breaks_without_it": "The sampler has no learned local direction for turning noise into structure.",
+    "related_concepts": [
+      "diffusion",
+      "flow_matching",
+      "guidance"
+    ],
+    "theme_id": "generative_paths",
+    "mathematical_primitives": [
+      "geometry",
+      "assignment"
+    ],
+    "course_evidence_ids": [
+      "ev-score_matching-01",
+      "ev-score_matching-02",
+      "ev-score_matching-03",
+      "ev-score_matching-04",
+      "ev-score_matching-05",
+      "ev-score_matching-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "flow_matching",
+    "name": "Flow Matching",
+    "plain_language_definition": "Learning a smooth path that carries simple samples into data-like samples.",
+    "everyday_problem": "The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.",
+    "first_principles_reason": "Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.",
+    "mathematical_principle": "A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.",
+    "why_it_matters": "It offers a clean mathematical view of modern generative modeling and connects diffusion to continuous transport.",
+    "what_breaks_without_it": "The model loses one of the simplest ways to describe generation as guided motion.",
+    "related_concepts": [
+      "diffusion",
+      "score_matching",
+      "latent_space"
+    ],
+    "theme_id": "generative_paths",
+    "mathematical_primitives": [
+      "geometry",
+      "search"
+    ],
+    "course_evidence_ids": [
+      "ev-flow_matching-01",
+      "ev-flow_matching-02",
+      "ev-flow_matching-03",
+      "ev-flow_matching-04",
+      "ev-flow_matching-05",
+      "ev-flow_matching-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "guidance",
+    "name": "Guidance",
+    "plain_language_definition": "Steering generation toward a prompt, class, reward, or constraint.",
+    "everyday_problem": "The problem is that pure generation may create plausible samples that do not match what the user asked for.",
+    "first_principles_reason": "Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.",
+    "mathematical_principle": "Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.",
+    "why_it_matters": "It makes image and video models controllable by text, labels, layouts, or preferences.",
+    "what_breaks_without_it": "The model may produce realistic but irrelevant outputs.",
+    "related_concepts": [
+      "diffusion",
+      "reward_modeling",
+      "agents_and_tools"
+    ],
+    "theme_id": "generative_paths",
+    "mathematical_primitives": [
+      "feedback",
+      "search"
+    ],
+    "course_evidence_ids": [
+      "ev-guidance-01",
+      "ev-guidance-02",
+      "ev-guidance-03",
+      "ev-guidance-04",
+      "ev-guidance-05",
+      "ev-guidance-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "latent_space",
+    "name": "Latent Space",
+    "plain_language_definition": "A compressed internal space where generation or prediction can happen more cheaply.",
+    "everyday_problem": "The problem is that pixels and long sequences are expensive and full of surface detail.",
+    "first_principles_reason": "If the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.",
+    "mathematical_principle": "An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.",
+    "why_it_matters": "Latent spaces make large vision generation faster and connect images, text, and actions through shared coordinates.",
+    "what_breaks_without_it": "Generation and planning may become too expensive at raw resolution.",
+    "related_concepts": [
+      "embeddings",
+      "diffusion",
+      "compression"
+    ],
+    "theme_id": "generative_paths",
+    "mathematical_primitives": [
+      "compression",
+      "geometry"
+    ],
+    "course_evidence_ids": [
+      "ev-latent_space-01",
+      "ev-latent_space-02",
+      "ev-latent_space-03",
+      "ev-latent_space-04",
+      "ev-latent_space-05",
+      "ev-latent_space-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "vision_transformers",
+    "name": "Vision Transformers",
+    "plain_language_definition": "Treating pieces of an image like items that can read from one another.",
+    "everyday_problem": "The problem is that an image has many regions, and the important relation may be far apart in the picture.",
+    "first_principles_reason": "Images are not just local texture. Shape, object identity, and layout require comparing distant parts.",
+    "mathematical_principle": "An image is split into patches, each patch gets a vector, and attention lets patches exchange information.",
+    "why_it_matters": "It connects the transformer recipe from language to large vision and multimodal models.",
+    "what_breaks_without_it": "The model may depend too heavily on local filters and struggle with global image relationships.",
+    "related_concepts": [
+      "attention",
+      "positional_encoding",
+      "latent_space"
+    ],
+    "theme_id": "representation_workspace",
+    "mathematical_primitives": [
+      "composition",
+      "invariance"
+    ],
+    "course_evidence_ids": [
+      "ev-vision_transformers-01",
+      "ev-vision_transformers-02",
+      "ev-vision_transformers-03",
+      "ev-vision_transformers-04",
+      "ev-vision_transformers-05",
+      "ev-vision_transformers-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "scaling_laws",
+    "name": "Scaling Laws",
+    "plain_language_definition": "Regular patterns in what improves when models, data, and compute grow.",
+    "everyday_problem": "The problem is that building large models is expensive, so teams need a way to predict whether more scale is worth it.",
+    "first_principles_reason": "Capacity, data, and compute are bottlenecks. When one bottleneck is relaxed, another can become the limiter.",
+    "mathematical_principle": "A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.",
+    "why_it_matters": "It guides training budgets and helps explain why some abilities appear only after enough practice and capacity.",
+    "what_breaks_without_it": "Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.",
+    "related_concepts": [
+      "pretraining",
+      "emergence",
+      "evaluation"
+    ],
+    "theme_id": "measurement_limits",
+    "mathematical_primitives": [
+      "scale",
+      "feedback"
+    ],
+    "course_evidence_ids": [
+      "ev-scaling_laws-01",
+      "ev-scaling_laws-02",
+      "ev-scaling_laws-03",
+      "ev-scaling_laws-04",
+      "ev-scaling_laws-05",
+      "ev-scaling_laws-06"
+    ],
+    "evidence_status": "transcript-backed"
+  },
+  {
+    "id": "generalization",
+    "name": "Generalization",
+    "plain_language_definition": "Doing well on new cases, not only remembered examples.",
+    "everyday_problem": "The problem is that a model can learn shortcuts that work in training but fail in the real world.",
+    "first_principles_reason": "Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.",
+    "mathematical_principle": "Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.",
+    "why_it_matters": "It is the difference between memorization and useful competence.",
+    "what_breaks_without_it": "Benchmarks and demos stop predicting real deployment behavior.",
+    "related_concepts": [
+      "evaluation",
+      "offline_rl",
+      "invariance"
+    ],
+    "theme_id": "measurement_limits",
+    "mathematical_primitives": [
+      "invariance",
+      "uncertainty"
+    ],
+    "course_evidence_ids": [
+      "ev-generalization-01",
+      "ev-generalization-02",
+      "ev-generalization-03",
+      "ev-generalization-04",
+      "ev-generalization-05"
+    ],
+    "evidence_status": "transcript-backed"
+  }
+]

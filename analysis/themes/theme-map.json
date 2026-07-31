@@ -1,0 +1,135 @@
+[
+  {
+    "id": "representation_workspace",
+    "name": "Representation As A Working Space",
+    "big_picture": "Modern models first turn messy inputs into internal coordinates, then do most of their work by moving, comparing, and editing those coordinates.",
+    "why_this_theme_matters": "Without this workspace, text, images, states, and actions remain raw surface forms that cannot share computation.",
+    "subthemes": [
+      "text_and_patch_interfaces",
+      "learned_geometry",
+      "selective_context",
+      "stacked_computation"
+    ],
+    "core_concepts": [
+      "tokenization",
+      "embeddings",
+      "positional_encoding",
+      "attention",
+      "transformer_block",
+      "vision_transformers"
+    ],
+    "course_coverage": {
+      "stanford-cme295-transformers-llms-autumn-2025": 18,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 8,
+      "stanford-cs224r-deep-rl-spring-2025": 10
+    }
+  },
+  {
+    "id": "learning_from_feedback",
+    "name": "Learning From Feedback",
+    "big_picture": "A model improves by turning mistakes, rewards, preferences, or prediction errors into small changes in future behavior.",
+    "why_this_theme_matters": "This is the bridge from passive pattern finding to systems that can be steered toward useful outcomes.",
+    "subthemes": [
+      "prediction_as_practice",
+      "human_feedback"
+    ],
+    "core_concepts": [
+      "pretraining",
+      "fine_tuning",
+      "rl_for_llms"
+    ],
+    "course_coverage": {
+      "stanford-cme295-transformers-llms-autumn-2025": 6,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 6,
+      "stanford-cs224r-deep-rl-spring-2025": 6
+    }
+  },
+  {
+    "id": "action_and_consequence",
+    "name": "Action, Time, And Consequence",
+    "big_picture": "Reinforcement learning studies what happens when choices change the future evidence the learner will see.",
+    "why_this_theme_matters": "It explains why agents, robots, games, and reasoning systems need more than ordinary supervised prediction.",
+    "subthemes": [
+      "delayed_feedback",
+      "learning_from_logged_worlds",
+      "imagined_futures"
+    ],
+    "core_concepts": [
+      "policy",
+      "reward",
+      "credit_assignment",
+      "policy_gradient",
+      "actor_critic",
+      "q_learning",
+      "offline_rl",
+      "model_based_rl",
+      "exploration"
+    ],
+    "course_coverage": {
+      "stanford-cs224r-deep-rl-spring-2025": 16,
+      "stanford-cme295-transformers-llms-autumn-2025": 16,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 13
+    }
+  },
+  {
+    "id": "inference_time_work",
+    "name": "Thinking As Extra Work At Use Time",
+    "big_picture": "Some systems get better by spending more computation after the prompt arrives: writing intermediate steps, searching, calling tools, or revising.",
+    "why_this_theme_matters": "It separates stored knowledge from active problem solving.",
+    "subthemes": [
+      "scratch_work_and_tools"
+    ],
+    "core_concepts": [
+      "reasoning_traces",
+      "agents_and_tools"
+    ],
+    "course_coverage": {
+      "stanford-cme295-transformers-llms-autumn-2025": 4,
+      "stanford-cs224r-deep-rl-spring-2025": 5,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 3
+    }
+  },
+  {
+    "id": "generative_paths",
+    "name": "Generation As Guided Movement",
+    "big_picture": "Diffusion, flow, and guidance methods turn generation into a path through possible samples rather than a one-shot guess.",
+    "why_this_theme_matters": "It gives a practical way to create complex images and videos while still obeying conditions.",
+    "subthemes": [
+      "denoising_paths",
+      "continuous_transport",
+      "controlled_generation"
+    ],
+    "core_concepts": [
+      "diffusion",
+      "score_matching",
+      "flow_matching",
+      "guidance",
+      "latent_space"
+    ],
+    "course_coverage": {
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 9,
+      "stanford-cme295-transformers-llms-autumn-2025": 9,
+      "stanford-cs224r-deep-rl-spring-2025": 12
+    }
+  },
+  {
+    "id": "measurement_limits",
+    "name": "Measurement, Scale, And Generalization",
+    "big_picture": "Scores, scaling curves, and test sets are claims about behavior under chosen conditions, not full descriptions of intelligence.",
+    "why_this_theme_matters": "It keeps model development honest about what has actually been demonstrated.",
+    "subthemes": [
+      "scores_are_samples",
+      "what_changes_with_size"
+    ],
+    "core_concepts": [
+      "evaluation",
+      "scaling_laws",
+      "generalization"
+    ],
+    "course_coverage": {
+      "stanford-cme295-transformers-llms-autumn-2025": 5,
+      "stanford-cme296-diffusion-large-vision-models-spring-2026": 7,
+      "stanford-cs224r-deep-rl-spring-2025": 5
+    }
+  }
+]

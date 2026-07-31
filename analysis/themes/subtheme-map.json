@@ -1,0 +1,715 @@
+[
+  {
+    "id": "text_and_patch_interfaces",
+    "parent_theme": "representation_workspace",
+    "name": "Turning Messy Inputs Into Countable Pieces",
+    "concepts": [
+      "tokenization",
+      "vision_transformers"
+    ],
+    "everyday_problem": "The system needs a first set of pieces before it can compare, remember, or predict anything.",
+    "hidden_principle": "Discrete inputs need a stable interface into numerical computation.",
+    "mathematical_lever": "Maps from raw objects into IDs or vectors.",
+    "why_it_matters": "The first interface controls the burden placed on every later layer.",
+    "examples_from_courses": [
+      {
+        "concept": "tokenization",
+        "evidence_id": "ev-tokenization-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 3 - Tranformers & Large Language Models",
+        "timestamp_start": "00:02:36.320"
+      },
+      {
+        "concept": "tokenization",
+        "evidence_id": "ev-tokenization-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics",
+        "timestamp_start": "00:35:56.570"
+      },
+      {
+        "concept": "vision_transformers",
+        "evidence_id": "ev-vision_transformers-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+        "timestamp_start": "00:01:51.640"
+      },
+      {
+        "concept": "vision_transformers",
+        "evidence_id": "ev-vision_transformers-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "timestamp_start": "00:51:26.940"
+      }
+    ],
+    "connected_concepts": [
+      "attention",
+      "embeddings",
+      "latent_space",
+      "positional_encoding",
+      "pretraining"
+    ]
+  },
+  {
+    "id": "learned_geometry",
+    "parent_theme": "representation_workspace",
+    "name": "Making Meaning Into Geometry",
+    "concepts": [
+      "embeddings",
+      "latent_space"
+    ],
+    "everyday_problem": "Related things need to be near enough that arithmetic can share what is learned.",
+    "hidden_principle": "Similarity becomes useful only after it is represented as distance or direction.",
+    "mathematical_lever": "Vectors, distances, projections, and learned coordinate systems.",
+    "why_it_matters": "It lets one model reuse structure across words, images, states, and actions.",
+    "examples_from_courses": [
+      {
+        "concept": "embeddings",
+        "evidence_id": "ev-embeddings-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "timestamp_start": "00:05:16.580"
+      },
+      {
+        "concept": "embeddings",
+        "evidence_id": "ev-embeddings-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "timestamp_start": "00:10:39.810"
+      },
+      {
+        "concept": "latent_space",
+        "evidence_id": "ev-latent_space-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 4 - Latent Space & Guidance",
+        "timestamp_start": "00:15:08.170"
+      },
+      {
+        "concept": "latent_space",
+        "evidence_id": "ev-latent_space-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "timestamp_start": "00:03:03.520"
+      }
+    ],
+    "connected_concepts": [
+      "compression",
+      "diffusion",
+      "embeddings",
+      "latent_space",
+      "representation_learning",
+      "tokenization"
+    ]
+  },
+  {
+    "id": "selective_context",
+    "parent_theme": "representation_workspace",
+    "name": "Choosing Which Context Matters",
+    "concepts": [
+      "attention",
+      "positional_encoding"
+    ],
+    "everyday_problem": "The model cannot treat every past detail as equally relevant.",
+    "hidden_principle": "Context is useful only when it is selected and weighted.",
+    "mathematical_lever": "Similarity scores, normalized weights, and weighted averages.",
+    "why_it_matters": "This is the shared mechanism behind long-context language modeling and global image understanding.",
+    "examples_from_courses": [
+      {
+        "concept": "attention",
+        "evidence_id": "ev-attention-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "timestamp_start": "00:01:32.760"
+      },
+      {
+        "concept": "attention",
+        "evidence_id": "ev-attention-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods",
+        "timestamp_start": "00:03:33.590"
+      },
+      {
+        "concept": "positional_encoding",
+        "evidence_id": "ev-positional_encoding-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models & Tricks",
+        "timestamp_start": "00:10:39.810"
+      },
+      {
+        "concept": "positional_encoding",
+        "evidence_id": "ev-positional_encoding-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "timestamp_start": "01:05:31.720"
+      }
+    ],
+    "connected_concepts": [
+      "attention",
+      "credit_assignment",
+      "retrieval",
+      "transformer_block",
+      "vision_transformers"
+    ]
+  },
+  {
+    "id": "stacked_computation",
+    "parent_theme": "representation_workspace",
+    "name": "Building Depth From Repeated Simple Updates",
+    "concepts": [
+      "transformer_block"
+    ],
+    "everyday_problem": "Hard understanding requires more than one pass over the input.",
+    "hidden_principle": "Repeated small transformations can build complex internal state.",
+    "mathematical_lever": "Layer composition, residual updates, normalization, and nonlinear maps.",
+    "why_it_matters": "It explains why the same block can be scaled into very different modern models.",
+    "examples_from_courses": [
+      {
+        "concept": "transformer_block",
+        "evidence_id": "ev-transformer_block-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "timestamp_start": "00:05:55.580"
+      },
+      {
+        "concept": "transformer_block",
+        "evidence_id": "ev-transformer_block-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "timestamp_start": "00:35:05.103"
+      }
+    ],
+    "connected_concepts": [
+      "attention",
+      "normalization",
+      "residual_connections",
+      "vision_transformers"
+    ]
+  },
+  {
+    "id": "prediction_as_practice",
+    "parent_theme": "learning_from_feedback",
+    "name": "Learning Structure By Guessing Missing Pieces",
+    "concepts": [
+      "pretraining"
+    ],
+    "everyday_problem": "There is much more raw data than carefully labeled instruction.",
+    "hidden_principle": "A simple prediction game can expose the structure of language, images, and behavior.",
+    "mathematical_lever": "Loss functions that measure surprise and gradients that reduce it.",
+    "why_it_matters": "It creates the broad base that later systems tune and specialize.",
+    "examples_from_courses": [
+      {
+        "concept": "pretraining",
+        "evidence_id": "ev-pretraining-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "timestamp_start": "00:02:20.620"
+      },
+      {
+        "concept": "pretraining",
+        "evidence_id": "ev-pretraining-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+        "timestamp_start": "00:10:36.420"
+      }
+    ],
+    "connected_concepts": [
+      "fine_tuning",
+      "generalization",
+      "scaling_laws"
+    ]
+  },
+  {
+    "id": "human_feedback",
+    "parent_theme": "learning_from_feedback",
+    "name": "Turning Preference Into Training Signal",
+    "concepts": [
+      "fine_tuning",
+      "reward",
+      "rl_for_llms"
+    ],
+    "everyday_problem": "People can often say which answer is better even when they cannot write the perfect answer in advance.",
+    "hidden_principle": "Comparison can be converted into a direction for changing behavior.",
+    "mathematical_lever": "Preference losses, reward models, and policy updates.",
+    "why_it_matters": "It explains why useful assistants require more than next-token prediction.",
+    "examples_from_courses": [
+      {
+        "concept": "fine_tuning",
+        "evidence_id": "ev-fine_tuning-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "timestamp_start": "00:00:05.480"
+      },
+      {
+        "concept": "fine_tuning",
+        "evidence_id": "ev-fine_tuning-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "timestamp_start": "00:02:35.700"
+      },
+      {
+        "concept": "reward",
+        "evidence_id": "ev-reward-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "timestamp_start": "00:04:57.250"
+      },
+      {
+        "concept": "reward",
+        "evidence_id": "ev-reward-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "timestamp_start": "00:00:05.480"
+      },
+      {
+        "concept": "rl_for_llms",
+        "evidence_id": "ev-rl_for_llms-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "timestamp_start": "00:00:18.960"
+      },
+      {
+        "concept": "rl_for_llms",
+        "evidence_id": "ev-rl_for_llms-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "timestamp_start": "00:00:07.020"
+      }
+    ],
+    "connected_concepts": [
+      "credit_assignment",
+      "evaluation",
+      "fine_tuning",
+      "policy",
+      "policy_gradient",
+      "reasoning_traces",
+      "reward_modeling",
+      "rl_for_llms"
+    ]
+  },
+  {
+    "id": "delayed_feedback",
+    "parent_theme": "action_and_consequence",
+    "name": "Learning When The Result Comes Later",
+    "concepts": [
+      "policy",
+      "credit_assignment",
+      "q_learning",
+      "policy_gradient",
+      "actor_critic"
+    ],
+    "everyday_problem": "The feedback arrives after a chain of choices, so the learner must decide which choice mattered.",
+    "hidden_principle": "Cause and reward are separated by time.",
+    "mathematical_lever": "Returns, value estimates, advantages, and Bellman-style recursion.",
+    "why_it_matters": "It is the core difficulty behind games, robotics, agents, and long reasoning chains.",
+    "examples_from_courses": [
+      {
+        "concept": "policy",
+        "evidence_id": "ev-policy-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "timestamp_start": "00:00:28.100"
+      },
+      {
+        "concept": "policy",
+        "evidence_id": "ev-policy-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 5 - LLM tuning",
+        "timestamp_start": "00:19:05.010"
+      },
+      {
+        "concept": "credit_assignment",
+        "evidence_id": "ev-credit_assignment-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning",
+        "timestamp_start": "00:40:42.083"
+      },
+      {
+        "concept": "credit_assignment",
+        "evidence_id": "ev-credit_assignment-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 5 - Architectures",
+        "timestamp_start": "00:17:00.230"
+      },
+      {
+        "concept": "q_learning",
+        "evidence_id": "ev-q_learning-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning",
+        "timestamp_start": "00:00:30.320"
+      },
+      {
+        "concept": "policy_gradient",
+        "evidence_id": "ev-policy_gradient-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "timestamp_start": "00:01:07.797"
+      },
+      {
+        "concept": "policy_gradient",
+        "evidence_id": "ev-policy_gradient-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "timestamp_start": "00:07:13.350"
+      },
+      {
+        "concept": "actor_critic",
+        "evidence_id": "ev-actor_critic-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic",
+        "timestamp_start": "00:00:48.680"
+      },
+      {
+        "concept": "actor_critic",
+        "evidence_id": "ev-actor_critic-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "timestamp_start": "00:05:21.360"
+      }
+    ],
+    "connected_concepts": [
+      "actor_critic",
+      "attention",
+      "credit_assignment",
+      "offline_rl",
+      "policy",
+      "policy_gradient",
+      "q_learning",
+      "reward",
+      "rl_for_llms",
+      "value_functions"
+    ]
+  },
+  {
+    "id": "learning_from_logged_worlds",
+    "parent_theme": "action_and_consequence",
+    "name": "Learning Safely From Old Experience",
+    "concepts": [
+      "offline_rl"
+    ],
+    "everyday_problem": "The learner may not be allowed to freely experiment in the real world.",
+    "hidden_principle": "A dataset only covers part of what could have happened.",
+    "mathematical_lever": "Distribution constraints and conservative value estimates.",
+    "why_it_matters": "It makes RL relevant when live exploration is risky.",
+    "examples_from_courses": [
+      {
+        "concept": "offline_rl",
+        "evidence_id": "ev-offline_rl-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL",
+        "timestamp_start": "00:07:44.840"
+      },
+      {
+        "concept": "offline_rl",
+        "evidence_id": "ev-offline_rl-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+        "timestamp_start": "01:21:57.490"
+      }
+    ],
+    "connected_concepts": [
+      "evaluation",
+      "generalization",
+      "q_learning"
+    ]
+  },
+  {
+    "id": "imagined_futures",
+    "parent_theme": "action_and_consequence",
+    "name": "Using Prediction To Plan Before Acting",
+    "concepts": [
+      "model_based_rl",
+      "exploration"
+    ],
+    "everyday_problem": "Real trial and error is expensive, but imagined trial and error can be cheap.",
+    "hidden_principle": "A model of consequences turns acting into searching over possible futures.",
+    "mathematical_lever": "Transition models, uncertainty estimates, and planning objectives.",
+    "why_it_matters": "It connects reinforcement learning with control and robotics.",
+    "examples_from_courses": [
+      {
+        "concept": "model_based_rl",
+        "evidence_id": "ev-model_based_rl-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL",
+        "timestamp_start": "00:04:50.450"
+      },
+      {
+        "concept": "model_based_rl",
+        "evidence_id": "ev-model_based_rl-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 1 - Diffusion",
+        "timestamp_start": "01:19:13.250"
+      },
+      {
+        "concept": "exploration",
+        "evidence_id": "ev-exploration-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration",
+        "timestamp_start": "00:00:07.040"
+      },
+      {
+        "concept": "exploration",
+        "evidence_id": "ev-exploration-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 6 - Model Training",
+        "timestamp_start": "00:12:06.480"
+      }
+    ],
+    "connected_concepts": [
+      "generalization",
+      "model_based_rl",
+      "planning",
+      "policy",
+      "uncertainty"
+    ]
+  },
+  {
+    "id": "scratch_work_and_tools",
+    "parent_theme": "inference_time_work",
+    "name": "Solving By Writing, Searching, And Acting",
+    "concepts": [
+      "reasoning_traces",
+      "agents_and_tools"
+    ],
+    "everyday_problem": "A hard task may need intermediate notes, outside facts, or tool results.",
+    "hidden_principle": "The context can become a temporary workspace that changes as the system works.",
+    "mathematical_lever": "Sequential decision loops over generated tokens, actions, and observations.",
+    "why_it_matters": "It connects LLM reasoning to agentic systems and RL.",
+    "examples_from_courses": [
+      {
+        "concept": "reasoning_traces",
+        "evidence_id": "ev-reasoning_traces-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning",
+        "timestamp_start": "00:00:18.960"
+      },
+      {
+        "concept": "reasoning_traces",
+        "evidence_id": "ev-reasoning_traces-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "timestamp_start": "00:00:07.020"
+      },
+      {
+        "concept": "agents_and_tools",
+        "evidence_id": "ev-agents_and_tools-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+        "timestamp_start": "00:00:45.040"
+      },
+      {
+        "concept": "agents_and_tools",
+        "evidence_id": "ev-agents_and_tools-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots",
+        "timestamp_start": "00:01:19.350"
+      }
+    ],
+    "connected_concepts": [
+      "agents_and_tools",
+      "inference_time_compute",
+      "planning",
+      "policy",
+      "retrieval",
+      "rl_for_llms"
+    ]
+  },
+  {
+    "id": "denoising_paths",
+    "parent_theme": "generative_paths",
+    "name": "Making A Hard Sample By Many Small Corrections",
+    "concepts": [
+      "diffusion",
+      "score_matching"
+    ],
+    "everyday_problem": "A detailed image is too hard to create in one leap.",
+    "hidden_principle": "Many small local directions can solve a global generation problem.",
+    "mathematical_lever": "Noise schedules, score fields, and reverse sampling.",
+    "why_it_matters": "It explains the central mechanism behind diffusion image generation.",
+    "examples_from_courses": [
+      {
+        "concept": "diffusion",
+        "evidence_id": "ev-diffusion-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "timestamp_start": "00:00:26.360"
+      },
+      {
+        "concept": "diffusion",
+        "evidence_id": "ev-diffusion-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 9 - Recap & Current Trends",
+        "timestamp_start": "01:02:29.320"
+      },
+      {
+        "concept": "score_matching",
+        "evidence_id": "ev-score_matching-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 2 - Score matching",
+        "timestamp_start": "00:00:18.000"
+      },
+      {
+        "concept": "score_matching",
+        "evidence_id": "ev-score_matching-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "timestamp_start": "00:13:23.890"
+      }
+    ],
+    "connected_concepts": [
+      "diffusion",
+      "flow_matching",
+      "guidance",
+      "latent_space",
+      "score_matching"
+    ]
+  },
+  {
+    "id": "continuous_transport",
+    "parent_theme": "generative_paths",
+    "name": "Moving Samples Along A Learned Route",
+    "concepts": [
+      "flow_matching"
+    ],
+    "everyday_problem": "Generation needs a route from something easy to sample to something realistic.",
+    "hidden_principle": "A path through space can be easier to learn than a direct jump.",
+    "mathematical_lever": "Vector fields and continuous-time transformations.",
+    "why_it_matters": "It reveals the shared geometry behind diffusion and newer flow methods.",
+    "examples_from_courses": [
+      {
+        "concept": "flow_matching",
+        "evidence_id": "ev-flow_matching-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "timestamp_start": "00:00:15.600"
+      },
+      {
+        "concept": "flow_matching",
+        "evidence_id": "ev-flow_matching-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients",
+        "timestamp_start": "00:27:08.790"
+      }
+    ],
+    "connected_concepts": [
+      "diffusion",
+      "latent_space",
+      "score_matching"
+    ]
+  },
+  {
+    "id": "controlled_generation",
+    "parent_theme": "generative_paths",
+    "name": "Balancing Freedom With Instruction",
+    "concepts": [
+      "guidance"
+    ],
+    "everyday_problem": "A model can make something plausible but not the thing requested.",
+    "hidden_principle": "Generation must be constrained without freezing all creative variation.",
+    "mathematical_lever": "Conditioned scores, guidance weights, and modified sampling directions.",
+    "why_it_matters": "It is what makes image and video generation steerable.",
+    "examples_from_courses": [
+      {
+        "concept": "guidance",
+        "evidence_id": "ev-guidance-01",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 3 - Flow matching",
+        "timestamp_start": "00:12:11.050"
+      },
+      {
+        "concept": "guidance",
+        "evidence_id": "ev-guidance-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs",
+        "timestamp_start": "00:01:20.500"
+      }
+    ],
+    "connected_concepts": [
+      "agents_and_tools",
+      "diffusion",
+      "reward_modeling"
+    ]
+  },
+  {
+    "id": "scores_are_samples",
+    "parent_theme": "measurement_limits",
+    "name": "Remembering That Scores Are Partial Views",
+    "concepts": [
+      "evaluation",
+      "generalization"
+    ],
+    "everyday_problem": "A single score can hide what the model cannot do.",
+    "hidden_principle": "Every measurement compresses behavior and loses detail.",
+    "mathematical_lever": "Metrics, held-out sets, confidence, and failure slicing.",
+    "why_it_matters": "It prevents benchmark success from being confused with broad reliability.",
+    "examples_from_courses": [
+      {
+        "concept": "evaluation",
+        "evidence_id": "ev-evaluation-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation",
+        "timestamp_start": "00:00:11.880"
+      },
+      {
+        "concept": "evaluation",
+        "evidence_id": "ev-evaluation-02",
+        "course": "stanford-cme296-diffusion-large-vision-models-spring-2026",
+        "video_title": "Stanford CME296 Diffusion & Large Vision Models | Spring 2026 | Lecture 7 - Evaluation",
+        "timestamp_start": "00:05:22.240"
+      },
+      {
+        "concept": "generalization",
+        "evidence_id": "ev-generalization-01",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning",
+        "timestamp_start": "00:22:49.090"
+      },
+      {
+        "concept": "generalization",
+        "evidence_id": "ev-generalization-02",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+        "timestamp_start": "00:08:06.720"
+      }
+    ],
+    "connected_concepts": [
+      "evaluation",
+      "generalization",
+      "invariance",
+      "offline_rl",
+      "reward_modeling",
+      "scaling_laws"
+    ]
+  },
+  {
+    "id": "what_changes_with_size",
+    "parent_theme": "measurement_limits",
+    "name": "What Changes When Systems Get Bigger",
+    "concepts": [
+      "scaling_laws"
+    ],
+    "everyday_problem": "Building larger systems is costly, so developers need clues about what scale will buy.",
+    "hidden_principle": "Capability depends on bottlenecks among data, compute, architecture, and training objective.",
+    "mathematical_lever": "Curves relating resources to loss or observed capability.",
+    "why_it_matters": "It turns scale from superstition into a planning question with limits.",
+    "examples_from_courses": [
+      {
+        "concept": "scaling_laws",
+        "evidence_id": "ev-scaling_laws-01",
+        "course": "stanford-cme295-transformers-llms-autumn-2025",
+        "video_title": "Stanford CME295 Transformers & LLMs | Autumn 2025 | Lecture 4 - LLM Training",
+        "timestamp_start": "00:04:50.840"
+      },
+      {
+        "concept": "scaling_laws",
+        "evidence_id": "ev-scaling_laws-02",
+        "course": "stanford-cs224r-deep-rl-spring-2025",
+        "video_title": "Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs",
+        "timestamp_start": "00:00:28.920"
+      }
+    ],
+    "connected_concepts": [
+      "emergence",
+      "evaluation",
+      "pretraining"
+    ]
+  }
+]

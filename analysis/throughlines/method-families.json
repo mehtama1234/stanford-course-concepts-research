@@ -1,0 +1,275 @@
+[
+  {
+    "id": "transformer_family",
+    "name": "Transformer Family",
+    "first_principles_problem": "How can every part of an input read the parts that matter without a hand-written rule for where to look?",
+    "core_move": "Use attention as a reusable lookup operation, then stack that operation many times.",
+    "mathematical_primitive": [
+      "assignment",
+      "composition",
+      "geometry"
+    ],
+    "concepts": [
+      "attention",
+      "positional_encoding",
+      "transformer_block",
+      "vision_transformers"
+    ],
+    "plain_language_family_summary": "This family treats language and images as collections of pieces that repeatedly exchange information.",
+    "evidence_concepts": [
+      "attention",
+      "transformer_block",
+      "vision_transformers"
+    ],
+    "course_evidence_ids": [
+      "ev-attention-01",
+      "ev-attention-02",
+      "ev-transformer_block-01",
+      "ev-transformer_block-02",
+      "ev-vision_transformers-01",
+      "ev-vision_transformers-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "pretrain_then_adapt_family",
+    "name": "Pretrain-Then-Adapt Family",
+    "first_principles_problem": "How can a system learn broad structure from abundant data and then become useful for narrower human tasks?",
+    "core_move": "First learn from a cheap prediction game, then steer the model with examples, preferences, or rewards.",
+    "mathematical_primitive": [
+      "feedback",
+      "scale"
+    ],
+    "concepts": [
+      "pretraining",
+      "fine_tuning",
+      "rl_for_llms",
+      "evaluation"
+    ],
+    "plain_language_family_summary": "This family separates broad practice from later behavioral shaping.",
+    "evidence_concepts": [
+      "pretraining",
+      "fine_tuning",
+      "rl_for_llms"
+    ],
+    "course_evidence_ids": [
+      "ev-pretraining-01",
+      "ev-pretraining-02",
+      "ev-fine_tuning-01",
+      "ev-fine_tuning-02",
+      "ev-rl_for_llms-01",
+      "ev-rl_for_llms-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "agentic_llm_family",
+    "name": "Agentic LLM And Retrieval Family",
+    "first_principles_problem": "How can a model solve tasks that need fresh information, external tools, or multiple attempts?",
+    "core_move": "Wrap prediction in a loop of action, observation, and context update.",
+    "mathematical_primitive": [
+      "search",
+      "feedback",
+      "composition"
+    ],
+    "concepts": [
+      "reasoning_traces",
+      "agents_and_tools",
+      "policy",
+      "evaluation"
+    ],
+    "plain_language_family_summary": "This family turns a language model from a one-shot answerer into a step-by-step worker.",
+    "evidence_concepts": [
+      "reasoning_traces",
+      "agents_and_tools"
+    ],
+    "course_evidence_ids": [
+      "ev-reasoning_traces-01",
+      "ev-reasoning_traces-02",
+      "ev-agents_and_tools-01",
+      "ev-agents_and_tools-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "value_based_rl_family",
+    "name": "Value-Based RL Family",
+    "first_principles_problem": "How can an agent choose now when the value of the choice depends on what happens later?",
+    "core_move": "Estimate the long-term value of actions and choose actions using that estimate.",
+    "mathematical_primitive": [
+      "credit",
+      "search"
+    ],
+    "concepts": [
+      "q_learning",
+      "credit_assignment",
+      "offline_rl"
+    ],
+    "plain_language_family_summary": "This family makes delayed consequences comparable by assigning numbers to state-action choices.",
+    "evidence_concepts": [
+      "q_learning",
+      "credit_assignment"
+    ],
+    "course_evidence_ids": [
+      "ev-q_learning-01",
+      "ev-credit_assignment-01",
+      "ev-credit_assignment-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "policy_optimization_family",
+    "name": "Policy Optimization Family",
+    "first_principles_problem": "How can a learner improve a behavior rule when it only observes sampled attempts?",
+    "core_move": "Increase the chance of actions that led to better outcomes and reduce the chance of worse ones.",
+    "mathematical_primitive": [
+      "feedback",
+      "credit"
+    ],
+    "concepts": [
+      "policy",
+      "reward",
+      "policy_gradient",
+      "actor_critic",
+      "rl_for_llms"
+    ],
+    "plain_language_family_summary": "This family directly changes the chooser rather than only estimating a table of action values.",
+    "evidence_concepts": [
+      "policy_gradient",
+      "actor_critic",
+      "rl_for_llms"
+    ],
+    "course_evidence_ids": [
+      "ev-policy_gradient-01",
+      "ev-policy_gradient-02",
+      "ev-actor_critic-01",
+      "ev-actor_critic-02",
+      "ev-rl_for_llms-01",
+      "ev-rl_for_llms-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "safe_or_data_limited_rl_family",
+    "name": "Safe Or Data-Limited RL Family",
+    "first_principles_problem": "How can an agent learn when new experiments are expensive, unsafe, or unavailable?",
+    "core_move": "Use logged data, conservative estimates, or imagined rollouts while accounting for uncertainty.",
+    "mathematical_primitive": [
+      "uncertainty",
+      "feedback",
+      "search"
+    ],
+    "concepts": [
+      "offline_rl",
+      "model_based_rl",
+      "exploration",
+      "evaluation"
+    ],
+    "plain_language_family_summary": "This family is about learning under limited access to the real world.",
+    "evidence_concepts": [
+      "offline_rl",
+      "model_based_rl",
+      "exploration"
+    ],
+    "course_evidence_ids": [
+      "ev-offline_rl-01",
+      "ev-offline_rl-02",
+      "ev-model_based_rl-01",
+      "ev-model_based_rl-02",
+      "ev-exploration-01",
+      "ev-exploration-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "denoising_diffusion_family",
+    "name": "Denoising Diffusion Family",
+    "first_principles_problem": "How can a model create a complex sample without producing every detail correctly in one step?",
+    "core_move": "Start with noise and learn many small corrections toward data.",
+    "mathematical_primitive": [
+      "uncertainty",
+      "search",
+      "geometry"
+    ],
+    "concepts": [
+      "diffusion",
+      "score_matching",
+      "guidance",
+      "latent_space"
+    ],
+    "plain_language_family_summary": "This family makes generation a controlled cleanup process.",
+    "evidence_concepts": [
+      "diffusion",
+      "score_matching",
+      "guidance"
+    ],
+    "course_evidence_ids": [
+      "ev-diffusion-01",
+      "ev-diffusion-02",
+      "ev-score_matching-01",
+      "ev-score_matching-02",
+      "ev-guidance-01",
+      "ev-guidance-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "flow_and_transport_family",
+    "name": "Flow And Transport Family",
+    "first_principles_problem": "How can simple samples be moved smoothly into realistic samples?",
+    "core_move": "Learn a field of directions and speeds that carries points through a path.",
+    "mathematical_primitive": [
+      "geometry",
+      "search"
+    ],
+    "concepts": [
+      "flow_matching",
+      "score_matching",
+      "diffusion",
+      "latent_space"
+    ],
+    "plain_language_family_summary": "This family views generation as learned motion through a space of possibilities.",
+    "evidence_concepts": [
+      "flow_matching",
+      "score_matching"
+    ],
+    "course_evidence_ids": [
+      "ev-flow_matching-01",
+      "ev-flow_matching-02",
+      "ev-score_matching-01",
+      "ev-score_matching-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  },
+  {
+    "id": "measurement_and_scaling_family",
+    "name": "Measurement And Scaling Family",
+    "first_principles_problem": "How can builders know whether a model is improving and what more resources will buy?",
+    "core_move": "Use tests, curves, and failure slices while remembering that every measurement is partial.",
+    "mathematical_primitive": [
+      "scale",
+      "uncertainty",
+      "invariance"
+    ],
+    "concepts": [
+      "evaluation",
+      "scaling_laws",
+      "generalization"
+    ],
+    "plain_language_family_summary": "This family is about turning claims of progress into inspectable evidence.",
+    "evidence_concepts": [
+      "evaluation",
+      "scaling_laws",
+      "generalization"
+    ],
+    "course_evidence_ids": [
+      "ev-evaluation-01",
+      "ev-evaluation-02",
+      "ev-scaling_laws-01",
+      "ev-scaling_laws-02",
+      "ev-generalization-01",
+      "ev-generalization-02"
+    ],
+    "evidence_status": "transcript-backed method family"
+  }
+]
