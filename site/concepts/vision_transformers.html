@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">representation workspace</p>
   <h1>Vision Transformers</h1>
-  <p>Treating pieces of an image like items that can read from one another.</p>
+  <p>A way to let different regions of an image communicate directly with each other instead of through a pipeline.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that an image has many regions, and the important relation may be far apart in the picture.</p>
+  <p>Imagine sorting photos: you spot that a face is happy by reading both the smile and the eyes, which sit far apart. If you can only look at tiny neighborhoods at a time, you&#x27;ll miss the connection. The distance matters.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Images are not just local texture. Shape, object identity, and layout require comparing distant parts.</p>
+  <p>Images encode meaning in spatial relationships: a face&#x27;s emotion comes from eyes, nose, and mouth together; a scene&#x27;s layout emerges from how objects relate to each other. A system that only patches together local clues will miss these global patterns. Any vision system solving realistic problems must let distant image parts influence each other.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Vision Transformers: An image is split into patches, each patch gets a vector, and attention lets patches exchange information. Think of it as the handle the algorithm can grab.</p>
+  <p>The attention weights: a square table with one row and column per image patch, where each cell (i, j) holds a percentage saying how much patch i should blend in patch j&#x27;s output. This table emerges from the patch vectors and updates during training, so the model learns which regions to link.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The model may depend too heavily on local filters and struggle with global image relationships.</p>
+  <p>Without global communication, a model relies on stacked local filters (convolution layers), which must pass information slowly from the edge inward. Understanding a face requires the border pixels to influence the center through many layers, introducing delays and bottlenecks. Some long-range patterns stay invisible.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that an image has many regions, and the important relation may be far apart in the picture.</p>
+  <p>Imagine sorting photos: you spot that a face is happy by reading both the smile and the eyes, which sit far apart. If you can only look at tiny neighborhoods at a time, you&#x27;ll miss the connection. The distance matters.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Images are not just local texture. Shape, object identity, and layout require comparing distant parts.</p>
+  <p>Images encode meaning in spatial relationships: a face&#x27;s emotion comes from eyes, nose, and mouth together; a scene&#x27;s layout emerges from how objects relate to each other. A system that only patches together local clues will miss these global patterns. Any vision system solving realistic problems must let distant image parts influence each other.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>An image is split into patches, each patch gets a vector, and attention lets patches exchange information.</p>
+  <p>Start with an image and chop it into rectangular patches (say, 16×16 pixels each). Represent each patch as a vector (a list of numbers). Compute attention: for each patch, measure how much it should listen to every other patch using a dot product (multiply corresponding numbers and sum them, which measures how similar two vectors are). Then divide by the square root of the vector&#x27;s size to keep the numbers stable. Pass this through softmax (a function that turns numbers into percentages that sum to 100%). Finally, multiply each other patch&#x27;s vector by those percentages and sum them. This gives each patch a weighted combination of all other patches, letting distant regions influence each other in one step.</p>
   <h2>Why is this concept important?</h2>
-  <p>It connects the transformer recipe from language to large vision and multimodal models.</p>
+  <p>This single mechanism replaces hand-built rules about which parts of an image should matter. The model learns which regions to link during training, adapting to different image types and tasks. This same idea scales to billions of images and foundation models.</p>
   <h2>What breaks without it?</h2>
-  <p>The model may depend too heavily on local filters and struggle with global image relationships.</p>
+  <p>Without global communication, a model relies on stacked local filters (convolution layers), which must pass information slowly from the edge inward. Understanding a face requires the border pixels to influence the center through many layers, introducing delays and bottlenecks. Some long-range patterns stay invisible.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that an image has many regions, and the important relation may be far apart in the picture. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: images have local structure (edges, textures), so just apply local filters everywhere, like standard computer vision does. Chain enough layers and information propagates.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because images are not just local texture. shape, object identity, and layout require comparing distant parts. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Local filters take many layers to move information across the image. A 300×300 pixel image needs maybe 10 layers of 3×3 filters before the center pixel even knows about the edges. With a billion pixels in a high-resolution image, that becomes impractical. Attention skips this hierarchy: every patch reaches every other patch in one step.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Vision Transformers: An image is split into patches, each patch gets a vector, and attention lets patches exchange information. Think of it as the handle the algorithm can grab.</p>
+  <p>The attention weights: a square table with one row and column per image patch, where each cell (i, j) holds a percentage saying how much patch i should blend in patch j&#x27;s output. This table emerges from the patch vectors and updates during training, so the model learns which regions to link.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Vision Transformers, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>First, split the image into patches and turn each into a vector. Next, for each patch, compute how similar it is to every other patch (dot product). Normalize those scores and convert to percentages (softmax). Then, blend all other patches using those percentages. The result is a new vector for each patch that carries information from the whole image.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: an image can be divided into patches the same way text is divided into tokens. A patch of sky, a patch of teddy bear fur, and a patch containing a book need to exchange information if the model is judging whether the image follows a prompt. The current corpus has weaker direct vision-transformer evidence than language-transformer evidence, but CME296 repeatedly treats image generation and image evaluation as patch- or architecture-level modeling problems, and CME295 recap connects transformer ideas to image settings.</p>
+  <p>Take a 4×4 image (16 pixels) and divide it into four 2×2 patches: top-left (a red corner), top-right (a blue corner), bottom-left (green), bottom-right (yellow). Each patch becomes a vector, say [0.8, 0.1] for red. Compute dot products: red·red = 0.65, red·blue = 0.05, red·green = 0.1, red·yellow = 0.2. Scale and softmax: these become roughly [0.6, 0.1, 0.1, 0.2]. The red patch&#x27;s new vector is 0.6×[0.8, 0.1] + 0.1×[0.3, 0.9] + 0.1×[0.1, 0.8] + 0.2×[0.9, 0.1] = [0.67, 0.25]. The red patch now contains a hint of blue, green, and yellow—global context in one step.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The lecture evidence here is shallower than for attention or diffusion. CME296 focuses on large vision and text-to-image systems, while CME295 names transformer-based trends that extend beyond text. The first-principles point is still important: vision transformers reuse the transformer move by turning spatial image regions into items that can communicate globally.</p>
+  <p>The CME296 lecture stresses the core transfer: the vision transformer takes the transformer idea from language (patches exchange information via attention) and applies it to images by cutting images into patches and treating those patches as tokens. This move unified vision and language under one architecture, enabling multimodal models. CME295 notes that this extends the transformer beyond text, showing how the same mechanism handles different input types.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that vision transformers understand images because they copy language transformers unchanged. Images need spatial position, patch size choices, visual inductive biases, and architecture adaptations. Treating every patch like a word is the starting trick, not the whole solution.</p>
+  <p>Students often think vision transformers succeed because they copy language transformers exactly. In reality, images need spatial position encoding (so the model knows where each patch sits), careful patch size choices (too small is expensive, too large loses detail), and sometimes visual priors. Patches are the starting move; they are not the whole insight.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize vision-transformer structure when images are split into patches or visual tokens, embedded, given position information, and processed with attention blocks. Terms like ViT, DiT, patch embedding, visual token, self-attention, and cross-attention usually point to the same primitive: global communication among image regions.</p>
+  <p>Look for images split into patches or visual tokens that are then embedded and processed with attention blocks. Papers naming ViT (Vision Transformer), DiT (Diffusion Transformer for images), or CLIP (which attends over image patches) are using this primitive. In medical imaging or satellite analysis, if the system splits an image and lets all regions communicate globally, vision transformers are at work.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near attention, positional encoding, latent space. Across the three courses, the shared pattern is composition, invariance: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Vision transformers sit at the intersection of three course themes: (1) Transformers (CME295) — the attention mechanism itself; (2) Diffusion and vision (CME296) — diffusion models often use transformer backbones to process image features; (3) RL (CS224R) — vision encoders in RL agents often use attention-based architectures to extract state features. Position encoding (from &#x27;Position and Order&#x27;) tells the model where patches sit. Latent space (from &#x27;Latent Space&#x27;) is what the patch vectors occupy. Attention (from &#x27;Attention&#x27;) is the mechanism that powers the whole thing.</p>
   <p class="chips"><a class="chip" href="attention.html">attention</a> <a class="chip" href="positional_encoding.html">positional encoding</a> <a class="chip" href="latent_space.html">latent space</a></p>
 </section>
 <section>

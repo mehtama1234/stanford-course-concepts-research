@@ -25,11 +25,11 @@
 <article class="concept-card" id="tokenization">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/tokenization.html">Tokenization</a></h3>
-  <p class="definition">Turning text into reusable pieces a model can count.</p>
+  <p class="definition">Converting text into a list of numbered pieces that a machine can process.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that a model cannot read raw text as meaning; it first needs stable pieces that can be given numbers.</dd>
-    <dt>First-Principles Reason</dt><dd>Computation needs finite symbols. Human language is open-ended, so the first constraint is to choose a manageable set of chunks that can cover new text.</dd>
-    <dt>Math Underneath</dt><dd>A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you want to teach a foreigner English by showing them a book, but they can only learn 10,000 chunks at a time. If you teach them individual letters, they&#x27;ll need to learn rules for combining them forever. If you teach them whole words, they&#x27;ll trip over &#x27;unbelievably&#x27; every time they see it because you taught them only &#x27;believe&#x27;. You need chunks that reuse across words.</dd>
+    <dt>First-Principles Reason</dt><dd>Computers cannot digest raw text the way you read it. They need to turn language into a sequence of numbers. But language is endless—new words, names, and spellings arrive constantly. So you must choose a fixed vocabulary (usually 30,000–50,000 items) that works as a universal building set. That vocabulary is your tokenizer.</dd>
+    <dt>Math Underneath</dt><dd>A tokenizer is a lookup table: you map each possible chunk of text to an integer ID. For example, &#x27;hello&#x27; might map to 42, &#x27;world&#x27; to 999. When you feed the sentence &#x27;hello world&#x27; to a transformer, it becomes the sequence [42, 999]. The genius is in choosing the chunks. Most modern tokenizers split text into subwords (morphemes and common pieces), so &#x27;unbelievably&#x27; breaks into [&#x27;un&#x27;, &#x27;believ&#x27;, &#x27;able&#x27;, &#x27;ly&#x27;]. Each piece gets an ID: maybe 201, 456, 78, 23. Now the model sees &#x27;unbelievably&#x27; as [201, 456, 78, 23], and &#x27;believe&#x27; becomes [456] plus context—the same piece 201 reappears in &#x27;unable&#x27;, &#x27;unlock&#x27;, etc.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-01">ev-tokenization-01</a> <span class="time">00:02:36.320</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li><li><a href="evidence.html#ev-tokenization-supp-01">ev-tokenization-supp-01</a> <span class="time">00:41:21.510</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
@@ -37,11 +37,11 @@
 <article class="concept-card" id="embeddings">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/embeddings.html">Embeddings</a></h3>
-  <p class="definition">Learned coordinates that let a model compare things by arithmetic.</p>
+  <p class="definition">A table of learned numbers that assigns every token, patch, or state a unique location in a multidimensional space, where distance and direction carry meaning.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that IDs like 17 or 9421 do not say what a word, patch, state, or action means.</dd>
-    <dt>First-Principles Reason</dt><dd>A learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.</dd>
-    <dt>Math Underneath</dt><dd>An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.</dd>
+    <dt>Everyday Problem</dt><dd>You walk into a library and find two books labeled only by number: 4129 and 983. The numbers tell you nothing about whether they are novels or cookbooks, whether one is related to the other, or what to read next. You need a system that captures what each book is actually about.</dd>
+    <dt>First-Principles Reason</dt><dd>When a computer system processes discrete items (words, images, actions), it starts with arbitrary labels. To learn useful relationships—which words appear together, which states lead to reward, which images show similar objects—the system must place these items in a space where similarity becomes measurable by geometry. Otherwise, the system cannot smoothly adjust what it knows when feedback arrives.</dd>
+    <dt>Math Underneath</dt><dd>An embedding is a learned function that maps each discrete item (like a word) to a vector, a list of numbers. If you have an embedding table E with dimensions (vocabulary_size, embedding_dimension), and you want the vector for word w, you look up row w in that table: v_w = E[w]. Training adjusts all the numbers in E so that vectors for related items end up close to each other. Closeness is measured by dot product: v_w · v_x = sum of (element_i in v_w times element_i in v_x). Large dot product means the vectors point in similar directions, capturing semantic or functional similarity learned from data.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-04">ev-embeddings-04</a> <span class="time">00:02:30.490</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-embeddings-05">ev-embeddings-05</a> <span class="time">00:02:20.200</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li></ul>
 </article>
@@ -49,11 +49,11 @@
 <article class="concept-card" id="positional_encoding">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/positional_encoding.html">Position And Order</a></h3>
-  <p class="definition">A way to tell the model where each piece sits in a sequence or image.</p>
+  <p class="definition">A numerical tag attached to each input that tells the model which slot in the sequence or image it occupies.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the same words or image patches mean different things depending on where they appear.</dd>
-    <dt>First-Principles Reason</dt><dd>Attention compares items as a set unless order information is added. Order must be represented explicitly if order matters.</dd>
-    <dt>Math Underneath</dt><dd>Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you&#x27;re listening to a friend describe a scene, but they rattle off words in a jumbled order: &quot;dog bites man&quot; versus &quot;man bites dog.&quot; Same words, opposite meaning. The order matters. Now imagine a listener who hears all the words at the same time, as a cloud with no internal sequence. That listener has no built-in way to know which word came first unless you mark each one with a position tag.</dd>
+    <dt>First-Principles Reason</dt><dd>Transformers work by comparing any token to any other token directly in parallel, unlike older systems that processed tokens one-by-one and thus learned sequence order naturally. Because attention links bypass the sequential order, the model has no automatic way to know where each token sits in the sequence. Something must explicitly label position, or the model loses that information entirely.</dd>
+    <dt>Math Underneath</dt><dd>A position embedding is a vector (a list of numbers) assigned to position k. The simplest version uses sinusoidal functions: embed(k) = [sin(k/10000^0), cos(k/10000^0), sin(k/10000^2), cos(k/10000^2), ...]. Each dimension oscillates at a different frequency—low frequencies change slowly (far-away positions look different), high frequencies change quickly (nearby positions stay similar). Adding this vector to the token&#x27;s embedding lets attention patterns attend based on distance, because the position signal is now mixed into the data the model compares.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-positional_encoding-01">ev-positional_encoding-01</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-positional_encoding-02">ev-positional_encoding-02</a> <span class="time">01:05:31.720</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
@@ -61,11 +61,11 @@
 <article class="concept-card" id="attention">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/attention.html">Attention</a></h3>
-  <p class="definition">A learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="definition">A mechanism where each piece of information learns to focus on a weighted blend of other pieces, based on what they contain.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the input is too large to treat every earlier word, patch, or memory as equally important.</dd>
-    <dt>First-Principles Reason</dt><dd>Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
-    <dt>Math Underneath</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re at a party full of conversations. To understand what your friend just said, you can&#x27;t equally weight every background noise—you need to focus harder on voices that are speaking to your situation, softer on distant chatter. Your brain solves this by guessing what&#x27;s relevant and listening to those signals more.</dd>
+    <dt>First-Principles Reason</dt><dd>When information flows through a system, not every input piece matters equally for every output decision. A mechanism that can learn to filter, rank, and blend based on content lets the system adapt its focus to what actually matters in each situation, rather than using a rigid rule.</dd>
+    <dt>Math Underneath</dt><dd>Each item creates three things: a query (what am I looking for?), a key (what do I contain?), and a value (what information should I contribute?). The query gets compared to every key using dot-product multiplication (which is larger when two vectors point in similar directions). These match-scores then get normalized using a softmax function (which turns raw scores into weights that sum to one, making high scores much larger than low ones). Finally, a weighted average of all values is computed using those weights. The compact formula softmax((Q × K-transpose) / √(dimension)) × V captures this: numerator is the query-key comparisons, the division by √dimension prevents scores from exploding, softmax normalizes, and multiplying by V applies those weights to the stored information.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-02">ev-attention-02</a> <span class="time">00:32:55.100</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-attention-04">ev-attention-04</a> <span class="time">01:08:17.450</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li></ul>
 </article>
@@ -73,11 +73,11 @@
 <article class="concept-card" id="transformer_block">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/transformer_block.html">Transformer Block</a></h3>
-  <p class="definition">A repeated update step where tokens read from each other and then rewrite their own state.</p>
+  <p class="definition">A repeating layer that lets information flow between positions, updates each position independently, and preserves old state while adding new updates.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that one lookup is not enough; understanding needs many rounds of communication and local computation.</dd>
-    <dt>First-Principles Reason</dt><dd>A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.</dd>
-    <dt>Math Underneath</dt><dd>A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you&#x27;re reading a long email on a phone screen that shows only one sentence at a time. You glance at &quot;The bank is closed on Sundays.&quot; To understand &quot;bank,&quot; you need to scroll back to see &quot;The river ran past the old bank.&quot; But your brain is finite—you can&#x27;t hold all context at once. You need a system that repeatedly focuses on relevant parts, updates your understanding, and carries important ideas forward to the next thought.</dd>
+    <dt>First-Principles Reason</dt><dd>Understanding complex text or images requires multiple passes. On pass one, you might spot that &quot;bank&quot; appears near &quot;river.&quot; On pass two, you notice grammar ties it to a verb. On pass three, you connect it to earlier context about geography. A single lookup doesn&#x27;t build this layered meaning. You need a reusable recipe: focus on dependencies, reshape information based on that focus, preserve what you learned, and repeat. That&#x27;s why layers stack.</dd>
+    <dt>Math Underneath</dt><dd>A transformer block has four moving parts. First, multi-head attention mixes information: for each position, compute how similar it is to every other position (dot-product similarity, scaled by a constant to keep numbers stable), then use those similarity scores as weights to average all the information at those positions. The scaling prevents any single similarity from dominating. Second, a feed-forward network (a small nonlinear function applied to each position separately) reshapes the mixed information—like adding learned color to a grayscale image. Third, residual connections (adding the input to the output of each step) preserve old state so information doesn&#x27;t wash away through layers. Fourth, layer normalization (centering and scaling activations) keeps numbers in a comfortable range, which makes training stable. These four pieces fit together: mix → reshape → carry old state → keep numbers sane.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-transformer_block-06">ev-transformer_block-06</a> <span class="time">00:20:49.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li></ul>
 </article>
@@ -85,11 +85,11 @@
 <article class="concept-card" id="pretraining">
   <div class="eyebrow">learning from feedback</div>
   <h3><a href="concepts/pretraining.html">Pretraining</a></h3>
-  <p class="definition">Large-scale practice before the model is asked to be useful in a specific way.</p>
+  <p class="definition">Learning broad patterns from massive amounts of unlabeled data before teaching the model to do anything specific.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.</dd>
-    <dt>First-Principles Reason</dt><dd>A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</dd>
-    <dt>Math Underneath</dt><dd>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</dd>
+    <dt>Everyday Problem</dt><dd>You want to teach someone a skill, but good instructors are rare and expensive. However, raw examples of the skill in action are everywhere—books, videos, conversations. Someone who reads thousands of books absorbs patterns long before being taught explicitly.</dd>
+    <dt>First-Principles Reason</dt><dd>A learner faces two constraints: good labeled data is rare, but patterns in raw data are free. Any system smart enough to extract patterns from raw examples before seeing labeled ones will need less labeled data later. That&#x27;s a practical necessity, not a choice.</dd>
+    <dt>Math Underneath</dt><dd>The model learns by reducing a loss—a number that measures how wrong or surprised the model was about what came next. When you predict the next word in a sentence and it&#x27;s wrong, the loss is high; when you&#x27;re right, it&#x27;s low. The model adjusts its internal knobs (weights) to make this number smaller. Mathematically, you compute the average loss over millions of examples, then use calculus to find which direction each knob should turn. The reason this works is that patterns in language show up repeatedly—if you practice predicting &#x27;next word&#x27; across billions of examples, you absorb structure like grammar, facts, and reasoning shortcuts without anyone telling you what they are.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-pretraining-01">ev-pretraining-01</a> <span class="time">00:02:20.620</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-pretraining-02">ev-pretraining-02</a> <span class="time">00:10:36.420</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>
@@ -97,11 +97,11 @@
 <article class="concept-card" id="fine_tuning">
   <div class="eyebrow">learning from feedback</div>
   <h3><a href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a></h3>
-  <p class="definition">Steering a broad model toward behavior people actually want.</p>
+  <p class="definition">Taking a general model and adjusting its weights so it reliably does what you actually need it to do.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.</dd>
-    <dt>First-Principles Reason</dt><dd>Raw imitation learns what appears in data. Usefulness requires extra feedback about which possible responses people prefer.</dd>
-    <dt>Math Underneath</dt><dd>Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal.</dd>
+    <dt>Everyday Problem</dt><dd>A chess engine trained on millions of game records is a great predictor of legal moves, but doesn&#x27;t play to win. A student who reads textbooks thoroughly can recite facts but struggles with exam questions. They need more than statistical frequency—they need alignment with what works.</dd>
+    <dt>First-Principles Reason</dt><dd>When you train a model on raw data, it learns patterns in that data—what words appear together, what moves are legal, what facts exist. That is not the same as learning what you want. You need a second phase: using feedback (human judgments, rewards, or correct answers for your specific task) to reshape the model&#x27;s probabilities so it does what matters to you, not just what&#x27;s common in the original data.</dd>
+    <dt>Math Underneath</dt><dd>Training a model means adjusting its weights (the numbers inside) to minimize a loss function, a measure of prediction error. Fine-tuning keeps the same architecture but changes the loss: instead of matching &#x27;next token is X&#x27; across billions of documents, you match &#x27;next token is Y for this task&#x27; on focused, curated examples. The math is identical—gradient descent (small nudges downhill in error space)—but the goal changes from &#x27;replicate the training set&#x27; to &#x27;get task examples right&#x27;. Preference learning adds a comparison: given two outputs for the same input, make the better one more likely and the worse one less likely, encoding human judgment as probabilities.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-fine_tuning-01">ev-fine_tuning-01</a> <span class="time">00:00:05.480</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li><li><a href="evidence.html#ev-fine_tuning-02">ev-fine_tuning-02</a> <span class="time">00:02:35.700</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li></ul>
 </article>
@@ -109,11 +109,11 @@
 <article class="concept-card" id="reasoning_traces">
   <div class="eyebrow">inference time work</div>
   <h3><a href="concepts/reasoning_traces.html">Reasoning Traces</a></h3>
-  <p class="definition">Using written intermediate work as temporary memory for hard problems.</p>
+  <p class="definition">Writing out intermediate steps before jumping to a final answer, so earlier work stays visible for later reasoning.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that some answers require several dependent steps, and the first likely sentence may skip a necessary intermediate fact.</dd>
-    <dt>First-Principles Reason</dt><dd>A system with limited internal working memory can externalize partial results into tokens and condition on them later.</dd>
-    <dt>Math Underneath</dt><dd>The model samples or scores a longer sequence before the final answer. Extra tokens change the context, so later predictions can depend on earlier intermediate steps.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re doing your taxes. If you leap straight to the total deduction, you&#x27;ll probably miss something. But if you write down each category first—medical, charity, work expenses—and sum them, you catch mistakes. The paper trail lets you backtrack.</dd>
+    <dt>First-Principles Reason</dt><dd>The human brain can&#x27;t hold seven years of tax records in working memory at once. We externalize onto paper. Similarly, a language model has finite context attention. Writing intermediate results into the token sequence lets the model refer back to earlier steps instead of guessing. It trades immediate memory for a longer record.</dd>
+    <dt>Math Underneath</dt><dd>The model generates a token sequence longer than the direct answer: T = [input, step1, step2, ..., stepN, final_answer]. Each token depends on all previous tokens in the sequence via the transformer&#x27;s attention mechanism (a learned pattern-matching system). Attention computes which earlier tokens are relevant to predict the next token. When step2 attends back to step1, that earlier work shapes the prediction. The extra tokens cost computation time but add more moments for the model to incorporate prior work into what comes next.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-reasoning_traces-01">ev-reasoning_traces-01</a> <span class="time">00:00:18.960</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li><li><a href="evidence.html#ev-reasoning_traces-02">ev-reasoning_traces-02</a> <span class="time">00:00:07.020</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li></ul>
 </article>
@@ -121,11 +121,11 @@
 <article class="concept-card" id="agents_and_tools">
   <div class="eyebrow">inference time work</div>
   <h3><a href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a></h3>
-  <p class="definition">Putting a model in a loop where it can look things up, call tools, and react to results.</p>
+  <p class="definition">A loop where a language model takes an action, sees the result, then decides what to do next.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.</dd>
-    <dt>First-Principles Reason</dt><dd>A useful system often needs perception, memory, action, and correction, not only prediction.</dd>
-    <dt>Math Underneath</dt><dd>The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.</dd>
+    <dt>Everyday Problem</dt><dd>You ask a librarian a question about a book published yesterday. The librarian cannot answer from memory alone. She has to walk to the shelf, check the catalog, pull down a reference, read the new information, then come back and answer you. Her knowledge is not enough; she needs to act and observe.</dd>
+    <dt>First-Principles Reason</dt><dd>A language model&#x27;s weights contain facts frozen at training time. Real tasks demand current weather, database lookups, running code, or changing the world. No weights can store &#x27;today&#x27;s date&#x27; or &#x27;the stock price right now.&#x27; So the model must step outside itself, observe, and adjust. This is not a choice — it is a logical necessity.</dd>
+    <dt>Math Underneath</dt><dd>A model maintains a state (what it knows so far). At step t, it chooses an action a_t (a tool to call or query to send) based on the state. The action produces an observation o_t (the result). The state updates: state_{t+1} = state_t + a_t + o_t. The model then uses the new state to choose the next action a_{t+1}. This feedback loop, not a single forward pass, drives the system. Each action narrows the space of possible next states, creating a search through possibilities.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 7 - Agentic LLMs</li><li><a href="evidence.html#ev-agents_and_tools-02">ev-agents_and_tools-02</a> <span class="time">00:01:19.350</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 16: RL for Robots</li></ul>
 </article>
@@ -133,11 +133,11 @@
 <article class="concept-card" id="evaluation">
   <div class="eyebrow">measurement limits</div>
   <h3><a href="concepts/evaluation.html">Evaluation</a></h3>
-  <p class="definition">A controlled way to ask what a model can and cannot do.</p>
+  <p class="definition">A structured test that reveals what a model actually does — and what it fails to do — across different situations.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that a model can look impressive on examples while failing in places the test did not cover.</dd>
-    <dt>First-Principles Reason</dt><dd>Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.</dd>
-    <dt>Math Underneath</dt><dd>A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.</dd>
+    <dt>Everyday Problem</dt><dd>You hire a tutor who seems brilliant on math problems from the textbook. Only when your child takes a real test do you discover the tutor has memorized only that book. The tutor looks competent within a narrow slice but fails everywhere else. You needed a test that covered the full range of problems your child would actually face.</dd>
+    <dt>First-Principles Reason</dt><dd>Any claim about ability is invisible until you check it against reality. If you only watch the model in situations you chose, you get a skewed picture — like testing a weatherman only on sunny days. You must design tests that probe the places where failure is most likely. This forces you to think carefully: what does success actually mean for this job? What are the edge cases where things break?</dd>
+    <dt>Math Underneath</dt><dd>A metric is a function that takes behaviors (the model&#x27;s outputs) and compresses them into numbers or tables you can compare. For example, accuracy counts correct answers: metric(outputs) = (number correct) / (total). But a single number discards details. A chatbot might score 85% accurate on math but fail harder on logic puzzles; accuracy alone hides this. Better metrics are often multi-dimensional — separate tables for math, writing, reasoning. The key insight: every number you report means you have thrown away other information. The hidden information is often as important as the reported score.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 8 - LLM Evaluation</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-evaluation-03">ev-evaluation-03</a> <span class="time">00:00:28.100</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 18: Frontiers</li></ul>
 </article>
@@ -145,11 +145,11 @@
 <article class="concept-card" id="policy">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/policy.html">Policy</a></h3>
-  <p class="definition">The rule an agent uses to choose what to do next.</p>
+  <p class="definition">A rule that maps what an agent observes to what it chooses to do.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the output is an action, and that action changes what happens afterward.</dd>
-    <dt>First-Principles Reason</dt><dd>In a changing environment, the learner must connect what it can see now to a choice under uncertainty.</dd>
-    <dt>Math Underneath</dt><dd>A policy is often written as pi(a|s): the chance of taking action a when the system is in situation s.</dd>
+    <dt>Everyday Problem</dt><dd>You are arranging a dinner party. Guests arrive tired or energized based on the route they took, the people they talk to, and how much help you ask them to give. Each choice you make now—who sits where, what you ask someone to do—changes the mood and events that come next. You need a consistent way to decide what to do based on what you&#x27;re seeing, not a different strategy for every possible table arrangement.</dd>
+    <dt>First-Principles Reason</dt><dd>When an action causes the world to change, you can&#x27;t choose blindly or use the same fixed answer every time. The situation keeps shifting. You need a mapping—a rule that looks at the current state and says what to do next. Without it, there&#x27;s no way to connect observation to choice or to improve behavior systematically.</dd>
+    <dt>Math Underneath</dt><dd>A policy is written as π(a|s): the probability of choosing action a given the situation s. Think of it as a function—you feed in what you see (s), and it outputs the odds of each possible action (a). If you&#x27;re in situation s1, the policy might say there&#x27;s a 60% chance to do action 1 and 40% chance to do action 2. Why odds instead of a single answer? Because the best move often depends on hidden details you can&#x27;t see—so expressing uncertainty (a probability distribution, meaning the odds of each choice) lets the agent hedge and explore wisely. The mathematical form π(a|s) is just a conditional probability: given s is true, what is the likelihood of a?</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 15: Hierarchical RL and IL</li><li><a href="evidence.html#ev-policy-02">ev-policy-02</a> <span class="time">00:00:10.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy-03">ev-policy-03</a> <span class="time">00:00:14.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li></ul>
 </article>
@@ -157,11 +157,11 @@
 <article class="concept-card" id="reward">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/reward.html">Reward</a></h3>
-  <p class="definition">A signal that says which outcomes should become more likely.</p>
+  <p class="definition">A number that tells a system which futures to make more likely.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that an agent needs to know not just what happened, but whether it was better or worse.</dd>
-    <dt>First-Principles Reason</dt><dd>Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.</dd>
-    <dt>Math Underneath</dt><dd>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re teaching a dog a new trick. The dog tries something. Did it help or hurt? Without knowing that, the dog can&#x27;t learn which behaviors to repeat. You need a way to say &quot;yes, that was better&quot; or &quot;no, try again.&quot;</dd>
+    <dt>First-Principles Reason</dt><dd>Any learning system facing a choice needs to know which choice worked. Reward is the answer to that question—a number that marks outcomes as better or worse. Without it, the system collects experience but has no direction to improve.</dd>
+    <dt>Math Underneath</dt><dd>Reward usually measures a single step. Return (often written R) sums rewards across multiple steps into one total. To value an action fairly, look at all the downstream consequences, not just the immediate result. A detour might cost you now but save you later. The formula R = r₀ + r₁ + r₂ + ... adds up each step&#x27;s reward (rₜ) forward in time. Often future rewards matter less than immediate ones—a coffee today beats a coffee a year from now—so we discount: R = r₀ + γ·r₁ + γ²·r₂ + ..., where γ (gamma, between 0 and 1) shrinks distant rewards. This forces the system to prioritize.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-reward-02">ev-reward-02</a> <span class="time">00:00:05.480</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li></ul>
 </article>
@@ -169,11 +169,11 @@
 <article class="concept-card" id="credit_assignment">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/credit_assignment.html">Credit Assignment</a></h3>
-  <p class="definition">Figuring out which earlier choices caused a later success or failure.</p>
+  <p class="definition">Tracing backward through time to figure out which specific earlier decision caused a later outcome, good or bad.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the important mistake may happen long before the bad outcome appears.</dd>
-    <dt>First-Principles Reason</dt><dd>Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.</dd>
-    <dt>Math Underneath</dt><dd>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</dd>
+    <dt>Everyday Problem</dt><dd>You bake a cake that comes out burnt. The mistake wasn&#x27;t adding the wrong ingredient five minutes ago—it was setting the oven temperature wrong an hour before. By the time you see the burnt cake, the real culprit is buried in history. How do you know which step to fix next time?</dd>
+    <dt>First-Principles Reason</dt><dd>Outcomes have memory. When something happens now, it&#x27;s the result of a chain of choices stretching back in time. If you only blame or praise the last step, you miss the real causes. Any system that learns from delayed feedback must have a way to ask: which earlier decision actually mattered?</dd>
+    <dt>Math Underneath</dt><dd>We use a discount factor—a number slightly less than 1, like 0.99—that we apply more heavily to rewards far in the future and less heavily to rewards soon. The return (total sum of future rewards) is calculated as: R_t = r_t + γ·r_{t+1} + γ²·r_{t+2} + ..., where r is the immediate reward at each step, γ (gamma) is the discount factor, and the power of γ grows with each step into the future. This formula weights recent rewards more (because γ^0 = 1, γ^1 = 0.99, γ^2 = 0.9801...). The discount factor serves two purposes: it mathematically shrinks distant rewards so learning focuses on nearby causes, and it reflects real-world intuition—a reward today matters more than a reward next year. Without discounting, we&#x27;d sum infinite rewards and get infinity; with it, we get a finite number we can actually learn from.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-01">ev-credit_assignment-01</a> <span class="time">00:46:20.770</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 1: Class Intro</li><li><a href="evidence.html#ev-credit_assignment-04">ev-credit_assignment-04</a> <span class="time">00:11:05.430</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
 </article>
@@ -181,11 +181,11 @@
 <article class="concept-card" id="policy_gradient">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/policy_gradient.html">Policy Gradient</a></h3>
-  <p class="definition">Changing an action rule toward sampled choices that worked better.</p>
+  <p class="definition">A recipe for tuning your action strategy by making the choices that worked better more likely next time.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the correct action is not provided; the agent only sees outcomes after trying things.</dd>
-    <dt>First-Principles Reason</dt><dd>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</dd>
-    <dt>Math Underneath</dt><dd>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re learning to cook, but no one tells you which moves are &#x27;right&#x27;—you only taste the result. How do you figure out which ingredients and techniques to favor, when you have to learn from trying things and seeing what happens?</dd>
+    <dt>First-Principles Reason</dt><dd>If you can sample actions and see outcomes, the most direct path to improvement is to shift probabilities: boost the odds of actions that led to good outcomes, shrink the odds of actions from bad ones. You&#x27;re not guessing the right action; you&#x27;re learning which choices your policy favors.</dd>
+    <dt>Math Underneath</dt><dd>The gradient (direction of steepest climb) of the log probability of an action, weighted by how much better its outcome was than average. In symbols: push the probability of action a in state s upward by an amount proportional to (return - baseline), where &#x27;log probability&#x27; means taking the log of how likely your policy thinks this action is, &#x27;return&#x27; is the sum of future rewards, and &#x27;baseline&#x27; is your policy&#x27;s expected return, so you only reward actions that beat the benchmark.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-policy_gradient-02">ev-policy_gradient-02</a> <span class="time">00:06:57.150</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 3: Policy Gradients</li><li><a href="evidence.html#ev-policy_gradient-03">ev-policy_gradient-03</a> <span class="time">00:01:02.160</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
 </article>
@@ -193,11 +193,11 @@
 <article class="concept-card" id="actor_critic">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/actor_critic.html">Actor-Critic</a></h3>
-  <p class="definition">A learner split into a chooser and a judge.</p>
+  <p class="definition">A learner made of two parts: one that picks actions, one that evaluates how good they turned out.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</dd>
-    <dt>First-Principles Reason</dt><dd>Decision making improves when action choice and outcome evaluation can help each other.</dd>
-    <dt>Math Underneath</dt><dd>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re learning to cook. After trying a new recipe, you ask: &#x27;Was that actually good, or did I just get lucky with ingredients today?&#x27; Comparing against only your memory of past meals is noisy—some were memorable for wrong reasons. You need a stable reference point to learn what really helps.</dd>
+    <dt>First-Principles Reason</dt><dd>When you choose an action and see what happens, two separate problems appear: figuring out which action to try next, and measuring whether this action was actually smart. These problems interfere if you solve them together. Separating them means the measurement system stays steady while the chooser improves, and the chooser gets clearer feedback.</dd>
+    <dt>Math Underneath</dt><dd>The actor is a function (the policy) that takes the current situation and outputs an action choice, updated by moving in the direction that increases expected future reward. The critic is a separate function (the value function) that takes the current situation and outputs a prediction of total future reward from here, updated to match actual outcomes. The key insight: subtract the critic&#x27;s prediction from actual reward to get the advantage (the part of reward this action specifically earned, not just being in a good situation). The actor then learns from this advantage signal, which has less noise than raw reward because it removes the baseline of &#x27;how good is this state anyway?&#x27;</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 5: Off-Policy Actor Critic</li><li><a href="evidence.html#ev-actor_critic-02">ev-actor_critic-02</a> <span class="time">00:00:33.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-actor_critic-03">ev-actor_critic-03</a> <span class="time">00:01:26.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 4: Actor-Critic Methods</li></ul>
 </article>
@@ -205,11 +205,11 @@
 <article class="concept-card" id="q_learning">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/q_learning.html">Q-Learning</a></h3>
-  <p class="definition">Learning a table or function that estimates how good each action is from each situation.</p>
+  <p class="definition">A method to estimate, for each state-action pair, what total reward you expect if you take that action now and then do your best from then on.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that an agent must choose now while caring about later consequences.</dd>
-    <dt>First-Principles Reason</dt><dd>A decision can be valued by immediate payoff plus the value of the future it leads to.</dd>
-    <dt>Math Underneath</dt><dd>Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re at a restaurant deciding between the familiar dish and an unknown special. The special might be delicious tomorrow and lead to a favorite memory, or mediocre today with no future benefit. But you must choose right now without yet knowing how it will unfold.</dd>
+    <dt>First-Principles Reason</dt><dd>Any smart decision-maker facing delayed consequences must do this: you can&#x27;t wait to see the final outcome before choosing, so you need a way to *guess* what the future will be worth. The only way to make a guess is to separate the immediate reward from the delayed reward—one you know now, one you estimate. Then add them up.</dd>
+    <dt>Math Underneath</dt><dd>The idea is written as Q(s, a) = E[r + γ·max Q(s&#x27;, a&#x27;)]. Here, s is your current situation (state), a is your choice (action), r is the reward you get right away, γ (gamma, a number between 0 and 1) is how much you care about the future relative to now, s&#x27; is the next situation, and max Q(s&#x27;, a&#x27;) means the best estimated future reward you expect. The sum r + γ·max Q(s&#x27;, a&#x27;) is a guess: today&#x27;s immediate payoff plus the discounted estimate of what comes next. You keep revising this guess based on real outcomes.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-q_learning-01">ev-q_learning-01</a> <span class="time">00:00:30.320</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li><li><a href="evidence.html#ev-q_learning-03">ev-q_learning-03</a> <span class="time">00:05:31.730</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-q_learning-04">ev-q_learning-04</a> <span class="time">00:01:17.740</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning</li></ul>
 </article>
@@ -217,11 +217,11 @@
 <article class="concept-card" id="offline_rl">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/offline_rl.html">Offline Reinforcement Learning</a></h3>
-  <p class="definition">Learning from logged experience without freely trying new actions during training.</p>
+  <p class="definition">Learning to make decisions from a fixed historical record of past actions and their outcomes, without trying new actions yourself.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.</dd>
-    <dt>First-Principles Reason</dt><dd>The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</dd>
-    <dt>Math Underneath</dt><dd>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</dd>
+    <dt>Everyday Problem</dt><dd>A hospital administrator notices her doctors make decisions recorded in patient charts going back ten years. She wants to train a medical assistant to learn from those charts alone, but can&#x27;t let it experiment on live patients. The assistant has only what history provides—no freedom to try a risky treatment just to see what happens.</dd>
+    <dt>First-Principles Reason</dt><dd>When you learn from a fixed dataset, you see the world only through the lens of choices someone else already made. You lack proof that actions outside that slice even exist or how they end. Any system trying to learn from history alone must solve this visibility gap: it cannot trust its own guesses about unseen territory.</dd>
+    <dt>Math Underneath</dt><dd>The core mathematics tracks what we call distribution shift—the mismatch between actions in the data and actions the learned policy wants to take. Suppose the dataset mostly shows doctors prescribing Drug A for symptom X, and rarely Drug B. A naive learner might estimate Drug B looks amazing because the few times it was tried it worked—but that few instances could be flukes, contaminated by unmeasured differences in patient state. Conservative methods address this by either penalizing actions the dataset rarely showed (shrinking their estimated value), or constraining the learned policy to stay close to patterns the data actually contains. Mathematically: if action *a* appears in the data with frequency below some threshold, we down-weight estimates for *a* or add a penalty term to suppress choosing it.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-offline_rl-01">ev-offline_rl-01</a> <span class="time">00:07:44.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 7: Offline RL</li><li><a href="evidence.html#ev-offline_rl-03">ev-offline_rl-03</a> <span class="time">00:00:08.620</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 8: Reward Learning</li><li><a href="evidence.html#ev-offline_rl-04">ev-offline_rl-04</a> <span class="time">00:07:36.562</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li></ul>
 </article>
@@ -229,11 +229,11 @@
 <article class="concept-card" id="model_based_rl">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a></h3>
-  <p class="definition">Learning or using a simulator of what might happen next.</p>
+  <p class="definition">Learning a model of what comes next so you can imagine futures before acting.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that real-world trial and error can be slow, costly, or risky.</dd>
-    <dt>First-Principles Reason</dt><dd>If the agent can imagine consequences, it can compare possible futures before acting.</dd>
-    <dt>Math Underneath</dt><dd>A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re teaching a friend to cook a new recipe. If they only learn by trial and error—actually making the dish, tasting it, adjusting—they waste ingredients and time. If they could imagine what the dish would taste like before they serve it, they&#x27;d waste far less.</dd>
+    <dt>First-Principles Reason</dt><dd>In any uncertain world, acting blindly means you crash into mistakes. But if you can build a mental model of how the world responds to your actions, you can think ahead: &#x27;If I do X, that leads to Y, which is bad.&#x27; Now you don&#x27;t need to actually do X to learn that lesson.</dd>
+    <dt>Math Underneath</dt><dd>A dynamics model is a function that takes two inputs—the current state (what the world looks like now) and an action (what you choose to do)—and outputs the next state (what the world will look like). Mathematically, it&#x27;s usually written s_{t+1} = f(s_t, a_t) + noise, where s is state, a is action, f is the function the model learns, and the noise term (random uncertainty) accounts for the world&#x27;s unpredictability. Planning then searches through imagined action sequences: &#x27;If I pick a_1, then a_2, then a_3, what chain of states unfolds?&#x27; and picks the sequence leading to the best imagined outcome.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-model_based_rl-01">ev-model_based_rl-01</a> <span class="time">00:04:50.450</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 11: Model-Based RL</li><li><a href="evidence.html#ev-model_based_rl-02">ev-model_based_rl-02</a> <span class="time">00:00:07.080</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 12: Multi-Task RL</li><li><a href="evidence.html#ev-model_based_rl-03">ev-model_based_rl-03</a> <span class="time">00:01:31.080</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Tutorial Session: Review of Q-Learning</li></ul>
 </article>
@@ -241,11 +241,11 @@
 <article class="concept-card" id="exploration">
   <div class="eyebrow">action and consequence</div>
   <h3><a href="concepts/exploration.html">Exploration</a></h3>
-  <p class="definition">Trying actions to learn what would otherwise remain unknown.</p>
+  <p class="definition">Deliberately trying actions to learn something new, even when they might not work best right now.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that doing the currently best-known thing can prevent the agent from discovering something better.</dd>
-    <dt>First-Principles Reason</dt><dd>Information has value. Some actions are useful because they reveal the world, not because they immediately pay off.</dd>
-    <dt>Math Underneath</dt><dd>Exploration methods add randomness, uncertainty bonuses, or information-seeking objectives so the learner samples more than its current favorite action.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you always order the same trusted dish at a restaurant. You know you like it. But you never discover the amazing pasta special hidden three pages into the menu. Picking your favorite every time prevents you from knowing what else exists.</dd>
+    <dt>First-Principles Reason</dt><dd>The world contains hidden information. Some actions are valuable not because they pay off immediately, but because they teach you something crucial. If you only ever do what looks best today, you&#x27;ll never gather the evidence needed to find something genuinely better tomorrow.</dd>
+    <dt>Math Underneath</dt><dd>Exploration methods modify how an agent chooses actions by adding three kinds of modifications: randomness (sometimes pick randomly instead of your best guess), information bonuses (boost the score of actions you haven&#x27;t tested much), or curiosity scoring (favor actions that reveal how things work). The core idea is a probability distribution—a table saying &quot;pick this action with this likelihood.&quot; Randomness increases the chance of non-obvious actions. Information bonuses add a term that grows larger the less you know about an action; this mathematically pushes you toward trying unknowns. Curiosity scoring uses entropy or prediction error to measure surprise and rewards actions that break your expectations.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-exploration-01">ev-exploration-01</a> <span class="time">00:00:07.040</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 14: Exploration</li><li><a href="evidence.html#ev-exploration-02">ev-exploration-02</a> <span class="time">00:13:11.590</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li><li><a href="evidence.html#ev-exploration-03">ev-exploration-03</a> <span class="time">00:27:49.940</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 6: Q-Learning</li></ul>
 </article>
@@ -253,11 +253,11 @@
 <article class="concept-card" id="rl_for_llms">
   <div class="eyebrow">learning from feedback</div>
   <h3><a href="concepts/rl_for_llms.html">RL For LLMs</a></h3>
-  <p class="definition">Using outcome feedback to steer a language model&#x27;s choices.</p>
+  <p class="definition">Teaching a language model to make better choices by showing it which complete outputs were good or bad.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.</dd>
-    <dt>First-Principles Reason</dt><dd>Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.</dd>
-    <dt>Math Underneath</dt><dd>The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine teaching a child to cook. You can taste the final dish and say &#x27;delicious&#x27; or &#x27;needs salt,&#x27; but you didn&#x27;t watch every hand motion. The child must figure out which of their hundred choices led to the bad taste. Feedback comes at the end, not during each step.</dd>
+    <dt>First-Principles Reason</dt><dd>A language model generates text one token at a time. If you reward only the final answer, the model must work backward: which earlier decisions led to this good ending? This is the core RL problem—mapping reward from outcome to actions spread across time.</dd>
+    <dt>Math Underneath</dt><dd>Treat token choices as actions and sequences as trajectories. A reward function scores the full response (say, +1 for correct math answer, 0 for wrong). A policy is the model&#x27;s learned probability over next tokens given prior context. To improve the policy, weight actions by the reward they led to: actions in high-reward sequences get boosted. Formally, gradient updates shift log-probability of actions upward in proportion to their estimated return (future discounted reward). Why gradient? It moves probabilities in the steepest direction toward improving reward while staying near the original distribution.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <span class="time">00:00:18.960</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 6 - LLM Reasoning</li><li><a href="evidence.html#ev-rl_for_llms-02">ev-rl_for_llms-02</a> <span class="time">00:00:07.020</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li></ul>
 </article>
@@ -265,11 +265,11 @@
 <article class="concept-card" id="diffusion">
   <div class="eyebrow">generative paths</div>
   <h3><a href="concepts/diffusion.html">Diffusion</a></h3>
-  <p class="definition">Generating by starting from noise and repeatedly making it more like data.</p>
+  <p class="definition">A method for generating data by starting from pure random noise and repeatedly removing noise to create structured samples like images.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that realistic images or videos are too complex to create in one jump from a prompt.</dd>
-    <dt>First-Principles Reason</dt><dd>A hard generation problem can be broken into many easier cleanup steps.</dd>
-    <dt>Math Underneath</dt><dd>A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you need to describe a completely realistic painting to someone who has never seen one. You can&#x27;t hand them the finished image; you can only give step-by-step instructions. But how do you break down something so intricate that you&#x27;d struggle to explain the whole thing at once?</dd>
+    <dt>First-Principles Reason</dt><dd>Any system that needs to create something complex faces a hard constraint: one giant leap from idea to finished product almost always fails. But if you break the leap into many small, local decisions—each one asking only &quot;how is this a tiny bit cleaner?&quot;—then each step becomes learnable and verifiable.</dd>
+    <dt>Math Underneath</dt><dd>The forward process is x_t = sqrt(1 - β_t) * x_{t-1} + sqrt(β_t) * noise, where β_t is the noise schedule (a number that grows as you add more noise) and noise is fresh randomness. This mixes the previous sample with noise by a controlled amount. The reverse process learns to undo this: at each step t, the model predicts which noise was added and subtracts it. Mathematically, you train a neural network to estimate the noise component, then subtract it: x_{t-1} = (x_t - sqrt(β_t) * predicted_noise) / sqrt(1 - β_t). The model learns this by comparing its noise predictions to the actual noise that was added during training.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-01">ev-diffusion-01</a> <span class="time">00:00:26.360</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li><li><a href="evidence.html#ev-diffusion-03">ev-diffusion-03</a> <span class="time">00:01:53.150</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li><li><a href="evidence.html#ev-diffusion-04">ev-diffusion-04</a> <span class="time">00:03:37.280</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>
@@ -277,11 +277,11 @@
 <article class="concept-card" id="score_matching">
   <div class="eyebrow">generative paths</div>
   <h3><a href="concepts/score_matching.html">Score Matching</a></h3>
-  <p class="definition">Learning which direction points toward more data-like samples.</p>
+  <p class="definition">Learning to estimate which direction points toward more likely samples by measuring how log probability changes in each direction.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the model needs a local compass for improving a noisy sample.</dd>
-    <dt>First-Principles Reason</dt><dd>In a complicated space, knowing the direction toward higher probability can be easier than directly describing the whole distribution.</dd>
-    <dt>Math Underneath</dt><dd>The score is the gradient of log probability. In plain terms, it points toward nearby places the data says are more likely.</dd>
+    <dt>Everyday Problem</dt><dd>You are lost in fog on a mountainside at night. You cannot see the whole landscape, but you can feel the slope beneath your feet right now. Each step, you sense whether ground rises or falls. The question: how do you learn to feel the slope correctly?</dd>
+    <dt>First-Principles Reason</dt><dd>Describing all possible shapes of a complicated distribution directly is nearly impossible. But at any one point, you can ask: which nearby direction increases probability? That local compass is far easier to learn than the entire map. Any system generating from an unknown distribution must solve this same puzzle.</dd>
+    <dt>Math Underneath</dt><dd>The score is the gradient of log probability—imagine probability as a height field, and the gradient is the direction of steepest uphill. Mathematically, score = ∇ log p(x). If p(x) is how likely a sample x is under the true data distribution, log p(x) is its logarithm, and ∇ means &#x27;direction of steepest change in all dimensions.&#x27; The score at any point tells you: move this way and samples become more data-like. In learning, you train a neural network to predict this gradient from noisy samples, using denoising score matching—a trick where you add known noise, corrupt the sample, then teach the network to reverse that exact noise corruption.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-score_matching-01">ev-score_matching-01</a> <span class="time">00:00:18.000</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 2 - Score matching</li><li><a href="evidence.html#ev-score_matching-02">ev-score_matching-02</a> <span class="time">00:00:35.440</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-score_matching-03">ev-score_matching-03</a> <span class="time">00:03:01.750</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li></ul>
 </article>
@@ -289,11 +289,11 @@
 <article class="concept-card" id="flow_matching">
   <div class="eyebrow">generative paths</div>
   <h3><a href="concepts/flow_matching.html">Flow Matching</a></h3>
-  <p class="definition">Learning a smooth path that carries simple samples into data-like samples.</p>
+  <p class="definition">A method where a model learns a continuous path—with a direction and speed at every point—that smoothly moves random noise into real data.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.</dd>
-    <dt>First-Principles Reason</dt><dd>Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</dd>
-    <dt>Math Underneath</dt><dd>A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re leading someone through a dark mansion from the front entrance to a treasure room they&#x27;ve never seen. You can&#x27;t just describe the room—you have to create a path with clear signposts at every step so they know which direction to turn and when.</dd>
+    <dt>First-Principles Reason</dt><dd>To generate complex data reliably, you need more than isolated decisions. A continuous path with learned directions at every location lets you smoothly transport simple distributions (like random noise) into complex ones (like real images), without jumping between discrete steps.</dd>
+    <dt>Math Underneath</dt><dd>A vector field is a function that assigns an arrow (direction and magnitude) to each point in space. For flow matching, we learn parameters so the field v_theta(x, t) tells us: at point x and time t, move in this direction at this speed. We train it using an L2 loss—measuring the squared difference between what our learned field predicts and what the true path requires—so the model&#x27;s arrows align with the right trajectory from noise to data.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-flow_matching-01">ev-flow_matching-01</a> <span class="time">00:00:15.600</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 3 - Flow matching</li><li><a href="evidence.html#ev-flow_matching-02">ev-flow_matching-02</a> <span class="time">00:13:10.110</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li><li><a href="evidence.html#ev-flow_matching-04">ev-flow_matching-04</a> <span class="time">00:10:01.900</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>
@@ -301,11 +301,11 @@
 <article class="concept-card" id="guidance">
   <div class="eyebrow">generative paths</div>
   <h3><a href="concepts/guidance.html">Guidance</a></h3>
-  <p class="definition">Steering generation toward a prompt, class, reward, or constraint.</p>
+  <p class="definition">A technique to steer a generative model toward a specific outcome—like a text prompt, label, or quality measure—while keeping outputs realistic and diverse.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that pure generation may create plausible samples that do not match what the user asked for.</dd>
-    <dt>First-Principles Reason</dt><dd>Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</dd>
-    <dt>Math Underneath</dt><dd>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</dd>
+    <dt>Everyday Problem</dt><dd>You ask a friend to draw a teddy bear reading a book. They return with a beautiful bear, but it&#x27;s alone—no book. The drawing is skillful and realistic, but it missed your actual request. You need a way to keep their artistry while forcing attention to the book.</dd>
+    <dt>First-Principles Reason</dt><dd>A generative model learns to make plausible things: if it sees a million bear images, it will draw bears well. But plausible is not the same as targeted. When you add a condition—a text prompt, a label, a safety rule—the model must balance: stay realistic (use what it learned about bears) while also satisfying the constraint (include a book). No single fixed rule can handle all cases. You need a mechanism that bends the generation process toward the condition at every step.</dd>
+    <dt>Math Underneath</dt><dd>During generation, the model builds an output step-by-step by predicting which direction reduces noise. Guidance works by modifying that direction using a score—a number that measures how well the current partial output satisfies your condition. If you want a bear reading a book, at each step you compute: &quot;How much does this draft match the book-reading concept?&quot; Then you blend the model&#x27;s natural prediction with a scaled boost in the direction of higher match. Mathematically, the adjusted prediction is the original direction plus a weight times the gradient (slope) of your condition score. The weight controls the strength: too weak and you ignore your condition; too strong and outputs look unnatural because you overstrain the model away from what it learned.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-guidance-01">ev-guidance-01</a> <span class="time">00:05:58.240</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li><li><a href="evidence.html#ev-guidance-02">ev-guidance-02</a> <span class="time">00:00:58.640</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li><li><a href="evidence.html#ev-guidance-04">ev-guidance-04</a> <span class="time">00:01:10.430</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 8 - Trending Topics</li></ul>
 </article>
@@ -313,11 +313,11 @@
 <article class="concept-card" id="latent_space">
   <div class="eyebrow">generative paths</div>
   <h3><a href="concepts/latent_space.html">Latent Space</a></h3>
-  <p class="definition">A compressed internal space where generation or prediction can happen more cheaply.</p>
+  <p class="definition">A smaller, learned coordinate system where the model stores and manipulates the essential information in data instead of dealing with raw pixels or tokens.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that pixels and long sequences are expensive and full of surface detail.</dd>
-    <dt>First-Principles Reason</dt><dd>If the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.</dd>
-    <dt>Math Underneath</dt><dd>An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine your friend describes a photo they saw but only talks about the main subject, lighting, and mood—not every single pixel value. Their brain naturally compressed the image into what mattered. When a computer tries to work directly with all pixel values or token sequences, it drowns in irrelevant detail and wastes energy.</dd>
+    <dt>First-Principles Reason</dt><dd>Any system working with high-dimensional data faces a scaling wall: storing and processing every raw feature costs computation, and most of it is noise or redundancy. If you can find a smaller set of features that preserves the essential structure, the system can learn faster and generate more cheaply. This is a brute-force economic argument: do the expensive work once (learning what matters), then work in a smaller space forever.</dd>
+    <dt>Math Underneath</dt><dd>An encoder is a learnable function that takes raw data (an image, text) and maps it to a lower-dimensional vector, capturing only the essential variation. A decoder reverses this: it takes the compressed vector and reconstructs the original (or something like it). Mathematically, if x is the raw data and z is the latent representation, the encoder computes z = f(x) and the decoder computes x_reconstructed = g(z). The trick is choosing a function f such that important patterns in x are spread across the dimensions of z, while noise and surface detail are either discarded or pushed into a noise variable. This is why autoencoders work: they force the bottleneck (the z layer) to become selective about what it keeps.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-latent_space-01">ev-latent_space-01</a> <span class="time">00:15:08.170</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 4 - Latent Space &amp; Guidance</li><li><a href="evidence.html#ev-latent_space-03">ev-latent_space-03</a> <span class="time">00:03:27.420</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-latent_space-04">ev-latent_space-04</a> <span class="time">00:01:57.770</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>
@@ -325,11 +325,11 @@
 <article class="concept-card" id="vision_transformers">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/vision_transformers.html">Vision Transformers</a></h3>
-  <p class="definition">Treating pieces of an image like items that can read from one another.</p>
+  <p class="definition">A way to let different regions of an image communicate directly with each other instead of through a pipeline.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that an image has many regions, and the important relation may be far apart in the picture.</dd>
-    <dt>First-Principles Reason</dt><dd>Images are not just local texture. Shape, object identity, and layout require comparing distant parts.</dd>
-    <dt>Math Underneath</dt><dd>An image is split into patches, each patch gets a vector, and attention lets patches exchange information.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine sorting photos: you spot that a face is happy by reading both the smile and the eyes, which sit far apart. If you can only look at tiny neighborhoods at a time, you&#x27;ll miss the connection. The distance matters.</dd>
+    <dt>First-Principles Reason</dt><dd>Images encode meaning in spatial relationships: a face&#x27;s emotion comes from eyes, nose, and mouth together; a scene&#x27;s layout emerges from how objects relate to each other. A system that only patches together local clues will miss these global patterns. Any vision system solving realistic problems must let distant image parts influence each other.</dd>
+    <dt>Math Underneath</dt><dd>Start with an image and chop it into rectangular patches (say, 16×16 pixels each). Represent each patch as a vector (a list of numbers). Compute attention: for each patch, measure how much it should listen to every other patch using a dot product (multiply corresponding numbers and sum them, which measures how similar two vectors are). Then divide by the square root of the vector&#x27;s size to keep the numbers stable. Pass this through softmax (a function that turns numbers into percentages that sum to 100%). Finally, multiply each other patch&#x27;s vector by those percentages and sum them. This gives each patch a weighted combination of all other patches, letting distant regions influence each other in one step.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-vision_transformers-02">ev-vision_transformers-02</a> <span class="time">00:51:26.940</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-vision_transformers-supp-01">ev-vision_transformers-supp-01</a> <span class="time">00:35:17.550</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
@@ -337,11 +337,11 @@
 <article class="concept-card" id="scaling_laws">
   <div class="eyebrow">measurement limits</div>
   <h3><a href="concepts/scaling_laws.html">Scaling Laws</a></h3>
-  <p class="definition">Regular patterns in what improves when models, data, and compute grow.</p>
+  <p class="definition">When you feed an AI system more data or computation, its performance improves in predictable patterns that you can measure and plot.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that building large models is expensive, so teams need a way to predict whether more scale is worth it.</dd>
-    <dt>First-Principles Reason</dt><dd>Capacity, data, and compute are bottlenecks. When one bottleneck is relaxed, another can become the limiter.</dd>
-    <dt>Math Underneath</dt><dd>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re running a photo app that learns to recognize faces. Adding smarter algorithms helps—but so does feeding it more photos and letting it practice longer. Which should you invest in next? You need a way to predict whether spending more on computing power, collecting more photos, or both will actually improve results.</dd>
+    <dt>First-Principles Reason</dt><dd>Any learning system faces finite resources: processing power, training time, and examples to learn from. When you&#x27;re bottlenecked by lack of data, throwing more compute at the problem doesn&#x27;t unlock new abilities—you&#x27;re stuck teaching the same lessons over and over. When you&#x27;re bottlenecked by weak hardware, adding data doesn&#x27;t help. The system is forced to reveal which bottleneck is tightest right now, and what happens when you loosen it.</dd>
+    <dt>Math Underneath</dt><dd>A scaling law plots a curve where the horizontal axis is some quantity you can increase (data size, computing budget, model parameters—the measurable things) and the vertical axis is performance loss (how wrong predictions are). Empirically, this curve often follows a power law: loss ∝ (1 / size^α), where α is a slope that captures how steeply performance improves. The formula tells you: if you double your resources, loss shrinks by a factor of 2^α. Why a power law? Because most learning systems don&#x27;t hit walls suddenly; instead, harder examples require exponentially more data to master, and the compounding effect produces this smooth algebraic curve.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-scaling_laws-01">ev-scaling_laws-01</a> <span class="time">00:04:50.840</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-scaling_laws-02">ev-scaling_laws-02</a> <span class="time">00:00:28.920</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 9: RL for LLMs</li></ul>
 </article>
@@ -349,11 +349,11 @@
 <article class="concept-card" id="generalization">
   <div class="eyebrow">measurement limits</div>
   <h3><a href="concepts/generalization.html">Generalization</a></h3>
-  <p class="definition">Doing well on new cases, not only remembered examples.</p>
+  <p class="definition">Performing well on new cases you&#x27;ve never seen before, not just the ones you trained on.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that a model can learn shortcuts that work in training but fail in the real world.</dd>
-    <dt>First-Principles Reason</dt><dd>Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.</dd>
-    <dt>Math Underneath</dt><dd>Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.</dd>
+    <dt>Everyday Problem</dt><dd>You memorize every question and answer in a practice test the night before an exam. Tomorrow, the real exam has different questions. You freeze because you learned the *answers*, not how to *solve*. Your memorized knowledge won&#x27;t transfer to anything new.</dd>
+    <dt>First-Principles Reason</dt><dd>Any learner faces a hard fact: the past is only a sample. You train on some examples, but real life will throw new cases at you. If your learning just memorizes accident details in the training examples, it breaks when those accidents change. The only way forward is to extract stable structure—the patterns that stay true across both old and new cases.</dd>
+    <dt>Math Underneath</dt><dd>Generalization measures the gap between training error (mistakes on examples you learned from) and test error (mistakes on completely new examples). Formally, we want to minimize test error, but we only observe training error. The gap widens when a model latches onto noise or spurious patterns unique to the training set. Why does this matter mathematically? Because the true goal—performing well in the world—is actually the test error, not training error. We use regularization (adding a penalty term to the loss function that discourages overly complex solutions) and data splitting (training on one subset, validating on another, testing on a held-out third) to estimate whether a model captures reusable structure or just fits accidents.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-generalization-01">ev-generalization-01</a> <span class="time">00:22:49.090</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 10: RL for LLM Reasoning</li><li><a href="evidence.html#ev-generalization-02">ev-generalization-02</a> <span class="time">00:08:06.720</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 4 - LLM Training</li><li><a href="evidence.html#ev-generalization-04">ev-generalization-04</a> <span class="time">01:13:19.220</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>

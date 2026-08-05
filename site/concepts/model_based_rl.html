@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Model-Based Reinforcement Learning</h1>
-  <p>Learning or using a simulator of what might happen next.</p>
+  <p>Learning a model of what comes next so you can imagine futures before acting.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that real-world trial and error can be slow, costly, or risky.</p>
+  <p>You&#x27;re teaching a friend to cook a new recipe. If they only learn by trial and error—actually making the dish, tasting it, adjusting—they waste ingredients and time. If they could imagine what the dish would taste like before they serve it, they&#x27;d waste far less.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>If the agent can imagine consequences, it can compare possible futures before acting.</p>
+  <p>In any uncertain world, acting blindly means you crash into mistakes. But if you can build a mental model of how the world responds to your actions, you can think ahead: &#x27;If I do X, that leads to Y, which is bad.&#x27; Now you don&#x27;t need to actually do X to learn that lesson.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Model-Based Reinforcement Learning: A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete object is the dynamics model itself: a neural network or other learned function that maps (state, action) pairs to predicted next states. You can write it down, inspect it, feed it new inputs, and test whether it predicts correctly on held-out data.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The agent must learn mainly by direct experience and may waste attempts.</p>
+  <p>Without a model, you learn only from direct experience. Every mistake costs real time, money, or risk. You cannot think ahead because you have no way to imagine outcomes. You solve each new problem from scratch instead of transferring what you learned to related situations.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that real-world trial and error can be slow, costly, or risky.</p>
+  <p>You&#x27;re teaching a friend to cook a new recipe. If they only learn by trial and error—actually making the dish, tasting it, adjusting—they waste ingredients and time. If they could imagine what the dish would taste like before they serve it, they&#x27;d waste far less.</p>
   <h2>Why does this problem exist?</h2>
-  <p>If the agent can imagine consequences, it can compare possible futures before acting.</p>
+  <p>In any uncertain world, acting blindly means you crash into mistakes. But if you can build a mental model of how the world responds to your actions, you can think ahead: &#x27;If I do X, that leads to Y, which is bad.&#x27; Now you don&#x27;t need to actually do X to learn that lesson.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action.</p>
+  <p>A dynamics model is a function that takes two inputs—the current state (what the world looks like now) and an action (what you choose to do)—and outputs the next state (what the world will look like). Mathematically, it&#x27;s usually written s_{t+1} = f(s_t, a_t) + noise, where s is state, a is action, f is the function the model learns, and the noise term (random uncertainty) accounts for the world&#x27;s unpredictability. Planning then searches through imagined action sequences: &#x27;If I pick a_1, then a_2, then a_3, what chain of states unfolds?&#x27; and picks the sequence leading to the best imagined outcome.</p>
   <h2>Why is this concept important?</h2>
-  <p>It can make learning more data-efficient and connects RL to control.</p>
+  <p>With a model, you can learn from imagination—running thousands of simulated rollouts—instead of only from real expensive or risky tries. This lets you make decisions before facing the actual consequences, which is essential when real trials are costly (robot damage, medical treatment) or slow (weeks of waiting for results).</p>
   <h2>What breaks without it?</h2>
-  <p>The agent must learn mainly by direct experience and may waste attempts.</p>
+  <p>Without a model, you learn only from direct experience. Every mistake costs real time, money, or risk. You cannot think ahead because you have no way to imagine outcomes. You solve each new problem from scratch instead of transferring what you learned to related situations.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that real-world trial and error can be slow, costly, or risky. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &#x27;Just memorize which action is best in each situation I encounter.&#x27; But this fails immediately when the situation changes slightly or when there are more possible states than you can memorize.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because if the agent can imagine consequences, it can compare possible futures before acting. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Pure memorization (a lookup table) breaks because the world has too many states. A robot hand has millions of possible positions; a game board has billions. You can&#x27;t try them all, and you can&#x27;t store an answer for each one. You need something that generalizes—a model that captures the underlying rules of how actions change the world.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Model-Based Reinforcement Learning: A dynamics model estimates next state from current state and action. Planning searches through predicted futures to choose an action. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete object is the dynamics model itself: a neural network or other learned function that maps (state, action) pairs to predicted next states. You can write it down, inspect it, feed it new inputs, and test whether it predicts correctly on held-out data.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Model-Based Reinforcement Learning, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>First, collect real experience (or start with one you already have). Second, use that experience to train a model that predicts the next state from the current state and action. Third, use the trained model to imagine futures: pick an action sequence and roll it forward through the model, simulating what would happen. Fourth, pick the action sequence that leads to the best imagined outcome. Fifth, execute that action in the real world and collect new data to improve the model further.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: before moving a robot hand with many joints, an agent can imagine what might happen if it pushes one way or another. Model-based RL learns or uses a dynamics model, then uses that model for planning or data generation. CS224R introduces model-based RL as a class that can apply across RL settings, with key outcomes around learning and using dynamics models and understanding their trade-offs.</p>
+  <p>You&#x27;re learning to parallel-park a car. Real learning would be: try, fail, adjust, try again, crash into the curb, adjust, finally succeed—many attempts. Model-based learning works differently. From a few real park attempts, you build a model: &#x27;Turning the wheel this much, at this speed, moves the car that much sideways.&#x27; Now you can imagine 20 different steering sequences in your head (or on a simulator) without actually driving. You pick the sequence your model predicts will fit the car in the space. When you execute it in the real car, it works much better than random tries would have.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The model-based RL lecture emphasizes the key idea, how to learn models, how to use those models, and how planning or generated data can help. The dexterous robot manipulation case study makes the motivation practical: real interaction is expensive, so predicted futures can make learning more efficient.</p>
+  <p>CS224R emphasizes that model-based RL answers two core questions: how do you learn a dynamics model from experience, and how do you then use that model for planning or data generation? The dexterous robot case study makes this concrete: real robot interactions are expensive (time, hardware wear), so planning with a learned model lets you generate millions of cheap imagined trials before you commit to a real robot move.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that a learned model must be perfectly accurate to be useful. It does not. It must be accurate enough for the planning horizon and decisions being made. Small model errors can compound, so model-based methods must manage uncertainty and planning depth.</p>
+  <p>Many people think the learned model must be perfectly accurate to help. In reality, a slightly wrong model often beats no model at all. What matters is that the model captures the trends correctly enough for the planning horizon you care about. A model that says &#x27;turning left moves the car left&#x27; is useful even if it&#x27;s off by 10%; a model that says nothing is useless.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize model-based RL whenever the agent learns transitions, predicts next states, rolls out imagined futures, plans with a simulator, or generates synthetic experience. The shared primitive is search through possible futures before committing to action.</p>
+  <p>In a paper or system, you&#x27;re seeing model-based RL when: the agent learns or uses a learned model of state transitions; predictions of future states feed into planning or decision-making; simulated rollouts (fake experience generated by the model) are used to train a policy (a decision rule); or the system explicitly manages the trade-off between model accuracy and planning depth. The common thread is thinking ahead with a learned simulator.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near planning, policy, uncertainty. Across the three courses, the shared pattern is search, uncertainty: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Model-based RL appears across the three courses in different guises. In Deep RL, it contrasts with model-free learning (learning by pure experience). In Diffusion models, the generative process itself is a learned model of how to reverse randomness step by step—a different domain, same core idea of predicting sequences. In Transformers, attention mechanisms learn patterns in sequences; that learning is itself a lightweight model of which parts of the input matter for the output.</p>
   <p class="chips"><span class="chip muted-chip">planning</span> <a class="chip" href="policy.html">policy</a> <span class="chip muted-chip">uncertainty</span></p>
 </section>
 <section>

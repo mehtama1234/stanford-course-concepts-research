@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">measurement limits</p>
   <h1>Evaluation</h1>
-  <p>A controlled way to ask what a model can and cannot do.</p>
+  <p>A structured test that reveals what a model actually does — and what it fails to do — across different situations.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that a model can look impressive on examples while failing in places the test did not cover.</p>
+  <p>You hire a tutor who seems brilliant on math problems from the textbook. Only when your child takes a real test do you discover the tutor has memorized only that book. The tutor looks competent within a narrow slice but fails everywhere else. You needed a test that covered the full range of problems your child would actually face.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.</p>
+  <p>Any claim about ability is invisible until you check it against reality. If you only watch the model in situations you chose, you get a skewed picture — like testing a weatherman only on sunny days. You must design tests that probe the places where failure is most likely. This forces you to think carefully: what does success actually mean for this job? What are the edge cases where things break?</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Evaluation: A metric maps many behaviors to one number or table. The lost detail is as important as the reported score. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete things you work with are: test sets (labeled examples the model has not seen during training), metrics (formulas that score outputs), and comparison tables (organized records of scores across different conditions). A test set for a chatbot might have 500 questions split into categories: math, writing, reasoning, factuality. A metric for image generation might measure both pixel-level quality (does the generated image look sharp?) and semantic accuracy (does it match the prompt?). These are tangible, inspectable, and you can change them to probe deeper.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.</p>
+  <p>Without structured evaluation, claims become anecdotes. One user tries a model, gets good output, declares it works. Another tries it, gets nonsense. Both could be right — you have no way to know because you never defined what you&#x27;re measuring or how broadly you&#x27;d test. Progress becomes impossible to verify; a model might score high because it has memorized the test set, not because it learned something general.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that a model can look impressive on examples while failing in places the test did not cover.</p>
+  <p>You hire a tutor who seems brilliant on math problems from the textbook. Only when your child takes a real test do you discover the tutor has memorized only that book. The tutor looks competent within a narrow slice but fails everywhere else. You needed a test that covered the full range of problems your child would actually face.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Measurement is sampling. Any score reflects the cases, rules, and incentives used to produce it.</p>
+  <p>Any claim about ability is invisible until you check it against reality. If you only watch the model in situations you chose, you get a skewed picture — like testing a weatherman only on sunny days. You must design tests that probe the places where failure is most likely. This forces you to think carefully: what does success actually mean for this job? What are the edge cases where things break?</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>A metric maps many behaviors to one number or table. The lost detail is as important as the reported score.</p>
+  <p>A metric is a function that takes behaviors (the model&#x27;s outputs) and compresses them into numbers or tables you can compare. For example, accuracy counts correct answers: metric(outputs) = (number correct) / (total). But a single number discards details. A chatbot might score 85% accurate on math but fail harder on logic puzzles; accuracy alone hides this. Better metrics are often multi-dimensional — separate tables for math, writing, reasoning. The key insight: every number you report means you have thrown away other information. The hidden information is often as important as the reported score.</p>
   <h2>Why is this concept important?</h2>
-  <p>It decides what work is rewarded, what systems ship, and which failures stay hidden.</p>
+  <p>Evaluation determines which systems you&#x27;ll trust enough to ship, which research directions funding flows toward, and which errors stay hidden in production. A model that sounds fluent but hallucinates citations will damage trust. A translation system that works on news but fails on technical docs will anger users. Without careful evaluation, you optimize for a score rather than for real capability.</p>
   <h2>What breaks without it?</h2>
-  <p>Claims about capability become anecdotes, and progress can be confused with overfitting to a benchmark.</p>
+  <p>Without structured evaluation, claims become anecdotes. One user tries a model, gets good output, declares it works. Another tries it, gets nonsense. Both could be right — you have no way to know because you never defined what you&#x27;re measuring or how broadly you&#x27;d test. Progress becomes impossible to verify; a model might score high because it has memorized the test set, not because it learned something general.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that a model can look impressive on examples while failing in places the test did not cover. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: just run the model once and see if it works. If the output looks good, the model is good. This avoids all the complexity of designing careful tests.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because measurement is sampling. any score reflects the cases, rules, and incentives used to produce it. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>A single run tells you almost nothing. Show a model one example and it might produce a perfect output by luck, because it memorized that exact case during training, or because the task is trivial. Run it on ten examples and you still have no idea how it will perform on examples it has never seen. The moment inputs grow diverse — different phrasings, edge cases, adversarial inputs — a single impression collapses. You need systematic coverage to catch where the model actually fails.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Evaluation: A metric maps many behaviors to one number or table. The lost detail is as important as the reported score. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete things you work with are: test sets (labeled examples the model has not seen during training), metrics (formulas that score outputs), and comparison tables (organized records of scores across different conditions). A test set for a chatbot might have 500 questions split into categories: math, writing, reasoning, factuality. A metric for image generation might measure both pixel-level quality (does the generated image look sharp?) and semantic accuracy (does it match the prompt?). These are tangible, inspectable, and you can change them to probe deeper.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Evaluation, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>First, decide what you want to measure: what counts as success for this system? Write down specific cases that cover the full range of inputs you care about. Second, run your model on these cases and record the outputs. Third, score each output using your metric — count correct answers, measure similarity to gold standard, or have humans judge quality. Fourth, aggregate the scores into a summary (total accuracy, breakdown by category, distribution of errors). Finally, look at where scores fall short; these are your failure modes.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: two chatbots both sound fluent, but one fails math, one invents citations, and one follows instructions only on short prompts. Without evaluation, those differences remain anecdotes. CME295 opens the evaluation lecture by saying that if we do not know how to measure LLM performance, we do not know what to improve. CME296 makes the same point for images: a generated picture can be aesthetic but fail prompt adherence.</p>
+  <p>Two language models both sound fluent in conversation. Model A has 92% accuracy on a math benchmark; Model B has 88%. Without evaluation, you might think Model A is better overall. But when you design separate tests, you find: Model A fails hard on word problems (requires reading comprehension plus math); Model B invents sources for facts it doesn&#x27;t know (hallucination). On a benchmark that weights factuality heavily, Model B scores lower. On a benchmark that weights reasoning, Model A looks worse. A single number — 92% vs 88% — hides these opposite failure modes. Structured evaluation exposes them, so you can pick the model that fails in ways acceptable for your use case.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The evaluation lectures emphasize measurement as a development tool. CME295 focuses on quantifying LLM behavior across cases after studying agents and RAG. CME296 separates image quality from prompt adherence. Together they show that evaluation is not one number; it is a set of probes aimed at different failure modes.</p>
+  <p>The Stanford lectures frame evaluation as the core development tool. CME295 (Transformers) stresses that without measuring LLM performance across different cases — agents, retrieval-augmented generation, reasoning — you have no signal for improvement. CME296 (Diffusion/Vision) separates image quality from prompt adherence; a picture can look beautiful but ignore the prompt, or follow instructions perfectly but look blurry. CS224R (Deep RL) treats deployed policy evaluation as a distinct challenge — testing how a learned behavior performs in the real world differs from testing in training. The shared theme: evaluation is not one score but a systematic set of probes aimed at different failure modes.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that a benchmark score is the capability. A score is a compressed measurement under chosen rules. It can miss distribution shift, hidden failure modes, reward hacking, prompt sensitivity, or tasks the benchmark never sampled.</p>
+  <p>People often treat a benchmark score as the ground truth of capability. They think: Model X scored 85% on this benchmark, so it is 85% capable. This forgets that a score is a snapshot under specific rules. The benchmark might miss distribution shift (the model trained on 2020 data but you deploy it on 2024 data), adversarial examples (tricky inputs designed to break it), or entire categories the benchmark never sampled. A model can score high on a benchmark and fail in production because production includes cases the benchmark ignored.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize evaluation whenever authors turn behavior into metrics, benchmarks, human judgments, failure slices, or ablation tests. The shared primitive is measurement with loss: every score reveals something and hides something.</p>
+  <p>In a new paper or system, watch for evaluation whenever authors turn model behavior into metrics or benchmarks, gather human judgments, slice results by failure mode, or run ablation tests (removing parts to see which matter most). The shared primitive is always the same: design a test, measure systematically, interpret what you learned. Names vary — you might see &#x27;benchmark,&#x27; &#x27;test set,&#x27; &#x27;human evaluation,&#x27; &#x27;failure analysis,&#x27; &#x27;ablation&#x27; — but the core pattern is always measurement with loss, meaning each score reveals something and hides something else.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near generalization, reward modeling, scaling laws. Across the three courses, the shared pattern is uncertainty, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Evaluation threads through all three courses. In Transformers (CME295), you evaluate agent reasoning and retrieval quality. In Deep RL (CS224R), you evaluate whether a learned policy actually works in deployment. In Diffusion/Vision (CME296), you evaluate generation quality and prompt adherence. Evaluation also connects to generalization (a model generalizes if it scores well on held-out test data) and scaling laws (does performance improve smoothly with more data or compute?). The pattern is: whenever you need feedback to know if you&#x27;re making progress, evaluation is your tool.</p>
   <p class="chips"><a class="chip" href="generalization.html">generalization</a> <span class="chip muted-chip">reward modeling</span> <a class="chip" href="scaling_laws.html">scaling laws</a></p>
 </section>
 <section>

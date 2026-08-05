@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Reward</h1>
-  <p>A signal that says which outcomes should become more likely.</p>
+  <p>A number that tells a system which futures to make more likely.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that an agent needs to know not just what happened, but whether it was better or worse.</p>
+  <p>You&#x27;re teaching a dog a new trick. The dog tries something. Did it help or hurt? Without knowing that, the dog can&#x27;t learn which behaviors to repeat. You need a way to say &quot;yes, that was better&quot; or &quot;no, try again.&quot;</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.</p>
+  <p>Any learning system facing a choice needs to know which choice worked. Reward is the answer to that question—a number that marks outcomes as better or worse. Without it, the system collects experience but has no direction to improve.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Reward: Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect. Think of it as the handle the algorithm can grab.</p>
+  <p>The reward function r(state, action) is a procedure you can write down and test. Given a situation and a move, it outputs a number. In practice, reward might come from a human ranking two responses (&quot;I prefer A over B&quot;), a test score, a metric you measure, or a small learned model trained to predict human preference. The key is that it&#x27;s concrete: you can inspect it, trace it, ask why it gave that number.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The agent can collect experience but has no preference over outcomes.</p>
+  <p>Without reward, the system has experience but no preference. It sees actions and outcomes but cannot distinguish good from bad. It may as well pick randomly. Learning requires a feedback signal; reward is that signal.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that an agent needs to know not just what happened, but whether it was better or worse.</p>
+  <p>You&#x27;re teaching a dog a new trick. The dog tries something. Did it help or hurt? Without knowing that, the dog can&#x27;t learn which behaviors to repeat. You need a way to say &quot;yes, that was better&quot; or &quot;no, try again.&quot;</p>
   <h2>Why does this problem exist?</h2>
-  <p>Learning from action needs a direction of improvement. Reward supplies that direction, even when the right action was not labeled in advance.</p>
+  <p>Any learning system facing a choice needs to know which choice worked. Reward is the answer to that question—a number that marks outcomes as better or worse. Without it, the system collects experience but has no direction to improve.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect.</p>
+  <p>Reward usually measures a single step. Return (often written R) sums rewards across multiple steps into one total. To value an action fairly, look at all the downstream consequences, not just the immediate result. A detour might cost you now but save you later. The formula R = r₀ + r₁ + r₂ + ... adds up each step&#x27;s reward (rₜ) forward in time. Often future rewards matter less than immediate ones—a coffee today beats a coffee a year from now—so we discount: R = r₀ + γ·r₁ + γ²·r₂ + ..., where γ (gamma, between 0 and 1) shrinks distant rewards. This forces the system to prioritize.</p>
   <h2>Why is this concept important?</h2>
-  <p>It turns behavior into something trainable when direct answers are unavailable.</p>
+  <p>Reward turns a vague preference (&quot;better&quot;) into something the system can optimize. Once you have a number for each action&#x27;s outcome, you can ask: which actions led to higher numbers? Do more of those. This unlocks learning without showing the system the answer in advance.</p>
   <h2>What breaks without it?</h2>
-  <p>The agent can collect experience but has no preference over outcomes.</p>
+  <p>Without reward, the system has experience but no preference. It sees actions and outcomes but cannot distinguish good from bad. It may as well pick randomly. Learning requires a feedback signal; reward is that signal.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that an agent needs to know not just what happened, but whether it was better or worse. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner sees a simple world—a small set of situations, each paired with a known best move—and thinks: just memorize the answer. A lookup table (&quot;if situation A, do move B&quot;) works when every case is small and labeled.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because learning from action needs a direction of improvement. reward supplies that direction, even when the right action was not labeled in advance. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>The lookup table breaks the moment you face a new situation, or when actions have delayed effects. If a good move only pays off much later, a single-step lookup table never catches it. If the world is large or changing, you can&#x27;t pre-label every case. You need to learn from experience, not memorize.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Reward: Return is accumulated reward over time. The key idea is to value actions by their downstream consequences, not only their immediate effect. Think of it as the handle the algorithm can grab.</p>
+  <p>The reward function r(state, action) is a procedure you can write down and test. Given a situation and a move, it outputs a number. In practice, reward might come from a human ranking two responses (&quot;I prefer A over B&quot;), a test score, a metric you measure, or a small learned model trained to predict human preference. The key is that it&#x27;s concrete: you can inspect it, trace it, ask why it gave that number.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Reward, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Step 1: Agent acts (chooses a move given its current situation). Step 2: System delivers a reward signal (a number, or a comparison). Step 3: Agent looks back at its action and the reward it got. Step 4: Agent adjusts—increasing the likelihood of actions that led to high rewards. Repeat.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a base language model can finish sentences fluently, and an instruction-tuned model can answer the requested task, but a person may still dislike the tone, safety, or helpfulness of the response. The CME295 tuning lecture frames the third stage this way: after pretraining and supervised fine-tuning, preference tuning tries to align the model with human preferences or a metric. Reward is the compressed signal that says which behavior should become more likely. In CS224R, the same idea is broader: reward is how an action-taking system learns which outcomes it should prefer.</p>
+  <p>A language model is asked to write a grocery list. It outputs: &quot;milk, eggs, bread.&quot; A second model outputs: &quot;milk, eggs, bread, butter, cheese, yogurt.&quot; A human rater scores them on usefulness and concision: first gets 8/10 (complete but brief), second gets 6/10 (thorough but wasteful). The reward for each response is the score. Now the training process can ask: which action (which list) led to higher reward? The model learns that shorter, focused lists get higher marks. If we train on many examples, the model shifts to produce better lists.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>CME295 emphasizes reward through human preference alignment: the model already knows language and code, but now has to be shaped toward behavior people want. CS224R emphasizes reward as the central feedback signal for sequential decision making. The shared point is that reward is not the task itself; it is an imperfect handle for changing behavior.</p>
+  <p>In CME295, reward appears in preference tuning: after pretraining and task training, the model must align with what humans prefer. The lecturer frames it as a third stage—not &quot;solve the task&quot; but &quot;solve it the way humans like.&quot; In CS224R, reward is the core signal for sequential decision-making in reinforcement learning. Both courses agree: reward is not the goal itself; it&#x27;s an imperfect handle for steering behavior toward what we care about.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that reward is the same as the real goal. It is only a signal. If the signal rewards the wrong shortcut, the system can optimize the signal while violating the intended purpose. That is why preference tuning, reward modeling, and evaluation have to be treated together.</p>
+  <p>Many people think reward equals the goal. It doesn&#x27;t. Reward is a proxy for the goal. If you reward a system for speed, it might rush and make mistakes. If you reward a language model for length, it will ramble. A misaligned reward signal can make the system optimize something unintended while ignoring what you actually wanted. That&#x27;s why reward design, monitoring, and alignment are serious problems in practice.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize reward when outcomes, preferences, rankings, scores, or human judgments are converted into a number used to change behavior. The method may call it reward, preference signal, utility, advantage, verifier score, or metric, but the primitive is feedback: mark some futures as better so the learner can move toward them.</p>
+  <p>In papers and systems, reward appears under many names: preference signal, utility, score, ranking, or verifier output. Look for this pattern: outcomes are compared or ranked, and that comparison is converted into a number, which then drives learning. A paper that says &quot;we train a model to rank responses&quot; or &quot;we use human feedback to score outputs&quot; is using reward, even if it doesn&#x27;t say that word.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near reward modeling, credit assignment, policy gradient. Across the three courses, the shared pattern is feedback, credit: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In CME295, reward links to preference alignment and fine-tuning: how do we steer a model toward behavior humans prefer? In CS224R, reward is the foundation of value functions and policy gradients: how does an agent learn which actions are good? In CME296, reward appears indirectly in diffusion model guidance: steering generation toward a desired outcome. The thread across all three is feedback—deciding what&#x27;s better and moving toward it.</p>
   <p class="chips"><span class="chip muted-chip">reward modeling</span> <a class="chip" href="credit_assignment.html">credit assignment</a> <a class="chip" href="policy_gradient.html">policy gradient</a></p>
 </section>
 <section>

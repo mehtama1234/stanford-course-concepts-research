@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">measurement limits</p>
   <h1>Scaling Laws</h1>
-  <p>Regular patterns in what improves when models, data, and compute grow.</p>
+  <p>When you feed an AI system more data or computation, its performance improves in predictable patterns that you can measure and plot.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that building large models is expensive, so teams need a way to predict whether more scale is worth it.</p>
+  <p>You&#x27;re running a photo app that learns to recognize faces. Adding smarter algorithms helps—but so does feeding it more photos and letting it practice longer. Which should you invest in next? You need a way to predict whether spending more on computing power, collecting more photos, or both will actually improve results.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Capacity, data, and compute are bottlenecks. When one bottleneck is relaxed, another can become the limiter.</p>
+  <p>Any learning system faces finite resources: processing power, training time, and examples to learn from. When you&#x27;re bottlenecked by lack of data, throwing more compute at the problem doesn&#x27;t unlock new abilities—you&#x27;re stuck teaching the same lessons over and over. When you&#x27;re bottlenecked by weak hardware, adding data doesn&#x27;t help. The system is forced to reveal which bottleneck is tightest right now, and what happens when you loosen it.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Scaling Laws: A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature. Think of it as the handle the algorithm can grab.</p>
+  <p>The scaling curve itself is the object you inspect and modify. It is a table or fitted equation that maps (data size, model size, compute budget) to expected loss. You can read off it: &#x27;if I invest $X more, what loss should I expect?&#x27; It&#x27;s concrete because you can plot it on paper or log into a database and look up the trade-off in real time.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</p>
+  <p>Without scaling laws, teams guess blindly: throw money at the problem and hope. You might overtrain a small model on data it&#x27;s already memorized, waste resources on architecture tweaks that don&#x27;t matter, or stop scaling too early thinking progress has plateaued when you&#x27;re actually just hitting a temporary bottleneck.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that building large models is expensive, so teams need a way to predict whether more scale is worth it.</p>
+  <p>You&#x27;re running a photo app that learns to recognize faces. Adding smarter algorithms helps—but so does feeding it more photos and letting it practice longer. Which should you invest in next? You need a way to predict whether spending more on computing power, collecting more photos, or both will actually improve results.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Capacity, data, and compute are bottlenecks. When one bottleneck is relaxed, another can become the limiter.</p>
+  <p>Any learning system faces finite resources: processing power, training time, and examples to learn from. When you&#x27;re bottlenecked by lack of data, throwing more compute at the problem doesn&#x27;t unlock new abilities—you&#x27;re stuck teaching the same lessons over and over. When you&#x27;re bottlenecked by weak hardware, adding data doesn&#x27;t help. The system is forced to reveal which bottleneck is tightest right now, and what happens when you loosen it.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature.</p>
+  <p>A scaling law plots a curve where the horizontal axis is some quantity you can increase (data size, computing budget, model parameters—the measurable things) and the vertical axis is performance loss (how wrong predictions are). Empirically, this curve often follows a power law: loss ∝ (1 / size^α), where α is a slope that captures how steeply performance improves. The formula tells you: if you double your resources, loss shrinks by a factor of 2^α. Why a power law? Because most learning systems don&#x27;t hit walls suddenly; instead, harder examples require exponentially more data to master, and the compounding effect produces this smooth algebraic curve.</p>
   <h2>Why is this concept important?</h2>
-  <p>It guides training budgets and helps explain why some abilities appear only after enough practice and capacity.</p>
+  <p>Once you know your scaling law, you can plan: which investment returns the most gain per dollar? Doubling model size costs one kind of money; doubling data costs another. The curve tells you which lever to pull next and whether progress will stall or accelerate as you grow. It also explains emergent abilities—new skills that appear only after crossing certain scales because earlier sizes simply weren&#x27;t large enough to internalize those patterns.</p>
   <h2>What breaks without it?</h2>
-  <p>Scaling decisions become guesswork, and systems may be undertrained or wastefully oversized.</p>
+  <p>Without scaling laws, teams guess blindly: throw money at the problem and hope. You might overtrain a small model on data it&#x27;s already memorized, waste resources on architecture tweaks that don&#x27;t matter, or stop scaling too early thinking progress has plateaued when you&#x27;re actually just hitting a temporary bottleneck.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that building large models is expensive, so teams need a way to predict whether more scale is worth it. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might assume: if a model trained on 1 million examples reaches 80% accuracy, then one trained on 2 million will reach 80.5% or some tiny predictable step. Or: bigger models always need more data proportionally. But reality is messier—the relationship is nonlinear, and diminishing returns kick in at different points depending on which resource you change.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because capacity, data, and compute are bottlenecks. when one bottleneck is relaxed, another can become the limiter. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>The naive &#x27;linear improvement&#x27; approach fails because it misses the compound effect of bottlenecks. If a model is starving for data, adding compute barely helps. If it&#x27;s starving for parameters, adding data without model capacity wastes the data. The simple guess also ignores that some abilities (like reasoning over long chains) only emerge after crossing a threshold—improvement is not smooth everywhere.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Scaling Laws: A scaling law fits a curve between resources and loss or capability. The curve is a planning tool, not a law of nature. Think of it as the handle the algorithm can grab.</p>
+  <p>The scaling curve itself is the object you inspect and modify. It is a table or fitted equation that maps (data size, model size, compute budget) to expected loss. You can read off it: &#x27;if I invest $X more, what loss should I expect?&#x27; It&#x27;s concrete because you can plot it on paper or log into a database and look up the trade-off in real time.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Scaling Laws, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>First, run training experiments at several different scales—say, 100M, 1B, 10B parameters—keeping everything else fixed. Measure final loss at each scale. Plot those points on a graph (horizontal axis = scale, vertical axis = loss). Fit a power-law curve through the points. This curve is now your predictor: input a new scale, read off the expected loss. Before committing resources, simulate the investment: &#x27;if we triple compute, the curve predicts loss shrinks by a factor of 2^α. Is that worth the cost?&#x27;</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a team can double model parameters, double data, or spend more inference compute, but each choice costs money. Scaling laws ask whether larger resources predictably reduce loss or unlock behavior. CME295 discusses mixture-of-experts as a way to scale LLMs without activating every parameter at inference time. CS224R notes the broader trend of putting more compute into larger models when motivating RL for LLMs.</p>
+  <p>Suppose a language model trained on 10 billion words reaches a loss of 4.0. You train again on 100 billion words and get loss 2.8. Plot those two points: (10B, 4.0) and (100B, 2.8). A power law fit suggests loss ∝ 1/(data^0.25). Using this curve, if you had trained on 1 trillion words, you&#x27;d predict loss ≈ 2.0. Before spending months training at that scale, you check the curve: is halving loss worth the 10× compute budget? If yes, commit. If no, invest in data quality or model architecture instead. The lecture emphasizes that mixture-of-experts models choose this trade-off: activate only a fraction of parameters per example, trading a tiny loss increase for vastly cheaper inference, because the scaling curve told them inference cost mattered as much as training loss.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>Across the corpus, scale appears as both opportunity and constraint. CME295 frames architecture choices such as sparse experts around the cost of using all parameters. CS224R frames large-model progress around more compute. CME296 architecture and training lectures connect parameter count, training choices, and generative quality. The shared emphasis is that scale changes engineering trade-offs, not just leaderboard numbers.</p>
+  <p>Across Stanford lectures, scale appears as an engineering constraint, not just a number on a leaderboard. CME295 discusses mixture-of-experts precisely because scaling laws revealed that all-parameter activation becomes prohibitively expensive at inference; experts let you activate only the relevant subset and keep using larger models. CS224R frames modern RL-for-LLMs progress as riding a wave of larger models and far more training compute—a consistent trend where the community plots scaling curves and invests aggressively because those curves promise payoff. CME296 connects parameter count and training compute to image quality in diffusion models. The shared lesson: measure scaling, predict, then allocate resources where the curve says gains are steepest.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that scaling laws say bigger is always better. Scaling is conditional: data quality, compute budget, architecture, inference cost, and evaluation target all matter. A curve can guide planning without proving that every capability will improve smoothly.</p>
+  <p>People often think &#x27;scaling laws prove that bigger is always better,&#x27; or &#x27;scaling is universal.&#x27; In reality, scaling is conditional. A scaling law holds for a specific architecture, dataset distribution, and evaluation metric—change any of those, the curve shifts. Data quality, training stability, inference constraints, and what you&#x27;re actually trying to measure all redirect where growth goes. A curve predicts efficiently only within its domain; extrapolate too far, and diminishing returns or phase transitions catch you off guard.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize scaling-law reasoning whenever authors relate loss, capability, data size, parameter count, compute, active parameters, or inference-time work. The shared primitive is bottleneck shifting: once one limit is relaxed, another limit may become the thing controlling progress.</p>
+  <p>In new papers, spot scaling-law reasoning whenever authors: plot loss or accuracy against data size, model parameters, or compute budget; discuss why they chose a particular model size for their compute budget; mention &#x27;compute-optimal&#x27; choices; describe mixture-of-experts, sparse activation, or other schemes designed to scale without paying the full inference cost; or claim that a new ability (like chain-of-thought reasoning) emerges only at scale. The underlying pattern is always: measure, fit a curve, predict, and let the curve guide resource allocation.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near pretraining, emergence, evaluation. Across the three courses, the shared pattern is scale, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Pretraining across CME295 and CS224R rests on scaling laws—knowing how large a model and dataset you need for the capabilities you want downstream. Evaluation in CME296 depends on scaling laws because you must know whether improved metrics with more training compute reflect real progress or are just artifacts of overfitting or metric saturation. Emergence (sudden appearance of new skills) connects to scaling because emergence is just the point on the curve where a bottleneck shifts and the model suddenly has enough capacity or data to represent something previously locked away. In all three courses, the pattern is: grow what matters, measure the trade-offs, and let the curve guide you.</p>
   <p class="chips"><a class="chip" href="pretraining.html">pretraining</a> <span class="chip muted-chip">emergence</span> <a class="chip" href="evaluation.html">evaluation</a></p>
 </section>
 <section>

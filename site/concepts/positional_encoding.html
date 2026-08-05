@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">representation workspace</p>
   <h1>Position And Order</h1>
-  <p>A way to tell the model where each piece sits in a sequence or image.</p>
+  <p>A numerical tag attached to each input that tells the model which slot in the sequence or image it occupies.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that the same words or image patches mean different things depending on where they appear.</p>
+  <p>Imagine you&#x27;re listening to a friend describe a scene, but they rattle off words in a jumbled order: &quot;dog bites man&quot; versus &quot;man bites dog.&quot; Same words, opposite meaning. The order matters. Now imagine a listener who hears all the words at the same time, as a cloud with no internal sequence. That listener has no built-in way to know which word came first unless you mark each one with a position tag.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Attention compares items as a set unless order information is added. Order must be represented explicitly if order matters.</p>
+  <p>Transformers work by comparing any token to any other token directly in parallel, unlike older systems that processed tokens one-by-one and thus learned sequence order naturally. Because attention links bypass the sequential order, the model has no automatic way to know where each token sits in the sequence. Something must explicitly label position, or the model loses that information entirely.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Position And Order: Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away. Think of it as the handle the algorithm can grab.</p>
+  <p>The position embedding is a lookup table or a function that maps each position k to a vector of D numbers (usually the same dimension as the token embedding). For k=0, 1, 2, ... you compute the vector using sines and cosines at different frequencies, producing a unique but structured pattern for each position. This table is added to the token embedding before attention runs.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The model may know which pieces exist but lose the arrangement that makes them meaningful.</p>
+  <p>The model sees the same set of tokens regardless of order. It might confuse &quot;dog bites man&quot; with &quot;man bites dog.&quot; In vision, it loses track of which patch is top-left versus bottom-right. Relationships that depend on structure collapse into meaninglessness.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that the same words or image patches mean different things depending on where they appear.</p>
+  <p>Imagine you&#x27;re listening to a friend describe a scene, but they rattle off words in a jumbled order: &quot;dog bites man&quot; versus &quot;man bites dog.&quot; Same words, opposite meaning. The order matters. Now imagine a listener who hears all the words at the same time, as a cloud with no internal sequence. That listener has no built-in way to know which word came first unless you mark each one with a position tag.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Attention compares items as a set unless order information is added. Order must be represented explicitly if order matters.</p>
+  <p>Transformers work by comparing any token to any other token directly in parallel, unlike older systems that processed tokens one-by-one and thus learned sequence order naturally. Because attention links bypass the sequential order, the model has no automatic way to know where each token sits in the sequence. Something must explicitly label position, or the model loses that information entirely.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.</p>
+  <p>A position embedding is a vector (a list of numbers) assigned to position k. The simplest version uses sinusoidal functions: embed(k) = [sin(k/10000^0), cos(k/10000^0), sin(k/10000^2), cos(k/10000^2), ...]. Each dimension oscillates at a different frequency—low frequencies change slowly (far-away positions look different), high frequencies change quickly (nearby positions stay similar). Adding this vector to the token&#x27;s embedding lets attention patterns attend based on distance, because the position signal is now mixed into the data the model compares.</p>
   <h2>Why is this concept important?</h2>
-  <p>It lets transformers handle grammar, layout, time, and spatial structure.</p>
+  <p>Without position signals, the transformer cannot distinguish grammar (subject-verb-object order), spatial layout in images, time sequences in data, or any structure that depends on where something is. With it, the model learns to use distance and order as features, enabling it to handle syntax, narrative, and spatial reasoning.</p>
   <h2>What breaks without it?</h2>
-  <p>The model may know which pieces exist but lose the arrangement that makes them meaningful.</p>
+  <p>The model sees the same set of tokens regardless of order. It might confuse &quot;dog bites man&quot; with &quot;man bites dog.&quot; In vision, it loses track of which patch is top-left versus bottom-right. Relationships that depend on structure collapse into meaninglessness.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that the same words or image patches mean different things depending on where they appear. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &quot;Just give the model the position as a plain number—position 1, position 2, position 3.&quot; This seems direct and simple.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because attention compares items as a set unless order information is added. order must be represented explicitly if order matters. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Plain position numbers don&#x27;t work because the model&#x27;s attention layer does math on those numbers. A distance of 1 (positions 1 and 2) gets treated the same way as a distance of 1000 (positions 1000 and 1001). The model cannot learn that nearby tokens interact differently from distant ones. Also, plain numbers don&#x27;t generalize—a model trained on sequences up to length 100 sees unexpected inputs if a sequence is 500 tokens long.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Position And Order: Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away. Think of it as the handle the algorithm can grab.</p>
+  <p>The position embedding is a lookup table or a function that maps each position k to a vector of D numbers (usually the same dimension as the token embedding). For k=0, 1, 2, ... you compute the vector using sines and cosines at different frequencies, producing a unique but structured pattern for each position. This table is added to the token embedding before attention runs.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Position And Order, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>For each token in the sequence: look up its position k, compute or retrieve the position embedding for k, and add it element-by-element to the token embedding. Pass the combined embedding into the attention layer. The position signal is now woven into the values the model compares.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: &quot;dog bites man&quot; and &quot;man bites dog&quot; contain the same words but mean different things. A transformer attention layer can compare all tokens directly, but that direct comparison loses the built-in order signal that an RNN gets from processing one token after another. The CME295 lecture explains this exact problem: because tokens interact directly rather than sequentially, position information is lost unless the model injects it. Position embeddings add a learned location signal to token embeddings.</p>
+  <p>Consider the sentence &quot;cat sat on mat&quot; with positions 0, 1, 2, 3, 4. The token &quot;cat&quot; has embedding [0.2, -0.1, 0.5, ...]. Position 0&#x27;s embedding might be [1.0, 0, 0.5, 0, ...] (using sinusoids). We add them: cat&#x27;s final embedding is [1.2, -0.1, 1.0, ...]. Token &quot;sat&quot; at position 1 gets [0.1, -0.2, 0.3, ...] added (a different position pattern). When attention computes the similarity between &quot;cat&quot; and &quot;sat&quot;, the embedded positions are part of that comparison—nearby positions produce overlapping position vectors, so the attention scores reflect distance.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The transformer tricks lecture emphasizes position embeddings as a repair for the transformer&#x27;s strength. Direct token-to-token links make attention parallel and flexible, but they remove the natural before-and-after structure of a sequence. The original transformer solution was a dedicated embedding per position, added to the token embedding.</p>
+  <p>The Stanford CME295 lecture on transformer architecture explains that attention removes the sequential processing that older models had—tokens interact in parallel, not one after another. Position embeddings repair this loss by injecting a location signal directly into the data. The CME296 lecture on vision transformers emphasizes the same need: image patches sit in a 2D grid, and direct attention links erase that geometry unless position is explicitly encoded.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that attention automatically knows order because tokens are listed in order in the input file. The architecture only receives numbers. Unless position is encoded in those numbers, the model has much weaker access to sequence order.</p>
+  <p>A common wrong belief is that the model &quot;just knows&quot; the order because tokens are listed in order in the input. The transformer architecture only receives numbers. Unless position is encoded into those numbers (as an embedding added to each token), the model has no mathematical access to order—it sees a set, not a sequence.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize positional reasoning whenever a model adds, rotates, biases, indexes, or otherwise marks where information came from. The mechanism may be absolute embeddings, relative positions, RoPE, ALiBi, patch positions, time embeddings, or spatial coordinates. The shared primitive is geometry for order: make location available to computation.</p>
+  <p>When reading new papers, look for any mechanism that marks location: absolute position embeddings, relative position biases, rotary position embeddings (RoPE—a rotation-based position signal), ALiBi (attention-linear-biases—a distance penalty added during attention scoring), patch coordinate embeddings in vision models, or time embeddings in diffusion models. All are variations on the same idea: encode position as a numerical signal the model can use.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near attention, transformer block, vision transformers. Across the three courses, the shared pattern is geometry, invariance: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In CME295, position embeddings sit inside the transformer block, paired with attention and self-attention mechanisms. In CME296, diffusion models and vision transformers both add spatial or temporal position signals—diffusion uses timestep embeddings (which position in the noise-to-clean path), vision transformers use patch locations. In CS224R reinforcement learning, state representations often include position or location features to ground the agent in its environment. The shared principle across courses is that structure (order, space, time) must be explicit in the numbers if the model is to reason about it.</p>
   <p class="chips"><a class="chip" href="attention.html">attention</a> <a class="chip" href="transformer_block.html">transformer block</a> <a class="chip" href="vision_transformers.html">vision transformers</a></p>
 </section>
 <section>

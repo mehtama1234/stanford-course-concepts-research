@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Q-Learning</h1>
-  <p>Learning a table or function that estimates how good each action is from each situation.</p>
+  <p>A method to estimate, for each state-action pair, what total reward you expect if you take that action now and then do your best from then on.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that an agent must choose now while caring about later consequences.</p>
+  <p>You&#x27;re at a restaurant deciding between the familiar dish and an unknown special. The special might be delicious tomorrow and lead to a favorite memory, or mediocre today with no future benefit. But you must choose right now without yet knowing how it will unfold.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>A decision can be valued by immediate payoff plus the value of the future it leads to.</p>
+  <p>Any smart decision-maker facing delayed consequences must do this: you can&#x27;t wait to see the final outcome before choosing, so you need a way to *guess* what the future will be worth. The only way to make a guess is to separate the immediate reward from the delayed reward—one you know now, one you estimate. Then add them up.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Q-Learning: Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value. Think of it as the handle the algorithm can grab.</p>
+  <p>The Q-table (or Q-network if using neural networks) is a function mapping (state, action) pairs to numbers. In a small problem, you might have a simple table: rows are situations, columns are actions, each cell stores one estimate. You inspect this table to make decisions, and you revise it based on experience.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The agent cannot compare actions by their long-term consequences.</p>
+  <p>Without a way to estimate future value, you&#x27;re stuck. Either you choose based only on immediate reward (missing delayed payoffs), or you try to predict every possible future path (computationally impossible). You need a learned shortcut that captures &quot;how good is this move&quot; in one number.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that an agent must choose now while caring about later consequences.</p>
+  <p>You&#x27;re at a restaurant deciding between the familiar dish and an unknown special. The special might be delicious tomorrow and lead to a favorite memory, or mediocre today with no future benefit. But you must choose right now without yet knowing how it will unfold.</p>
   <h2>Why does this problem exist?</h2>
-  <p>A decision can be valued by immediate payoff plus the value of the future it leads to.</p>
+  <p>Any smart decision-maker facing delayed consequences must do this: you can&#x27;t wait to see the final outcome before choosing, so you need a way to *guess* what the future will be worth. The only way to make a guess is to separate the immediate reward from the delayed reward—one you know now, one you estimate. Then add them up.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value.</p>
+  <p>The idea is written as Q(s, a) = E[r + γ·max Q(s&#x27;, a&#x27;)]. Here, s is your current situation (state), a is your choice (action), r is the reward you get right away, γ (gamma, a number between 0 and 1) is how much you care about the future relative to now, s&#x27; is the next situation, and max Q(s&#x27;, a&#x27;) means the best estimated future reward you expect. The sum r + γ·max Q(s&#x27;, a&#x27;) is a guess: today&#x27;s immediate payoff plus the discounted estimate of what comes next. You keep revising this guess based on real outcomes.</p>
   <h2>Why is this concept important?</h2>
-  <p>It is the cleanest route from delayed reward to a practical decision rule.</p>
+  <p>Once you have these estimated values for every state-action pair, choosing becomes simple: pick the action with the highest Q-value. This turns a fuzzy &quot;I want to maximize my long-term reward&quot; into a concrete recipe: just look up the numbers and pick the biggest.</p>
   <h2>What breaks without it?</h2>
-  <p>The agent cannot compare actions by their long-term consequences.</p>
+  <p>Without a way to estimate future value, you&#x27;re stuck. Either you choose based only on immediate reward (missing delayed payoffs), or you try to predict every possible future path (computationally impossible). You need a learned shortcut that captures &quot;how good is this move&quot; in one number.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that an agent must choose now while caring about later consequences. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: just try each action once, see what reward comes back, and rank actions by that single reward. But most rewards are delayed—the next reward doesn&#x27;t come for many steps—and the best action depends on what you&#x27;ve already learned.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because a decision can be valued by immediate payoff plus the value of the future it leads to. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>This fails because the immediate reward is often zero or misleading. If you rank actions by a single reward, you&#x27;ll never discover actions with big delayed payoffs. You need something that can *look ahead*, even if only through a learned estimate, so you don&#x27;t get trapped by short-term thinking.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Q-Learning: Q(s,a) means the expected future return after taking action a in situation s. The Bellman idea says today&#x27;s action value equals immediate reward plus the best estimated future value. Think of it as the handle the algorithm can grab.</p>
+  <p>The Q-table (or Q-network if using neural networks) is a function mapping (state, action) pairs to numbers. In a small problem, you might have a simple table: rows are situations, columns are actions, each cell stores one estimate. You inspect this table to make decisions, and you revise it based on experience.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Q-Learning, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Step 1: You&#x27;re in situation s and take action a, receiving immediate reward r and moving to situation s&#x27;. Step 2: Look up the highest Q-value possible from s&#x27; (the best future choice you estimate). Step 3: Update Q(s, a) by moving it toward r + γ·max Q(s&#x27;, a&#x27;). Step 4: Repeat in the next situation.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: imagine a robot in a hallway choosing between left and right. Going right gives no immediate reward, but two turns later reaches the charging station. A purely immediate rule misses that value. Q-learning instead asks: if I am in this situation and take this action, how much future reward should I expect? The CS224R lecture introduces Q-values as future rewards for a state and action, then asks how Q-functions relate to policies and how RL can work without learning an explicit policy. The Bellman-style move is to make today&#x27;s estimate agree with reward plus the next state&#x27;s estimated future value.</p>
+  <p>You&#x27;re a delivery robot in a hallway with three doors: left (leads to stairs down, no reward now), middle (immediate candy bowl +2 reward), right (leads to the charging dock, +100 reward in 5 steps). Initially, you might guess Q(hallway, left) = 0, Q(hallway, middle) = 2, Q(hallway, right) = 0. You try right, take 5 steps, and collect +100. Now you revise: Q(hallway, right) ← 0 + 0.9·100 = 90 (discounting the future a bit). Try left next: you descend, immediately get +50. Revise Q(hallway, left) ← 0 + 0.9·50 = 45. Now middle looks worst. The next time you&#x27;re in the hallway, you&#x27;ll pick right—no longer fooled by the immediate candy.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The Q-learning lecture emphasizes value-based RL: learn the action-value function, then derive behavior from it. It also emphasizes practical stability, because bootstrapping from the model&#x27;s own changing estimates can become unstable. The offline RL lecture connects this to dataset coverage: Q targets are only trustworthy when the data covers the actions the learned policy may take. That is why Q-learning is not just a formula; it is a bargain between delayed reward, function approximation, and data coverage.</p>
+  <p>The CS224R course frames Q-learning as the foundational value-based approach: instead of learning which action to take directly, learn to estimate the value (Q-value) of each action, then derive behavior from those estimates. The lecture also stresses a critical challenge: Q-learning can become unstable because it bootstraps—it uses its own changing estimates (of future value) as targets for learning. In offline RL settings, this instability is even more dangerous because you can&#x27;t correct estimates by trying actions yourself; you&#x27;re stuck with the data you have.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that Q-learning directly learns what action to take. More precisely, it learns a value estimate for state-action pairs. The policy is often obtained afterward by choosing the action with the largest estimated value. If those values are wrong, especially for actions rarely seen in data, the policy can confidently choose bad actions.</p>
+  <p>People often think Q-learning is a way to directly learn which action to take. Actually, it learns *value estimates* for actions, and you choose by picking the highest estimate. If your value estimates are wrong—especially for actions rarely seen in your training data—you can confidently pick terrible actions. This disconnect between learned values and actual goodness is the offline RL bind.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize Q-learning whenever future consequences are compressed into a learned value for an action. The paper may discuss Bellman backups, temporal-difference targets, critics, fitted Q evaluation, conservative Q-learning, or action-value functions. The shared primitive is credit over time: use later reward to revise the estimated worth of an earlier choice.</p>
+  <p>In a paper, watch for language like &quot;temporal-difference targets,&quot; &quot;Bellman update,&quot; &quot;action-value function,&quot; &quot;bootstrapping,&quot; or &quot;fitted Q-iteration.&quot; When you see a method that revises a learned estimate by comparing it to (immediate reward + a second learned estimate), that&#x27;s Q-learning or a close cousin. The key mark is: credit over time moves backward, from later states to earlier state-action pairs.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near value functions, offline rl, credit assignment. Across the three courses, the shared pattern is credit, search: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In Deep RL, Q-learning is the workhorse for control: you estimate values to make decisions under uncertainty. In LLMs and reasoning (CS224R Deep RL for LLMs), the same pattern appears when optimizing reasoning steps: each step has a value (does it help the final answer?), and you learn to estimate that value. In diffusion and vision, value estimation reappears as a learned score (how much to denoise in this direction?)—a different domain, same credit-over-time logic.</p>
   <p class="chips"><span class="chip muted-chip">value functions</span> <a class="chip" href="offline_rl.html">offline rl</a> <a class="chip" href="credit_assignment.html">credit assignment</a></p>
 </section>
 <section>

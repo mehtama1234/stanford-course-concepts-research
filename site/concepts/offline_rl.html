@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Offline Reinforcement Learning</h1>
-  <p>Learning from logged experience without freely trying new actions during training.</p>
+  <p>Learning to make decisions from a fixed historical record of past actions and their outcomes, without trying new actions yourself.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.</p>
+  <p>A hospital administrator notices her doctors make decisions recorded in patient charts going back ten years. She wants to train a medical assistant to learn from those charts alone, but can&#x27;t let it experiment on live patients. The assistant has only what history provides—no freedom to try a risky treatment just to see what happens.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</p>
+  <p>When you learn from a fixed dataset, you see the world only through the lens of choices someone else already made. You lack proof that actions outside that slice even exist or how they end. Any system trying to learn from history alone must solve this visibility gap: it cannot trust its own guesses about unseen territory.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Offline Reinforcement Learning: The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices. Think of it as the handle the algorithm can grab.</p>
+  <p>The object is the learned *policy*—the rule mapping observations to action choices. In offline RL, we track this policy&#x27;s distance from the data&#x27;s behavior pattern (what we call the *behavior policy* or original action distribution). We also compute a *Q-function*, a table or neural network estimating the long-term value of each action. Both must be shaped by conservatism: the policy shouldn&#x27;t stray far from what the data showed, and the Q-function should down-weight unsupported actions.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The agent can exploit errors in its own value estimates for actions the dataset barely contains.</p>
+  <p>Without handling the visibility problem, a learner confidently overestimates actions it never saw tested. It then picks those actions in the real world, and they fail. Doctors might avoid a drug that actually works because the data&#x27;s small sample made it look bad, or try an untested combo because the algorithm hallucinated it was good.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable.</p>
+  <p>A hospital administrator notices her doctors make decisions recorded in patient charts going back ten years. She wants to train a medical assistant to learn from those charts alone, but can&#x27;t let it experiment on live patients. The assistant has only what history provides—no freedom to try a risky treatment just to see what happens.</p>
   <h2>Why does this problem exist?</h2>
-  <p>The learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice.</p>
+  <p>When you learn from a fixed dataset, you see the world only through the lens of choices someone else already made. You lack proof that actions outside that slice even exist or how they end. Any system trying to learn from history alone must solve this visibility gap: it cannot trust its own guesses about unseen territory.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices.</p>
+  <p>The core mathematics tracks what we call distribution shift—the mismatch between actions in the data and actions the learned policy wants to take. Suppose the dataset mostly shows doctors prescribing Drug A for symptom X, and rarely Drug B. A naive learner might estimate Drug B looks amazing because the few times it was tried it worked—but that few instances could be flukes, contaminated by unmeasured differences in patient state. Conservative methods address this by either penalizing actions the dataset rarely showed (shrinking their estimated value), or constraining the learned policy to stay close to patterns the data actually contains. Mathematically: if action *a* appears in the data with frequency below some threshold, we down-weight estimates for *a* or add a penalty term to suppress choosing it.</p>
   <h2>Why is this concept important?</h2>
-  <p>It lets RL use large historical datasets where online exploration would be expensive or dangerous.</p>
+  <p>Most real-world data sits in storage: medical records, flight logs, user interactions with systems, robot telemetry. Online learning—where an agent tries new things and learns from the outcome—is expensive or dangerous in these domains. Offline RL lets you mine historical value from datasets you already have, without paying the cost of live exploration.</p>
   <h2>What breaks without it?</h2>
-  <p>The agent can exploit errors in its own value estimates for actions the dataset barely contains.</p>
+  <p>Without handling the visibility problem, a learner confidently overestimates actions it never saw tested. It then picks those actions in the real world, and they fail. Doctors might avoid a drug that actually works because the data&#x27;s small sample made it look bad, or try an untested combo because the algorithm hallucinated it was good.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that in medicine, robotics, finance, and deployed systems, unsafe trial and error is not acceptable. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &#x27;I&#x27;ll just run ordinary Q-learning on the logged data, and since I have no live feedback loop, I&#x27;ll freeze the dataset and train until the loss converges.&#x27; This sounds reasonable because ordinary Q-learning has proven itself in many online settings.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because the learner only sees the slice of the world covered by old data, so it must avoid trusting guesses far outside that slice. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>That fails because Q-learning estimates assume you will eventually try many actions and see their true outcomes. In offline mode, you never do. The algorithm bootstraps value estimates from its own earlier guesses about unseen actions, amplifying errors. A single wrong estimate about a rare action can poison the entire learned policy, since nothing will correct it.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Offline Reinforcement Learning: The core lever is distribution shift: the learned policy may choose actions unlike the data. Conservative methods penalize or constrain those unsupported choices. Think of it as the handle the algorithm can grab.</p>
+  <p>The object is the learned *policy*—the rule mapping observations to action choices. In offline RL, we track this policy&#x27;s distance from the data&#x27;s behavior pattern (what we call the *behavior policy* or original action distribution). We also compute a *Q-function*, a table or neural network estimating the long-term value of each action. Both must be shaped by conservatism: the policy shouldn&#x27;t stray far from what the data showed, and the Q-function should down-weight unsupported actions.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Offline Reinforcement Learning, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Read the fixed dataset once. Estimate values for each state-action pair using bootstrapping, but whenever an action is rare in the data, treat its value estimate with suspicion. During policy update, move the new policy only slightly toward better-valued actions, staying anchored to the data&#x27;s behavior distribution. Repeat until convergence—no online loop, no fresh data.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a hospital has logs of treatment decisions, but a learner cannot freely try dangerous new treatments on patients. Offline RL asks what can be learned from the fixed dataset alone. CS224R frames offline reinforcement learning as learning from a dataset that was given to us, not collected by our own policy, and warns that value estimates need coverage over actions resembling the ones being evaluated.</p>
+  <p>A chess club has recordings of 1,000 games by mid-level players. We want an AI to learn from these games without playing new matches. The dataset shows the opening move 1.e4 (pawn to e4) happens in 600 games, while 1.d4 (pawn to d4) happens in 350, and 1.f4 (flank opening) in 50. A naive learner might guess 1.f4 is best because it led to the fewest losses in the small sample—unlucky selection bias. Offline RL solves this by saying: only trust estimates for moves the dataset showed frequently. Since 1.f4 is rare, we penalize the AI for picking it. The AI learns a policy close to what the data demonstrated (mostly 1.e4 and 1.d4), which generalizes better than chasing a rare move&#x27;s statistical noise.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The offline RL lecture emphasizes dataset coverage as the central constraint. If the learned policy chooses actions very different from the old policies that produced the dataset, Q-function labels may be inaccurate. That is why offline RL is not simply ordinary RL with a saved file. The absence of live exploration changes what estimates are trustworthy.</p>
+  <p>CS224R&#x27;s offline RL lecture stresses that *dataset coverage* is the bottleneck. The Q-function&#x27;s estimates are only reliable for state-action pairs the data actually explored. If your learned policy wants to take actions the dataset barely contains, you have no ground truth to judge those choices—you&#x27;re betting on interpolation or extrapolation from thin evidence. This is why offline RL is not &#x27;ordinary RL run on a frozen file.&#x27; The absence of online exploration fundamentally changes which estimates are trustworthy.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that more logged data automatically solves offline RL. Coverage matters more than size alone. A huge dataset can still be weak evidence for actions it rarely or never contains, and a learned policy can exploit those blind spots.</p>
+  <p>Many assume: &#x27;If I have a huge offline dataset, the problem is solved.&#x27; False. A 1-million-row dataset could still omit entire classes of actions, leaving blind spots. Coverage—the diversity of state-action combinations in the data—matters far more than raw size. A small, diverse dataset beats a large, narrow one.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize offline RL whenever the agent learns from a fixed replay buffer, demonstrations, historical logs, or behavior-policy data without online trial and error. Look for terms like coverage, distribution shift, conservative Q-learning, behavior regularization, or out-of-distribution actions. The shared primitive is uncertainty under missing experience.</p>
+  <p>Look for these signals in a new paper: learning from fixed logs or historical data without live interaction; terms like &#x27;behavior regularization,&#x27; &#x27;conservative Q-learning,&#x27; &#x27;distribution shift,&#x27; &#x27;out-of-distribution actions,&#x27; or &#x27;coverage constraint&#x27;; warnings that value estimates degrade for rare actions; reward learning or imitation from demonstrations where the agent can&#x27;t query the human for new labels. All point to the same core: uncertainty from missing experience.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near q learning, generalization, evaluation. Across the three courses, the shared pattern is uncertainty, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In CS224R, offline RL builds on Q-learning and value estimation but flips the feedback assumption—no online loop. In the diffusion course, similar ideas about staying close to a data distribution appear in guidance and classifier-free techniques (guiding generation toward observed modes). In transformers, instruction-finetuning from fixed demonstrations mirrors the offline setting: you shape a model from logged interactions, not live user feedback.</p>
   <p class="chips"><a class="chip" href="q_learning.html">q learning</a> <a class="chip" href="generalization.html">generalization</a> <a class="chip" href="evaluation.html">evaluation</a></p>
 </section>
 <section>

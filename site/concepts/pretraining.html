@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">learning from feedback</p>
   <h1>Pretraining</h1>
-  <p>Large-scale practice before the model is asked to be useful in a specific way.</p>
+  <p>Learning broad patterns from massive amounts of unlabeled data before teaching the model to do anything specific.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.</p>
+  <p>You want to teach someone a skill, but good instructors are rare and expensive. However, raw examples of the skill in action are everywhere—books, videos, conversations. Someone who reads thousands of books absorbs patterns long before being taught explicitly.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</p>
+  <p>A learner faces two constraints: good labeled data is rare, but patterns in raw data are free. Any system smart enough to extract patterns from raw examples before seeing labeled ones will need less labeled data later. That&#x27;s a practical necessity, not a choice.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Pretraining: Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete object is the model&#x27;s internal numbers, called weights or parameters—a massive table of numbers (billions for large models) that can be adjusted during training. Each weight contributes a tiny piece to the final prediction. The model reorganizes these numbers to minimize the loss, sculpting them to capture patterns in the data.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.</p>
+  <p>Every new task would need its own large hand-labeled dataset. Models would memorize narrow task-specific behavior from scratch, unable to transfer learning across domains. You&#x27;d need vastly more labeled data and much more compute for each new application.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.</p>
+  <p>You want to teach someone a skill, but good instructors are rare and expensive. However, raw examples of the skill in action are everywhere—books, videos, conversations. Someone who reads thousands of books absorbs patterns long before being taught explicitly.</p>
   <h2>Why does this problem exist?</h2>
-  <p>A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</p>
+  <p>A learner faces two constraints: good labeled data is rare, but patterns in raw data are free. Any system smart enough to extract patterns from raw examples before seeing labeled ones will need less labeled data later. That&#x27;s a practical necessity, not a choice.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</p>
+  <p>The model learns by reducing a loss—a number that measures how wrong or surprised the model was about what came next. When you predict the next word in a sentence and it&#x27;s wrong, the loss is high; when you&#x27;re right, it&#x27;s low. The model adjusts its internal knobs (weights) to make this number smaller. Mathematically, you compute the average loss over millions of examples, then use calculus to find which direction each knob should turn. The reason this works is that patterns in language show up repeatedly—if you practice predicting &#x27;next word&#x27; across billions of examples, you absorb structure like grammar, facts, and reasoning shortcuts without anyone telling you what they are.</p>
   <h2>Why is this concept important?</h2>
-  <p>It creates broad reusable knowledge that later tuning can steer.</p>
+  <p>Pretraining builds a foundation of broad competence. The model learns what&#x27;s possible in the domain (language, images, video) before being tuned for a specific task. This reusable knowledge means downstream tuning can work with far less labeled data and learns faster.</p>
   <h2>What breaks without it?</h2>
-  <p>Every task would need its own large hand-labeled dataset, and models would learn narrow behavior from scratch.</p>
+  <p>Every new task would need its own large hand-labeled dataset. Models would memorize narrow task-specific behavior from scratch, unable to transfer learning across domains. You&#x27;d need vastly more labeled data and much more compute for each new application.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might hope to solve this by writing rules (if noun then expect verb next), or by hand-crafting features. That works for a hundred examples but completely breaks on the messy complexity of real language or vision—too many exceptions, too many patterns to hand-engineer.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because a learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Rule-based systems fail because language is far too irregular—every rule has exceptions. Hand-crafted features freeze what the system can learn—a human has to guess which patterns matter before seeing the data. The model has no way to discover novel patterns or adapt when the data shifts.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Pretraining: Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete object is the model&#x27;s internal numbers, called weights or parameters—a massive table of numbers (billions for large models) that can be adjusted during training. Each weight contributes a tiny piece to the final prediction. The model reorganizes these numbers to minimize the loss, sculpting them to capture patterns in the data.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Pretraining, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Start with a model that has random initial weights. Feed it text or images from massive datasets, one example at a time. For each example, compute the loss—how wrong was the prediction. Use calculus to calculate which direction each weight should move to reduce that loss. Adjust all weights slightly in that direction. Repeat billions of times across different data until the loss stops dropping noticeably.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: before becoming a helpful assistant, a language model spends massive compute learning to autocomplete text and code. CME295 says pretraining teaches the model the structure of language and code at large scale, but the result is still only a next-token predictor. That distinction is the point: pretraining creates broad competence by repeated prediction, while later tuning changes how that competence is used.</p>
+  <p>Imagine pretraining a language model on Wikipedia text. Show it &#x27;The cat sat on the _____&#x27; and it guesses &#x27;sky&#x27;. The loss is high because the next word is &#x27;mat&#x27;. The model adjusts its weights to favor &#x27;mat&#x27; over &#x27;sky&#x27; in this context. After seeing millions of sentences where the pattern is &#x27;noun sat on concrete-object&#x27;, the weights gradually encode that pattern. By the end of pretraining, the model predicts next tokens well—it&#x27;s a good autocompleter. But it hasn&#x27;t been told what &#x27;helpful&#x27; means yet. That comes in the next stage, called fine-tuning.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The tuning lecture emphasizes pretraining as the compute-heavy first stage. It happens on a lot of data, requires parallel training systems, and produces a model that knows patterns in text and code but is not yet helpful. This frames pretraining as broad practice, not final behavior.</p>
+  <p>The lecture frames pretraining as the compute-heavy first stage that consumes massive text and code datasets to teach the model the structure of language. The result is a model that predicts the next token accurately—a strong autocompleter. The lecturer explicitly notes that pretraining alone does not create a helpful assistant; it creates knowledge without alignment. That distinction matters: pretraining builds competence, but later stages add direction.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that pretraining alone creates an assistant. The lecture explicitly separates knowing how to autocomplete from behaving helpfully. Without later fine-tuning or preference tuning, the model may be knowledgeable and fluent but not aligned to the user&#x27;s task.</p>
+  <p>Many people assume pretraining alone creates an AI assistant. The lecture corrects this: pretraining produces a model that knows language and code structure, but has no notion of being helpful, honest, or harmless. Without fine-tuning toward preferred behavior, the model autocompletes whatever patterns it saw—which may be wrong, biased, or harmful. Pretraining is preparation, not the final product.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize pretraining when a large model learns from abundant raw data through a general prediction or reconstruction task before downstream adaptation. The method may be next-token prediction, masked prediction, denoising, contrastive pretraining, or self-supervised learning. The shared primitive is practice from cheap feedback.</p>
+  <p>Look for pretraining whenever a paper or system describes a model learning from abundant raw data through a general prediction task—next-token prediction, masked language prediction (guessing hidden words in a sentence), image-to-image denoising, contrastive learning (learning similarity between examples without labels), or self-supervised reconstruction. The common thread is practice from cheap, abundant feedback before specialization.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near fine tuning, scaling laws, generalization. Across the three courses, the shared pattern is feedback, scale: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In CME295 (Transformers/LLMs), pretraining is the foundation before fine-tuning. In CME296 (Diffusion/Vision), the same pattern appears as diffusion models learning to denoise images from pure random noise before being conditioned for a specific task. In CS224R (Deep RL), agents explore and practice on reward-free environments before being shaped toward a goal. Across all three, the principle is: practice on abundant raw signal first, then direct the learned competence toward specific behavior.</p>
   <p class="chips"><a class="chip" href="fine_tuning.html">fine tuning</a> <a class="chip" href="scaling_laws.html">scaling laws</a> <a class="chip" href="generalization.html">generalization</a></p>
 </section>
 <section>

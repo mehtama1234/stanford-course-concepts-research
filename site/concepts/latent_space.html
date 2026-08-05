@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">generative paths</p>
   <h1>Latent Space</h1>
-  <p>A compressed internal space where generation or prediction can happen more cheaply.</p>
+  <p>A smaller, learned coordinate system where the model stores and manipulates the essential information in data instead of dealing with raw pixels or tokens.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that pixels and long sequences are expensive and full of surface detail.</p>
+  <p>Imagine your friend describes a photo they saw but only talks about the main subject, lighting, and mood—not every single pixel value. Their brain naturally compressed the image into what mattered. When a computer tries to work directly with all pixel values or token sequences, it drowns in irrelevant detail and wastes energy.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>If the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.</p>
+  <p>Any system working with high-dimensional data faces a scaling wall: storing and processing every raw feature costs computation, and most of it is noise or redundancy. If you can find a smaller set of features that preserves the essential structure, the system can learn faster and generate more cheaply. This is a brute-force economic argument: do the expensive work once (learning what matters), then work in a smaller space forever.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Latent Space: An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail. Think of it as the handle the algorithm can grab.</p>
+  <p>The encoder is a neural network (a stack of layers) whose weights are tuned so that its outputs z capture variation in x along meaningful directions. You could inspect a latent vector z and see (in principle) which dimensions encode color, pose, size, or semantic category. The decoder is a second neural network that inverts this mapping.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Generation and planning may become too expensive at raw resolution.</p>
+  <p>If the model tries to generate or plan directly at pixel or token resolution, each step becomes prohibitively slow, sampling becomes infeasible, and the model wastes capacity learning surface-level details instead of the relationships that matter.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that pixels and long sequences are expensive and full of surface detail.</p>
+  <p>Imagine your friend describes a photo they saw but only talks about the main subject, lighting, and mood—not every single pixel value. Their brain naturally compressed the image into what mattered. When a computer tries to work directly with all pixel values or token sequences, it drowns in irrelevant detail and wastes energy.</p>
   <h2>Why does this problem exist?</h2>
-  <p>If the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail.</p>
+  <p>Any system working with high-dimensional data faces a scaling wall: storing and processing every raw feature costs computation, and most of it is noise or redundancy. If you can find a smaller set of features that preserves the essential structure, the system can learn faster and generate more cheaply. This is a brute-force economic argument: do the expensive work once (learning what matters), then work in a smaller space forever.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail.</p>
+  <p>An encoder is a learnable function that takes raw data (an image, text) and maps it to a lower-dimensional vector, capturing only the essential variation. A decoder reverses this: it takes the compressed vector and reconstructs the original (or something like it). Mathematically, if x is the raw data and z is the latent representation, the encoder computes z = f(x) and the decoder computes x_reconstructed = g(z). The trick is choosing a function f such that important patterns in x are spread across the dimensions of z, while noise and surface detail are either discarded or pushed into a noise variable. This is why autoencoders work: they force the bottleneck (the z layer) to become selective about what it keeps.</p>
   <h2>Why is this concept important?</h2>
-  <p>Latent spaces make large vision generation faster and connect images, text, and actions through shared coordinates.</p>
+  <p>Working in latent space reduces compute cost by 10–100× because the space is smaller. This unlocks fast image generation, quick planning in robotics, and connecting different modalities (images, text, robot actions) through shared compressed representations.</p>
   <h2>What breaks without it?</h2>
-  <p>Generation and planning may become too expensive at raw resolution.</p>
+  <p>If the model tries to generate or plan directly at pixel or token resolution, each step becomes prohibitively slow, sampling becomes infeasible, and the model wastes capacity learning surface-level details instead of the relationships that matter.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that pixels and long sequences are expensive and full of surface detail. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: why not just throw away half the pixel values randomly or apply a fixed rule like averaging nearby pixels? This would shrink the data, so it should be faster.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because if the model can work in a smaller space that preserves meaning, it can spend computation on structure instead of every raw detail. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Random deletion destroys semantic content: dropping pixels can cut off a face or distort boundaries. Fixed averaging loses sharp edges and fine details the model might need. Neither approach learns what to keep; they just guess, so downstream tasks fail. A learned encoder, by contrast, can discard irrelevant variation while preserving structure.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Latent Space: An encoder maps data into a smaller vector space, and a decoder maps it back. The useful trick is preserving important variation while discarding nuisance detail. Think of it as the handle the algorithm can grab.</p>
+  <p>The encoder is a neural network (a stack of layers) whose weights are tuned so that its outputs z capture variation in x along meaningful directions. You could inspect a latent vector z and see (in principle) which dimensions encode color, pose, size, or semantic category. The decoder is a second neural network that inverts this mapping.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Latent Space, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Feed the raw input (image, sequence) into the encoder; it produces a small vector z. Use that vector for downstream tasks (generation, planning, classification). When you want to see the original, pass z through the decoder. The model learns both the encoder and decoder jointly so that z becomes a useful middle ground.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a full image in pixel space stores every red, green, and blue value. That is expensive and often too literal. CME296&#x27;s latent-space lecture asks for a space that keeps perceptually meaningful information while reducing dimensionality. The autoencoder attempt is concrete: an encoder compresses an image into a smaller latent representation, and a decoder tries to reconstruct the original. If reconstruction keeps the important content, later diffusion can operate in the smaller latent space instead of raw pixels.</p>
+  <p>A photo is 256×256 pixels in RGB, so 256×256×3 = 196,608 numbers. An encoder might reduce this to a latent vector of, say, 1,024 numbers. A decoder must reconstruct the photo from those 1,024 numbers. During training, if the decoder produces a blurry or wrong image, the encoder learns to send better clues through its 1,024 outputs. After training, that 1,024-dimensional space captures &#x27;this is a face, facing right, with warm lighting.&#x27; Later, a diffusion model can sample in this compressed space 196 times faster than at pixel resolution, adding structured noise iteratively in the learned coordinates.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The latent-space lecture emphasizes the distinction between pixel-level detail and perceptual similarity. It motivates an encoder-decoder architecture by asking for a lower-dimensional representation that can still recover the image. This is not compression for storage alone; it is compression for generative modeling, where the model needs a cheaper and more meaningful space to move through.</p>
+  <p>CME296 emphasizes that latent space is not a neat semantic grid—it is shaped by the training objective. An autoencoder tuned for reconstruction will preserve detail. One tuned for perceptual similarity will ignore texture noise. The point is to choose a space cheaper than pixels but richer than a class label, so the model has room to learn structure. The encoder-decoder bottleneck forces compression; the decoder forces that compression to remain reversible.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that a latent space is automatically a clean semantic map. It is learned for an objective. If the objective rewards reconstruction, the space may preserve details that help reconstruction while hiding other human-meaningful factors. A useful latent space is therefore judged by what downstream generation or editing can do with it.</p>
+  <p>People often assume a latent space automatically organizes into interpretable dimensions: &#x27;dimension 3 is size, dimension 5 is pose.&#x27; This almost never happens by accident. A latent space is shaped by its loss function. If the loss only rewards reconstruction accuracy, disentangled factors like pose and color will be tangled together. A useful latent space emerges from a careful choice of what you are optimizing for.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize latent-space reasoning when raw high-dimensional data is encoded into a smaller internal representation before modeling, sampling, or control. The method may mention VAE, autoencoder, latent diffusion, compressed representation, encoder-decoder, or bottleneck. The shared primitive is compression with recovery: keep enough structure to act, generate, or reconstruct.</p>
+  <p>Look for mention of VAE (variational autoencoder), autoencoder, latent diffusion, bottleneck, or &#x27;compressed representation.&#x27; Papers may say &#x27;we encode the input into a lower-dimensional space&#x27; or &#x27;the model operates on a latent code z rather than raw pixels.&#x27; The pattern is always: raw data → encoder → small vector → decoder or downstream task → output.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near embeddings, diffusion, compression. Across the three courses, the shared pattern is compression, geometry: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Embeddings (in Transformers) are a similar idea: map tokens to a learned vector space. In RL (CS224R), state representation plays the same role: compress the observation into features the policy can act on. Diffusion (CME296) builds its core denoising loop in latent space to save compute. All three courses lean on the same principle: find the right compression, and learning becomes tractable.</p>
   <p class="chips"><a class="chip" href="embeddings.html">embeddings</a> <a class="chip" href="diffusion.html">diffusion</a> <span class="chip muted-chip">compression</span></p>
 </section>
 <section>

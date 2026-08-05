@@ -5,7 +5,7 @@ This audit is a static editorial pass over the generated research artifacts and 
 ## Summary
 
 - Concepts audited: 28
-- Concept teaching words: min 483, max 710
+- Concept teaching words: min 703, max 1168
 - Reviewed evidence per concept: min 2, max 6
 - Theme treatment words: min 194, max 259
 - Subtheme treatment words: min 262, max 292
@@ -15,16 +15,16 @@ This audit is a static editorial pass over the generated research artifacts and 
 
 ## Lowest Concept Depth
 
-- exploration: 483 teaching words, 5 reviewed evidence records
-- model_based_rl: 493 teaching words, 5 reviewed evidence records
-- evaluation: 495 teaching words, 5 reviewed evidence records
-- generalization: 523 teaching words, 3 reviewed evidence records
-- fine_tuning: 526 teaching words, 2 reviewed evidence records
-- scaling_laws: 526 teaching words, 2 reviewed evidence records
-- credit_assignment: 528 teaching words, 2 reviewed evidence records
-- agents_and_tools: 530 teaching words, 2 reviewed evidence records
-- pretraining: 531 teaching words, 2 reviewed evidence records
-- vision_transformers: 532 teaching words, 2 reviewed evidence records
+- flow_matching: 703 teaching words, 5 reviewed evidence records
+- policy_gradient: 747 teaching words, 4 reviewed evidence records
+- tokenization: 779 teaching words, 2 reviewed evidence records
+- rl_for_llms: 856 teaching words, 2 reviewed evidence records
+- reasoning_traces: 858 teaching words, 2 reviewed evidence records
+- score_matching: 863 teaching words, 4 reviewed evidence records
+- diffusion: 864 teaching words, 5 reviewed evidence records
+- pretraining: 866 teaching words, 2 reviewed evidence records
+- reward: 870 teaching words, 2 reviewed evidence records
+- latent_space: 875 teaching words, 4 reviewed evidence records
 
 ## Errors
 
