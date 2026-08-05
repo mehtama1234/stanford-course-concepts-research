@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Credit Assignment</h1>
-  <p>Figuring out which earlier choices caused a later success or failure.</p>
+  <p>Tracing backward through time to figure out which specific earlier decision caused a later outcome, good or bad.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that the important mistake may happen long before the bad outcome appears.</p>
+  <p>You bake a cake that comes out burnt. The mistake wasn&#x27;t adding the wrong ingredient five minutes ago—it was setting the oven temperature wrong an hour before. By the time you see the burnt cake, the real culprit is buried in history. How do you know which step to fix next time?</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.</p>
+  <p>Outcomes have memory. When something happens now, it&#x27;s the result of a chain of choices stretching back in time. If you only blame or praise the last step, you miss the real causes. Any system that learns from delayed feedback must have a way to ask: which earlier decision actually mattered?</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Credit Assignment: Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions. Think of it as the handle the algorithm can grab.</p>
+  <p>A table or function that stores the discounted return—the weighted sum of all future rewards—for each state or state-action pair the learner encounters. As the learner experiences a sequence of choices and outcomes, it fills in this table: for state S, action A at time t, the entry is R_t = r_t + γ·r_{t+1} + γ²·r_{t+2} + ... This table is what the learner actually uses to decide which states or actions are valuable. It&#x27;s the concrete artifact that captures the backward-tracing logic.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The system overreacts to the last action or misses the earlier decision that mattered.</p>
+  <p>The system blames the last action for everything, even when the real mistake happened much earlier. It overreacts to noise right before the outcome and ignores the crucial decision that actually shaped the result. Plans collapse because there&#x27;s no way to learn which long-range choice matters.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that the important mistake may happen long before the bad outcome appears.</p>
+  <p>You bake a cake that comes out burnt. The mistake wasn&#x27;t adding the wrong ingredient five minutes ago—it was setting the oven temperature wrong an hour before. By the time you see the burnt cake, the real culprit is buried in history. How do you know which step to fix next time?</p>
   <h2>Why does this problem exist?</h2>
-  <p>Time hides causes. A learner needs a way to connect delayed feedback back to the decisions that shaped it.</p>
+  <p>Outcomes have memory. When something happens now, it&#x27;s the result of a chain of choices stretching back in time. If you only blame or praise the last step, you miss the real causes. Any system that learns from delayed feedback must have a way to ask: which earlier decision actually mattered?</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions.</p>
+  <p>We use a discount factor—a number slightly less than 1, like 0.99—that we apply more heavily to rewards far in the future and less heavily to rewards soon. The return (total sum of future rewards) is calculated as: R_t = r_t + γ·r_{t+1} + γ²·r_{t+2} + ..., where r is the immediate reward at each step, γ (gamma) is the discount factor, and the power of γ grows with each step into the future. This formula weights recent rewards more (because γ^0 = 1, γ^1 = 0.99, γ^2 = 0.9801...). The discount factor serves two purposes: it mathematically shrinks distant rewards so learning focuses on nearby causes, and it reflects real-world intuition—a reward today matters more than a reward next year. Without discounting, we&#x27;d sum infinite rewards and get infinity; with it, we get a finite number we can actually learn from.</p>
   <h2>Why is this concept important?</h2>
-  <p>It makes long-horizon learning possible in games, robotics, dialogue, and reasoning.</p>
+  <p>Long-horizon tasks—cooking a meal, writing code, playing chess—only work if the learner can connect what happens at the end back to choices made twenty steps, a hundred steps, or years earlier. Games, robotics, and dialogue all require this. Without credit assignment, a learner stuck at each step, unable to improve plans that span time.</p>
   <h2>What breaks without it?</h2>
-  <p>The system overreacts to the last action or misses the earlier decision that mattered.</p>
+  <p>The system blames the last action for everything, even when the real mistake happened much earlier. It overreacts to noise right before the outcome and ignores the crucial decision that actually shaped the result. Plans collapse because there&#x27;s no way to learn which long-range choice matters.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that the important mistake may happen long before the bad outcome appears. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: just look at every past action and its immediate reward. If an action directly caused a reward, increase it; if it caused a penalty, decrease it. This works fine if rewards come immediately. But in real tasks, rewards are sparse—they arrive long after the action that mattered.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because time hides causes. a learner needs a way to connect delayed feedback back to the decisions that shaped it. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>This naive method fails the moment reward is delayed. A robot takes action A at step 1, then waits 50 steps, and finally gets a reward at step 51. The naive learner has no signal connecting step 1 to step 51. It only sees the last few actions before the reward and adjusts those. So it never learns that action A at step 1 was crucial. The system gets stuck improving only the immediate context, missing the real pattern.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Credit Assignment: Discounted return gives later rewards less weight as they are traced backward. The exact formula varies, but the principle is to spread delayed feedback across earlier actions. Think of it as the handle the algorithm can grab.</p>
+  <p>A table or function that stores the discounted return—the weighted sum of all future rewards—for each state or state-action pair the learner encounters. As the learner experiences a sequence of choices and outcomes, it fills in this table: for state S, action A at time t, the entry is R_t = r_t + γ·r_{t+1} + γ²·r_{t+2} + ... This table is what the learner actually uses to decide which states or actions are valuable. It&#x27;s the concrete artifact that captures the backward-tracing logic.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Credit Assignment, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>At each step in time, the learner observes its current state and picks an action. After taking that action, it receives an immediate reward and moves to the next state. Once an episode ends, the learner walks backward through the sequence: starting from the final reward, it computes the return by multiplying each prior reward by the discount factor, raised to the power of how many steps ago it was. It then updates its table of discounted returns using these computed values. On the next run through the same sequence, actions with higher discounted returns are more likely to be chosen.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a robot fails to cook a meal because it forgot to turn on the stove ten steps earlier. The bad final result is visible, but the responsible decision happened long before. CS224R introduces long-horizon tasks such as cooking a meal and hard math problems as core motivations for deep RL. Discounted return and reward representations are the mathematical handles that let later outcomes influence earlier decisions.</p>
+  <p>A robot learns to stack three blocks. At step 1, it picks up block A (no reward yet). At step 2, it positions block B (no reward yet). At step 3, it places block A on B correctly (no reward yet). At step 4, it places block C on top (goal reached, reward = +10). In the naive view, step 4 gets all the credit. But with discounting: R_4 = 10. R_3 = 0 + 0.99·(10) = 9.9. R_2 = 0 + 0.99·(9.9) = 9.801. R_1 = 0 + 0.99·(9.801) = 9.7. Now steps 1, 2, and 3 each have a small positive return, reflecting that they were part of the successful path. On the next attempt, the learner is more likely to repeat the early steps that set up the win.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>CS224R repeatedly emphasizes that reinforcement learning is hard because reward can be delayed, sparse, or difficult to define. The course introduction discusses long-horizon tasks, robot practice, and reward learning; the Q-learning material then gives return and discount factors as tools for connecting future reward back to earlier state-action choices.</p>
+  <p>CS224R opens by stressing that reinforcement learning is fundamentally hard because reward is delayed, sparse, or poorly defined. The course introduces long-horizon tasks like robotics and math problems where success comes many steps after the pivotal decision. When covering Q-learning and returns, the lecture emphasizes that discount factors—numbers less than 1—are the mathematical tool that let you trace future outcomes backward to earlier choices, weighting recent consequences more heavily so learning stays grounded in reality.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that credit assignment only means giving credit to the last action before reward. That is usually the wrong answer. The important cause may be much earlier, and the learner needs a principled way to spread later feedback backward through the trajectory.</p>
+  <p>Many people think credit assignment means: award the most credit to the action right before the reward appears. That&#x27;s almost always wrong. The action right before the reward might be unimportant; the real driver could be ten steps earlier. Credit assignment spreads responsibility backward through time via the discount factor, not to the last action.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize credit assignment whenever success or failure at the end of a sequence must change earlier choices. Terms such as return, advantage, temporal-difference error, discount factor, process reward, trajectory, or delayed reward usually indicate the same primitive: trace consequences backward through time.</p>
+  <p>When reading a paper or system, look for credit assignment whenever outcomes are delayed or sequences are long. Terms like return, discount factor, temporal-difference error, advantage function, process reward, or trajectory usually indicate credit assignment machinery. Even if the paper doesn&#x27;t name it explicitly, if it&#x27;s tracing consequences backward through time to improve earlier choices, that&#x27;s credit assignment.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near attention, q learning, actor critic. Across the three courses, the shared pattern is credit, assignment: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In Transformers and LLMs, attention solves a similar question: which earlier tokens matter for predicting this position? In diffusion, the noise prediction task asks: which earlier denoising steps caused this noise pattern? In Deep RL, credit assignment asks: which earlier actions caused this outcome? The deep pattern is the same—learn what in the past shaped what&#x27;s happening now.</p>
   <p class="chips"><a class="chip" href="attention.html">attention</a> <a class="chip" href="q_learning.html">q learning</a> <a class="chip" href="actor_critic.html">actor critic</a></p>
 </section>
 <section>

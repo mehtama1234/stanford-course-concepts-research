@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">measurement limits</p>
   <h1>Generalization</h1>
-  <p>Doing well on new cases, not only remembered examples.</p>
+  <p>Performing well on new cases you&#x27;ve never seen before, not just the ones you trained on.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that a model can learn shortcuts that work in training but fail in the real world.</p>
+  <p>You memorize every question and answer in a practice test the night before an exam. Tomorrow, the real exam has different questions. You freeze because you learned the *answers*, not how to *solve*. Your memorized knowledge won&#x27;t transfer to anything new.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.</p>
+  <p>Any learner faces a hard fact: the past is only a sample. You train on some examples, but real life will throw new cases at you. If your learning just memorizes accident details in the training examples, it breaks when those accidents change. The only way forward is to extract stable structure—the patterns that stay true across both old and new cases.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Generalization: Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample. Think of it as the handle the algorithm can grab.</p>
+  <p>The thing we manipulate is the learned parameters—weights in a neural network, coefficients in a regression model, the hidden decision boundaries. These are the knobs that change during learning. We track two separate error measurements on two separate data sets: training error (how wrong predictions are on examples the model saw) and test error (how wrong predictions are on new examples it never saw).</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Benchmarks and demos stop predicting real deployment behavior.</p>
+  <p>Benchmarks and test results lie. A model can score perfectly on every benchmark yet fail catastrophically in the real world. You ship code confident it works, then users encounter cases you never saw, and everything breaks.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that a model can learn shortcuts that work in training but fail in the real world.</p>
+  <p>You memorize every question and answer in a practice test the night before an exam. Tomorrow, the real exam has different questions. You freeze because you learned the *answers*, not how to *solve*. Your memorized knowledge won&#x27;t transfer to anything new.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Past data is only a sample of future situations. Learning must capture stable structure rather than accidental details.</p>
+  <p>Any learner faces a hard fact: the past is only a sample. You train on some examples, but real life will throw new cases at you. If your learning just memorizes accident details in the training examples, it breaks when those accidents change. The only way forward is to extract stable structure—the patterns that stay true across both old and new cases.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample.</p>
+  <p>Generalization measures the gap between training error (mistakes on examples you learned from) and test error (mistakes on completely new examples). Formally, we want to minimize test error, but we only observe training error. The gap widens when a model latches onto noise or spurious patterns unique to the training set. Why does this matter mathematically? Because the true goal—performing well in the world—is actually the test error, not training error. We use regularization (adding a penalty term to the loss function that discourages overly complex solutions) and data splitting (training on one subset, validating on another, testing on a held-out third) to estimate whether a model captures reusable structure or just fits accidents.</p>
   <h2>Why is this concept important?</h2>
-  <p>It is the difference between memorization and useful competence.</p>
+  <p>Without good generalization, your trained model is useless in practice. A chatbot that perfectly memorizes training conversations but fails on novel prompts, or a medical classifier that works only on images from a single hospital—these don&#x27;t solve real problems. Generalization is what turns a training result into a deployable system.</p>
   <h2>What breaks without it?</h2>
-  <p>Benchmarks and demos stop predicting real deployment behavior.</p>
+  <p>Benchmarks and test results lie. A model can score perfectly on every benchmark yet fail catastrophically in the real world. You ship code confident it works, then users encounter cases you never saw, and everything breaks.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that a model can learn shortcuts that work in training but fail in the real world. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner&#x27;s first instinct: use a lookup table. Store every training example and its label, then for any new input, search for the closest match and copy its answer. Simple, right? It works perfectly on training data.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because past data is only a sample of future situations. learning must capture stable structure rather than accidental details. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>A lookup table fails the moment you encounter anything truly new. Even a tiny variation—a different camera angle, a paraphrase of a question, a slightly different tone—breaks the match. Worst, a lookup table has no way to *combine* knowledge: it treats every case in isolation. When training data is finite (always), lookup fails on anything outside the memorized set.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Generalization: Generalization is the gap between training behavior and behavior on unseen data or environments. Smaller gaps usually mean the learned rule is less tied to accidents of the sample. Think of it as the handle the algorithm can grab.</p>
+  <p>The thing we manipulate is the learned parameters—weights in a neural network, coefficients in a regression model, the hidden decision boundaries. These are the knobs that change during learning. We track two separate error measurements on two separate data sets: training error (how wrong predictions are on examples the model saw) and test error (how wrong predictions are on new examples it never saw).</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Generalization, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Split your data into three groups: training set (learn from this), validation set (tune your approach on this), test set (measure final performance on this, only once, at the end). Train the model on the training set, checking performance on validation to catch when the model starts fitting noise rather than signal. Finally, run the model once on the held-out test set to see the honest error rate on truly new data.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a model trained on reference math solutions may learn to imitate the style of solutions without reliably solving new problems. CS224R&#x27;s RL-for-reasoning lecture uses math exam solutions to discuss conventional next-token training and asks why that works in the first place. Generalization is the question hiding underneath: did the learner capture a reusable problem-solving structure, or only patterns in the training examples?</p>
+  <p>A language model learns from millions of math problem solutions, seeing phrases like &#x27;let x equal&#x27; paired with equation setups. Two things could happen: (1) the model learns the *reasoning pattern* (when you see a constraint, set up an equation), or (2) it memorizes that specific phrasing always precedes a specific equation form. On training, both look identical. On a new test problem with different phrasing (&#x27;suppose x is&#x27;) or a novel equation type, the memorizing model fails while the reasoning model adapts. The generalization question is: did we learn the pattern or the accident?</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The strongest corpus evidence for generalization is distributed rather than concentrated in one lecture. LLM training discusses train/test style measurement, reasoning lectures discuss new math problems, RL lectures discuss transfer and new tasks, and diffusion lectures discuss evaluation and overfitting. The theme is that performance must survive new cases, not only replay familiar data.</p>
+  <p>Across the three Stanford courses, the instructors emphasize train/validation/test splits as the practical guard against overfitting. CME295 walks through the three-way split explicitly. CS224R uses new math problems to ask whether RL-for-reasoning actually learns reusable problem-solving. CME296 stresses preventing overfitting during diffusion model training. The shared message: measure performance on held-out cases, not only examples you trained on.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that low training loss proves generalization. It proves the model fit the training signal. Generalization requires behavior on held-out or shifted cases, and it can fail when the model learns shortcuts that match the training data but not the real task.</p>
+  <p>Low training loss feels like proof of success—the model fits the data! But that proves only that the model learned *something* about the training set, not that it learned *the right thing*. A model can achieve perfect training loss while failing on new data. The real proof of generalization is held-out performance that stays strong.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize generalization whenever authors test on held-out data, new tasks, changed environments, new prompts, out-of-distribution cases, or transfer settings. The shared primitive is invariance: learn what should stay true when surface details change.</p>
+  <p>In papers and systems, generalization appears whenever authors report two error numbers: one on familiar data (train/validation) and one on held-out or shifted data (test, out-of-distribution, zero-shot). Look for discussions of domain shift (does it work in a new hospital or language?), transfer to new tasks (do learned skills transfer to related problems?), or robustness (does performance survive perturbations or adversarial cases?). The unifying thread is always: can the learned structure handle cases that are *not* in the training set?</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near evaluation, offline rl, invariance. Across the three courses, the shared pattern is invariance, uncertainty: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Generalization connects to evaluation (you need proper test sets to measure it), offline reinforcement learning (learning policies that work in new environments without online trial), and invariance (finding patterns that survive changes in irrelevant details). Across all three courses, the core principle is the same: extract what matters, ignore what doesn&#x27;t, so learning transfers beyond the immediate training context.</p>
   <p class="chips"><a class="chip" href="evaluation.html">evaluation</a> <a class="chip" href="offline_rl.html">offline rl</a> <span class="chip muted-chip">invariance</span></p>
 </section>
 <section>

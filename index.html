@@ -47,11 +47,11 @@
 <article class="concept-card" id="tokenization">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/tokenization.html">Tokenization</a></h3>
-  <p class="definition">Turning text into reusable pieces a model can count.</p>
+  <p class="definition">Converting text into a list of numbered pieces that a machine can process.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that a model cannot read raw text as meaning; it first needs stable pieces that can be given numbers.</dd>
-    <dt>First-Principles Reason</dt><dd>Computation needs finite symbols. Human language is open-ended, so the first constraint is to choose a manageable set of chunks that can cover new text.</dd>
-    <dt>Math Underneath</dt><dd>A tokenizer is a mapping from a string to a sequence of IDs. The important idea is not the IDs themselves; it is that variable language becomes a sequence with a fixed vocabulary.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you want to teach a foreigner English by showing them a book, but they can only learn 10,000 chunks at a time. If you teach them individual letters, they&#x27;ll need to learn rules for combining them forever. If you teach them whole words, they&#x27;ll trip over &#x27;unbelievably&#x27; every time they see it because you taught them only &#x27;believe&#x27;. You need chunks that reuse across words.</dd>
+    <dt>First-Principles Reason</dt><dd>Computers cannot digest raw text the way you read it. They need to turn language into a sequence of numbers. But language is endless—new words, names, and spellings arrive constantly. So you must choose a fixed vocabulary (usually 30,000–50,000 items) that works as a universal building set. That vocabulary is your tokenizer.</dd>
+    <dt>Math Underneath</dt><dd>A tokenizer is a lookup table: you map each possible chunk of text to an integer ID. For example, &#x27;hello&#x27; might map to 42, &#x27;world&#x27; to 999. When you feed the sentence &#x27;hello world&#x27; to a transformer, it becomes the sequence [42, 999]. The genius is in choosing the chunks. Most modern tokenizers split text into subwords (morphemes and common pieces), so &#x27;unbelievably&#x27; breaks into [&#x27;un&#x27;, &#x27;believ&#x27;, &#x27;able&#x27;, &#x27;ly&#x27;]. Each piece gets an ID: maybe 201, 456, 78, 23. Now the model sees &#x27;unbelievably&#x27; as [201, 456, 78, 23], and &#x27;believe&#x27; becomes [456] plus context—the same piece 201 reappears in &#x27;unable&#x27;, &#x27;unlock&#x27;, etc.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-01">ev-tokenization-01</a> <span class="time">00:02:36.320</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li><li><a href="evidence.html#ev-tokenization-supp-01">ev-tokenization-supp-01</a> <span class="time">00:41:21.510</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
@@ -59,11 +59,11 @@
 <article class="concept-card" id="embeddings">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/embeddings.html">Embeddings</a></h3>
-  <p class="definition">Learned coordinates that let a model compare things by arithmetic.</p>
+  <p class="definition">A table of learned numbers that assigns every token, patch, or state a unique location in a multidimensional space, where distance and direction carry meaning.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that IDs like 17 or 9421 do not say what a word, patch, state, or action means.</dd>
-    <dt>First-Principles Reason</dt><dd>A learning system needs a space where similar things can be placed near each other and useful directions can be adjusted by training.</dd>
-    <dt>Math Underneath</dt><dd>An embedding table maps each item to a vector. A vector is just a list of numbers; training moves those numbers so useful relationships become easier to compute.</dd>
+    <dt>Everyday Problem</dt><dd>You walk into a library and find two books labeled only by number: 4129 and 983. The numbers tell you nothing about whether they are novels or cookbooks, whether one is related to the other, or what to read next. You need a system that captures what each book is actually about.</dd>
+    <dt>First-Principles Reason</dt><dd>When a computer system processes discrete items (words, images, actions), it starts with arbitrary labels. To learn useful relationships—which words appear together, which states lead to reward, which images show similar objects—the system must place these items in a space where similarity becomes measurable by geometry. Otherwise, the system cannot smoothly adjust what it knows when feedback arrives.</dd>
+    <dt>Math Underneath</dt><dd>An embedding is a learned function that maps each discrete item (like a word) to a vector, a list of numbers. If you have an embedding table E with dimensions (vocabulary_size, embedding_dimension), and you want the vector for word w, you look up row w in that table: v_w = E[w]. Training adjusts all the numbers in E so that vectors for related items end up close to each other. Closeness is measured by dot product: v_w · v_x = sum of (element_i in v_w times element_i in v_x). Large dot product means the vectors point in similar directions, capturing semantic or functional similarity learned from data.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-embeddings-04">ev-embeddings-04</a> <span class="time">00:02:30.490</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-embeddings-05">ev-embeddings-05</a> <span class="time">00:02:20.200</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 3 - Tranformers &amp; Large Language Models</li></ul>
 </article>
@@ -71,11 +71,11 @@
 <article class="concept-card" id="positional_encoding">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/positional_encoding.html">Position And Order</a></h3>
-  <p class="definition">A way to tell the model where each piece sits in a sequence or image.</p>
+  <p class="definition">A numerical tag attached to each input that tells the model which slot in the sequence or image it occupies.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the same words or image patches mean different things depending on where they appear.</dd>
-    <dt>First-Principles Reason</dt><dd>Attention compares items as a set unless order information is added. Order must be represented explicitly if order matters.</dd>
-    <dt>Math Underneath</dt><dd>Position information is added as numbers that vary by location. The model can then learn patterns such as before, after, nearby, or far away.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you&#x27;re listening to a friend describe a scene, but they rattle off words in a jumbled order: &quot;dog bites man&quot; versus &quot;man bites dog.&quot; Same words, opposite meaning. The order matters. Now imagine a listener who hears all the words at the same time, as a cloud with no internal sequence. That listener has no built-in way to know which word came first unless you mark each one with a position tag.</dd>
+    <dt>First-Principles Reason</dt><dd>Transformers work by comparing any token to any other token directly in parallel, unlike older systems that processed tokens one-by-one and thus learned sequence order naturally. Because attention links bypass the sequential order, the model has no automatic way to know where each token sits in the sequence. Something must explicitly label position, or the model loses that information entirely.</dd>
+    <dt>Math Underneath</dt><dd>A position embedding is a vector (a list of numbers) assigned to position k. The simplest version uses sinusoidal functions: embed(k) = [sin(k/10000^0), cos(k/10000^0), sin(k/10000^2), cos(k/10000^2), ...]. Each dimension oscillates at a different frequency—low frequencies change slowly (far-away positions look different), high frequencies change quickly (nearby positions stay similar). Adding this vector to the token&#x27;s embedding lets attention patterns attend based on distance, because the position signal is now mixed into the data the model compares.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-positional_encoding-01">ev-positional_encoding-01</a> <span class="time">00:10:39.810</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-positional_encoding-02">ev-positional_encoding-02</a> <span class="time">01:05:31.720</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li></ul>
 </article>
@@ -83,11 +83,11 @@
 <article class="concept-card" id="attention">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/attention.html">Attention</a></h3>
-  <p class="definition">A learned way for each piece to decide which other pieces matter right now.</p>
+  <p class="definition">A mechanism where each piece of information learns to focus on a weighted blend of other pieces, based on what they contain.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that the input is too large to treat every earlier word, patch, or memory as equally important.</dd>
-    <dt>First-Principles Reason</dt><dd>Useful context is selective. The system needs a content-based lookup mechanism instead of a fixed rule for what to read.</dd>
-    <dt>Math Underneath</dt><dd>Each item makes a query, compares it with keys from other items, turns the match scores into weights, and averages values using those weights. The formula softmax(QK^T)V means: score matches, normalize them, then copy a weighted mixture of information.</dd>
+    <dt>Everyday Problem</dt><dd>You&#x27;re at a party full of conversations. To understand what your friend just said, you can&#x27;t equally weight every background noise—you need to focus harder on voices that are speaking to your situation, softer on distant chatter. Your brain solves this by guessing what&#x27;s relevant and listening to those signals more.</dd>
+    <dt>First-Principles Reason</dt><dd>When information flows through a system, not every input piece matters equally for every output decision. A mechanism that can learn to filter, rank, and blend based on content lets the system adapt its focus to what actually matters in each situation, rather than using a rigid rule.</dd>
+    <dt>Math Underneath</dt><dd>Each item creates three things: a query (what am I looking for?), a key (what do I contain?), and a value (what information should I contribute?). The query gets compared to every key using dot-product multiplication (which is larger when two vectors point in similar directions). These match-scores then get normalized using a softmax function (which turns raw scores into weights that sum to one, making high scores much larger than low ones). Finally, a weighted average of all values is computed using those weights. The compact formula softmax((Q × K-transpose) / √(dimension)) × V captures this: numerator is the query-key comparisons, the division by √dimension prevents scores from exploding, softmax normalizes, and multiplying by V applies those weights to the stored information.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 2 - Transformer-Based Models &amp; Tricks</li><li><a href="evidence.html#ev-attention-02">ev-attention-02</a> <span class="time">00:32:55.100</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 5 - Architectures</li><li><a href="evidence.html#ev-attention-04">ev-attention-04</a> <span class="time">01:08:17.450</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 7 - Evaluation</li></ul>
 </article>
@@ -95,11 +95,11 @@
 <article class="concept-card" id="transformer_block">
   <div class="eyebrow">representation workspace</div>
   <h3><a href="concepts/transformer_block.html">Transformer Block</a></h3>
-  <p class="definition">A repeated update step where tokens read from each other and then rewrite their own state.</p>
+  <p class="definition">A repeating layer that lets information flow between positions, updates each position independently, and preserves old state while adding new updates.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that one lookup is not enough; understanding needs many rounds of communication and local computation.</dd>
-    <dt>First-Principles Reason</dt><dd>A complex answer is built by repeatedly mixing information and transforming it. Depth lets simple operations compound.</dd>
-    <dt>Math Underneath</dt><dd>A block usually combines attention, a small per-token network, normalization, and skip connections. The skip connection keeps the old state while adding a learned update, which makes deep stacks trainable.</dd>
+    <dt>Everyday Problem</dt><dd>Imagine you&#x27;re reading a long email on a phone screen that shows only one sentence at a time. You glance at &quot;The bank is closed on Sundays.&quot; To understand &quot;bank,&quot; you need to scroll back to see &quot;The river ran past the old bank.&quot; But your brain is finite—you can&#x27;t hold all context at once. You need a system that repeatedly focuses on relevant parts, updates your understanding, and carries important ideas forward to the next thought.</dd>
+    <dt>First-Principles Reason</dt><dd>Understanding complex text or images requires multiple passes. On pass one, you might spot that &quot;bank&quot; appears near &quot;river.&quot; On pass two, you notice grammar ties it to a verb. On pass three, you connect it to earlier context about geography. A single lookup doesn&#x27;t build this layered meaning. You need a reusable recipe: focus on dependencies, reshape information based on that focus, preserve what you learned, and repeat. That&#x27;s why layers stack.</dd>
+    <dt>Math Underneath</dt><dd>A transformer block has four moving parts. First, multi-head attention mixes information: for each position, compute how similar it is to every other position (dot-product similarity, scaled by a constant to keep numbers stable), then use those similarity scores as weights to average all the information at those positions. The scaling prevents any single similarity from dominating. Second, a feed-forward network (a small nonlinear function applied to each position separately) reshapes the mixed information—like adding learned color to a grayscale image. Third, residual connections (adding the input to the output of each step) preserve old state so information doesn&#x27;t wash away through layers. Fourth, layer normalization (centering and scaling activations) keeps numbers in a comfortable range, which makes training stable. These four pieces fit together: mix → reshape → carry old state → keep numbers sane.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 9 - Recap &amp; Current Trends</li><li><a href="evidence.html#ev-transformer_block-06">ev-transformer_block-06</a> <span class="time">00:20:49.840</span>: Stanford CS224R Deep Reinforcement Learning | Spring 2025 | Lecture 13: Meta RL</li></ul>
 </article>
@@ -107,11 +107,11 @@
 <article class="concept-card" id="pretraining">
   <div class="eyebrow">learning from feedback</div>
   <h3><a href="concepts/pretraining.html">Pretraining</a></h3>
-  <p class="definition">Large-scale practice before the model is asked to be useful in a specific way.</p>
+  <p class="definition">Learning broad patterns from massive amounts of unlabeled data before teaching the model to do anything specific.</p>
   <dl>
-    <dt>Everyday Problem</dt><dd>The problem is that labeled examples are scarce, but raw text, images, actions, and videos are abundant.</dd>
-    <dt>First-Principles Reason</dt><dd>A learner can absorb structure by being given a simple prediction game over huge data, even before people specify the final task.</dd>
-    <dt>Math Underneath</dt><dd>Training reduces a loss, which is a number measuring how surprised or wrong the model was. Lower loss means the model assigns more probability to what actually happened.</dd>
+    <dt>Everyday Problem</dt><dd>You want to teach someone a skill, but good instructors are rare and expensive. However, raw examples of the skill in action are everywhere—books, videos, conversations. Someone who reads thousands of books absorbs patterns long before being taught explicitly.</dd>
+    <dt>First-Principles Reason</dt><dd>A learner faces two constraints: good labeled data is rare, but patterns in raw data are free. Any system smart enough to extract patterns from raw examples before seeing labeled ones will need less labeled data later. That&#x27;s a practical necessity, not a choice.</dd>
+    <dt>Math Underneath</dt><dd>The model learns by reducing a loss—a number that measures how wrong or surprised the model was about what came next. When you predict the next word in a sentence and it&#x27;s wrong, the loss is high; when you&#x27;re right, it&#x27;s low. The model adjusts its internal knobs (weights) to make this number smaller. Mathematically, you compute the average loss over millions of examples, then use calculus to find which direction each knob should turn. The reason this works is that patterns in language show up repeatedly—if you practice predicting &#x27;next word&#x27; across billions of examples, you absorb structure like grammar, facts, and reasoning shortcuts without anyone telling you what they are.</dd>
   </dl>
   <ul class="evidence-list"><li><a href="evidence.html#ev-pretraining-01">ev-pretraining-01</a> <span class="time">00:02:20.620</span>: Stanford CME295 Transformers &amp; LLMs | Autumn 2025 | Lecture 5 - LLM tuning</li><li><a href="evidence.html#ev-pretraining-02">ev-pretraining-02</a> <span class="time">00:10:36.420</span>: Stanford CME296 Diffusion &amp; Large Vision Models | Spring 2026 | Lecture 6 - Model Training</li></ul>
 </article>

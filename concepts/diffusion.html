@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">generative paths</p>
   <h1>Diffusion</h1>
-  <p>Generating by starting from noise and repeatedly making it more like data.</p>
+  <p>A method for generating data by starting from pure random noise and repeatedly removing noise to create structured samples like images.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that realistic images or videos are too complex to create in one jump from a prompt.</p>
+  <p>Imagine you need to describe a completely realistic painting to someone who has never seen one. You can&#x27;t hand them the finished image; you can only give step-by-step instructions. But how do you break down something so intricate that you&#x27;d struggle to explain the whole thing at once?</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>A hard generation problem can be broken into many easier cleanup steps.</p>
+  <p>Any system that needs to create something complex faces a hard constraint: one giant leap from idea to finished product almost always fails. But if you break the leap into many small, local decisions—each one asking only &quot;how is this a tiny bit cleaner?&quot;—then each step becomes learnable and verifiable.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Diffusion: A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete object is a neural network that takes a noisy image and a timestep number t as input and outputs a prediction of how much noise is present. The network has learnable weights (numbers you adjust during training) and a fixed architecture (typically convolutional or transformer-based layers that process spatial information).</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Generation must rely on harder one-shot mappings or unstable adversarial training.</p>
+  <p>Without step-by-step denoising, generation either requires a direct, brittle mapping (which struggles with the many ambiguous paths from prompt to image) or relies on adversarial competition between generator and discriminator (which is notoriously unstable to train).</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that realistic images or videos are too complex to create in one jump from a prompt.</p>
+  <p>Imagine you need to describe a completely realistic painting to someone who has never seen one. You can&#x27;t hand them the finished image; you can only give step-by-step instructions. But how do you break down something so intricate that you&#x27;d struggle to explain the whole thing at once?</p>
   <h2>Why does this problem exist?</h2>
-  <p>A hard generation problem can be broken into many easier cleanup steps.</p>
+  <p>Any system that needs to create something complex faces a hard constraint: one giant leap from idea to finished product almost always fails. But if you break the leap into many small, local decisions—each one asking only &quot;how is this a tiny bit cleaner?&quot;—then each step becomes learnable and verifiable.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution.</p>
+  <p>The forward process is x_t = sqrt(1 - β_t) * x_{t-1} + sqrt(β_t) * noise, where β_t is the noise schedule (a number that grows as you add more noise) and noise is fresh randomness. This mixes the previous sample with noise by a controlled amount. The reverse process learns to undo this: at each step t, the model predicts which noise was added and subtracts it. Mathematically, you train a neural network to estimate the noise component, then subtract it: x_{t-1} = (x_t - sqrt(β_t) * predicted_noise) / sqrt(1 - β_t). The model learns this by comparing its noise predictions to the actual noise that was added during training.</p>
   <h2>Why is this concept important?</h2>
-  <p>It is a major recipe for high-quality image, video, and multimodal generation.</p>
+  <p>Unlike methods that try to leap directly from concept to image (which fail at scale), diffusion tractably generates high-fidelity outputs because it distributes the complexity across many learned steps, each of which is easier to supervise and optimize.</p>
   <h2>What breaks without it?</h2>
-  <p>Generation must rely on harder one-shot mappings or unstable adversarial training.</p>
+  <p>Without step-by-step denoising, generation either requires a direct, brittle mapping (which struggles with the many ambiguous paths from prompt to image) or relies on adversarial competition between generator and discriminator (which is notoriously unstable to train).</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that realistic images or videos are too complex to create in one jump from a prompt. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &#x27;Just train a model to map noise directly to clean images in one step.&#x27; This works when the mapping is simple, but complex mappings need more structure.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because a hard generation problem can be broken into many easier cleanup steps. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>A direct one-shot map from noise to image asks the model to memorize an impossibly large codebook of all possible outputs. The loss function sees the whole prediction at once and can&#x27;t separate whether errors are in coarse structure (face placement) or fine detail (texture), making gradients weak and training slow or stuck.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Diffusion: A forward process adds noise; a learned reverse process removes it. Each step estimates how to move a noisy sample toward the data distribution. Think of it as the handle the algorithm can grab.</p>
+  <p>The concrete object is a neural network that takes a noisy image and a timestep number t as input and outputs a prediction of how much noise is present. The network has learnable weights (numbers you adjust during training) and a fixed architecture (typically convolutional or transformer-based layers that process spatial information).</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Diffusion, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>At training time: corrupt a clean image by adding a random amount of noise, feed the noisy image and the noise level to the network, collect its noise prediction, compare it to the actual noise added (using mean squared error), and update the network&#x27;s weights. At generation time: start with pure random noise, ask the network to predict the noise in it, subtract that prediction, and repeat for many steps (often 50–1000) until you reach a clean sample.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: start with a photo and gradually corrupt it until only static remains. That forward process is easy: keep adding noise. The hard question is how to reverse it. Diffusion training gives the model noisy examples and teaches it the direction back toward cleaner, more data-like samples. At generation time the model starts from random noise and repeatedly applies those learned cleanup steps. The CME296 lecture sequence frames this as learning to generate from an unknown and complicated data distribution, beginning with DDPM-style diffusion and then comparing it to score matching.</p>
+  <p>Suppose you start with random pixel values: [0.2, 0.8, 0.1, 0.9] at timestep t=50 (halfway through denoising). The network sees this noisy vector and outputs predicted noise: [0.15, 0.75, 0.05, 0.85]. You compute the denoised sample by subtracting: x_{t-1} = ([0.2, 0.8, 0.1, 0.9] - sqrt(β) * [0.15, 0.75, 0.05, 0.85]) / sqrt(1 - β). If β ≈ 0.02 at that step, you get roughly [0.15, 0.72, 0.08, 0.85]—slightly cleaner. You repeat this 49 more times, each step making incremental progress, until at t=0 the random noise has become a coherent image of a dog or building.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The CME296 lectures emphasize diffusion as a generation paradigm: the goal is to create new samples from a complicated data distribution that is not directly known. Lecture 1 introduces the DDPM route through clean data, noise, and a reverse process. Lecture 2 explicitly compares that route to score matching, treating both as ways to get a direction for moving samples toward the data. Later lectures connect this to guidance, latent spaces, architecture, training, and evaluation.</p>
+  <p>The CME296 course frames diffusion as the foundational generation paradigm: you start with a unknown, complicated data distribution (like all possible realistic images) and want to sample from it. DDPM teaches that you can learn a reverse process by corrupting real data in the forward pass, then training a model to invert that corruption. This breaks an intractable global problem into many tractable local problems.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that diffusion models store training images and slowly reveal them. The first-principles picture is different: the model learns local directions for making a noisy sample more likely under the data. The generated image is produced by a path through uncertainty, not by retrieving a memorized clean image.</p>
+  <p>Students often think the model is remembering or retrieving fragments of the training images. The reality is different: the model learns local, generic patterns for &#x27;noise reduction&#x27; that apply to any noisy image. It never sees the original images again at generation time; it only follows learned cleanup directions through noise.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize diffusion when generation is described as a sequence of small updates from a simple noisy starting point toward structured data. The paper may use noise schedules, denoisers, scores, samplers, reverse processes, latent diffusion, rectified flows, or guidance. The shared primitive is guided movement: replace one impossible jump with many learnable steps.</p>
+  <p>When you see a paper describe generation as a sequence of refinement steps, a denoising process, score-matching, or trajectory-based sampling, you are seeing diffusion or a close variant. Key markers are noise schedules, learned score functions (which estimate the gradient of the data distribution), or explicit reverse-time dynamics. The shared core is: replace one hard problem with many easy local steps.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near score matching, guidance, latent space. Across the three courses, the shared pattern is uncertainty, search: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Score matching (the alternative mathematical view) also works by learning local directions in data space—in fact, both diffusion and score matching converge on the same learned function when done carefully. Guidance (how to steer generation toward specific attributes) is the mechanism for conditioning diffusion. Latent space (compressing images before diffusion) reduces the computation burden of denoising.</p>
   <p class="chips"><a class="chip" href="score_matching.html">score matching</a> <a class="chip" href="guidance.html">guidance</a> <a class="chip" href="latent_space.html">latent space</a></p>
 </section>
 <section>

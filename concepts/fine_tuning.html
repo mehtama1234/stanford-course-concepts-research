@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">learning from feedback</p>
   <h1>Fine-Tuning And Preference Learning</h1>
-  <p>Steering a broad model toward behavior people actually want.</p>
+  <p>Taking a general model and adjusting its weights so it reliably does what you actually need it to do.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.</p>
+  <p>A chess engine trained on millions of game records is a great predictor of legal moves, but doesn&#x27;t play to win. A student who reads textbooks thoroughly can recite facts but struggles with exam questions. They need more than statistical frequency—they need alignment with what works.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Raw imitation learns what appears in data. Usefulness requires extra feedback about which possible responses people prefer.</p>
+  <p>When you train a model on raw data, it learns patterns in that data—what words appear together, what moves are legal, what facts exist. That is not the same as learning what you want. You need a second phase: using feedback (human judgments, rewards, or correct answers for your specific task) to reshape the model&#x27;s probabilities so it does what matters to you, not just what&#x27;s common in the original data.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Fine-Tuning And Preference Learning: Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal. Think of it as the handle the algorithm can grab.</p>
+  <p>The weight matrices inside the neural network—the tables of numbers that the model learned during pretraining. Fine-tuning adjusts every entry in these tables, or sometimes just a small subset (using techniques like LoRA, which tweaks only a smaller &#x27;adapter&#x27; layer to save memory). These numbers are what you inspect and change.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The model may be fluent but misaligned with the task, the user, or the deployment setting.</p>
+  <p>A model trained only on raw text may be fluent and informative but refuse to answer questions, produce off-topic rambling, fall into unsafe behavior, or simply respond in a format you can&#x27;t use. It becomes a fascinating pattern-matcher, not a tool.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct.</p>
+  <p>A chess engine trained on millions of game records is a great predictor of legal moves, but doesn&#x27;t play to win. A student who reads textbooks thoroughly can recite facts but struggles with exam questions. They need more than statistical frequency—they need alignment with what works.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Raw imitation learns what appears in data. Usefulness requires extra feedback about which possible responses people prefer.</p>
+  <p>When you train a model on raw data, it learns patterns in that data—what words appear together, what moves are legal, what facts exist. That is not the same as learning what you want. You need a second phase: using feedback (human judgments, rewards, or correct answers for your specific task) to reshape the model&#x27;s probabilities so it does what matters to you, not just what&#x27;s common in the original data.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal.</p>
+  <p>Training a model means adjusting its weights (the numbers inside) to minimize a loss function, a measure of prediction error. Fine-tuning keeps the same architecture but changes the loss: instead of matching &#x27;next token is X&#x27; across billions of documents, you match &#x27;next token is Y for this task&#x27; on focused, curated examples. The math is identical—gradient descent (small nudges downhill in error space)—but the goal changes from &#x27;replicate the training set&#x27; to &#x27;get task examples right&#x27;. Preference learning adds a comparison: given two outputs for the same input, make the better one more likely and the worse one less likely, encoding human judgment as probabilities.</p>
   <h2>Why is this concept important?</h2>
-  <p>It is the bridge between a base model and an assistant, tutor, coder, or agent.</p>
+  <p>It is what separates a trained model from a usable one. Pretraining gives you broad knowledge; fine-tuning lets you steer that knowledge toward your specific needs—answering questions correctly, writing in a certain voice, refusing harmful requests, following instructions precisely.</p>
   <h2>What breaks without it?</h2>
-  <p>The model may be fluent but misaligned with the task, the user, or the deployment setting.</p>
+  <p>A model trained only on raw text may be fluent and informative but refuse to answer questions, produce off-topic rambling, fall into unsafe behavior, or simply respond in a format you can&#x27;t use. It becomes a fascinating pattern-matcher, not a tool.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that predicting likely text is not the same thing as being helpful, safe, concise, or correct. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &#x27;The model got the facts and patterns. Let me just write a simple rule: if the input asks X, output Y. Or look up the answer in a table.&#x27; This works for tiny, clean domains where you can enumerate every case by hand.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because raw imitation learns what appears in data. usefulness requires extra feedback about which possible responses people prefer. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Hand-coded rules break as soon as inputs become diverse or subtle. A rule like &#x27;always answer in one sentence&#x27; fails on questions that need three sentences. A lookup table for &#x27;helpful responses&#x27; doesn&#x27;t scale to millions of questions. You can&#x27;t write a rule for tone, safety, or instruction-following that holds across all contexts. The system needs to learn what &#x27;good&#x27; means for your task, not memorize a fixed set of answers.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Fine-Tuning And Preference Learning: Tuning changes probabilities: make wanted answers more likely and unwanted answers less likely. Preference learning turns comparisons between answers into a training signal. Think of it as the handle the algorithm can grab.</p>
+  <p>The weight matrices inside the neural network—the tables of numbers that the model learned during pretraining. Fine-tuning adjusts every entry in these tables, or sometimes just a small subset (using techniques like LoRA, which tweaks only a smaller &#x27;adapter&#x27; layer to save memory). These numbers are what you inspect and change.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Fine-Tuning And Preference Learning, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Start with the pretrained model&#x27;s weights. Feed it examples from your task (along with the correct or preferred output for each). Compare its prediction to your target. Compute the error (how far off it was). Use calculus to find which weight changes reduce that error. Make those small changes. Repeat until the model gets your task examples right.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a pretrained model can autocomplete a recipe, a bug report, or a rude internet thread. Fine-tuning teaches it the behavior format wanted for a particular use case, such as answering like an assistant. CME295 describes supervised fine-tuning as taking the pretrained model and teaching it exactly which tokens to predict for higher-quality task data. CS224R then asks how pretrained language models become chatbots through preference optimization.</p>
+  <p>Suppose a pretrained model sees &#x27;Q: What is 2+2? A:&#x27; and predicts &#x27;the number 4 was discovered by Pythagoras.&#x27; That is fluent but wrong—it learned what often follows &#x27;2+2&#x27; in raw text, not the math. Fine-tuning on arithmetic questions shows the model: this input should give &#x27;A: 4&#x27;. By comparing its wrong guess (&#x27;Pythagoras&#x27;) to the right answer (&#x27;4&#x27;) on hundreds of such examples, the model&#x27;s weights shift. Later, it sees &#x27;Q: What is 5+3?&#x27; and now predicts &#x27;A: 8&#x27; instead of a historical digression. The same math machinery learned math instead of trivia.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The LLM tuning lecture emphasizes fine-tuning as the second stage after pretraining: smaller but higher-quality data teaches task behavior. It also separates supervised fine-tuning from preference tuning, where tone, safety, and human preference are shaped later. That staged view prevents confusing broad knowledge with deployable behavior.</p>
+  <p>CME295 frames fine-tuning as the critical second stage after pretraining: the pretrained model has broad knowledge but isn&#x27;t yet specialized for your task, so you use smaller amounts of high-quality task data to steer its behavior. CS224R then extends this to preference learning: fine-tuning can shape not just factual accuracy but tone, safety, and how the model balances competing goals, turning &#x27;text prediction&#x27; into &#x27;helpful assistant behavior&#x27;.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that fine-tuning simply adds facts. It more often changes behavior: format, tone, instruction following, domain style, and what outputs are likely. It can also overwrite or narrow behavior if the tuning data is too small or biased.</p>
+  <p>Many people think fine-tuning adds new facts or knowledge to a model. It mostly doesn&#x27;t. Fine-tuning reshapes what the model already knows—making it favor task-relevant outputs, suppressing off-topic tangents, changing format or tone, or deciding between multiple correct answers. It can narrow the model if tuning data is limited. It can overwrite behaviors if not done carefully. But it is steering, not new learning.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize fine-tuning when a pretrained model is adapted with task-specific examples, instruction data, adapters, LoRA, supervised demonstrations, or preference data. The shared primitive is steering an existing representation rather than learning the whole world again.</p>
+  <p>In research papers, look for: a pretrained model being adapted with task-specific data, instruction examples, supervised demonstrations, or preference comparisons. Techniques like LoRA (a small adapter layer), prompt tuning (learning a prefix), or full weight adjustment all count—the shared idea is: start with a broad model, use feedback or examples for your task, adjust its internal weights, not redesign it.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near reward modeling, rl for llms, evaluation. Across the three courses, the shared pattern is feedback, assignment: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>Fine-tuning is the bridge between pretraining and deployment. In CME295, it is the natural second step for language models. In CME296 (diffusion/vision), similar techniques adapt pretrained vision models to new tasks. In CS224R, fine-tuning feeds into reward modeling and RL-for-LLMs: you learn a reward function (which outputs are &#x27;good&#x27;) and use it to further adjust the model, stacking feedback on feedback.</p>
   <p class="chips"><span class="chip muted-chip">reward modeling</span> <a class="chip" href="rl_for_llms.html">rl for llms</a> <a class="chip" href="evaluation.html">evaluation</a></p>
 </section>
 <section>

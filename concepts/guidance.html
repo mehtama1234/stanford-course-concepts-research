@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">generative paths</p>
   <h1>Guidance</h1>
-  <p>Steering generation toward a prompt, class, reward, or constraint.</p>
+  <p>A technique to steer a generative model toward a specific outcome—like a text prompt, label, or quality measure—while keeping outputs realistic and diverse.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that pure generation may create plausible samples that do not match what the user asked for.</p>
+  <p>You ask a friend to draw a teddy bear reading a book. They return with a beautiful bear, but it&#x27;s alone—no book. The drawing is skillful and realistic, but it missed your actual request. You need a way to keep their artistry while forcing attention to the book.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</p>
+  <p>A generative model learns to make plausible things: if it sees a million bear images, it will draw bears well. But plausible is not the same as targeted. When you add a condition—a text prompt, a label, a safety rule—the model must balance: stay realistic (use what it learned about bears) while also satisfying the constraint (include a book). No single fixed rule can handle all cases. You need a mechanism that bends the generation process toward the condition at every step.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Guidance: Guidance modifies the update direction during sampling so the path favors samples consistent with the condition. Think of it as the handle the algorithm can grab.</p>
+  <p>A condition score—a neural network or function that takes a partial output (an image in the middle of generation) and produces a number measuring how well it satisfies your constraint. For text conditions, this might be a text-image similarity score; for safety, it might be a classifier that detects unsafe content. This score is differentiable (you can compute how it changes with small changes to the image), so you can measure the slope—the gradient—showing which direction improves adherence.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The model may produce realistic but irrelevant outputs.</p>
+  <p>The model produces outputs that are visually coherent but irrelevant to your request. A beautiful bear with no book. A sunset-colored painting when you asked for a blue one. The output is realistic—nothing is physically impossible—but useless because it does not address your goal.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that pure generation may create plausible samples that do not match what the user asked for.</p>
+  <p>You ask a friend to draw a teddy bear reading a book. They return with a beautiful bear, but it&#x27;s alone—no book. The drawing is skillful and realistic, but it missed your actual request. You need a way to keep their artistry while forcing attention to the book.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition.</p>
+  <p>A generative model learns to make plausible things: if it sees a million bear images, it will draw bears well. But plausible is not the same as targeted. When you add a condition—a text prompt, a label, a safety rule—the model must balance: stay realistic (use what it learned about bears) while also satisfying the constraint (include a book). No single fixed rule can handle all cases. You need a mechanism that bends the generation process toward the condition at every step.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>Guidance modifies the update direction during sampling so the path favors samples consistent with the condition.</p>
+  <p>During generation, the model builds an output step-by-step by predicting which direction reduces noise. Guidance works by modifying that direction using a score—a number that measures how well the current partial output satisfies your condition. If you want a bear reading a book, at each step you compute: &quot;How much does this draft match the book-reading concept?&quot; Then you blend the model&#x27;s natural prediction with a scaled boost in the direction of higher match. Mathematically, the adjusted prediction is the original direction plus a weight times the gradient (slope) of your condition score. The weight controls the strength: too weak and you ignore your condition; too strong and outputs look unnatural because you overstrain the model away from what it learned.</p>
   <h2>Why is this concept important?</h2>
-  <p>It makes image and video models controllable by text, labels, layouts, or preferences.</p>
+  <p>Without guidance, text-to-image and text-to-video systems would generate things that happen to be realistic but ignore your input entirely. Guidance is what makes these models practical—what lets you request a teddy bear reading a book and actually get both elements. It unlocks conditional generation as a user-facing tool rather than a research curiosity.</p>
   <h2>What breaks without it?</h2>
-  <p>The model may produce realistic but irrelevant outputs.</p>
+  <p>The model produces outputs that are visually coherent but irrelevant to your request. A beautiful bear with no book. A sunset-colored painting when you asked for a blue one. The output is realistic—nothing is physically impossible—but useless because it does not address your goal.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that pure generation may create plausible samples that do not match what the user asked for. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner thinks: why not just train a separate model to directly map text prompts to images? Or store examples in a lookup table? These approaches work on toy problems with tiny, clean inputs. But real requests are open-ended, and the space of possible conditions is infinite—you cannot precompute or memorize every combination.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because generation needs both freedom and control: enough freedom to make rich outputs, enough constraint to satisfy the condition. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Direct mapping and lookup tables require either retraining for every new prompt (expensive) or a finite catalog of pre-computed results (brittle, boring). Once users ask for variations—different styles, unexpected combinations, nuanced adjectives—the system runs out of examples. A one-size-fits-all rule (like &quot;just make it match the label&quot;) overshoots and creates images that are unnatural, distorted, or visually incoherent because the model is forced too hard against its learned patterns.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Guidance: Guidance modifies the update direction during sampling so the path favors samples consistent with the condition. Think of it as the handle the algorithm can grab.</p>
+  <p>A condition score—a neural network or function that takes a partial output (an image in the middle of generation) and produces a number measuring how well it satisfies your constraint. For text conditions, this might be a text-image similarity score; for safety, it might be a classifier that detects unsafe content. This score is differentiable (you can compute how it changes with small changes to the image), so you can measure the slope—the gradient—showing which direction improves adherence.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Guidance, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>At each generation step: (1) sample a candidate direction where the model naturally wants to go; (2) compute your condition score for the partial output; (3) compute the gradient of that score—the direction of increasing match; (4) blend the two directions using a weight parameter, producing an adjusted prediction that incorporates both the model&#x27;s learned realism and your condition; (5) take one small step in that direction; (6) repeat until done.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a model can generate a beautiful image of a bear, but the prompt asks for a teddy bear reading a book. If the image is aesthetic but ignores the book, it fails the user&#x27;s condition. Guidance is the family of tricks that steers generation toward a prompt, class, layout, or reward while still allowing variation. CME296&#x27;s evaluation lecture uses prompt adherence as a motivating example: an image can look good and still be bad because it does not represent the prompt.</p>
+  <p>You want an image of a green apple. A diffusion model starts from pure noise and removes noise step by step. At step 50, the model has a blurry reddish circular object—it thinks apple, but the color is wrong. Your condition score (comparing the image to the phrase &quot;green apple&quot;) gives a gradient showing &quot;shift toward green.&quot; Guidance scales this gradient and mixes it with the model&#x27;s natural noise-removal step. The next step combines both: the model&#x27;s instinct (&quot;keep it apple-shaped&quot;) and your condition (&quot;make it greener&quot;). A few steps later, the apple is both plausibly apple-shaped and visibly green. Without guidance, the model might output a beautiful red apple, ignoring the &quot;green&quot; part.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>CME296 treats guidance and evaluation together through the tension between visual quality and prompt adherence. Earlier guidance material explains how generation can be conditioned; the evaluation lecture makes the failure concrete by asking students to judge images against a prompt. This emphasizes that controllable generation is not only about realism. It is about satisfying the instruction that defines the sample&#x27;s purpose.</p>
+  <p>CME296 emphasizes that visual quality and prompt adherence are separate: an image can be aesthetically excellent but fail the prompt. The evaluation lecture pairs this insight with classifier-free guidance, a practical method that emphasizes the text prompt during generation without needing a separate classifier model. The message is that controllable generation requires steering, not just training better models.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that better image quality automatically means better prompt following. The lecture example separates aesthetics from adherence: a polished image can still fail if it depicts the wrong thing. Guidance exists because generation needs both freedom and constraint.</p>
+  <p>Many assume that a better generative model automatically follows prompts better. But a model trained only on diverse images becomes good at making plausible things, not at respecting your specific request. The model has learned thousands of visual patterns (bears with food, bears in forests) but no direct link to your words. Guidance is the missing bridge: it wires your condition directly into the generation trajectory.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize guidance when sampling directions are modified by a condition: text prompt, class label, layout, reward model, safety constraint, or preference signal. The method may be classifier guidance, classifier-free guidance, control signals, reward guidance, or prompt adherence optimization. The shared primitive is steering: change the path through sample space so plausible outputs also satisfy the goal.</p>
+  <p>Look for methods that modify the generation path using scores or gradients of a condition. Classifier-free guidance uses the difference between conditioned and unconditioned predictions; reward-guided generation uses a reward score; safety guidance uses a classifier for harmful content; layout-guided generation uses spatial scores; and adversarial guidance uses discriminator feedback. All share the same skeleton: measure how well the current draft meets your goal, compute the direction of improvement, and blend it into generation.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near diffusion, reward modeling, agents and tools. Across the three courses, the shared pattern is feedback, search: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In CS224R (Deep RL), guidance resembles reward shaping—modifying rewards to steer the agent toward desired behavior. In Transformers/LLMs, prompt engineering does something similar: it steers token predictions toward a goal by carefully choosing input text. Across all three courses, the shared thread is feedback: take a direction the model naturally follows, measure how well it meets your goal, and adjust accordingly.</p>
   <p class="chips"><a class="chip" href="diffusion.html">diffusion</a> <span class="chip muted-chip">reward modeling</span> <a class="chip" href="agents_and_tools.html">agents and tools</a></p>
 </section>
 <section>

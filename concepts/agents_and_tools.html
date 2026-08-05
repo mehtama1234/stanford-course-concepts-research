@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">inference time work</p>
   <h1>Agents, Retrieval, And Tools</h1>
-  <p>Putting a model in a loop where it can look things up, call tools, and react to results.</p>
+  <p>A loop where a language model takes an action, sees the result, then decides what to do next.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.</p>
+  <p>You ask a librarian a question about a book published yesterday. The librarian cannot answer from memory alone. She has to walk to the shelf, check the catalog, pull down a reference, read the new information, then come back and answer you. Her knowledge is not enough; she needs to act and observe.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>A useful system often needs perception, memory, action, and correction, not only prediction.</p>
+  <p>A language model&#x27;s weights contain facts frozen at training time. Real tasks demand current weather, database lookups, running code, or changing the world. No weights can store &#x27;today&#x27;s date&#x27; or &#x27;the stock price right now.&#x27; So the model must step outside itself, observe, and adjust. This is not a choice — it is a logical necessity.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Agents, Retrieval, And Tools: The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context. Think of it as the handle the algorithm can grab.</p>
+  <p>The agent loop can be represented as a decision table or a sequence of (state, action, observation) triples. The state is a running transcript of text (including previous results). The action is a choice from a discrete set: &#x27;call search&#x27;, &#x27;run Python&#x27;, &#x27;query database&#x27;, &#x27;respond to user&#x27;. The observation is the text result returned by that tool. You can inspect this sequence, trace where it went wrong, and measure how much context the model actually used.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The model is limited to stale internal knowledge and cannot verify or change the outside world.</p>
+  <p>The model cannot access information it was not trained on. It cannot verify facts. It cannot perform actions that change the world. A weather model cannot check real conditions. A coding assistant cannot run tests. A booking agent cannot actually purchase tickets. Every answer becomes a guess from stale knowledge.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights.</p>
+  <p>You ask a librarian a question about a book published yesterday. The librarian cannot answer from memory alone. She has to walk to the shelf, check the catalog, pull down a reference, read the new information, then come back and answer you. Her knowledge is not enough; she needs to act and observe.</p>
   <h2>Why does this problem exist?</h2>
-  <p>A useful system often needs perception, memory, action, and correction, not only prediction.</p>
+  <p>A language model&#x27;s weights contain facts frozen at training time. Real tasks demand current weather, database lookups, running code, or changing the world. No weights can store &#x27;today&#x27;s date&#x27; or &#x27;the stock price right now.&#x27; So the model must step outside itself, observe, and adjust. This is not a choice — it is a logical necessity.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context.</p>
+  <p>A model maintains a state (what it knows so far). At step t, it chooses an action a_t (a tool to call or query to send) based on the state. The action produces an observation o_t (the result). The state updates: state_{t+1} = state_t + a_t + o_t. The model then uses the new state to choose the next action a_{t+1}. This feedback loop, not a single forward pass, drives the system. Each action narrows the space of possible next states, creating a search through possibilities.</p>
   <h2>Why is this concept important?</h2>
-  <p>It connects language models to search, code execution, databases, browsers, and multi-step workflows.</p>
+  <p>This loop connects models to live data (search APIs, weather, stock prices), computation (running Python code, solving equations), databases, and user actions. Without it, every task is frozen in time. With it, a model can answer &#x27;what is today&#x27;s news?&#x27; or &#x27;solve this algebra problem step by step&#x27; or &#x27;book me a flight&#x27; by composing external tools.</p>
   <h2>What breaks without it?</h2>
-  <p>The model is limited to stale internal knowledge and cannot verify or change the outside world.</p>
+  <p>The model cannot access information it was not trained on. It cannot verify facts. It cannot perform actions that change the world. A weather model cannot check real conditions. A coding assistant cannot run tests. A booking agent cannot actually purchase tickets. Every answer becomes a guess from stale knowledge.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that many tasks need current facts, external actions, or checks the model cannot store in its weights. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner sees the problem and thinks: I can just make the model smarter by giving it more data at training time, or I can hardcode specific rules for each task. Hardcode rules for &#x27;fetch weather&#x27; here, rules for &#x27;search the web&#x27; there.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because a useful system often needs perception, memory, action, and correction, not only prediction. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Hardcoding rules fails because the tasks are infinite and overlap in unexpected ways. &#x27;Fetch weather for a city&#x27; needs the city name, which might be hidden in an earlier sentence. The rule engine sprawls into thousands of if-then statements and still misses edge cases. It does not learn; it only gets more brittle.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Agents, Retrieval, And Tools: The loop is state, action, observation, update. At each step the model chooses an action based on the current context, then new evidence changes the next context. Think of it as the handle the algorithm can grab.</p>
+  <p>The agent loop can be represented as a decision table or a sequence of (state, action, observation) triples. The state is a running transcript of text (including previous results). The action is a choice from a discrete set: &#x27;call search&#x27;, &#x27;run Python&#x27;, &#x27;query database&#x27;, &#x27;respond to user&#x27;. The observation is the text result returned by that tool. You can inspect this sequence, trace where it went wrong, and measure how much context the model actually used.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Agents, Retrieval, And Tools, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Start with the user&#x27;s query as the initial state. The model reads the state and outputs the name of a tool and an input for that tool. Execute that tool and append its result to the state. Repeat: the model reads the extended state, chooses the next tool, and so on. Stop when the model outputs a final answer instead of a tool name.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a model asked for today&#x27;s weather cannot answer reliably from its weights alone. It needs to call a weather API, read the result, and then respond. CME295 Lecture 7 frames agentic LLMs exactly this way: until now the LLM was on its own; now the goal is to let it interact with the outside world and other systems through RAG, tool calling, and agents.</p>
+  <p>User asks: &#x27;What is the highest-grossing film of 2025?&#x27; Step 1: State is just the question. Model chooses action &#x27;search for highest-grossing 2025 films&#x27;. Observation comes back: &#x27;Top results: Dune Messiah, Avatar 4, etc.&#x27; Step 2: State now includes the search results. Model chooses &#x27;fetch details on Dune Messiah box office&#x27;. Observation: &#x27;$1.8B worldwide.&#x27; Step 3: State includes both results. Model outputs the final answer: &#x27;Dune Messiah, $1.8B.&#x27; The loop halts because the model output an answer, not a tool call.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The agentic LLM lecture emphasizes a shift from standalone prediction to system interaction. It recaps reasoning models, then moves to RAG, tools, and agents as practical techniques for connecting an LLM to external knowledge bases and actions. That makes the agent loop a systems idea built around observation, action, and updated context.</p>
+  <p>The Stanford CME295 agentic LLM lecture frames the shift from a standalone model to a model inside a system. The model was &#x27;on its own&#x27;; now it can &#x27;interact with outside systems through RAG, tool calling, and agents.&#x27; This is the move from prediction to closed-loop interaction. The lecture does not teach how to build tools; it teaches why a loop—not a bigger model—solves the real-world problem.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that an agent is just a bigger prompt. The important change is not wording; it is the loop. The model chooses an action, receives an observation, updates its context, and decides again. That loop creates new failure modes: bad retrieval, tool misuse, stale observations, and compounding errors.</p>
+  <p>People think an agent is a bigger model or a clever prompt. The crucial change is architectural: the model is now wrapped in a loop, not a monolith. It does not decide everything at once. It decides one action, learns the result, and decides again. This loop creates new failure modes: bad tool results, misuse of tools, hallucinated tool outputs, and cascading errors that a simple prompt never faced.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize agentic structure whenever a model is wrapped in retrieval, tools, environment actions, memory, planning, or observation feedback. The shared primitive is closed-loop search: prediction becomes one part of a larger act-observe-update cycle.</p>
+  <p>In a paper or system, look for closed-loop structure: the model makes a choice, an external process executes, new information feeds back, and the model chooses again. You will see it called &#x27;agent&#x27;, &#x27;retrieval-augmented&#x27;, &#x27;tool-using&#x27;, &#x27;planning loop&#x27;, or &#x27;environment interaction&#x27;. They are all the same core: a model that observes, acts, and updates its state repeatedly.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near policy, retrieval, planning. Across the three courses, the shared pattern is search, composition, feedback: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In Deep RL (CS224R), an agent also observes state, chooses an action, and receives a reward. In Diffusion (CME296), sampling involves a loop where the model refines an image step by step, observing the current noisy image and choosing how to denoise. The pattern of action-observation-update appears everywhere, whether in language, robotics, or images.</p>
   <p class="chips"><a class="chip" href="policy.html">policy</a> <span class="chip muted-chip">retrieval</span> <span class="chip muted-chip">planning</span></p>
 </section>
 <section>

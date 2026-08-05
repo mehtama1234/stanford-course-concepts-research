@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Policy Gradient</h1>
-  <p>Changing an action rule toward sampled choices that worked better.</p>
+  <p>A recipe for tuning your action strategy by making the choices that worked better more likely next time.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that the correct action is not provided; the agent only sees outcomes after trying things.</p>
+  <p>You&#x27;re learning to cook, but no one tells you which moves are &#x27;right&#x27;—you only taste the result. How do you figure out which ingredients and techniques to favor, when you have to learn from trying things and seeing what happens?</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</p>
+  <p>If you can sample actions and see outcomes, the most direct path to improvement is to shift probabilities: boost the odds of actions that led to good outcomes, shrink the odds of actions from bad ones. You&#x27;re not guessing the right action; you&#x27;re learning which choices your policy favors.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Policy Gradient: The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones. Think of it as the handle the algorithm can grab.</p>
+  <p>A table or neural-network layer that outputs the log probability (logarithm of likelihood) of each action given the current state. This is the object you nudge: increase the log probabilities of actions that beat the baseline, decrease the others.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Learning is limited to settings where every action value can be directly estimated.</p>
+  <p>You&#x27;d be stuck in domains where action spaces are small and discrete, where you can afford to evaluate each action separately. Anything involving continuous motion, real-time control, or an ocean of possible choices stays intractable.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that the correct action is not provided; the agent only sees outcomes after trying things.</p>
+  <p>You&#x27;re learning to cook, but no one tells you which moves are &#x27;right&#x27;—you only taste the result. How do you figure out which ingredients and techniques to favor, when you have to learn from trying things and seeing what happens?</p>
   <h2>Why does this problem exist?</h2>
-  <p>When choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations.</p>
+  <p>If you can sample actions and see outcomes, the most direct path to improvement is to shift probabilities: boost the odds of actions that led to good outcomes, shrink the odds of actions from bad ones. You&#x27;re not guessing the right action; you&#x27;re learning which choices your policy favors.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones.</p>
+  <p>The gradient (direction of steepest climb) of the log probability of an action, weighted by how much better its outcome was than average. In symbols: push the probability of action a in state s upward by an amount proportional to (return - baseline), where &#x27;log probability&#x27; means taking the log of how likely your policy thinks this action is, &#x27;return&#x27; is the sum of future rewards, and &#x27;baseline&#x27; is your policy&#x27;s expected return, so you only reward actions that beat the benchmark.</p>
   <h2>Why is this concept important?</h2>
-  <p>It lets agents learn flexible behavior even when actions are continuous or too many to enumerate.</p>
+  <p>This breaks the bottleneck of needing to know the true value of every possible action. You can handle continuous actions (like steering angle at any value from -180 to +180 degrees) or huge action spaces by learning which choices your policy leans toward.</p>
   <h2>What breaks without it?</h2>
-  <p>Learning is limited to settings where every action value can be directly estimated.</p>
+  <p>You&#x27;d be stuck in domains where action spaces are small and discrete, where you can afford to evaluate each action separately. Anything involving continuous motion, real-time control, or an ocean of possible choices stays intractable.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that the correct action is not provided; the agent only sees outcomes after trying things. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &#x27;Just run the policy, see which actions gave rewards, and flip a switch to make those actions more likely.&#x27; This skips the critical step of comparing against a baseline.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because when choices are sampled, improvement can come from increasing the odds of sampled actions that beat expectations. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Without a baseline, you reinforce all actions from winning episodes equally—even mediocre moves mixed with lucky ones. The agent ends up favoring noise and high-variance outcomes instead of learning the actions that truly drive success, making learning slow and unstable.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Policy Gradient: The update uses reward-weighted change in log probability. In plain terms: push up the probability of actions that led to better-than-usual results and push down worse ones. Think of it as the handle the algorithm can grab.</p>
+  <p>A table or neural-network layer that outputs the log probability (logarithm of likelihood) of each action given the current state. This is the object you nudge: increase the log probabilities of actions that beat the baseline, decrease the others.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Policy Gradient, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Collect a batch of episodes by running your current policy. For each action in each episode, compute how much better the return was than your policy&#x27;s expected return at that state (the &#x27;advantage&#x27;). Move the log probabilities of high-advantage actions upward and low-advantage actions downward. Repeat with fresh episodes.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a game-playing agent tries several actions and later receives scores. It does not know the correct action label for each moment, but it can compare outcomes. Policy gradient says: make the sampled actions from better-than-average runs more likely, and make sampled actions from worse-than-average runs less likely. The CS224R off-policy actor-critic lecture recaps this directly: collect data from the policy, improve the policy with that batch, repeat, and use a baseline so the update favors above-average behavior instead of all rewarded behavior equally.</p>
+  <p>A robot learning to reach a target. At state s (target is 2 meters north), the policy outputs log-probabilities: moving north log(0.4) = -0.92, moving east log(0.3) = -1.21, staying log(0.3) = -1.21. The agent tries north, gets reward 10 (beat expected 5, advantage +5). It tries east, gets reward 2 (missed expected 5, advantage -3). After this batch, the log-probability of north increases (advantage +5 pushes it up), and east decreases (advantage -3 pulls it down). Over episodes, the policy learns to favor north in this state.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>CS224R emphasizes policy gradients as the first direct policy-improvement algorithm: run the policy, collect trajectories, and adjust action probabilities using future reward. The lecture also highlights the on-policy constraint, where the data must come from the policy being updated, and then motivates importance weights for off-policy variants. That matters because policy gradients are not just &#x27;take a gradient&#x27;; they are a way to turn sampled experience into a behavior change while controlling bias and variance.</p>
+  <p>CS224R grounds policy gradient as the first principled policy-improvement loop: run the policy to collect data, compute gradient of log probability weighted by advantage, step the policy parameters, and repeat. The lecture stresses that data must come from the current policy (on-policy constraint) and introduces importance weights to relax this for off-policy learning. The core insight is that policy gradient converts experience into a behavior change through the gradient of log probability.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that every rewarded action should simply become more likely. The baseline correction is crucial: the update should favor actions that did better than the policy&#x27;s usual outcome, not actions that merely occurred in episodes with some reward. Without that comparison, learning can reinforce mediocre behavior and become noisy.</p>
+  <p>Many people think policy gradient means &#x27;make any rewarded action more likely.&#x27; The true mechanism is finer: an action is only reinforced if it outperformed the policy&#x27;s average, not just if it earned some reward. A mediocre action in a lucky episode should not be strengthened.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize policy-gradient reasoning whenever probabilities of sampled actions are multiplied by returns, advantages, preferences, or reward signals. The method may be called REINFORCE, PPO, actor update, likelihood-ratio gradient, or RL fine-tuning. The shared primitive is feedback over sampled choices: increase the odds of decisions whose later consequences beat the reference.</p>
+  <p>Spot policy-gradient logic whenever a paper multiplies action probabilities by advantages, preferences, or reward signals (especially the log-probability gradient). Methods like REINFORCE, PPO, actor-critic, and LLM fine-tuning all use this primitive. The signature is: feedback flows backward from outcomes to shift action probabilities.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near policy, reward, actor critic. Across the three courses, the shared pattern is feedback, credit: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In Diffusion and Vision, sample-and-improve appears in diffusion model training: sample noise levels and denoisers, score them against the target, nudge the model toward high-scoring samples. In Transformers, the same pattern surfaces in LLM fine-tuning: sample tokens, grade them, adjust generation probabilities. Across all three, the core is learning from sampled decisions rather than exhaustive evaluation.</p>
   <p class="chips"><a class="chip" href="policy.html">policy</a> <a class="chip" href="reward.html">reward</a> <a class="chip" href="actor_critic.html">actor critic</a></p>
 </section>
 <section>

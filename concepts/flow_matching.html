@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">generative paths</p>
   <h1>Flow Matching</h1>
-  <p>Learning a smooth path that carries simple samples into data-like samples.</p>
+  <p>A method where a model learns a continuous path—with a direction and speed at every point—that smoothly moves random noise into real data.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.</p>
+  <p>You&#x27;re leading someone through a dark mansion from the front entrance to a treasure room they&#x27;ve never seen. You can&#x27;t just describe the room—you have to create a path with clear signposts at every step so they know which direction to turn and when.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</p>
+  <p>To generate complex data reliably, you need more than isolated decisions. A continuous path with learned directions at every location lets you smoothly transport simple distributions (like random noise) into complex ones (like real images), without jumping between discrete steps.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Flow Matching: A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data. Think of it as the handle the algorithm can grab.</p>
+  <p>The learned velocity field v_theta—a function parameterized by weights theta. You can inspect it by sampling any point x and time t and seeing what direction it predicts; you can adjust theta by computing gradients of the L2 loss against true path data.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>The model loses one of the simplest ways to describe generation as guided motion.</p>
+  <p>Without a learned continuous path, you resort to either discrete denoising steps (which don&#x27;t connect to transport theory) or hand-crafted rules (which don&#x27;t adapt). You lose both the theoretical elegance and the flexibility to control sampling speed.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution.</p>
+  <p>You&#x27;re leading someone through a dark mansion from the front entrance to a treasure room they&#x27;ve never seen. You can&#x27;t just describe the room—you have to create a path with clear signposts at every step so they know which direction to turn and when.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Instead of only asking where to denoise next, one can learn a velocity field that moves points along a path.</p>
+  <p>To generate complex data reliably, you need more than isolated decisions. A continuous path with learned directions at every location lets you smoothly transport simple distributions (like random noise) into complex ones (like real images), without jumping between discrete steps.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data.</p>
+  <p>A vector field is a function that assigns an arrow (direction and magnitude) to each point in space. For flow matching, we learn parameters so the field v_theta(x, t) tells us: at point x and time t, move in this direction at this speed. We train it using an L2 loss—measuring the squared difference between what our learned field predicts and what the true path requires—so the model&#x27;s arrows align with the right trajectory from noise to data.</p>
   <h2>Why is this concept important?</h2>
-  <p>It offers a clean mathematical view of modern generative modeling and connects diffusion to continuous transport.</p>
+  <p>It provides a mathematically unified view: you can prove generation works as transport, connect diffusion models to optimal transport theory, and sample from the learned field using simple numerical integration (like tracing the arrows forward).</p>
   <h2>What breaks without it?</h2>
-  <p>The model loses one of the simplest ways to describe generation as guided motion.</p>
+  <p>Without a learned continuous path, you resort to either discrete denoising steps (which don&#x27;t connect to transport theory) or hand-crafted rules (which don&#x27;t adapt). You lose both the theoretical elegance and the flexibility to control sampling speed.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that generation needs a reliable route from an easy starting distribution to a complex target distribution. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: why not just train the model to output the final data directly from noise, all at once? Or why not memorize a lookup table of noise-to-data pairs?</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because instead of only asking where to denoise next, one can learn a velocity field that moves points along a path. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>Direct prediction fails because the model has no intermediate guidance—it must leap across a huge gap in one guess, which is combinatorially hard. A lookup table doesn&#x27;t generalize: any noise pattern not seen during training produces garbage, and the table would need to be impossibly large.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Flow Matching: A vector field assigns a direction and speed to each point. Matching trains that field so its movement transforms simple noise into data. Think of it as the handle the algorithm can grab.</p>
+  <p>The learned velocity field v_theta—a function parameterized by weights theta. You can inspect it by sampling any point x and time t and seeing what direction it predicts; you can adjust theta by computing gradients of the L2 loss against true path data.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Flow Matching, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Start with random noise. Feed it and the current time t into the learned field to get a direction. Move the noise slightly in that direction. Repeat, incrementing t, until you reach data. This is called solving an ODE—ordinary differential equation—where the velocity field guides the path.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: instead of asking a model to clean noise one discrete step at a time, imagine drawing arrows everywhere in space. Each arrow says which direction a point should move next so that a simple starting cloud gradually becomes the data cloud. CME296 Lecture 3 introduces flow matching as another generation paradigm after diffusion and score matching, then asks what mindset separates it and how it relates back to those methods.</p>
+  <p>Imagine teaching someone to navigate from a random scrambled photograph to a clear dog image. At each location in image-space, you mark an arrow: &#x27;move this many pixels toward clearer edges here,&#x27; &#x27;brighten this region there.&#x27; A model learns these arrows by watching many examples of scrambled-to-clear transformations. Then, a new scrambled photo follows the arrows step by step, and clutter melts into a coherent dog. The L2 loss ensures each arrow matches the true cleaning direction at that spot.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The flow-matching lecture emphasizes continuity and relationship. It recaps diffusion and score matching, then reframes generation as learning motion through space. The key object is a velocity or vector field rather than only a denoising step. That makes flow matching a bridge between generative modeling and transport: learn the route from an easy distribution to the data distribution.</p>
+  <p>The Stanford lecture frames flow matching as a third generation mindset, sitting alongside diffusion and score matching. The key shift is thinking about learning motion through space—a velocity field—rather than only predicting the next denoising step. The lecture stresses that this velocity field (also called u_theta) is trained with an L2 regression loss, making it simple to understand and implement.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that flow matching is just diffusion with different terminology. The family is related, but the mental object changes: diffusion often foregrounds noise and reverse denoising, while flow matching foregrounds a learned path or velocity field that transports samples.</p>
+  <p>Flow matching is not simply diffusion with different notation. Diffusion foregrounds noise corruption and reverse-time denoising; flow matching foregrounds a learned transport map that could come from many sources, including noise corruption, optimal transport, or interpolation. The mental model is fundamentally different: paths versus denoising.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize flow matching when generation is described as moving samples through a continuous path under a learned velocity field. Terms such as rectified flow, ODE sampler, transport, vector field, interpolation path, or continuous normalizing flow usually point to the same primitive: generation as directed motion.</p>
+  <p>Look for papers describing generation as learning a continuous path or trajectory. Phrases like &#x27;velocity field,&#x27; &#x27;vector field,&#x27; &#x27;rectified flow,&#x27; &#x27;transport map,&#x27; &#x27;continuous normalizing flow,&#x27; or &#x27;ODE sampler&#x27; all point to the same idea: generation as guided motion through a learned direction field.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near diffusion, score matching, latent space. Across the three courses, the shared pattern is geometry, search: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In Diffusion (CME296), flow matching bridges to score-based models and optimal transport. In LLMs (CME295), the analogy is planning—each token move is like a step along a learned trajectory. In Deep RL (CS224R), the velocity field parallels a policy that learns which action to take at each state.</p>
   <p class="chips"><a class="chip" href="diffusion.html">diffusion</a> <a class="chip" href="score_matching.html">score matching</a> <a class="chip" href="latent_space.html">latent space</a></p>
 </section>
 <section>

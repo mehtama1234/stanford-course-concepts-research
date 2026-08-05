@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">learning from feedback</p>
   <h1>RL For LLMs</h1>
-  <p>Using outcome feedback to steer a language model&#x27;s choices.</p>
+  <p>Teaching a language model to make better choices by showing it which complete outputs were good or bad.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.</p>
+  <p>Imagine teaching a child to cook. You can taste the final dish and say &#x27;delicious&#x27; or &#x27;needs salt,&#x27; but you didn&#x27;t watch every hand motion. The child must figure out which of their hundred choices led to the bad taste. Feedback comes at the end, not during each step.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.</p>
+  <p>A language model generates text one token at a time. If you reward only the final answer, the model must work backward: which earlier decisions led to this good ending? This is the core RL problem—mapping reward from outcome to actions spread across time.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning RL For LLMs: The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths. Think of it as the handle the algorithm can grab.</p>
+  <p>The policy model itself, parameterized as neural network weights. Specifically, the conditional probability distribution P(next_token | previous_tokens) that the model learned. You adjust these weights via gradient steps that raise log-probability of tokens in high-reward sequences.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>A model may imitate text but fail to optimize for useful task outcomes.</p>
+  <p>Without connecting outcome feedback to token choices, a model can only learn from imitation of known-good text. It cannot refine its behavior beyond the training examples and cannot optimize for new metrics (reasoning speed, conciseness, safety).</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step.</p>
+  <p>Imagine teaching a child to cook. You can taste the final dish and say &#x27;delicious&#x27; or &#x27;needs salt,&#x27; but you didn&#x27;t watch every hand motion. The child must figure out which of their hundred choices led to the bad taste. Feedback comes at the end, not during each step.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Language generation is a sequence of actions. Feedback on the whole response has to influence many token choices.</p>
+  <p>A language model generates text one token at a time. If you reward only the final answer, the model must work backward: which earlier decisions led to this good ending? This is the core RL problem—mapping reward from outcome to actions spread across time.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths.</p>
+  <p>Treat token choices as actions and sequences as trajectories. A reward function scores the full response (say, +1 for correct math answer, 0 for wrong). A policy is the model&#x27;s learned probability over next tokens given prior context. To improve the policy, weight actions by the reward they led to: actions in high-reward sequences get boosted. Formally, gradient updates shift log-probability of actions upward in proportion to their estimated return (future discounted reward). Why gradient? It moves probabilities in the steepest direction toward improving reward while staying near the original distribution.</p>
   <h2>Why is this concept important?</h2>
-  <p>It connects reinforcement learning to instruction following, preference optimization, and reasoning models.</p>
+  <p>Feedback on outcomes (correct or not, user preference, reasoning trace quality) is far cheaper and easier to collect than labeled next tokens. This unlocks training on tasks where humans can judge a full answer but not prescribe step-by-step behavior.</p>
   <h2>What breaks without it?</h2>
-  <p>A model may imitate text but fail to optimize for useful task outcomes.</p>
+  <p>Without connecting outcome feedback to token choices, a model can only learn from imitation of known-good text. It cannot refine its behavior beyond the training examples and cannot optimize for new metrics (reasoning speed, conciseness, safety).</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that for helpfulness or reasoning, we often know which final answer is better but not the exact next token at every step. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might assume: &#x27;Just find which response is better and copy its tokens.&#x27; This sounds simple—if response A is better, make the model more likely to pick those exact tokens.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because language generation is a sequence of actions. feedback on the whole response has to influence many token choices. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>The approach breaks when the same correct tokens can come from different reasoning paths, or when conditioning matters. Copying A&#x27;s tokens without understanding which mid-generation decisions were key teaches brittle behavior. Also, a reward at timestep 1000 cannot directly update the token choice at timestep 10—credit must propagate backward through the sequence.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning RL For LLMs: The model is treated like a policy over tokens. Rewards or preferences adjust the probability of whole responses and sometimes intermediate reasoning paths. Think of it as the handle the algorithm can grab.</p>
+  <p>The policy model itself, parameterized as neural network weights. Specifically, the conditional probability distribution P(next_token | previous_tokens) that the model learned. You adjust these weights via gradient steps that raise log-probability of tokens in high-reward sequences.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For RL For LLMs, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>For each generated sequence: (1) Run the model to generate a full response. (2) Score it with a reward function (math correctness, user preference, verifier output). (3) Compute the gradient of log-probability for each token, weighted by the return from that point onward. (4) Take a gradient step to increase those log-probabilities. Repeat across many sequences to shift the distribution.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: a model solving a math problem writes several reasoning steps and then an answer. We may only know whether the final answer is correct or which response people prefer, not the correct next token for every intermediate step. RL for LLMs treats generation as a sequence of actions and uses outcome feedback to shift the probabilities of whole responses or reasoning traces. CME295 introduces LLM reasoning as a continuation of preference tuning; CS224R has a dedicated lecture on RL for LLM reasoning, making the bridge explicit.</p>
+  <p>Suppose a model generates &#x27;5+3 is 8&#x27; (correct) and &#x27;5+3 is 9&#x27; (wrong). The first earns reward +1, the second 0. We ask: which token choices in sequence 1 deserve credit? All of them, proportionally. So we increase the probability of every token in &#x27;is 8&#x27; and decrease the other sequence&#x27;s tokens. But there&#x27;s a catch: token &#x27;8&#x27; comes at the end, and &#x27;5&#x27; at the start, yet both contributed to correctness. The algorithm estimates how much each token&#x27;s position mattered by tracking return (remaining reward) from that point forward. If &#x27;is 8&#x27; contributes most of the value, tokens earlier in the sequence get partial credit. Repeated on thousands of problems, the model learns to favor correct reasoning patterns.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>The LLM lectures emphasize a training pipeline: pretraining teaches language and code structure, supervised tuning teaches task behavior, preference tuning aligns outputs, and reasoning methods build on those foundations. CS224R adds the RL view: token generation and reasoning traces can be treated as policy behavior shaped by rewards. The important connection is credit assignment across generated tokens, not just making final answers look good.</p>
+  <p>CS224R frames RL for LLMs as treating token generation as policy behavior shaped by reward signals. The key challenge is credit assignment: determining which of the hundreds of tokens in a long reasoning trace earned the final reward. CME295 connects this to reasoning methods, showing that preference learning and outcome-based feedback form the foundation for modern reasoning models. Both lectures stress that simple reward signals (correct or incorrect) propagate poorly—researchers now use process rewards (intermediate correctness) and reasoning traces to allocate credit more precisely.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that RL for LLMs simply makes answers more correct by rewarding correct outputs. The hard part is that the reward often arrives at the end of a long sequence, while the useful or harmful choices were distributed across many tokens. Bad reward design can also encourage verbosity, gaming, or brittle reasoning formats.</p>
+  <p>Students often think RL for LLMs is just &#x27;reward good outputs.&#x27; The hard part is that a reward arriving at the end must influence thousands of earlier token choices fairly. Without careful credit assignment, the model learns spurious correlations or gaming (e.g., writing longer answers because verbosity correlates with correctness in training, not because it improves real reasoning).</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize RL for LLMs when language-model outputs are treated as actions and changed using preference, verifier, reward-model, or task-success feedback. The method may be RLHF, PPO, GRPO, rejection sampling, process rewards, outcome rewards, or reasoning fine-tuning. The shared primitive is credit: decide which parts of a generated trajectory deserve the later signal.</p>
+  <p>In a paper, spot RL for LLMs when the text says a language model is trained on outcome feedback—phrases like &#x27;reward model,&#x27; &#x27;preference learning,&#x27; &#x27;RL from feedback,&#x27; &#x27;RLHF,&#x27; &#x27;GRPO,&#x27; &#x27;rejection sampling,&#x27; or &#x27;process verifier&#x27; all point to it. The distinguishing signal is credit: the method must decide how to distribute a signal from a full response back to individual token choices.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near fine tuning, policy, reasoning traces. Across the three courses, the shared pattern is feedback, credit, scale: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In CME295, this follows preference learning (which compares outputs) and feeds into reasoning traces (which structure intermediate feedback). In CS224R, RL for LLMs is the direct application of Markov Decision Process and policy gradient theory to language: tokens are actions, context is state, and rewards drive learning. In diffusion models, a similar credit problem appears when training on sample quality—you must trace each pixel&#x27;s contribution to the final loss.</p>
   <p class="chips"><a class="chip" href="fine_tuning.html">fine tuning</a> <a class="chip" href="policy.html">policy</a> <a class="chip" href="reasoning_traces.html">reasoning traces</a></p>
 </section>
 <section>

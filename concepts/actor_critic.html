@@ -20,53 +20,53 @@
 <section class="page-head">
   <p class="eyebrow">action and consequence</p>
   <h1>Actor-Critic</h1>
-  <p>A learner split into a chooser and a judge.</p>
+  <p>A learner made of two parts: one that picks actions, one that evaluates how good they turned out.</p>
 </section>
 <figure class="learning-diagram concept-flow">
   <figcaption>First-Principles Map</figcaption>
   <div class="flow-steps"><div class="flow-step">
   <span>Problem</span>
-  <p>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</p>
+  <p>You&#x27;re learning to cook. After trying a new recipe, you ask: &#x27;Was that actually good, or did I just get lucky with ingredients today?&#x27; Comparing against only your memory of past meals is noisy—some were memorable for wrong reasons. You need a stable reference point to learn what really helps.</p>
 </div><div class="flow-step">
   <span>Constraint</span>
-  <p>Decision making improves when action choice and outcome evaluation can help each other.</p>
+  <p>When you choose an action and see what happens, two separate problems appear: figuring out which action to try next, and measuring whether this action was actually smart. These problems interfere if you solve them together. Separating them means the measurement system stays steady while the chooser improves, and the chooser gets clearer feedback.</p>
 </div><div class="flow-step">
   <span>Math Handle</span>
-  <p>The useful object is the thing the model can change or compare while learning Actor-Critic: The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is. Think of it as the handle the algorithm can grab.</p>
+  <p>Two learned functions: the policy (actor) π(a|s) which outputs action probabilities given state, and the value function (critic) V(s) which outputs a number representing expected future reward from state s. The critic V(s) is the concrete handle—it is the baseline that the actor subtracts from observed reward to isolate the action&#x27;s true contribution.</p>
 </div><div class="flow-step">
   <span>Failure Mode</span>
-  <p>Policy updates can be too unstable or data-hungry for complex environments.</p>
+  <p>Without separating judging from choosing, you must update the policy using raw, noisy rewards. This either requires collecting vast amounts of data to average out noise, or produces unstable policy updates that oscillate wildly and fail to learn.</p>
 </div></div>
 </figure>
 <section class="treatment">
   <h2>What real-world problem is this about?</h2>
-  <p>The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good.</p>
+  <p>You&#x27;re learning to cook. After trying a new recipe, you ask: &#x27;Was that actually good, or did I just get lucky with ingredients today?&#x27; Comparing against only your memory of past meals is noisy—some were memorable for wrong reasons. You need a stable reference point to learn what really helps.</p>
   <h2>Why does this problem exist?</h2>
-  <p>Decision making improves when action choice and outcome evaluation can help each other.</p>
+  <p>When you choose an action and see what happens, two separate problems appear: figuring out which action to try next, and measuring whether this action was actually smart. These problems interfere if you solve them together. Separating them means the measurement system stays steady while the chooser improves, and the chooser gets clearer feedback.</p>
   <h2>What is the mathematical idea underneath?</h2>
-  <p>The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is.</p>
+  <p>The actor is a function (the policy) that takes the current situation and outputs an action choice, updated by moving in the direction that increases expected future reward. The critic is a separate function (the value function) that takes the current situation and outputs a prediction of total future reward from here, updated to match actual outcomes. The key insight: subtract the critic&#x27;s prediction from actual reward to get the advantage (the part of reward this action specifically earned, not just being in a good situation). The actor then learns from this advantage signal, which has less noise than raw reward because it removes the baseline of &#x27;how good is this state anyway?&#x27;</p>
   <h2>Why is this concept important?</h2>
-  <p>It reduces noise in learning and underlies many practical RL methods.</p>
+  <p>The advantage signal is less noisy than raw reward, so the actor learns faster and more stably. This means complex tasks with delayed rewards become solvable with practical amounts of data. Many real systems—from robot control to language-model fine-tuning—use this division of labor.</p>
   <h2>What breaks without it?</h2>
-  <p>Policy updates can be too unstable or data-hungry for complex environments.</p>
+  <p>Without separating judging from choosing, you must update the policy using raw, noisy rewards. This either requires collecting vast amounts of data to average out noise, or produces unstable policy updates that oscillate wildly and fail to learn.</p>
   <h2>Naive Starting Point</h2>
-  <p>Start with the simplest version: The problem is that raw rewards are noisy, so the agent needs a better estimate of whether an action was actually good. A beginner might try to solve this with a fixed rule, a lookup table, or one direct guess. That works only while the situation is tiny and clean.</p>
+  <p>A beginner might think: &#x27;Why not just reinforce actions that led to high rewards and avoid actions that led to low rewards?&#x27; This direct approach works on tiny problems with clean, immediate rewards, but it ignores a fundamental issue: some actions led to high reward only because the state was already good.</p>
   <h2>Why the Simple Approach Fails</h2>
-  <p>The simple approach breaks because decision making improves when action choice and outcome evaluation can help each other. Once the input grows, feedback arrives late, or many explanations compete, the system needs a reusable mechanism instead of a special case.</p>
+  <p>The direct approach fails because it cannot distinguish between &#x27;this action was smart&#x27; and &#x27;this state happened to be lucky.&#x27; If you visit a wealthy neighborhood and find a coin, did your navigation skill shine, or did location luck mask a poor choice? Without a baseline that says &#x27;coins appear here at this rate,&#x27; you credit the action when you should credit the state.</p>
   <h2>The Mathematical Object</h2>
-  <p>The useful object is the thing the model can change or compare while learning Actor-Critic: The actor updates the policy; the critic estimates value. The actor asks what to do, and the critic estimates how good the situation or action is. Think of it as the handle the algorithm can grab.</p>
+  <p>Two learned functions: the policy (actor) π(a|s) which outputs action probabilities given state, and the value function (critic) V(s) which outputs a number representing expected future reward from state s. The critic V(s) is the concrete handle—it is the baseline that the actor subtracts from observed reward to isolate the action&#x27;s true contribution.</p>
   <h2>The Operation</h2>
-  <p>The operation is to apply that object repeatedly: read the current situation, produce a numerical signal, and use feedback or comparison to adjust the next step. For Actor-Critic, this is the move that turns a vague goal into an executable procedure.</p>
+  <p>Observe the current state. The actor outputs an action. Execute the action and observe the reward and next state. The critic predicts the future reward from the state you just left. Subtract that prediction from your actual observed reward to get the advantage. Use the advantage to adjust the actor&#x27;s probabilities (increase probability of actions with positive advantage). Also adjust the critic to predict better next time by comparing its prediction to actual observed reward.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Mini-example: suppose an agent takes an action and receives a noisy final score. The actor is the part that chooses actions. The critic is the part that estimates whether the situation or action was better than expected. In the CS224R recap, policy gradients improve a policy from collected data, baselines encourage more above-average behavior, and value functions estimate future expected rewards. Actor-critic methods combine those roles: the actor changes behavior, while the critic supplies a lower-noise judgment signal.</p>
+  <p>Suppose you are learning to make coffee. State: you have beans, water, and a grinder. Actor picks action &#x27;grind for 3 seconds.&#x27; You brew and taste the result: actual reward is 7 out of 10 (pretty good). Critic predicts: &#x27;starting from this state with these tools, you usually get about 6.&#x27; Advantage is 7 minus 6 equals 1 (this action was slightly better than your baseline). The actor&#x27;s probability of &#x27;grind for 3 seconds&#x27; in this state increases a little. If the critic had predicted 7, advantage would be 0, and the actor would not change—correct, because you met but did not beat the baseline. Next time, the critic updates its prediction from 6 toward 7.</p>
   <h2>What the Lectures Emphasize</h2>
-  <p>CS224R emphasizes actor-critic as a practical response to noisy policy-gradient learning. The course moves from policy-gradient updates, to baselines, to value functions and Q-functions, then into off-policy actor-critic. That sequence matters: the critic is not an ornament. It is introduced because raw trajectory returns are too noisy and because multiple gradient steps or off-policy data require more careful correction.</p>
+  <p>CS224R builds actor-critic as the natural solution to a progression: raw policy gradients need baselines to reduce noise, baselines become value functions, and separating the value-function update from the policy update unlocks both efficiency and off-policy learning. The lecturer stresses that the critic is not optional—it is the feedback mechanism that makes learning tractable.</p>
   <h2>Common Misunderstanding</h2>
-  <p>A common misunderstanding is that the critic is a separate judge with ground truth. It is also learned and can be wrong. If the critic overestimates unsupported actions or gives biased value estimates, the actor can confidently move in the wrong direction.</p>
+  <p>Many think the critic has access to ground truth about state value and should be &#x27;correct.&#x27; Actually, the critic is learned and wrong at first. It improves over time. A broken critic (one that overestimates all states, or underestimates them) will mislead the actor into confidently pursuing bad actions. The actor and critic co-improve; neither is ever fully correct.</p>
   <h2>How to Recognize This in a New Paper or Model</h2>
-  <p>In a new paper, recognize actor-critic structure whenever one learned object chooses actions and another estimates value, advantage, reward-to-go, or quality. It may appear in robotics, PPO-style LLM tuning, off-policy RL, or continuous-control methods. The shared primitive is division of labor: separate choosing from judging so feedback is less noisy.</p>
+  <p>Scan papers and systems for a pattern: one learned component chooses actions or generates text, another learned component scores outcomes or estimates value. This appears in PPO tuning of language models (actor = policy, critic = reward model), continuous-control robotics (actor = mean action, critic = state value), and off-policy methods. The signal is division of labor between selection and evaluation.</p>
   <h2>Connected Concepts</h2>
-  <p>The same primitive reappears near policy gradient, value functions, rl for llms. Across the three courses, the shared pattern is feedback, credit: choose what to keep, how to move, what feedback means, or how to measure whether the behavior really improved.</p>
+  <p>In Deep RL, actor-critic builds on policy gradients and value functions. In LLM tuning (RL for LLMs), the same actor-critic pattern surfaces when a language model is the actor and a reward model is the critic. In diffusion/vision, the principle of learning a separate evaluator (like a discriminator) mirrors the critic&#x27;s role of providing stable feedback independent of generation.</p>
   <p class="chips"><a class="chip" href="policy_gradient.html">policy gradient</a> <span class="chip muted-chip">value functions</span> <a class="chip" href="rl_for_llms.html">rl for llms</a></p>
 </section>
 <section>
