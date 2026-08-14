@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>Here is what happens at each step of image creation: (1) the program picks a direction based on what it learned about making realistic images; (2) you compute your score on the partial image—how well does it match your request right now?; (3) you measure the gradient—the direction that would make the score higher; (4) you blend the two directions using a strength control knob, producing a combined move that respects both realism and your request; (5) take one small step in that combined direction; (6) repeat until the image is done. The strength knob is your guidance weight: turn it high to follow your request closely, turn it low to trust what the program learned.</p>
   <h2>Worked Mini-Example</h2>
-  <p>You want a green apple. A program starts with random noise and gradually shapes it into an apple. At the halfway point, the shape looks apple-like but is reddish. Your request score says &#x27;this should be green&#x27; and computes: &#x27;push toward green.&#x27; Guidance scales this signal and mixes it with the program&#x27;s natural move &#x27;keep it apple-shaped.&#x27; The next step combines both nudges: the program&#x27;s instinct and your color request. A few steps later, the apple is both recognizable as an apple and visibly green. If you turn off guidance, the program makes a beautiful, realistic apple—but it stays red, ignoring your &#x27;green&#x27; request entirely.</p>
+  <p>You request &#x27;a green apple.&#x27; A diffusion model starts with 256×256 random noise and refines it in 50 steps. At step 25, the model&#x27;s inherent knowledge generates an apple-like shape and coloring—but it is red (which is common in training data). Your guidance scorer runs on the step-25 image and computes: &#x27;greenness score&#x27; = 0.2/1.0 (20% of pixels are actually green). It calculates the gradient (direction to make pixels greener), finding that &#x27;shift pixel colors toward (0, 255, 0)&#x27; increases the score. The guidance weight λ is set to 7.5.
+
+The model&#x27;s natural next move (step 26) would be &#x27;keep this apple-realistic.&#x27; The guidance direction is &#x27;shift colors greener.&#x27; You blend them: 0.925 × (model direction) + 7.5 × (guidance direction) = combined direction. Step 26 moves the apple toward both realism and green. By step 50, the apple is both recognizable as an apple and visibly green (87% greenness). If you set λ = 0 (no guidance), the apple stays red (model defaults to common training cases). If you set λ = 15 (double guidance), the apple becomes extremely green but might develop odd shapes (losing realism).</p>
   <h2>What the Lectures Emphasize</h2>
   <p>The CME296 course highlights a critical insight: a program can make beautiful, realistic pictures while completely ignoring what you asked for. Beauty and faithfulness to your request are separate problems. Classifier-free guidance is the practical method that steers the program toward your request without needing a separate judge program. The lesson is that controllable generation requires active steering during creation—not just building better, more powerful programs.</p>
   <h2>Common Misunderstanding</h2>

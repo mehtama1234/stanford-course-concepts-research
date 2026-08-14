@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>At each moment, the learner observes where it is and picks an action. It gets an immediate reward and moves to the next situation. Once a full sequence ends, the learner walks backward from the end: it starts with the final reward and works backward, multiplying each reward by the discount factor raised to the power of how many steps in the past it was. It updates its table using these computed values. Next time, actions with higher computed returns are chosen more often.</p>
   <h2>Worked Mini-Example</h2>
-  <p>A robot learns to stack three blocks on top of each other. Step 1: pick up block A (no reward yet). Step 2: position block B (no reward yet). Step 3: place block A on top of B (no reward yet). Step 4: place block C on top (goal reached, +10 reward). Without discounting, step 4 gets all the credit. With a discount factor of 0.99: step 4 gets 10. Step 3 gets 0 + 0.99·(10) = 9.9. Step 2 gets 0 + 0.99·(9.9) = 9.8. Step 1 gets 0 + 0.99·(9.8) = 9.7. Now every step in the sequence has credit, even though only step 4 saw a reward. Next time the robot tries, all three earlier steps are slightly more likely to happen because they were part of the winning sequence.</p>
+  <p>A robot learns to stack three blocks. Step 0: pick up red block (reward = 0). Step 1: position blue block (reward = 0). Step 2: place red on blue (reward = 0). Step 3: place yellow on red (reward = +100, goal complete). Using discount factor γ = 0.9, compute returns backward: R₃ = 100, R₂ = 0 + 0.9 · 100 = 90, R₁ = 0 + 0.9 · 90 = 81, R₀ = 0 + 0.9 · 81 = 72.9.
+
+Now update: step 3&#x27;s action (place yellow) gets reinforced with weight 100 (direct success). Step 2&#x27;s action (place red on blue) gets reinforced with weight 90—slightly less because it&#x27;s one step removed but still crucial. Step 1&#x27;s action (position blue) gets reinforced with weight 81; step 0&#x27;s action (pick red) gets reinforced with weight 72.9. All four steps contributed to the final success, so all four become more likely next time. If you only reinforced step 3, the robot would randomly stumble onto the right stack maybe once in a thousand episodes. By assigning credit to all steps in the chain, learning accelerates 100×. The discount factor ensures earlier steps are weighted less (they are further from the outcome), but not zero.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>CS224R teaches that reinforcement learning is hard precisely because rewards arrive late or almost never. The course covers problems where success comes many steps or even many months after the key decision. When explaining returns and discount factors, the lecture drives home that these numbers—less than 1—are the mathematical tool for tracing backward from outcomes to earlier choices, giving heavier weight to recent consequences so learning stays connected to reality.</p>
   <h2>Common Misunderstanding</h2>

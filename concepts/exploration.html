@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>At each step: First, score how good each possible action looks based on current knowledge. Then, apply the exploration method (add randomness, add an uncertainty bonus, or add a surprise signal) to change those scores. Use the modified scores to pick an action. Try it in the real world. Observe what happens. Update the system&#x27;s knowledge with that outcome. Feed the new knowledge into the next step&#x27;s exploration decision.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Consider two video games: Breakout (ball bounces, destroying bricks gives immediate points) and Montezuma&#x27;s Revenge (a key hidden in a room requires 50 specific moves to reach, with zero points until you grab it). In Breakout, the system learns quickly by always picking the action that looks best right now—immediate feedback shows it&#x27;s working. In Montezuma&#x27;s Revenge, that same greedy strategy fails: it keeps repeating the same early moves because nothing signals that a better path exists. With exploration, the system deliberately tries unusual move sequences more often. Eventually it stumbles onto the key, gets the reward signal, and learns that path was valuable. The exploration bonus adds extra weight to moves not yet tested much or moves that led to surprising results, forcing the search to keep moving forward into unexplored territory.</p>
+  <p>A system plays Montezuma&#x27;s Revenge, a game with sparse reward: zero points for 99% of moves, then +5000 points when a key is grabbed after a 50-move sequence. A greedy approach (always pick the action with highest expected reward) tries the same first move thousands of times because no future move signals that exploring would help. With ε-greedy exploration (pick a random action 10% of the time), the system wastes moves but randomly stumbles onto the key after about 50,000 attempts.
+
+With uncertainty-based exploration, the system maintains confidence intervals around each move&#x27;s value. Early moves have high uncertainty (±1000 reward). The exploration bonus adds this uncertainty to the value estimate: move 1 gets value 0 + 1000 = 1000; move 2 (more certain from previous tries) gets value 50 + 200 = 250. The system picks move 1. Over thousands of episodes, it concentrates exploration on genuinely uncertain actions, finding the key path in 5,000 attempts instead of 50,000. The uncertainty decreases as the system learns, so exploration naturally shifts from poorly-understood moves to frontier actions. When the system learns the key path gives +5000, that high reward updates its estimate of early moves that lead there, causing long-term credit to propagate backward.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>Stanford&#x27;s Deep RL course motivates exploration by comparing Breakout (where immediate rewards make greedy choices work) to Montezuma&#x27;s Revenge (where rewards hide behind long chains of specific choices). The lesson: sufficient exploration—actually visiting the important parts of the world—is required before a learning algorithm can converge to a good strategy. Exploration connects to other ideas: hierarchy (a high-level plan can guide what to explore), meta-RL (learning which questions are worth answering), and robotics (deciding what to learn about to get better at real tasks).</p>
   <h2>Common Misunderstanding</h2>

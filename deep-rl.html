@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deep RL Lecture Guide · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="active" href="deep-rl.html">Deep RL</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">Stanford CS224R Deep Reinforcement Learning</p>
+  <h1>Deep RL Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture. Each section starts with the ordinary problem, then names the course idea only after the need for it is clear.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Deep RL studies a learner that acts, sees what changed, receives a score, and changes its future action rule. The hard parts are delay, missing data, noisy scores, unsafe trial and error, and tests that do not show the whole behavior.</p>
+  <p class="chips"><a class="chip" href="#lecture-1">Lecture 1: Class Intro</a> <a class="chip" href="#lecture-2">Lecture 2: Imitation Learning</a> <a class="chip" href="#lecture-3">Lecture 3: Policy Gradients</a> <a class="chip" href="#lecture-4">Lecture 4: Actor-Critic Methods</a> <a class="chip" href="#lecture-5">Lecture 5: Off-Policy Actor Critic</a> <a class="chip" href="#lecture-6">Lecture 6: Q-Learning</a> <a class="chip" href="#lecture-7">Lecture 7: Offline RL</a> <a class="chip" href="#lecture-8">Lecture 8: Reward Learning</a> <a class="chip" href="#lecture-9">Lecture 9: RL for LLMs</a> <a class="chip" href="#lecture-10">Lecture 10: RL for LLM Reasoning</a> <a class="chip" href="#lecture-11">Lecture 11: Model-Based RL</a> <a class="chip" href="#lecture-12">Lecture 12: Multi-Task RL</a> <a class="chip" href="#lecture-13">Lecture 13: Meta RL</a> <a class="chip" href="#lecture-14">Lecture 14: Exploration</a> <a class="chip" href="#lecture-15">Lecture 15: Hierarchical RL and IL</a> <a class="chip" href="#lecture-16">Lecture 16: RL for Robots</a> <a class="chip" href="#lecture-17">Lecture 17: Advancing Robot Intelligence</a> <a class="chip" href="#lecture-18">Lecture 18: Frontiers</a> <a class="chip" href="#lecture-19">Tutorial Session: Review of Q-Learning</a></p>
+</section>
+<section class="stack">
+
+<article class="lecture-card" id="lecture-1">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 1</p>
+      <h2>Lecture 1: Class Intro</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=EvHRQhMX7_w">Open video</a>
+  </div>
+  <p class="meta">52m 58s · 8387 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>An agent must choose actions before it knows the full result. The lecture sets up that problem: a choice changes the next situation, and the useful score may arrive later.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Deep RL is about learning a rule for acting. The rule is tested by running it, seeing what happens, and changing it so future choices work better.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be able to say what the learner sees, what it can do, and what score says the action helped.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>agent</dt><dd>the learner that chooses</dd><dt>state</dt><dd>the situation the learner uses</dd><dt>action</dt><dd>one move the learner can make</dd><dt>reward</dt><dd>the score after a move or after a chain of moves</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-credit_assignment-01">ev-credit_assignment-01</a> <span class="time">00:46:20.770</span>: The CS224R introductory lecture explains that a raw sum of rewards can be weighted by a discount factor, introducing one way to connect future reward to earlier choices.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/001-EvHRQhMX7_w-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 1： Class Intro.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-2">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 2</p>
+      <h2>Lecture 2: Imitation Learning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=WxRDyObrm_M">Open video</a>
+  </div>
+  <p class="meta">1h 7m · 9754 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Sometimes trial and error is costly. A robot, driver, or assistant may need to start from examples of good behavior instead of learning only by mistakes.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Imitation learning copies actions from examples. The hard part is that small errors can move the learner into situations the examples did not cover.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know why copying one step at a time can fail after several steps.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>demonstration</dt><dd>an example of what an expert did</dd><dt>behavior cloning</dt><dd>training the learner to copy expert actions</dd><dt>distribution shift</dt><dd>ending up in situations the examples did not show</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/002-WxRDyObrm_M-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 2： Imitation Learning.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-3">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 3</p>
+      <h2>Lecture 3: Policy Gradients</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=KCAOXd4IO9o">Open video</a>
+  </div>
+  <p class="meta">1h 2m · 9229 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The learner has a rule with adjustable numbers, but the score comes after sampled actions. We need a way to push the rule toward actions that led to better scores.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Policy gradient raises the chance of actions that did better than expected and lowers the chance of actions that did worse.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Understand why the learner must connect a sampled action to the later score before it can update the rule.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>policy</dt><dd>the rule that picks action odds</dd><dt>gradient</dt><dd>a direction for changing the rule</dd><dt>return</dt><dd>the total future score from a point</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/policy_gradient.html">Policy Gradient</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-policy-06">ev-policy-06</a> <span class="time">00:00:29.240</span>: The CS224R policy-gradient lecture lists policy as one of the central objects the course is trying to learn, alongside quantities that judge state-action quality.</li><li><a href="evidence.html#ev-policy_gradient-02">ev-policy_gradient-02</a> <span class="time">00:06:57.150</span>: The CS224R policy-gradient lecture asks how to optimize the RL objective and answers by connecting policy learning to gradient descent, the standard way neural networks are trained.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/003-KCAOXd4IO9o-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 3： Policy Gradients.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-4">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 4</p>
+      <h2>Lecture 4: Actor-Critic Methods</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=oejFZShW9hU">Open video</a>
+  </div>
+  <p class="meta">1h 3m · 8869 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Raw trial scores are noisy. A good action can happen in a bad run, and a bad action can happen in a lucky run.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Actor-critic splits the job. The actor chooses. The critic estimates how good the situation or action is, so updates have a better comparison point.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know why a comparison point can make learning less noisy.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>actor</dt><dd>the chooser</dd><dt>critic</dt><dd>the judge that estimates future score</dd><dt>baseline</dt><dd>a normal score used for comparison</dd><dt>advantage</dt><dd>how much better an action was than the comparison point</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy_gradient.html">Policy Gradient</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-policy_gradient-03">ev-policy_gradient-03</a> <span class="time">00:01:02.160</span>: The CS224R actor-critic lecture writes the policy-gradient expression in terms of the gradient of the log probability of actions under the policy.</li><li><a href="evidence.html#ev-actor_critic-03">ev-actor_critic-03</a> <span class="time">00:01:26.620</span>: The CS224R actor-critic lecture recaps the baseline idea: after increasing likelihood for good sampled actions, a baseline such as average reward gives a comparison point for judging what counts as good.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/004-oejFZShW9hU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 4： Actor-Critic Methods.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-5">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 5</p>
+      <h2>Lecture 5: Off-Policy Actor Critic</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=cRGKc-nAWho">Open video</a>
+  </div>
+  <p class="meta">1h 9m · 10130 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Fresh experience is expensive. The course asks when the learner can reuse old experience instead of throwing it away.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Off-policy actor-critic learns from data made by another rule, but it must correct for the fact that the old rule chose actions with different odds.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be clear about the danger: old data can help, but it can also give a biased picture of what the current rule would do.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>on-policy</dt><dd>learning from the current rule&#x27;s own runs</dd><dt>off-policy</dt><dd>learning from runs made by another rule</dd><dt>importance weight</dt><dd>a correction for different action odds</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/policy_gradient.html">Policy Gradient</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-policy-02">ev-policy-02</a> <span class="time">00:00:10.040</span>: The CS224R off-policy actor-critic lecture recaps policy gradients as the first reinforcement-learning algorithm covered, making policy the behavior object being improved.</li><li><a href="evidence.html#ev-policy_gradient-01">ev-policy_gradient-01</a> <span class="time">00:01:07.797</span>: The CS224R off-policy actor-critic lecture recaps policy gradients as a loop: run a policy, collect a batch of experience, improve the policy using that data, and repeat so behavior improves with experience.</li><li><a href="evidence.html#ev-actor_critic-01">ev-actor_critic-01</a> <span class="time">00:00:48.680</span>: The CS224R off-policy actor-critic lecture recaps the path from policy gradients to baselines and value functions, then uses that setup to motivate actor-critic methods.</li><li><a href="evidence.html#ev-q_learning-05">ev-q_learning-05</a> <span class="time">00:01:39.540</span>: The CS224R off-policy actor-critic lecture compares Q-functions with value functions, emphasizing that a Q-function evaluates a state-action choice and then the future that follows.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/005-cRGKc-nAWho-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 5： Off-Policy Actor Critic.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-6">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 6</p>
+      <h2>Lecture 6: Q-Learning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=-7kv6jf0isQ">Open video</a>
+  </div>
+  <p class="meta">1h 1m · 8901 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Instead of directly learning which action to take, the learner can ask a simpler question: how much future score should I expect if I take this action here?</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Q-learning learns action values. After that, choosing can be as simple as picking the action with the highest estimated value.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Understand why using your own estimates as targets can become unstable.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>Q-value</dt><dd>estimated future score for one action in one situation</dd><dt>Bellman update</dt><dd>new estimate equals immediate score plus estimated future score</dd><dt>bootstrapping</dt><dd>training an estimate using another estimate</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a> <a class="chip" href="concepts/exploration.html">Exploration</a> <a class="chip" href="concepts/policy.html">Policy</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-policy-04">ev-policy-04</a> <span class="time">00:00:28.100</span>: The CS224R Q-learning lecture distinguishes value functions and Q-functions by saying a value function follows a policy from a state, while a Q-function starts with a state-action choice and then follows a policy.</li><li><a href="evidence.html#ev-credit_assignment-04">ev-credit_assignment-04</a> <span class="time">00:11:05.430</span>: The CS224R Q-learning lecture uses discounting and future return to connect later rewards back to earlier state-action choices.</li><li><a href="evidence.html#ev-q_learning-01">ev-q_learning-01</a> <span class="time">00:00:30.320</span>: The CS224R Q-learning lecture frames the day around value-based RL: how Q-functions relate to policies, how one can do RL without learning an explicit policy, and how Q-learning must be stabilized in practice.</li><li><a href="evidence.html#ev-exploration-03">ev-exploration-03</a> <span class="time">00:27:49.940</span>: The CS224R Q-learning lecture notes that with sufficient exploration, the algorithm can converge, tying learning success to whether the agent actually visits enough of the relevant state-action space.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/006--7kv6jf0isQ-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 6： Q-Learning.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-7">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 7</p>
+      <h2>Lecture 7: Offline RL</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=lRDaXnPIzks">Open video</a>
+  </div>
+  <p class="meta">1h 7m · 9338 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>In some settings the learner cannot try new actions. It only has a fixed log of past experience.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Offline RL must learn from old data without pretending the data covers every action. The central question is what the log actually proves.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know why a high estimated value is not trustworthy when the data barely contains that action.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>offline data</dt><dd>stored past experience</dd><dt>coverage</dt><dd>which situations and actions the data actually includes</dd><dt>out-of-data action</dt><dd>an action the learner wants but the log barely supports</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/offline_rl.html">Offline Reinforcement Learning</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-policy-03">ev-policy-03</a> <span class="time">00:00:14.040</span>: The CS224R offline RL lecture recaps policy gradients by saying the goal was to collect data from the current policy, then use that data for improvement.</li><li><a href="evidence.html#ev-actor_critic-02">ev-actor_critic-02</a> <span class="time">00:00:33.920</span>: The CS224R offline RL lecture recaps the move from reinforcing good outcomes to introducing a value function that can estimate outcome quality.</li><li><a href="evidence.html#ev-q_learning-03">ev-q_learning-03</a> <span class="time">00:05:31.730</span>: The CS224R offline RL lecture says the target was changed to use the Q-function, connecting offline learning back to the action-value object used in Q-learning.</li><li><a href="evidence.html#ev-offline_rl-01">ev-offline_rl-01</a> <span class="time">00:07:44.840</span>: The CS224R offline RL lecture defines the setting as learning from a dataset given to us rather than collected by the learner&#x27;s own policy, after warning that Q-function estimates need action coverage.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/007-lRDaXnPIzks-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 7： Offline RL.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-8">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 8</p>
+      <h2>Lecture 8: Reward Learning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=PDIxDhA9Z6Y">Open video</a>
+  </div>
+  <p class="meta">1h 5m · 9636 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The score may not be given by the world. A person may know which behavior is better but not how to write the right reward rule.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Reward learning turns judgments, examples, or preferences into a score that can train the agent.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be able to explain why the learned score can be wrong even when the learner optimizes it well.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>reward model</dt><dd>a learned scorer</dd><dt>preference</dt><dd>a comparison saying which outcome is better</dd><dt>mis-specified reward</dt><dd>a score that rewards the wrong behavior</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/offline_rl.html">Offline Reinforcement Learning</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-q_learning-04">ev-q_learning-04</a> <span class="time">00:01:17.740</span>: The CS224R reward-learning lecture warns that optimizing a Q-function can lead the learner to query that Q-function on actions it wants to use for policy improvement.</li><li><a href="evidence.html#ev-offline_rl-03">ev-offline_rl-03</a> <span class="time">00:00:08.620</span>: The CS224R reward-learning lecture opens by saying the class will finish offline reinforcement learning, giving direct course support that offline RL is a named, central topic.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/008-PDIxDhA9Z6Y-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 8： Reward Learning.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-9">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 9</p>
+      <h2>Lecture 9: RL for LLMs</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=XKLGuwvSKvI">Open video</a>
+  </div>
+  <p class="meta">1h 2m · 9700 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Language models already know how to produce text, but we may want to steer answers toward what people prefer.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>RL for LLMs uses feedback about answers to change the model&#x27;s output rule. The action is often the next token or a whole answer.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know the difference between predicting text and being trained to produce preferred text.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>language policy</dt><dd>the model&#x27;s odds over next words or answers</dd><dt>human feedback</dt><dd>people judging which answer is better</dd><dt>alignment</dt><dd>making useful behavior score higher than unwanted behavior</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a> <a class="chip" href="concepts/scaling_laws.html">Scaling Laws</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-fine_tuning-01">ev-fine_tuning-01</a> <span class="time">00:00:05.480</span>: The CS224R RL-for-LLMs lecture asks how pretrained language models become useful chatbots, setting up preference optimization as the bridge from text prediction to assistant behavior.</li><li><a href="evidence.html#ev-reward-02">ev-reward-02</a> <span class="time">00:00:05.480</span>: The CS224R RL-for-LLMs lecture opens by saying it will focus on preference optimization, placing human or comparative feedback at the center of LLM adaptation.</li><li><a href="evidence.html#ev-scaling_laws-02">ev-scaling_laws-02</a> <span class="time">00:00:28.920</span>: The CS224R RL-for-LLMs lecture points to the trend of using larger models and far more compute, placing RL-for-LLMs inside the broader scaling story.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/009-XKLGuwvSKvI-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 9： RL for LLMs.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-10">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 10</p>
+      <h2>Lecture 10: RL for LLM Reasoning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=O2VpNnwB4lM">Open video</a>
+  </div>
+  <p class="meta">1h 10m · 13378 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>For reasoning, the final answer may hide which earlier step helped or hurt. The learner needs feedback across a chain of written steps.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>RL for reasoning treats intermediate work as a sequence of choices. The hard part is deciding which step deserves credit for the final answer.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be able to say why a correct final answer is not enough information to judge every step.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>reasoning trace</dt><dd>the visible chain of work</dd><dt>process feedback</dt><dd>scoring steps, not only final answers</dd><dt>advantage</dt><dd>how much a choice improved the expected result</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/reasoning_traces.html">Reasoning Traces</a> <a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a> <a class="chip" href="concepts/policy_gradient.html">Policy Gradient</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-reasoning_traces-02">ev-reasoning_traces-02</a> <span class="time">00:00:07.020</span>: The CS224R RL-for-LLM-reasoning lecture states that the session will focus on reasoning and reinforcement learning for LLM reasoning, placing multi-step language generation inside an RL framing.</li><li><a href="evidence.html#ev-policy_gradient-06">ev-policy_gradient-06</a> <span class="time">00:33:21.520</span>: The CS224R RL-for-LLM-reasoning lecture ties LLM reasoning optimization back to value functions and advantage functions.</li><li><a href="evidence.html#ev-actor_critic-05">ev-actor_critic-05</a> <span class="time">00:33:21.520</span>: The CS224R RL-for-LLM-reasoning lecture points back to value and advantage functions when explaining the optimization setup for reasoning.</li><li><a href="evidence.html#ev-q_learning-06">ev-q_learning-06</a> <span class="time">00:36:45.910</span>: The CS224R RL-for-LLM-reasoning lecture defines a quantity that is basically a Q-function, showing that action-value reasoning reappears when generated reasoning steps are optimized.</li><li><a href="evidence.html#ev-offline_rl-04">ev-offline_rl-04</a> <span class="time">00:07:36.562</span>: The CS224R RL-for-LLM-reasoning lecture says it will discuss techniques that look like offline reinforcement learning, connecting fixed-data RL ideas to reasoning-model training.</li><li><a href="evidence.html#ev-rl_for_llms-02">ev-rl_for_llms-02</a> <span class="time">00:00:07.020</span>: The CS224R RL-for-LLM-reasoning lecture opens by saying it will cover reasoning and reinforcement learning for LLM reasoning.</li><li><a href="evidence.html#ev-generalization-01">ev-generalization-01</a> <span class="time">00:22:49.090</span>: The CS224R RL-for-reasoning lecture uses math exam problems and reference solutions to discuss training language models by next-token prediction, then asks why that paradigm works for reasoning.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/010-O2VpNnwB4lM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 10： RL for LLM Reasoning.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-11">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 11</p>
+      <h2>Lecture 11: Model-Based RL</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=PvqyGnOirgA">Open video</a>
+  </div>
+  <p class="meta">1h 13m · 10526 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Real trial and error can be slow or costly. If the learner can predict what will happen, it can plan before acting.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Model-based RL learns or uses a model of consequences, then searches possible actions inside that model.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know why planning helps only as much as the prediction model can be trusted.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>world model</dt><dd>a predictor of next situations</dd><dt>planning</dt><dd>testing possible moves before making one</dd><dt>model error</dt><dd>wrong predictions that lead to bad choices</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/offline_rl.html">Offline Reinforcement Learning</a> <a class="chip" href="concepts/exploration.html">Exploration</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-offline_rl-05">ev-offline_rl-05</a> <span class="time">00:02:40.730</span>: The CS224R model-based RL lecture contrasts online methods with offline RL methods, saying offline RL builds on many ideas from online RL while removing fresh interaction.</li><li><a href="evidence.html#ev-model_based_rl-01">ev-model_based_rl-01</a> <span class="time">00:04:50.450</span>: The CS224R model-based RL lecture introduces the class by asking how to learn models, how to use them for planning and data generation, and what trade-offs the approach creates.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/011-PvqyGnOirgA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 11： Model-Based RL.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-12">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 12</p>
+      <h2>Lecture 12: Multi-Task RL</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=qNdsI_4AQJw">Open video</a>
+  </div>
+  <p class="meta">1h 10m · 10140 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A learner may need to handle many tasks, not just one fixed goal.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Multi-task RL tries to share what is common across tasks while still choosing actions for the current task.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Understand why sharing can help when tasks overlap and hurt when the tasks need different behavior.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>task</dt><dd>the goal or setting that changes</dd><dt>shared policy</dt><dd>one rule reused across tasks</dd><dt>task information</dt><dd>the clue that tells the learner which goal it is solving now</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-model_based_rl-02">ev-model_based_rl-02</a> <span class="time">00:00:07.080</span>: The CS224R multi-task RL lecture begins by saying it will finish model-based reinforcement learning, specifically using a learned model.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/012-qNdsI_4AQJw-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 12： Multi-Task RL.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-13">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 13</p>
+      <h2>Lecture 13: Meta RL</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=wSiyEpvoGkA">Open video</a>
+  </div>
+  <p class="meta">1h 9m · 10430 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A learner may face a new task and need to adapt quickly from little experience.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Meta RL trains the learner so that learning itself becomes faster on new but related tasks.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know the difference between learning one task and learning a way to adapt across tasks.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>meta learning</dt><dd>learning how to learn faster</dd><dt>adaptation</dt><dd>changing behavior after a small amount of new experience</dd><dt>task family</dt><dd>a set of related problems</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/exploration.html">Exploration</a> <a class="chip" href="concepts/generalization.html">Generalization</a> <a class="chip" href="concepts/transformer_block.html">Transformer Block</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-transformer_block-06">ev-transformer_block-06</a> <span class="time">00:20:49.840</span>: The CS224R meta-RL lecture says the learner can train a sequence model such as a transformer or recurrent network with memory, connecting transformer-style blocks to decision histories.</li><li><a href="evidence.html#ev-exploration-02">ev-exploration-02</a> <span class="time">00:13:11.590</span>: The CS224R meta-RL lecture describes exploring and then wanting a policy able to solve the task, connecting exploration to later adaptation.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/013-wSiyEpvoGkA-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 13： Meta RL.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-14">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 14</p>
+      <h2>Lecture 14: Exploration</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=4tlSKdi8teU">Open video</a>
+  </div>
+  <p class="meta">1h 12m · 10366 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The learner cannot know which actions are good if it never tries anything uncertain.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Exploration is the controlled act of trying actions to learn more, even when another action currently looks better.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be able to explain why always picking the current best-looking action can trap the learner.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>exploration</dt><dd>trying to learn what is unknown</dd><dt>exploitation</dt><dd>using the best-known action</dd><dt>uncertainty</dt><dd>not knowing enough yet to trust an estimate</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/exploration.html">Exploration</a> <a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-exploration-01">ev-exploration-01</a> <span class="time">00:00:07.040</span>: The CS224R exploration lecture motivates exploration by contrasting RL success in Breakout with difficulty in Montezuma&#x27;s Revenge, where useful reward requires harder discovery.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/014-4tlSKdi8teU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 14： Exploration.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-15">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 15</p>
+      <h2>Lecture 15: Hierarchical RL and IL</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=iKWYLSVAtfM">Open video</a>
+  </div>
+  <p class="meta">1h 9m · 10853 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Long tasks are hard if the learner must choose every tiny action from scratch.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>Hierarchical RL uses larger actions made from smaller actions. The learner can choose a skill, then let that skill handle details.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know why grouping actions can make long-horizon problems easier, and why bad groups can hide mistakes.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>hierarchy</dt><dd>big choices built from small choices</dd><dt>skill</dt><dd>a reusable action pattern</dd><dt>subgoal</dt><dd>a smaller target inside the larger task</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/exploration.html">Exploration</a> <a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/attention.html">Attention</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-attention-05">ev-attention-05</a> <span class="time">00:38:20.513</span>: The CS224R hierarchical RL and imitation learning lecture uses a robot instruction example where a language model must attend to an image; if it ignores the visual evidence, it can give the robot the wrong instruction.</li><li><a href="evidence.html#ev-policy-01">ev-policy-01</a> <span class="time">00:00:22.000</span>: The CS224R hierarchical RL lecture frames policy as the behavior object that can be conditioned on task descriptors, goals, or experience and then composed into longer-horizon behavior.</li><li><a href="evidence.html#ev-model_based_rl-05">ev-model_based_rl-05</a> <span class="time">00:10:35.220</span>: The CS224R hierarchical RL lecture connects prediction with planning: predicting a goal can be understood as thinking forward before acting.</li><li><a href="evidence.html#ev-exploration-04">ev-exploration-04</a> <span class="time">00:14:10.680</span>: The CS224R hierarchical RL lecture says high-level policies can provide exploration benefits, connecting hierarchy to the discovery problem.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/015-iKWYLSVAtfM-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 15： Hierarchical RL and IL.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-16">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 16</p>
+      <h2>Lecture 16: RL for Robots</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=rbaWQQLrzl0">Open video</a>
+  </div>
+  <p class="meta">1h 5m · 9946 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Robots act in the physical world, where data is costly and small errors can matter.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>RL for robots connects policies to sensors, motors, imitation, simulation, and real deployment.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Understand why a policy that works in a simulator may fail on real hardware.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>embodied agent</dt><dd>a learner with sensors and physical actions</dd><dt>simulation</dt><dd>a practice world</dd><dt>deployment</dt><dd>running the learned rule in the real world</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-agents_and_tools-02">ev-agents_and_tools-02</a> <span class="time">00:01:19.350</span>: The CS224R robotics lecture frames imitation learning as training an agent to mimic expert demonstrations, giving the agent/action vocabulary in a physical setting.</li><li><a href="evidence.html#ev-evaluation-05">ev-evaluation-05</a> <span class="time">00:12:40.630</span>: The CS224R robotics lecture introduces deployed policy evaluation by asking how good the learned policy is once it is actually deployed.</li><li><a href="evidence.html#ev-policy-05">ev-policy-05</a> <span class="time">00:00:38.640</span>: The CS224R robotics lecture describes learning policies without human intervention as part of the course&#x27;s algorithmic goal.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/016-rbaWQQLrzl0-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 16： RL for Robots.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-17">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 17</p>
+      <h2>Lecture 17: Advancing Robot Intelligence</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=Hp1WBWghrak">Open video</a>
+  </div>
+  <p class="meta">49m 48s · 8675 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Robot intelligence needs more than one narrow trained behavior. It needs perception, action, memory, and adaptation to work together.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>The lecture points toward systems that combine learned skills and broader models so robots can handle open-ended tasks.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Know why a robot needs both a way to understand the scene and a way to choose useful actions.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>perception</dt><dd>turning sensor input into useful state</dd><dt>skill reuse</dt><dd>using an old behavior inside a new task</dd><dt>open-ended task</dt><dd>a task where the exact situation is not fixed in advance</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a> <a class="chip" href="concepts/policy.html">Policy</a> <a class="chip" href="concepts/generalization.html">Generalization</a> <a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/017-Hp1WBWghrak-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 17： Advancing Robot Intelligence.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-18">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 18</p>
+      <h2>Lecture 18: Frontiers</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=FacJ_1tTSx4">Open video</a>
+  </div>
+  <p class="meta">1h 10m · 11495 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Frontier systems are judged not only by training scores but by whether they work under new tasks, new users, and real constraints.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>The final lecture asks what still blocks reliable agents: measurement, generalization, data, planning, and deployment.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be able to name what evidence would convince you that a learned agent really works outside the training setup.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>frontier</dt><dd>the current edge of what systems can do</dd><dt>evaluation</dt><dd>tests that reveal what works and what fails</dd><dt>generalization</dt><dd>working on cases not seen during training</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/exploration.html">Exploration</a> <a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-03">ev-evaluation-03</a> <span class="time">00:00:28.100</span>: The CS224R frontiers lecture names deployment and evaluation as one of the major challenge areas, while warning that the coverage will not be exhaustive.</li><li><a href="evidence.html#ev-model_based_rl-06">ev-model_based_rl-06</a> <span class="time">00:14:20.130</span>: The CS224R frontiers lecture describes using a model for planning by thinking through what would be a good future outcome.</li><li><a href="evidence.html#ev-exploration-05">ev-exploration-05</a> <span class="time">00:07:30.500</span>: The CS224R frontiers lecture points to algorithms that allow machines to explore, potentially optimizing for learning.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/018-FacJ_1tTSx4-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Lecture 18： Frontiers.txt</code></p>
+    </section>
+  </div>
+</article>
+
+<article class="lecture-card" id="lecture-19">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 19</p>
+      <h2>Tutorial Session: Review of Q-Learning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=07MQNMcxhZU">Open video</a>
+  </div>
+  <p class="meta">50m 39s · 7761 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Q-learning has several moving parts, and the tutorial reviews how state value, action value, rewards, and updates fit together.</p>
+</div><div class="flow-step">
+  <span>Plain Idea</span>
+  <p>The review makes the value idea explicit: judge an action by immediate score plus the future score expected after it.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>Be able to write the story of a Q update in words before using the equation.</p>
+</div><div class="flow-step">
+  <span>Transcript</span>
+  <p>Read the local transcript when a step or claim feels unclear.</p>
+</div></div>
+</figure>
+  <div class="lecture-grid">
+    <section>
+      <h3>Terms In Plain Words</h3>
+      <dl><dt>value function</dt><dd>estimated future score from a situation</dd><dt>action value</dt><dd>estimated future score after one action</dd><dt>discount</dt><dd>giving later scores less weight than sooner scores</dd></dl>
+    </section>
+    <section>
+      <h3>Linked Concepts</h3>
+      <p class="chips"><a class="chip" href="concepts/q_learning.html">Q-Learning</a> <a class="chip" href="concepts/actor_critic.html">Actor-Critic</a> <a class="chip" href="concepts/model_based_rl.html">Model-Based Reinforcement Learning</a> <a class="chip" href="concepts/credit_assignment.html">Credit Assignment</a></p>
+      <h3>Transcript Evidence</h3>
+      <ul class="evidence-list"><li><a href="evidence.html#ev-actor_critic-04">ev-actor_critic-04</a> <span class="time">00:02:47.480</span>: The CS224R Q-learning review defines a value function V^pi(s) as expected future reward when starting at state s.</li><li><a href="evidence.html#ev-model_based_rl-03">ev-model_based_rl-03</a> <span class="time">00:01:31.080</span>: The CS224R Q-learning review defines the reinforcement-learning setup using states, actions, and a transition dynamics function that moves from one state to another.</li></ul>
+      <p><code>raw-material/youtube/transcripts/stanford-cs224r-deep-rl-spring-2025/clean/019-07MQNMcxhZU-Stanford CS224R Deep Reinforcement Learning ｜ Spring 2025 ｜ Tutorial Session： Review of Q-Learning.txt</code></p>
+    </section>
+  </div>
+</article>
+
+</section>
+</main>
+</body>
+</html>

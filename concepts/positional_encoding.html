@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>For each piece of data: find what position it is (call it k), look up or compute the list of numbers for position k, then add those numbers to the data the model will process. Now the position signal is woven into the actual data the model compares.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Take the sentence &quot;cat sat on mat&quot; at positions 0, 1, 2, 3, 4. The word &quot;cat&quot; starts as a list of numbers like [0.2, -0.1, 0.5, ...]. Position 0 adds another list, say [1.0, 0, 0.5, 0, ...], so &quot;cat&quot; becomes [1.2, -0.1, 1.0, ...]. The word &quot;sat&quot; at position 1 gets a different position list added, like [0.1, -0.2, 0.3, ...], making it [something, something, something, ...]. When the system compares &quot;cat&quot; and &quot;sat&quot;, the position numbers are part of that comparison—nearby positions have similar numbers, so the system can tell they are close in the sentence.</p>
+  <p>A sequence has 8 tokens representing &#x27;the cat sat on the mat.&#x27; Each token gets a 128-dimensional embedding. Position 0 (&#x27;the&#x27;) adds a position encoding [sin(0), cos(0), sin(0/10000^(2/128)), cos(0/10000^(2/128)), ...], computed as sine-cosine waves at different frequencies. This produces roughly [1.0, 0.0, 0.9998, 0.0198, 0.9991, 0.0393, ...].
+
+Position 1 (&#x27;cat&#x27;) adds [sin(1), cos(1), sin(1/10000^(2/128)), cos(1/10000^(2/128)), ...], roughly [0.841, 0.540, 0.9998, 0.0200, 0.9991, 0.0395, ...]. These are similar: positions 0 and 1 are neighbors, and their encodings overlap in the low frequencies (slow sine waves). Position 7 (&#x27;mat&#x27;) adds encodings with much higher-frequency components that differ sharply from position 0. When the attention mechanism compares &#x27;the&#x27; and &#x27;cat&#x27; to see if they influence each other, the position encodings are woven into those comparisons, and the system learns that positions 0 and 1 should interact more strongly than positions 0 and 7. A model trained on sequences up to length 8 can still process sequences of length 512 because the sine-cosine pattern extrapolates smoothly.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>The Stanford course explains that transformers process all data in parallel instead of one piece at a time, which is how older systems worked. By processing in parallel, transformers save time but lose the automatic sense of position. The solution is to glue position information directly into the numbers each piece carries. Vision courses show the same idea: when an image is cut into patches and processed all at once, each patch&#x27;s grid location must be encoded as numbers if the system is to understand the image&#x27;s layout.</p>
   <h2>Common Misunderstanding</h2>

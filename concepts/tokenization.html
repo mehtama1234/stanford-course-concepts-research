@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>Scan the text left to right. Find the longest chunk that matches an entry in your vocabulary table. Write down its number. Move forward and repeat. Example: &#x27;playful&#x27; matches &#x27;play&#x27; (one chunk) and then &#x27;ful&#x27; (one chunk), so it becomes two numbers.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Take the sentence &#x27;I love Python code.&#x27; The tokenizer reads it as: &#x27;I&#x27; → 1, &#x27;love&#x27; → 5042, &#x27;Python&#x27; → [1234, 8] (two numbers, because Python is rare and splits into smaller pieces), &#x27;code&#x27; → 2908, &#x27;.&#x27; → 13. The model receives the number-list [1, 5042, 1234, 8, 2908, 13]. Notice: common words get one number each, but the rare word &#x27;Python&#x27; gets two because the tokenizer breaks it into pieces it recognizes.</p>
+  <p>Take the sentence &#x27;I love transformers code.&#x27; The byte-pair encoding tokenizer, trained on 1 billion English documents, maintains a vocabulary of 50,000 pieces. It reads left-to-right: &#x27;I&#x27; matches token 1 (ID 1, a single character piece), &#x27;love&#x27; matches token 2 (ID 5042, a whole word piece), &#x27;transformers&#x27; does not exist as a single token, so it splits into &#x27;trans&#x27; (ID 12847) and &#x27;form&#x27; (ID 9234) and &#x27;ers&#x27; (ID 3891), &#x27;code&#x27; matches token 3 (ID 2908), &#x27;.&#x27; matches token 4 (ID 13). The model receives the vector [1, 5042, 12847, 9234, 3891, 2908, 13], which is 7 tokens long.
+
+With a character-level tokenizer (26 tokens for a-z plus punctuation), the same sentence becomes [9, 0, 12, 15, 22, 5, 20, 0, 25, 18, 1, 14, 19, 6, 15, 18, 13, 11, 5, 18, 19, 0, 3, 15, 4, 5, 0, 0, 0] (about 30 tokens), wasting memory and preventing the model from learning word-level patterns. With a whole-word tokenizer, &#x27;transformers&#x27; would need to be in the vocabulary to avoid crashing on unknown words. The subword approach compresses the sequence by 4× while handling any word through recognized parts.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>CME295 treats tokenization as the first step everything else depends on. Before the model can process text, it must convert it to a number-list. The lecture stresses: your tokenizer choice cascades forward. It decides what counts as a single unit in the model&#x27;s eyes, how it handles rare or new words, and how many steps long each sentence becomes. Wrong tokenization early on breaks everything downstream.</p>
   <h2>Common Misunderstanding</h2>

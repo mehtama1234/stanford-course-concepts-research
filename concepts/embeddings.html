@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>To use embeddings: (1) Break the input text into word IDs like [4129, 2754, 983]. (2) Look up each ID as a row in the embedding table to get its list of numbers. (3) Pass these number-lists to the next stage (a mechanism that compares context, a classifier, or a search module). During training, feedback from the model&#x27;s final answer flows backward, gradually changing the embedding table numbers so that words appearing in similar contexts end up with similar number-lists.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Say your vocabulary is three words: &#x27;cat&#x27; (ID 4129), &#x27;dog&#x27; (ID 983), &#x27;meow&#x27; (ID 7634). The embedding table starts with random numbers for each. During training, the model reads sentences like &#x27;cat meow&#x27; and &#x27;dog bark.&#x27; The context-comparing mechanism learns that &#x27;cat&#x27; and &#x27;meow&#x27; often go together, so feedback pushes their number-lists closer. Same for &#x27;dog&#x27; and &#x27;bark.&#x27; After training, the dot product of &#x27;cat&#x27; and &#x27;meow&#x27; is large (they are close), while &#x27;cat&#x27; and &#x27;dog&#x27; have moderate similarity (both animals, some overlap). Shrink the 768 numbers to two dimensions for a picture: &#x27;cat&#x27; and &#x27;dog&#x27; cluster together (animals), while &#x27;meow&#x27; and &#x27;bark&#x27; cluster separately (actions), showing what the model learned.</p>
+  <p>A model with a 50,000-word vocabulary and 768-dimensional embeddings maintains a 50,000 × 768 embedding matrix. Training data contains 100 million sentences. Early in training, &#x27;cat&#x27; (ID 4129) and &#x27;dog&#x27; (ID 983) have random embeddings: similarity (dot product) = 0.02. After processing 10 million sentences where &#x27;cat&#x27; and &#x27;dog&#x27; appear in similar contexts (&#x27;the cat sat on the mat,&#x27; &#x27;the dog sat on the mat&#x27;), backpropagation adjusts their embeddings. The model&#x27;s loss decreases, and similarity climbs: at 10M sentences to 0.41, at 50M sentences to 0.58, at 100M sentences to 0.71.
+
+Meanwhile, &#x27;cat&#x27; (animal) and &#x27;meow&#x27; (sound) start at similarity 0.01 and climb to 0.52 (related but distinct). Projecting to 2D, &#x27;cat&#x27; and &#x27;dog&#x27; cluster at coordinates (0.3, 0.5) and (0.4, 0.6) (close, animals), while &#x27;meow&#x27; and &#x27;bark&#x27; land at (0.1, 0.9) and (-0.1, 0.8) (far from animals, sounds). The structure emerged purely from learning which words co-occur, not from any hand-coded rule.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>In CME295 (Transformers), the lecture explains that embeddings are the first numerical form that text takes: text becomes words (tokens), and words become number-lists before any transformer machinery runs. BERT shows embeddings are rich enough to solve downstream tasks like classification. In retrieval-augmented-generation, embeddings are the lookup mechanism: to find relevant context, turn the question into a number-list and pull back chunks with similar number-lists (measured by dot product). Across all three courses, embeddings reveal the pattern: anything discrete (a word, an image tile, a game state) must first become a position in learned space so the learning algorithms can operate.</p>
   <h2>Common Misunderstanding</h2>
