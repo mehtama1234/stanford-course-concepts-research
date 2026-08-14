@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>Split your data into three groups: a training set (learn from this), a validation set (tune your decisions on this and watch for signs of memorization), and a test set (measure final performance on this, only once, at the very end). Train the program on the training set while checking performance on validation data to catch when the program starts fitting noise instead of signal. Finally, run the program once on the held-out test set to measure the honest error rate on truly new data.</p>
   <h2>Worked Mini-Example</h2>
-  <p>A language model learns from millions of math problem solutions, seeing phrases like &#x27;let x equal&#x27; paired with equation setups. Two things could happen: (1) the model learns the *reasoning pattern* (when you see a constraint, set up an equation to represent it), or (2) it memorizes that specific phrasing always leads to a specific equation form. On training, both look identical—the model predicts correctly. On a new test problem with different phrasing (&#x27;suppose x is&#x27;) or a completely novel equation type, the memorizing model fails while the reasoning model adapts. The generalization question is: did we learn the underlying pattern or just the accidents of how the training examples happened to be written?</p>
+  <p>A language model learns from 10 million math problem solutions across a training set. It sees phrases like &#x27;let x equal&#x27; paired with equation setups 90,000 times. On training data, the model achieves 94% accuracy. Two learning paths collide here: (1) the model learns the reasoning pattern (when you see a constraint phrase, map it to equation structure), or (2) it memorizes that &#x27;let x equal&#x27; always appears before equation setup in these exact 90,000 examples.
+
+On validation data—new problems with the same phrasing patterns—both approaches score equally well, around 92%. But on held-out test data with different phrasings (&#x27;suppose x is&#x27;) or novel equation types (logarithmic, differential), the memorizing model crashes to 64% accuracy while the reasoning model holds at 89%. The generalization question is answered: did we learn the underlying pattern or store the accidents of how training examples were written?</p>
   <h2>What the Lectures Emphasize</h2>
   <p>Across the three Stanford courses, instructors emphasize train/validation/test splits as the practical guard against overfitting—a program that looks perfect on training data but fails on new data. CME295 walks through the three-way split explicitly. CS224R uses new math problems to ask whether reinforcement learning for reasoning actually builds reusable problem-solving skills. CME296 stresses preventing overfitting during diffusion model training, where a model can memorize training image details instead of learning the underlying structure. The shared message: measure performance on held-out cases, never only on examples you trained on.</p>
   <h2>Common Misunderstanding</h2>

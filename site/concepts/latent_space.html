@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>Take the raw input—a photo, a sentence—and feed it into the encoder. The encoder outputs a short vector z (say, 1,024 numbers). Use that short vector for whatever comes next: generate new images, control a robot, or classify content. When you want to recover something close to the original, pass z through the decoder. The encoder and decoder both get better at this handoff through trial and error during training.</p>
   <h2>Worked Mini-Example</h2>
-  <p>A photo is 256×256 pixels in color, which is 256×256×3 = 196,608 numbers to store and process. An encoder squeezes this into z, a vector of maybe 1,024 numbers—about 192 times smaller. The decoder must rebuild the photo from those 1,024 numbers. If its reconstruction is blurry or wrong, the encoder learns to pack better information into those 1,024 outputs. After training, z encodes facts like &#x27;faces, outdoor, warm light, person standing&#x27;. A diffusion model (a program that generates images by removing noise step by step) can now run 192 times faster, because it adds and removes noise in the learned space, not at the full pixel resolution.</p>
+  <p>A 256×256 color photograph contains 196,608 pixel values. An encoder (a 20-layer neural network) compresses this into z, a vector of 1,024 numbers—a 192× reduction. The encoder learns to pack semantic features: dimensions of z might encode &#x27;is the object animate&#x27; (dimension 0: range -1 to 1), &#x27;warmth of lighting&#x27; (dimension 1: range -1 to 1), &#x27;how centered is the subject&#x27; (dimension 2: range 0 to 1), and so on.
+
+The decoder takes z back through 20 layers and reconstructs a 256×256 image. During training on 10 million photographs, the reconstruction loss (pixel-wise difference) guides learning. If the decoder blurs details, the encoder learns to pack edge information more precisely. After 500 million parameter updates, a photo of a dog yields a z encoding &#x27;animal=0.9, facing-left=0.7, outdoor-lighting=0.6.&#x27; A diffusion model can now generate dogs by running 192 times faster—it adds and removes noise in the 1,024-dimensional z-space rather than at 196,608-pixel resolution, then decodes once at the end. Generation time drops from 47 seconds to 0.24 seconds.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>CME296 points out that latent space is not a tidy grid with labeled axes. Its shape depends entirely on what you told the encoder to optimize for. If you trained it to copy the input perfectly (reconstruction), it will preserve every texture and color shift. If you trained it to match human perception, it will ignore texture noise. The choice of what to compress and how to compress it determines what the space becomes. The bottleneck—the narrow middle where z lives—forces compression. The decoder—which must recover something useful from z—forces that compression to work.</p>
   <h2>Common Misunderstanding</h2>

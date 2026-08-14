@@ -10,6 +10,7 @@
   <header class="topbar">
     <a class="brand" href="../index.html">Stanford AI Concept Lab</a>
     <nav><a class="" href="../index.html">Overview</a>
+<a class="" href="../deep-rl.html">Deep RL</a>
 <a class="active" href="../concepts.html">Concepts</a>
 <a class="" href="../themes.html">Themes</a>
 <a class="" href="../families.html">Method Families</a>
@@ -58,7 +59,9 @@
   <h2>The Operation</h2>
   <p>First, decide what counts as success for this system. Write down specific test cases that cover all the kinds of inputs you care about. Second, run your model on all these cases and record the outputs. Third, score each output using your metric — count correct answers, measure how similar it is to the ideal answer, or have people judge the quality. Fourth, combine all the scores into a summary: total accuracy, breakdown by category, how errors are distributed. Fifth, look at where scores drop; those are your failure modes.</p>
   <h2>Worked Mini-Example</h2>
-  <p>Two language models both talk smoothly. Model A gets 92% accuracy on a math test; Model B gets 88%. If you only look at one number, you might think Model A is better. But when you build separate tests, you discover: Model A fails on word problems (you have to read carefully and understand what is being asked, not just do math); Model B makes up sources for facts it does not actually know. On a test that penalizes made-up facts heavily, Model B looks worse. On a test that penalizes reading comprehension failures, Model A looks worse. A single number — 92% vs 88% — hides these opposite failure modes. Structured testing exposes them, so you can choose the model that fails in ways acceptable for what you actually need.</p>
+  <p>Two language models report strong performance on a single-number benchmark (both score above 85% on a generic language task). You build a fine-grained test set with 600 examples split into six categories (math: 100 examples, reasoning chains: 100, factuality: 100, writing quality: 100, code: 100, common-sense: 100). Model A scores: math 94%, reasoning 89%, factuality 72%, writing 91%, code 88%, common-sense 86% (weighted average: 87%). Model B scores: math 78%, reasoning 91%, factuality 91%, writing 80%, code 92%, common-sense 85% (weighted average: 86%).
+
+A single-number comparison (&#x27;Model A beats Model B by 1%&#x27;) hides opposite failure modes. Model A excels at arithmetic but hallucinates facts (72% on factuality means 28% of its factual claims are invented). Model B struggles with math problems but is reliable for real information. For a customer-support chatbot, factuality matters more than math; Model B is preferable. For homework help, Model A is better. Structured evaluation exposes these trade-offs so you choose the model that fails acceptably for your actual use case.</p>
   <h2>What the Lectures Emphasize</h2>
   <p>Stanford&#x27;s courses treat testing as the core tool for improving AI systems. CME295 (Transformers) emphasizes that without measuring how language models perform on different tasks — chatbots that reason, search-and-answer systems, step-by-step reasoning — you have no signal for improvement. CME296 (Images and Diffusion) separates image quality (does it look good?) from prompt adherence (does it match what you asked for?); an image can look beautiful but ignore your prompt, or follow your prompt perfectly but look blurry. CS224R (Deep Reinforcement Learning) treats testing a deployed policy in the real world as a distinct challenge — testing behavior that was learned in a simulator differs from testing it when robots interact with actual physics. The shared thread: testing is not one score but a full set of probes aimed at different failure modes.</p>
   <h2>Common Misunderstanding</h2>
