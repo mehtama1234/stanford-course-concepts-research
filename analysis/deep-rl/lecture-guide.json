@@ -1,0 +1,758 @@
+[
+  {
+    "number": 1,
+    "core_problem": "How do you turn what an agent does over time into a learning problem? You need names for the pieces: what the agent sees, what it can do, what counts as success, and how the agent decides.",
+    "topic_explanation": "In ordinary prediction, a model sees an input and makes an output. In reinforcement learning, the output is an action, and that action changes what the model will see next. This is the key break. Because actions have consequences, you cannot treat each step separately. Instead, you describe an agent's behavior by naming six pieces: the state (everything relevant about the world), the observation (what the agent actually sees—often less than the state), the action (what the agent can do), the trajectory (the full sequence of states and actions over time), the reward (the score for what happened), and the policy (the rule that picks actions). Once you name these pieces, the learning goal is clear: find a policy that makes trajectories get high total reward.",
+    "detail_explanation": "The key mechanistic move is to stop treating decisions as separate prediction tasks and start thinking of them as a behavior over time. If a robot decides to move its arm now, it will see a different scene later. If a chatbot picks a response now, it will see different user feedback later. This is why reward is tied to the full trajectory, not to single steps. It also helps to separate what is perfect information (the state) from what the agent can actually access (the observation), because this split matters for robotics, language agents, and partial-information settings. A robot's camera might not see behind walls. A chatbot's single message might not reveal what the user truly wants. When observations hide state, the agent needs memory of past observations to reconstruct what matters. This is why policies often take sequences of observations, not just the current one.",
+    "core_ideas": [
+      "An action changes the next observation, so you cannot optimize one step in isolation.",
+      "A state is all information needed; an observation is the partial view the agent actually receives.",
+      "A policy maps current situation (state or observation) to an action or distribution over actions.",
+      "Reward scores the full trajectory, not single moves, because only full runs matter for the goal.",
+      "The learning objective is: find the policy with highest expected sum of rewards across all possible trajectories.",
+      "Stochasticity comes from both the world (dynamics are random) and the agent (policy is probabilistic)."
+    ],
+    "coverage_explanation": [
+      "The lecture first sets the course boundaries so the later algorithms have a home. It says the course will study many ways to learn behavior: copying experts, learning from trial and error, learning from old data, learning rewards, handling many tasks, adapting to new tasks, using hierarchy, reasoning with language models, and learning with robots that cannot be reset easily.",
+      "After that, it builds the basic language of RL. The instructor contrasts normal supervised learning with decision-making over time. In supervised learning, an example can often be treated by itself. In RL, an action changes the next example the learner receives. That is why the lecture spends time on state, observation, action, trajectory, reward, policy, expected total reward, and discounting."
+    ],
+    "discussion_flow": [
+      "Reinforcement learning solves decision problems where an agent makes repeated choices and each choice changes what it sees next.",
+      "Unlike supervised learning, where inputs are independent, RL inputs depend on the agent's own behavior, creating feedback loops.",
+      "States and observations are different: states hold all relevant information; observations are what the agent can actually sense, often incomplete.",
+      "Policies are rules that map situations to actions, and they can be deterministic (one action) or stochastic (a distribution over actions).",
+      "Reward functions assign scores to state-action pairs; the agent is judged by total reward over the entire trajectory, not by single steps.",
+      "The learning goal is to find a policy that maximizes expected sum of rewards, accounting for randomness in both the world and the agent's choices."
+    ],
+    "examples": [
+      "A robot's camera sees only the arm and nearby table; it misses whether distant objects matter. History of images helps reconstruct depth and occlusion.",
+      "A chatbot reads one user message at a time. The message alone does not say if the user wants code or explanation. The conversation history (past observations) reveals the intent.",
+      "A car sees other vehicles via lidar but not their speed. Two frames of lidar reveal velocity by tracking position change. Without history, the car cannot predict collisions.",
+      "A game of Go: a single board state fully describes the game. The policy sees the current board and outputs a move. The reward is given only after the game ends (win or loss)."
+    ],
+    "math_algorithm": [
+      "A trajectory is the sequence: state 1, action 1, state 2, action 2, ..., state T, action T. Each state-action pair lives at a time step.",
+      "A policy π maps states to actions: π(a | s) is the probability the policy picks action a in state s.",
+      "The objective is: maximize the expectation of the sum of rewards over trajectories drawn from the policy.",
+      "The probability of a trajectory is the product of the initial state probability, each policy probability, and each dynamics probability.",
+      "A discount factor γ (between 0 and 1) weights rewards by time: reward at step t is multiplied by γ^t, making near-term rewards matter more.",
+      "A value function V_π(s) is the expected total future reward if you start in state s and follow policy π forever after."
+    ],
+    "plain_checkpoint": "You can now describe any RL problem by naming the learner, the state or observation, the actions available, what a trajectory looks like, what the reward measures, and what the policy must optimize."
+  },
+  {
+    "number": 2,
+    "core_problem": "An agent must learn good behavior without expensive or unsafe trial and error. Copying expert behavior sounds simple, but small mistakes create unfamiliar states where the learned policy has no guidance.",
+    "topic_explanation": "Imitation learning copies expert behavior by training a policy to output the same actions in the same states. But behavior is dynamic: if your learned policy makes one small mistake, it enters a state the expert never showed. Then it has no example to copy, and errors compound. Additionally, expert behavior is often multi-modal. When driving, a car might go straight or merge left depending on lane preferences. Simply copying both examples with L2 regression produces a policy that averages them, outputting an action the expert never chose. The solution is to represent the policy as a distribution over actions, not a single deterministic choice. Online corrections help by giving the policy examples of how to recover from its own mistakes.",
+    "detail_explanation": "The core insight is that training data only covers the expert's trajectory. Once the learned policy drifts due to a mistake, it has no examples. This distribution shift problem is unique to imitation learning and fundamentally different from supervised learning where inputs are independent of predictions. When expert behavior branches (multiple reasonable actions in the same situation), a policy that outputs the mean action may choose something no expert would choose. More expressive distributions like mixtures of Gaussians, autoregressive models, or diffusion models capture multiple modes. Online corrections address drift by collecting data where the learned policy actually goes, expanding the training distribution to include recovery examples.",
+    "core_ideas": [
+      "Imitation learning trains behavior directly from expert demonstrations, avoiding expensive trial and error.",
+      "Small mistakes move the policy to states missing from expert data, causing errors to compound over time.",
+      "Expert behavior often branches; averaging different expert actions produces invalid average actions.",
+      "A policy must output a distribution over actions to represent multiple valid expert choices.",
+      "Online corrections expand training data to states the policy visits, helping recovery from mistakes."
+    ],
+    "coverage_explanation": [
+      "The lecture starts by reusing the vocabulary from Lecture 1 and then asks how behavior can be learned from expert demonstrations. It explains behavior cloning as a direct training setup: the policy sees the same kind of state the expert saw and is trained to put high probability on the expert action.",
+      "The lecture then shows why this direct setup is not enough. Expert behavior can be multi-modal, so a single average action can be worse than either expert choice. The instructor then moves into richer action distributions and online interventions, where the expert or system gives corrections in states produced by the learner's own mistakes."
+    ],
+    "discussion_flow": [
+      "Expert behavior can branch into multiple valid actions in the same state, making simple averaging dangerous.",
+      "Learned policies drift to states missing from expert data, and errors compound as the policy diverges further.",
+      "Representing multiple modes requires expressive distributions, not just a single mean or variance.",
+      "Autoregressive and mixture models can output complex distributions and scale to high-dimensional actions.",
+      "The policy distribution must be state-dependent, changing shape for different situations the expert faces.",
+      "Online corrections fill gaps by collecting data from policy mistakes, creating recovery examples."
+    ],
+    "examples": [
+      "A driving policy trained with L2 loss might average left-merge and straight-ahead experts, steering into the lane divider.",
+      "A learned steering policy drifts one meter off the expert's path; now it sees a curve the expert never encountered from that position.",
+      "A robot arm policy trained on data from three different humans produces jerky motions because it averages their conflicting arm trajectories.",
+      "After online intervention corrections, a driving policy encounters a similar drift scenario but now has recovery data from before."
+    ],
+    "math_algorithm": [
+      "Behavior cloning minimizes the distance between predicted and expert actions, usually with L2 loss.",
+      "Expert data forms a multi-modal distribution when multiple valid actions exist in the same-looking situation.",
+      "A single Gaussian or deterministic policy cannot represent multi-modal expert behavior, so it learns the mean.",
+      "A mixture of Gaussians outputs means, variances, and weights for multiple modes, capturing branching expert behavior.",
+      "Autoregressive discretized models output one action dimension at a time, each conditioned on previous dimensions.",
+      "Online intervention collects corrective data by running the learned policy, asking an expert what to do at drift states."
+    ],
+    "plain_checkpoint": "You can now explain why copying expert actions alone is not enough, when and why expert behavior branches, what distribution shift means and why it breaks imitation learning, and how online corrections help."
+  },
+  {
+    "number": 3,
+    "core_problem": "How can an agent improve its behavior by trying actions and seeing what works, without copying an expert? The agent needs to learn from its own practice runs.",
+    "topic_explanation": "Policy gradient answers a direct question: if a policy assigns probabilities to actions, how should we change those probabilities after running it? The method is trial and error: collect trajectories by running the current policy, add up the rewards from each run, then adjust the policy so actions from good runs become more likely and actions from bad runs become less likely. The hard part is that reward comes at the end of a trajectory, so the update must credit each action through the total return it produced. A simple baseline helps: instead of using raw return, compare each run to the average return. This makes the signal clearer without changing which direction the policy improves.",
+    "detail_explanation": "The policy gradient exists because we cannot write the correct action for every situation, but we can try actions and score the outcome. The method treats each trial as data: higher-reward runs strengthen the actions that caused them, and lower-reward runs weaken those actions. One critical refinement is using future rewards only, since past rewards cannot be affected by future actions. Another is the baseline subtraction: when you subtract expected reward from each trajectory's return, above-average runs push the policy up and below-average runs push it down, reducing noise. The cost is that policy gradient remains sample-hungry because one trajectory is only one possible future and high variance means you need many samples to get a stable signal.",
+    "core_ideas": [
+      "A policy assigns probabilities to actions; policy gradient changes those probabilities by raising them for actions in high-reward trajectories.",
+      "The log-likelihood gradient trick lets you estimate the policy update from samples without differentiating through the stochastic sampling process.",
+      "Each action should only be credited or blamed for future rewards, not past rewards it could not affect.",
+      "Subtracting a baseline like average expected reward reduces noise without changing the average direction of the update."
+    ],
+    "coverage_explanation": [
+      "The lecture opens by explaining why imitation is not the whole story: copying can start behavior, but it cannot improve beyond the demonstrator unless the learner practices and uses reward. The instructor then defines the online RL loop: initialize a policy, run it, collect a batch of trajectories, update the policy, and repeat.",
+      "The main body of the lecture derives policy gradients. It shows how the objective, expected total reward, can be changed by changing the policy parameters. The explanation then turns that derivation into an intuition: raise the probability of actions that appeared in better outcomes. The later part explains variance, baselines, and why off-policy probability ratios become unstable over long runs."
+    ],
+    "discussion_flow": [
+      "Online RL collects fresh data with the current policy, then improves using that batch, repeating the loop until performance is good.",
+      "The RL objective maximizes expected sum of rewards; directly differentiating through sampling is impossible because you cannot backprop through environment randomness.",
+      "The log trick rewrites the gradient so theta appears inside the expectation, making it estimable from samples by computing log-probabilities of sampled actions.",
+      "Intuition: increase probability of actions in better-than-normal runs, decrease probability of actions in worse-than-normal runs, making the policy do more good and less bad.",
+      "Noise comes from one trajectory being one possible future; many trajectories and dense rewards reduce noise, but policy gradient remains data-hungry.",
+      "A baseline (average expected reward) reduces noise by asking whether a run was better or worse than normal, not just whether reward was positive, without changing the true gradient direction in expectation."
+    ],
+    "examples": [
+      "A legged robot learning to walk: trajectories that fall backward get negative gradients; trajectories that stumble forward get small positive gradients; only the trajectory that walks steadily forward gets strong positive gradients; the gradient pushes toward the best outcomes.",
+      "A robot folding jackets: three trajectories score zero reward (not folded), one scores positive reward (successfully folded); without a baseline, all three zero-reward trajectories get identical negative gradients; with a baseline, only the successful one encourages the policy forward.",
+      "Rolling dice to estimate expected value: taking many rolls gives a stable estimate of the mean; taking few rolls is noisy; policy gradient is like rolling few dice—each trajectory is one roll and high variance means you need many batches of data to be sure of the direction."
+    ],
+    "math_algorithm": [
+      "Rewrite expected return as an integral over trajectory probability, then use the log trick to move theta inside the expectation so you can estimate it with samples.",
+      "For each trajectory, compute gradient of log-policy for each action, weighted by the trajectory's total future reward from that step forward.",
+      "Subtract a constant baseline (like average return) from each trajectory's reward; this reduces variance without changing the expected gradient direction.",
+      "For off-policy updates using old policy data, weight each old trajectory by the ratio of new policy probability to old policy probability divided by one."
+    ],
+    "plain_checkpoint": "You can now explain how policy gradient learns from trial and error: collect runs, weight actions by their trajectory's future reward, increase probabilities of actions in good runs and decrease them in bad runs, reducing noise with a baseline so the signal is clearer."
+  },
+  {
+    "number": 4,
+    "core_problem": "Policy gradients use full rollout rewards to update, which is too noisy and wastes data. A single bad outcome after a good action teaches the wrong lesson.",
+    "topic_explanation": "The core idea is to train two networks instead of one: an actor that picks actions, and a critic that learns to predict future reward from each state. When the critic says \"from this state, we normally get X reward,\" the actor can compare what actually happened against that prediction. The difference is called advantage. If the actor took an action and got more reward than normal, advantage is positive—increase its likelihood. If less reward, advantage is negative—decrease its likelihood. This is much smarter than looking at raw rollout scores. The critic also learns using bootstrapping: \"the value of this state is the reward I just saw plus my own prediction of the next state's value.\" This breaks the long chain into short, learnable steps.",
+    "detail_explanation": "The hard problem is that a full episode reward is one number for many decisions. You took a hundred actions, got a score of five, and you do not know which actions caused that. The critic solves this by learning locally. It sees a state and asks: \"how much future reward should I expect here?\" This is not a guess; it learns from actual trajectories. Then advantage becomes a measurement: did this action beat the state's typical expectation? Bootstrapping is the hidden power. Instead of waiting for the full future sum, the critic says: \"I know the immediate reward, and I already learned what the next state is worth.\" This means the critic can train itself—each prediction feeds into the next one's target. The tradeoff is clear: fast feedback if the critic is right, but wrong gradients if the critic is wrong early on.",
+    "core_ideas": [
+      "An actor is a policy network; a critic is a value network that predicts expected future reward.",
+      "Advantage compares what happened to what normally happens: it is the gap between actual and expected.",
+      "Temporal-difference targets use immediate reward plus the critic's guess of next value, not the full trajectory.",
+      "The critic trains itself: each prediction becomes part of the target for training future predictions.",
+      "Actor-critic trades off variance for potential bias—cleaner signals now, but only if the critic learns right.",
+      "Bootstrapping chains short predictions together instead of waiting for a complete rollout to finish."
+    ],
+    "coverage_explanation": [
+      "The lecture begins from the weakness of the policy-gradient update from Lecture 3. A full rollout reward is too noisy to tell whether one action was good. The instructor introduces value functions and Q-functions as estimates of future reward, so the learner has a reference point for judging what happened.",
+      "The lecture then builds actor-critic from that reference point. The actor remains the policy that chooses actions. The critic learns values that help estimate advantage. The instructor explains one-step and multi-step targets, showing how reward now plus estimated value later can replace waiting for a whole future rollout."
+    ],
+    "discussion_flow": [
+      "Problem: policy gradient wastes data because one rollout score judges all actions; good actions in bad runs get penalized.",
+      "Solution: train a critic to predict how good each state usually is, giving the actor a local reference point.",
+      "Mechanism: advantage becomes action outcome minus critic's expectation; positive advantage means the action beat the state.",
+      "Bootstrapping: critic targets itself by using reward plus next-state value, breaking long chains into learnable steps.",
+      "Bias-variance tradeoff: one-step bootstrap is low variance but wrong if critic is wrong; full rollout is unbiased but high variance.",
+      "Putting it together: both networks train in a loop; actor uses critic's judgment; critic learns from trajectories the policy collects."
+    ],
+    "examples": [
+      "Learning to walk: take one step forward then fall. Raw reward is bad. But the critic learns that forward steps usually lead to good states, so advantage is positive.",
+      "Chess position value: the critic learns a state's win probability. Moving to a position with higher probability is advantageous.",
+      "Drum practice reward delayed a month. After practicing once, the critic sees you moved toward a state closer to playing, so it gives positive advantage even though the episode reward is not here yet.",
+      "Two trajectories diverge after a shared state. Monte Carlo sums only one path. The critic bootstraps, using both paths to refine the shared state's value."
+    ],
+    "math_algorithm": [
+      "V(s) outputs a single scalar: the critic's learned prediction of sum of future rewards starting from state s.",
+      "Advantage A equals reward now plus next state's value minus current state's value, measuring if action beat expectations.",
+      "Temporal-difference target is r_t plus discount gamma times V(s_t+1), replacing full rollout with one-step prediction.",
+      "Policy gradient update increases log-likelihood of advantageous actions, decreases for low-advantage actions using the critic.",
+      "Value loss minimizes squared error between critic's prediction and bootstrapped target: (r + gamma V(s_next)).",
+      "Multi-step returns average between full rollout (n=T) and one-step (n=1) by summing n rewards then using critic for the rest."
+    ],
+    "plain_checkpoint": "You can now explain why raw episode rewards are poor for learning, how a value function critic provides a fair comparison for each action, and why temporal-difference bootstrapping lets the critic train itself."
+  },
+  {
+    "number": 5,
+    "core_problem": "You have old data collected by an earlier version of your policy. Can you reuse it or must you throw it away? The challenge: that old data came from a different decision-making rule.",
+    "topic_explanation": "Here is the fundamental problem: after your policy improves even slightly, the experience you gathered before is no longer perfectly honest. The old policy chose certain actions in certain states. Your new, better policy might choose the same action but with a different probability, or a completely different action instead. When you reuse old data, you must account for this mismatch. If the old policy favored action A and your new policy disfavors it, you cannot learn as if your new policy picked that action. The key insight is importance weighting: multiply each old sample's contribution by the ratio of how likely your new policy is to pick that action versus how likely the old policy was. But this ratio can explode—if the new policy rarely picks what the old policy often picked, the weight becomes huge and dominates learning. Clipping constrains these weights to a safe range. Replay buffers let you repeatedly train on the same old transitions so each data point works harder, and recursive Q-function fitting lets you bootstrap past estimates to extend knowledge beyond what any single batch can teach.",
+    "detail_explanation": "The machinery works like this: importance weights are a honest accounting system. Imagine an old trajectory where the old policy picked action A with probability 80%. Your new policy picks it with probability 20%. The new policy is 0.2/0.8 = 0.25 times as likely. That sample should contribute one-quarter as much to your gradient. But what if the old policy picked A with probability 5% and the new policy picks it with probability 50%? Now the ratio is 10—that single sample pulls the gradient hard. Clipping prevents this by saying the weight can never exceed 1.2, so even a 10x ratio gets capped. The trade-off: you lose some legitimate upside from a genuinely good reuse, but you gain stability. Replay buffers reuse by storing every transition and sampling randomly. Q-functions accept any state-action pair as input, so you can ask about old actions without pretending your new policy took them. You feed in the old action, get the Q estimate, but at the next step you sample from your current policy. This folds your new policy's wisdom into the target without demanding that old data came from the new policy.",
+    "core_ideas": [
+      "Old data is valuable but biased toward the policy that collected it.",
+      "Importance weights correct for the policy mismatch but can explode when policies differ.",
+      "Clipping the weights to a safe band removes incentive for large policy changes.",
+      "Replay buffers store and reuse transitions so one sample trains many times.",
+      "Q-functions bridge the gap: fit to any action, but use current-policy actions for targets.",
+      "Recursive Q bootstrapping extends knowledge from data that did not explore perfectly."
+    ],
+    "coverage_explanation": [
+      "The lecture first revisits policy gradients and actor-critic to expose a data problem. If the learner can use each fresh batch only once, learning requires many environment runs. The instructor then asks how to reuse experience after the policy has changed, while still remembering that old experience came from an older action rule.",
+      "The coverage then moves through off-policy correction. Importance weights compare how likely the old and new policies were to choose the sampled action. The lecture explains why those weights can become extreme, why clipping helps, and how replay buffers and recursive Q targets let actor-critic methods learn from older transitions."
+    ],
+    "discussion_flow": [
+      "Policy gradients and baselines work but throw away data after one update step.",
+      "Reusing old data requires honest accounting: that data was generated by a different policy.",
+      "Importance weights scale old samples by the likelihood mismatch, but extreme ratios break learning.",
+      "Clipping and KL constraints bound how far the new policy can drift from the old, keeping advantages valid.",
+      "Replay buffers store and re-sample, multiplying the work done by each real interaction.",
+      "Q-functions and recursive targets let you bootstrap from old experience while feeding in current-policy wisdom."
+    ],
+    "examples": [
+      "A robot's old policy learned to move right. New policy wants to move up. Right-moving data is not useless but must be weighted by how wrong it was.",
+      "Replay buffer stores a million robot steps. Training uses random batches, so one trajectory may train the model fifty times, multiplying its impact.",
+      "Q-function estimates value of reaching goal from state S after action A. Old policy took A; new policy would not. Fit Q to old data. At next state, sample new action.",
+      "AlphaGo board position: value predicts win odds if both play optimally. Q-function predicts win odds after one move plus optimal play. Clipping prevents one bad move from hijacking the board evaluation."
+    ],
+    "math_algorithm": [
+      "Importance ratio equals new-policy action probability divided by old-policy action probability for each sample.",
+      "Clipped ratio stays between 1 minus epsilon and 1 plus epsilon, removing extreme upside and downside.",
+      "Replay buffer stores state, action, reward, next state. Sample uniformly at random, not sequentially.",
+      "Q target is current reward plus discount times Q at next state and action sampled from current policy.",
+      "Policy update uses log probability times Q value, but action is sampled from policy, not taken from replay buffer.",
+      "Recursively fit Q to targets that use next-state Q and current-policy actions, not buffered actions."
+    ],
+    "plain_checkpoint": "You can now explain why old data is not automatically reusable, how importance weights correct for policy drift, why those weights explode, how clipping protects learning, and how replay buffers and Q-functions multiply the impact of each real experience collected from the world."
+  },
+  {
+    "number": 6,
+    "core_problem": "How do you make good decisions when you cannot list all possibilities? Q-learning estimates the value of each action available to you right now, then picks the highest-value action. This replaces the need to explicitly learn what action to take.",
+    "topic_explanation": "Q-learning asks a different question than before: instead of learning a policy directly, learn how good each action is. The Q-value answers: if I take this action now and then act well afterward, what total reward will I get? You can find a Q-value for every state-action pair. Once your Q estimates are accurate, decision-making becomes a comparison: pick the action with the highest Q-value. This is much simpler than running a policy neural network. The challenge is that Q-values depend on future Q-values. You train your Q estimates from other Q estimates in a circular way. This feedback loop can become unstable, especially with neural networks. You need exploration to see which actions are actually good, not just assume your current best guess is correct.",
+    "detail_explanation": "Why Q-learning matters: it turns a hard planning problem into table lookup. You do not need a separate rule for what to do if you have a number for each possible move. The hard part is learning those numbers correctly. The Bellman update says: the Q-value right now equals the immediate reward plus the best future Q-value you will get. This creates a chain backward through time. You can update Q using any past experience piece, not just on-policy data. But because you estimate targets from your own estimates, training can chase its own tail. Two practical tricks fix this. First, use a separate target network that you freeze for a batch of updates, so the target does not shift while you train. Second, break ties in exploration by sometimes taking random actions or sampling different actions, so you see evidence for actions your best guess would overlook. When you ignore both tricks, Q-learning can diverge.",
+    "core_ideas": [
+      "A Q-value is the expected total future reward for taking one action then acting optimally.",
+      "The greedy policy takes the action with the highest Q-value at each step.",
+      "The Bellman update connects Q-values across time steps using one immediate reward and the next-state Q-value.",
+      "Exploration is necessary because greedy action selection alone cannot discover better actions you haven't tried.",
+      "The target network keeps learning targets stable by freezing parameter copies between updates.",
+      "Overestimation bias emerges when you both select and evaluate actions using the same noisy Q-function."
+    ],
+    "coverage_explanation": [
+      "The lecture starts by recapping values and Q-functions, then changes the policy-learning question. Instead of directly training action probabilities, it asks whether the learner can score each action and choose the action with the highest score. This makes action choice a comparison problem, and it explains why Q-values are convenient for decision making.",
+      "The instructor then develops Q-learning from the recursive value idea. The lecture covers greedy action selection, sampling-based action search, epsilon-greedy exploration, DQN-style neural Q training, target instability, and practical advice about when Q-learning is a better fit than policy-gradient or actor-critic methods. The central thread is how a value estimate becomes a behavior rule."
+    ],
+    "discussion_flow": [
+      "Understand Q-values as expected total future reward for state-action pairs.",
+      "See how argmax of Q-values defines a deterministic policy without learning it explicitly.",
+      "Discover that iterating this improvement step can increase policy quality up to optimality.",
+      "Learn epsilon-greedy exploration as a way to balance exploitation of known good actions with discovery of better ones.",
+      "Build the Q-learning update from the recursive Bellman optimality equation for optimal policies.",
+      "Recognize why direct Q-learning with neural networks becomes unstable and how target networks fix it.",
+      "Identify overestimation as a source of bias when selection and evaluation use the same function.",
+      "Understand practical tricks like double Q-learning and n-step returns to improve real-world performance."
+    ],
+    "examples": [
+      "A robot learning to grasp objects uses Q-learning to continuously optimize its arm position because trying all positions would be too slow.",
+      "In 2D navigation to reach a goal, following the greedy policy from an initial poor estimate moves right forever if the old policy always moved right.",
+      "Exploration lets a restaurant recommendation agent try unfamiliar places early on so it learns what is actually good instead of staying stuck with early guesses.",
+      "At the beginning of training with sparse rewards, a single immediate reward tells you little, but multiple future rewards over n steps give stronger learning signal."
+    ],
+    "math_algorithm": [
+      "Q of state and action is the immediate reward plus gamma times the best Q-value at the next state.",
+      "Greedy policy selects the action that maximizes Q-value at the current state.",
+      "Epsilon-greedy chooses the best action with probability 1 minus epsilon and takes random action with probability epsilon.",
+      "Target network keeps a frozen copy of parameters phi-prime to compute target values while the main network trains.",
+      "Double Q-learning uses different networks to select actions and evaluate them, de-correlating noise between selection and evaluation.",
+      "N-step returns accumulate rewards over multiple steps before bootstrapping, reducing bias when immediate rewards are sparse."
+    ],
+    "plain_checkpoint": "You can now explain how Q-values let you replace explicit policies with value comparison, why exploration is necessary, and what tricks stabilize learning when using neural networks to estimate Q-values in high-dimensional settings."
+  },
+  {
+    "number": 7,
+    "core_problem": "Offline RL traps you: your value estimates become fantasies about unseen actions. A policy chases those guesses instead of evidence.",
+    "topic_explanation": "Imagine you have a dataset of driving: left turns, right turns, going straight. Your Q-function learns to value those. But the value function is randomly initialized for actions you never saw—like sudden U-turns or backing onto a highway. The policy may find one of these hallucinated high-value actions and pursue it, confident it is good. The core problem is distribution shift: your data comes from an unknown behavior policy, but you want to improve beyond it. The learned policy diverges from the data, querying actions the data barely covers. Methods like advantage-weighted imitation stay close to what was actually tried. IQL-style approaches avoid querying actions far outside the data at all, using asymmetric losses to estimate values for better-than-observed policies without leaving the data's support.",
+    "detail_explanation": "Online RL collects new data whenever it guesses wrong. Offline RL has one fixed dataset and no correction loop. A Q-function learns by bootstrapping: it uses its own estimate of the next state's value as a training target. That works when the next actions come from your policy—you will eventually see if the guess was right. But in offline settings, if your policy drifts far from the behavior policy, you query Q for actions you never trained on, and the estimate is noise. The core insight is staying in the support of the data: either by weighting imitation by advantages (copying the data selectively), or by value fitting tricks that estimate better-than-observed policies without requiring queries to out-of-distribution actions. The tradeoff is conservatism: you may miss improvements that the data actually contains.",
+    "core_ideas": [
+      "Offline RL has no live feedback loop, making overestimation on unseen actions a core failure mode.",
+      "Distribution shift means your policy must diverge from the behavior policy to improve, but diverging breaks Q-estimates.",
+      "Advantage-weighted regression uses data selectively, weighting by how good each action was, avoiding out-of-distribution queries.",
+      "Implicit Q-learning uses asymmetric value losses to fit better-than-observed policies while staying in the data support.",
+      "Stitching combines good parts of different trajectories by weighting actions by advantage, a task vanilla imitation learning cannot do.",
+      "Coverage means the data must have examples of the state-action pairs you evaluate, or all estimates are hallucinations."
+    ],
+    "coverage_explanation": [
+      "The lecture begins by reviewing the online algorithms already covered, then removes the ability to collect new data. That change defines offline RL. The instructor explains that the data was collected by a behavior policy, so the learner only has strong evidence where that policy actually went.",
+      "The lecture then studies how offline learning can go wrong. A Q-function may look high for an action outside the data, and a policy optimizer will chase that unsupported value. The instructor covers simple filtering of good trajectories, advantage-weighted behavior cloning, value fitting choices, and IQL-style ideas that avoid querying unsupported actions."
+    ],
+    "discussion_flow": [
+      "Online RL collects new experience; offline RL has fixed data and no ability to verify guesses through interaction.",
+      "Distribution shift: learned policy diverges from behavior policy, but out-of-distribution Q-estimates are unreliable hallucinations.",
+      "Out-of-distribution overestimation: policy optimization chases high Q-values on actions never tested, amplifying errors.",
+      "Imitation learning avoids unseen actions but copies low-reward behavior; selective weighting by advantage improves it.",
+      "Advantage-weighted regression and implicit Q-learning each trade off expressiveness and conservatism differently.",
+      "Practical choice: advantage-weighted for simplicity and transparency; IQL for lower-variance bootstrapped targets and real deployment scenarios."
+    ],
+    "examples": [
+      "A car dataset with good and bad driving. Filtering the top 30% and copying it misses good lane changes from low-reward trajectories. Weighting each action by advantage lets you stitch the good parts together.",
+      "A U-turn never appears in any highway driving data. A randomly initialized Q-function may hallucinate it is valuable. The policy, optimizing Q, performs U-turns. The crash teaches nothing because no data supports it.",
+      "A robot grasping: it sees successful and failed grasps. A value function fitted to the mean outcome (the average return) estimates the typical result. Using an expectile (75th percentile) instead, you fit a value function for a better-than-typical grasping policy without needing new grasps."
+    ],
+    "math_algorithm": [
+      "Advantage function A(s,a) = how much better action a is than the average action in state s.",
+      "Advantage-weighted loss weights imitation by exp(temperature * advantage), copying good actions more often.",
+      "Monte Carlo advantage subtracts the value function from empirical trajectory returns, avoiding TD variance.",
+      "Expectile loss penalizes positive and negative errors asymmetrically, fitting a quantile of the return distribution.",
+      "Bootstrapped Q-target uses reward plus discounted Q at next state, but samples next action from data not policy.",
+      "IQL never queries Q on actions outside the data, protecting against distribution shift overestimation."
+    ],
+    "plain_checkpoint": "You can now explain why naively applying online RL to an offline dataset causes a policy to exploit hallucinated values, and describe two ways to constrain learning to stay faithful to the data."
+  },
+  {
+    "number": 8,
+    "core_problem": "How do you specify what the agent should optimize when the real goal is too fuzzy or complex to write as a clean hand-made reward number? Hand-written rewards get gamed or miss what you actually care about.",
+    "topic_explanation": "Reward learning turns a human judgment problem into a learning problem. Start with the core insight: you can write the rules for a good pouring robot motion, or safe driving, or a helpful chatbot answer, but the rules are long and brittle, and the agent finds loopholes. Instead of writing reward by hand, you train a model to score behavior. Two main paths exist. First, give examples of success and failure—train a classifier on goal states, but watch out: the policy finds states that fool the classifier by looking like goals but not solving the real task. Second, ask humans to compare two behaviors and pick the better one. That is easier than asking them to score each one with a number. Once you have comparisons, train a reward model that predicts \"trajectory A is better than B\" and lets you optimize a policy against it. This shift from hand-writing rewards to learning them is what makes hard real-world goals reachable, from robots to language models.",
+    "detail_explanation": "The deeper story is about the gap between an imperfect reward and reality. A learned reward is only trained on the data you showed it—goal examples or human comparisons. Once a strong policy searches hard for high reward, it may find edge cases the reward model judges wrong. This is reward hacking: the agent makes the learned score go up while breaking the real goal. Two defenses exist. For goal classifiers, keep adding visited states as negatives and retrain—this keeps the classifier honest about states outside its training set, like adversarial training in GANs. For preference learning, the comparison signal is rich: if you collect enough pairwise labels, ranking naturally emerges, and the learned reward must respect the full order, not just cheat on one comparison. Both methods trade off: adversarial training is practical but unstable; preference learning is easier for humans but may need many comparisons.",
+    "core_ideas": [
+      "Writing down rewards by hand fails because goals are complicated and policies find loopholes.",
+      "A classifier trained on goal examples can be fooled when the policy visits unfamiliar states.",
+      "Humans can compare two behaviors more reliably than assign them absolute numeric scores.",
+      "Preference learning trains a reward model from comparisons, then optimizes policy against it.",
+      "Reward hacking occurs when optimizing a learned score breaks the real goal it was meant to capture."
+    ],
+    "coverage_explanation": [
+      "The lecture first finishes the offline RL thread by explaining how Q-functions can be exploited when the learner asks about actions beyond the data. It then turns to a different but related question: even if optimization works, what exactly should be optimized? This shift makes reward design part of the learning problem, not a side detail.",
+      "The reward-learning part explains why hand-written scores and goal classifiers can fail. The instructor moves from goal examples to trajectory-level judgments and then to preferences. The lecture connects this to reward models and RLHF: collect human comparisons, train a scorer from them, and train the policy against that scorer while remembering that the scorer can be gamed."
+    ],
+    "discussion_flow": [
+      "Hand-written rewards fail: real goals are fuzzy, and rules get gamed by policies finding loopholes.",
+      "Goal classifiers seem simple but can be exploited outside their training distribution.",
+      "Adding policy-visited states as negatives and retraining is like adversarial training to fix the classifier.",
+      "Comparing two full behaviors instead of rating one in isolation gives more reliable human judgments.",
+      "Pairwise comparisons are easier for humans than absolute scores, so preference learning trades efficiency for reliability.",
+      "Learned rewards must be watched for hacking; strong policies expose weaknesses the learned model was never trained on."
+    ],
+    "examples": [
+      "A robot learns to pour water: hand-write every rule for the motion, or train a classifier on successful pours, then watch it find moves that look good but spill everything.",
+      "Asking someone to rate a chatbot response on a scale of 1 to 10 is hard; asking which of two responses is better is straightforward.",
+      "A policy optimizing against a learned backflip reward finds a weird motion the classifier thinks is perfect but that isn't actually a backflip.",
+      "Ranking multiple trajectories forces the reward to respect the full ordering, not just fool one pairwise comparison."
+    ],
+    "math_algorithm": [
+      "A reward model maps a trajectory or response to a score using a learned function with parameters.",
+      "Preference data: collect comparisons where trajectory A is labeled better than trajectory B.",
+      "Sigmoid loss: compute R(winning) - R(losing), apply sigmoid to get probability, maximize log-likelihood.",
+      "Adversarial update: add policy-visited states as negatives to the goal classifier, retrain to prevent exploitation.",
+      "Full algorithm: collect preference data, train reward model, optimize policy with that reward, repeat.",
+      "Ranking from comparisons: if you have pairwise labels A > B and B > C, the reward must learn A > C."
+    ],
+    "plain_checkpoint": "You can now explain why hand-written rewards fail, how to train a reward from examples or comparisons, why learned rewards can be exploited, and what mechanisms (adversarial retraining or ranking) prevent that."
+  },
+  {
+    "number": 9,
+    "core_problem": "A language model trained only to predict text learns grammar and facts, but this does not make it behave like a helpful assistant that people prefer. How do you turn a text predictor into a chatbot?",
+    "topic_explanation": "Start with what pretraining gives you: a model trained to predict the next word in massive text corpora learns lots of facts, syntax, and patterns. But predicting likely text is not the same as choosing helpful behavior. To bridge this gap, you collect comparisons: humans say one response is better than another for the same prompt. You use these preference pairs to train a reward model that scores responses. Then you adjust the language model so it generates higher-scoring responses. The challenge is that directly optimizing the reward can make the model forget useful behaviors from pretraining, so you add a penalty: keep the new model close to where it started. This keeps improvement without destroying language ability.",
+    "detail_explanation": "The core mechanism works because the language model is really just a probability distribution over text sequences. When you sample from it and score the outputs, you have discrete tokens (which block backpropagation), so you cannot directly optimize through a traditional reward function. Policy gradient methods solve this: instead of computing a gradient through the reward, compute the gradient of the log probability of sampled outputs, weighted by their rewards. This lets you adjust which text the model favors without differentiating through the reward itself. The KL penalty uses divergence to measure how far the new model distribution drifts from pretraining. It is necessary because reward models are learned approximations trained on limited data; they work well on the distribution they saw during training but can give strange scores outside it. If you optimize only for reward, the model will chase edge cases the reward model mislabels.",
+    "core_ideas": [
+      "A language model is a policy: it assigns probabilities to text, and training changes which outputs it prefers.",
+      "Preference pairs (better vs. worse responses) are easier to collect from humans than absolute scores.",
+      "A learned reward model approximates human judgment, but optimizing it naively leads to overfitting and reward hacking.",
+      "KL regularization keeps the improved model close to its pretrained starting point, preserving useful language knowledge.",
+      "DPO skips the explicit reward model and trains directly on preference pairs as a supervised classification problem."
+    ],
+    "coverage_explanation": [
+      "The lecture starts from next-token pretraining and explains what that gives a language model: grammar, facts, and broad text patterns. It then asks why this is not enough to produce a helpful assistant. The missing piece is feedback about which answers people prefer, because predicting likely text is not the same as choosing useful behavior.",
+      "The lecture then frames preference optimization as RL on text. Responses receive scores, the language model acts like a policy, and training shifts probability toward preferred outputs. The instructor explains reward models, KL penalties, Bradley-Terry preference losses, DPO, and reward hacking when proxy scores drift away from what people actually want."
+    ],
+    "discussion_flow": [
+      "Pretraining learns text statistics, not human intent; next-token prediction does not produce assistant behavior.",
+      "Preferences are gathered by showing humans pairs of responses and asking which is better; this is cheaper than scoring.",
+      "A reward model is trained using the Bradley-Terry objective to turn binary preferences into scalar scores.",
+      "Policy gradient methods optimize the language model using log probability gradients, bypassing the discrete token bottleneck.",
+      "A KL penalty keeps the model close to pretraining, preventing reward hacking and forgetting useful language behavior.",
+      "DPO directly optimizes the language model on preference pairs without training a separate reward model or sampling during training."
+    ],
+    "examples": [
+      "A news summarization task: one summary mentions the earthquake and damage (good); another talks only about weather patterns (bad). The model learns to prefer concise, on-topic responses.",
+      "GPT-3 given 'explain the moon landing to a six-year-old' outputs a list of topics instead of a story because it is predicting corpus text, not following the user intent.",
+      "Without KL penalty, a model optimized for a learned reward model may start producing grammatically broken but high-scoring text, gaming the imperfect reward signal."
+    ],
+    "math_algorithm": [
+      "Policy gradient: weight the gradient of log probability by the reward so high-reward text pulls the probability distribution upward.",
+      "Bradley-Terry objective: train a reward model using preference pairs to predict which of two samples is better.",
+      "KL divergence penalty: add beta * KL(new model || original model) to the objective to limit drift from pretraining.",
+      "DPO identity: rewrite the optimal policy in closed form, then express the reward model in terms of the language model itself."
+    ],
+    "plain_checkpoint": "You can now explain why a text-prediction loss alone does not produce helpful chatbots, how preference pairs enable human feedback at scale, why reward models need regularization, and how both RLHF and DPO turn preferences into better model behavior."
+  },
+  {
+    "number": 10,
+    "core_problem": "When a model solves a multi-step problem like a math proof, only the final answer tells you if the work succeeded. But you need to improve the intermediate steps. How do you teach a model to reason when each step is invisible?",
+    "topic_explanation": "Treating reasoning as an MDP: the problem plus all previous steps form the state, the next written step is the action, the final correctness is the reward. The hard part is that this reward comes only at the end, so most steps get no direct score. If you just reward the successful trace, you might reinforce wrong steps that happened to lead to the right answer anyway. Process credit assignment fixes this: estimate how promising each partial chain is before and after each step. A step that improved the promise is good. A step that made success less likely is bad. This lets you pull out the useful steps from successful chains and discard steps that only looked good by accident.",
+    "detail_explanation": "The core mechanism uses rollouts from a separate model to estimate the value of a partial solution (a prefix). Take a chain that succeeded: for each intermediate prefix, ask the rollout model to complete it from scratch. How often does that completion reach the right answer? That success rate is the Q-value or prefix value—the estimated promise of that partial chain. The difference in prefix values before and after a step is the advantage. Positive advantage means that step increased the chance of success. Negative advantage means it hurt. Now you can train only on high-advantage steps, or construct preference pairs comparing steps that increase the value with steps that decrease it. This credit assignment breaks the coupling between getting the right answer and having good reasoning.",
+    "core_ideas": [
+      "An MDP treats the problem as initial state, each written step as an action.",
+      "Final reward is sparse; only the answer receives a score of zero or one.",
+      "Prefix value estimates the chance that a partial solution will succeed if continued.",
+      "A step's advantage is how much it increased the estimated chance of success.",
+      "You can reuse steps with high advantage from failed traces, and discard good-final-answer traces with low-advantage steps.",
+      "Outcome-based RL rewards whole traces; process credit uses prefix values to judge individual steps."
+    ],
+    "coverage_explanation": [
+      "The lecture first narrows the vague word reasoning to a concrete setting: solving math problems. It then explains how a written solution can be treated as an RL trajectory. The prompt and current written prefix form the state, the next generated step is the action, and the final answer provides a sparse reward.",
+      "The lecture then asks how to train from such traces. It discusses sampling multiple attempts, learning from successful ones, and avoiding the mistake of rewarding length by itself. The instructor brings in value and advantage ideas for prefixes, so a step can be judged by whether it improves the chance that the remaining solution will end correctly."
+    ],
+    "discussion_flow": [
+      "A model that sees only final-answer feedback learns surface patterns and may correlate spurious steps with success.",
+      "Treating a multi-step reasoning task as an MDP gives you language for value and advantage inside the chain.",
+      "Rollouts from a separate policy estimate whether each partial chain is promising, giving you a signal per step.",
+      "Steps that increase the value estimate are good; steps that decrease it are bad, even if the final answer was right.",
+      "Training only on high-advantage steps or using preference pairs between high and low advantage avoids amplifying spurious reasoning.",
+      "Online and offline RL recipes using these advantage estimates teach models to build more robust reasoning."
+    ],
+    "examples": [
+      "A math problem that ends with the right answer but includes a wrong calculation that was then corrected—outcome-based RL trains on the whole trace including the error, but prefix values detect that the middle step was spurious.",
+      "Pass@5 asks whether at least one of five attempted solutions is correct, measuring the ability to search, not just first-try accuracy.",
+      "A model generates a solution that seems plausible and is syntactically correct but fails on a test case—process credit assignment can identify which step broke the logic."
+    ],
+    "math_algorithm": [
+      "State is problem plus concatenated prefix of steps taken so far.",
+      "Reward is plus one if the final answer matches ground truth, zero otherwise.",
+      "Q-value of a prefix is expected future reward under a rollout policy continuing from that prefix.",
+      "Advantage of a step is Q-value after the step minus Q-value before the step.",
+      "Policy gradient on rollout-based advantages trains the policy to maximize expected reward.",
+      "Preference pairs can be built by comparing completions under different rollout policies that succeed versus fail."
+    ],
+    "plain_checkpoint": "You can now explain why the final answer alone is weak feedback for reasoning, how prefix values estimate the promise of a partial solution, why high-advantage steps are more useful than high-final-answer traces, and how to use rollouts to assign credit inside a long reasoning chain."
+  },
+  {
+    "number": 11,
+    "core_problem": "How can an agent learn to predict the future so it can plan better actions before acting, rather than only learning from past trial and error?",
+    "topic_explanation": "Model-based RL learns two things: what happens next (a dynamics model) and how good a situation will be (rewards). Instead of blindly trying actions and learning which were good, the agent builds a predictor of the world. It then imagines future action sequences by feeding them into this predictor, sees which ones lead to high rewards, and executes the first action. The challenge is that the learned model will never be perfect. Errors in the model can trick the planner into choosing actions that look great in the imagination but fail in reality. The solution is model predictive control: plan a short sequence ahead, take just one action in the real world, observe what actually happens, then plan again from this new true state. Replanning each step limits damage because the agent keeps anchoring to reality instead of trusting false predictions.",
+    "detail_explanation": "Real interaction is expensive or risky, so a simulator lets the agent practice cheaply in imagination. But imagination only works when the model is accurate enough for the decisions being made. MPC solves this by keeping planning horizons short and replanning constantly. After taking one real action, the agent sees the true next state and builds a new plan from there. This closed-loop feedback corrects for accumulated model errors. The trade-off is computational: replanning at every step costs compute time, but it pays back in robustness. Long open-loop plans compound errors; short replanned loops stay corrected. This is why MPC works better than planning once over a long horizon.",
+    "core_ideas": [
+      "A dynamics model predicts the next state and reward given a current state and action, giving the agent a practice world.",
+      "Planning finds action sequences that maximize predicted rewards inside this learned model before acting.",
+      "Model predictive control replans after each real action using the true observed state, not the predicted state.",
+      "Short replanning loops limit the damage from model errors because the agent constantly corrects with real observations.",
+      "The learned model is only useful if it is accurate enough for the planning horizon and reward function being used."
+    ],
+    "coverage_explanation": [
+      "The lecture opens with a map of the algorithms covered so far, then introduces a new route: instead of only learning a policy or value function, learn how the world changes. The dynamics model predicts the next state from the current state and action, giving the agent a way to test possible futures before spending real interaction.",
+      "The instructor then explains planning with that model. Candidate action sequences are rolled forward inside the model, scored by predicted reward, and used to choose what to do. The lecture covers model error, model predictive control, replanning, adding new real data back into the model-training set, and comparisons with model-free methods."
+    ],
+    "discussion_flow": [
+      "The core problem: real interaction is expensive or unsafe; agents need a way to think before acting.",
+      "Solution: learn a predictor of what the world does (dynamics model) and imagine future outcomes.",
+      "The danger: the learned model will have errors, and planning can exploit those errors to choose bad real actions.",
+      "Planning methods: gradient descent or sampling to find action sequences that maximize predicted rewards.",
+      "The replanning insight: short-horizon closed-loop planning that corrects after each real action, not long open-loop plans that trust false predictions.",
+      "Putting it together: train a model on collected data, plan short horizons with replanning, collect new data, retrain the model, and repeat to improve model accuracy where the policy actually goes."
+    ],
+    "examples": [
+      "A robot navigates a maze. Its model learned from early exploration only covers part of the maze. Planning in unseen areas fails because the model is wrong there.",
+      "A self-driving car plans a 5-second action sequence in its learned world model. Midway, a pedestrian appears (not in the model). Open-loop plan fails. With MPC, the car replans after each second using real observations and reacts.",
+      "A robot hand learns to spin a ball. It first falls off a cliff in imagination, learns that the model was wrong in that region, retrains the model with fall data, and then plans a safer path.",
+      "A policy trained only to exploit a learned model chooses actions that are good in imagination but bad in reality, like a reward hacking scheme where the exploit is 'tricking the model.'"
+    ],
+    "math_algorithm": [
+      "Dynamics model f predicts: s_{t+1} = f(s_t, a_t) or distribution p(s_{t+1} | s_t, a_t) learned from data.",
+      "Planning maximizes sum of predicted rewards over a short horizon H by optimizing action sequence a_t, ..., a_{t+H}.",
+      "Gradient-based planning backpropagates reward gradients through the model to update actions toward higher reward.",
+      "Sampling-based planning (cross-entropy method) samples many action sequences, scores them, keeps the best, and resamples from a distribution around those best actions.",
+      "MPC executes only the first planned action a_t in the real environment, observes true s_{t+1}, then replans a_{t+1}, ..., a_{t+1+H}.",
+      "Model accuracy degrades outside the data distribution, so actions that look good in imagination may fail where the model has not seen data."
+    ],
+    "plain_checkpoint": "You can now explain why a learned world model by itself is not enough, how model predictive control uses replanning to stay grounded in reality, and why short loops beat long predictions when the model is imperfect."
+  },
+  {
+    "number": 12,
+    "core_problem": "One agent learns many tasks at once. How do you reuse skills and make failures teach new goals? Two ideas answer this: using a learned model to generate practice data cheaply, and training one policy to handle many different tasks or goals instead of retraining from scratch for each.",
+    "topic_explanation": "A learned model of the world is like a simulator you built from data. You can roll it forward from real states to imagine short trajectories—this synthetic data trains a policy without extra real interaction. Multi-task RL tackles a different problem: instead of one policy per task, one policy learns all tasks at once. The policy takes both state and task description as input, so it knows what to aim for. Goal-conditioned RL is a special case where reaching a goal is the task. Hindsight relabeling is the trick: when an attempt fails to reach the intended goal but reaches some other state, you relabel that trajectory as if reaching the new state was always the goal. Suddenly, a failure becomes useful training data for that goal.",
+    "detail_explanation": "Synthetic model rollouts work because errors in a long trajectory compound—the model drifts further from truth at each step. Keeping rollouts short keeps predictions accurate enough to help. Multi-task learning reuses learned structure: balance helps both forward and backward walking; grammar helps across different requests. The key is the shared structure across tasks—reward can differ, but state and action spaces must stay the same or overlap. Hindsight relabeling only works when you can make sense of relabeling. A robot that tried to grasp a cup and grasped a bowl instead still grasped something; you can train on that as reaching-a-bowl. But you cannot relabel a trajectory where the dynamics were different (e.g., different robot). The assumption is: failures explore useful states anyway, and relabeling makes them count toward different goals.",
+    "core_ideas": [
+      "A learned model predicts next states from current state and action, turning real transitions into starting points for short imagined futures.",
+      "Synthetic rollouts from real states add practice data but only work well over short horizons before model errors grow too large.",
+      "Multi-task RL trains one policy across many goals by including task description as part of the input to the policy.",
+      "Goal-conditioned RL makes the desired goal state part of the task input, so negative distance to goal becomes the reward signal.",
+      "Hindsight relabeling reinterprets a failed trajectory by labeling it with the goal state it actually reached instead of the intended one.",
+      "Relabeling only works when task dynamics are identical; reward and initial state distribution can change but state-action spaces must align."
+    ],
+    "coverage_explanation": [
+      "The lecture first completes model-based RL by explaining synthetic short rollouts. A learned model can extend real data with imagined futures, but only over horizons where the model is accurate enough to help rather than mislead. This keeps the model useful as a data extender without pretending it is a perfect simulator.",
+      "The lecture then shifts to multi-task and goal-conditioned learning. The instructor explains how task information can be included as part of the state, why related tasks can share structure, and how goals can be represented directly. Hindsight relabeling is covered as a way to reuse failed attempts by changing the goal label to what the trajectory actually achieved."
+    ],
+    "discussion_flow": [
+      "Model-based RL finished: learn a model, generate short rollouts from real states to add synthetic training data without extra environment interaction.",
+      "Model errors grow with rollout length, so short horizons beat long rollouts; good coverage and accuracy require starting from states throughout the real buffer.",
+      "Practical model-based RL choice: learned model must be accurate enough; better for compact state spaces; harder when observations are high-dimensional images.",
+      "Transition to multi-task learning: one policy solves multiple related tasks by conditioning on task identifier, reusing shared skills instead of separate policies.",
+      "Tasks share structure—balance for different walking directions, grammar for different requests—so one learner benefits from all data across all tasks.",
+      "Goal-conditioned RL and hindsight relabeling: relabel off-policy experience by the achieved goal instead of intended goal, turning failures into useful training for reached outcomes."
+    ],
+    "examples": [
+      "A learned model rolls forward from a state in the buffer for five steps, imagining what happens next. Those imagined steps are marked synthetic and added to training data.",
+      "A robot learning to walk forward and backward both learn balance and leg coordination; the shared balance skills transfer across the two direction tasks.",
+      "A trajectory meant to reach a cup but accidentally reached a bowl gets relabeled as a success for bowl-reaching and stored as real training data for that goal.",
+      "A language assistant uses a task string prompt like 'book a flight' as the task description, so the same policy processes different language requests by reading the prompt."
+    ],
+    "math_algorithm": [
+      "Collect real data from environment. Update learned model using supervised loss between predicted and actual next states.",
+      "Sample a state from real data. Roll learned model forward for horizon H, using current policy. Store imagined trajectory as synthetic data.",
+      "Aggregate real and synthetic data. Update policy on both using off-policy or on-policy algorithm. Repeat.",
+      "Redefine state as original state plus task identifier. Redefine reward as task-specific reward of that state-action pair. The collection of task MDPs becomes one larger MDP.",
+      "For goal-conditioned case, reward is negative distance or sparse binary signal between reached state and goal. Policy conditions on goal as part of input.",
+      "At end of trajectory, for each alternative goal, compute achieved state. Relabel rewards using new goal and store trajectory under new task label in replay buffer."
+    ],
+    "plain_checkpoint": "You can now explain how a learned model generates practice data, why one policy can learn many tasks at once by conditioning on the task, and how relabeling failed trajectories under different goal labels makes them useful again."
+  },
+  {
+    "number": 13,
+    "core_problem": "You trained a policy on one task, but now you face a new task you have never seen. A fresh RL agent would need weeks of trial and error. You have days or hours. How do you transfer what you learned so the agent figures out the new task fast, with just a few attempts?",
+    "topic_explanation": "Meta RL trains an agent across many different tasks, not just one. During training, you show the agent dozens or hundreds of tasks from the same family. The agent sees that tasks are similar enough to share patterns, but different enough that the agent must learn what makes each one unique. At test time, the agent enters a new task from that same family. It does not get a clean label saying what the task is. Instead, it must act in the new task, observe rewards and outcomes, build a guess about what this task is, and then exploit that guess. The agent learns to do both at once: exploring to figure out the task, then using what it figured out to collect more reward. This is different from multi-task RL, where you hand the agent a task descriptor like a goal image or instruction. Here, the agent builds its own task descriptor from experience.",
+    "detail_explanation": "The core mechanism is a policy with memory that carries information forward across episodes. As the agent collects experience in a new task, the policy reads that experience (the states it saw, the actions it took, the rewards it got) and uses that history to make better decisions going forward. The policy is trained on many tasks so that it learns to extract useful patterns from history. The memory is reset when a new task starts, but within a task, it grows as the agent gathers more experience. This creates a powerful feedback loop: early actions are chosen to reduce uncertainty about the task (exploration), and later actions use that reduced uncertainty to collect reward (exploitation). The tradeoff between these is learned automatically because the policy is optimized for total discounted reward across all tasks. If the agent spends too long exploring, it gets lower total reward. If it does not explore enough, it fails to understand the task and gets even lower reward. The policy learns to balance this on its own.",
+    "core_ideas": [
+      "Meta RL trains on many tasks so the agent learns to adapt to new tasks from the same family.",
+      "The agent builds a task estimate from experience, not from a clean label, so it must infer the hidden task.",
+      "Memory across episodes lets early experience shape later decisions within the same task.",
+      "Exploration is driven by uncertainty: actions that reduce uncertainty about which task this is are rewarded implicitly.",
+      "The agent learns an exploration strategy specific to the task family by optimizing total reward across all training tasks."
+    ],
+    "coverage_explanation": [
+      "The lecture begins by contrasting meta RL with multi-task RL. In multi-task RL, the task or goal can be passed in as an input. In meta RL, the agent may not get that clean descriptor and must infer what task it is facing from experience.",
+      "The instructor then explains training over a distribution of related tasks. The learner practices adapting across many MDPs, then is tested on a new one from the same family. The lecture develops the exploration problem inside meta RL: the agent must gather information about the hidden task and then use that information to get reward."
+    ],
+    "discussion_flow": [
+      "Multi-task RL hands the agent a task descriptor; meta RL requires the agent to infer what task it is in from data.",
+      "The agent has memory within a task but not across tasks, letting it build a growing estimate of the task as it collects more experience.",
+      "A sequence model with memory can learn which features of past experience matter for predicting good actions in the current state.",
+      "The agent must both explore to narrow down which task it is facing and exploit to collect reward, all within the same experience stream.",
+      "Sparse reward creates a binding constraint: only trajectories that find information AND then use it to get reward teach the agent anything useful.",
+      "When the policy is trained on many tasks, it learns to navigate this tradeoff automatically because total reward is highest when exploration and exploitation are balanced."
+    ],
+    "examples": [
+      "A legged robot trained on many terrains learns which terrain it faces by trying a few steps, then adapts its gait. The first steps reveal friction and slope; later steps exploit that knowledge.",
+      "An agent trained on many mazes does not know which maze it enters. It explores branches, observes dead ends, then takes the direct path once it has mapped the structure.",
+      "A language model given examples of how a new user wants responses reformatted builds a hypothesis about the style, then applies that style without being told the rule explicitly."
+    ],
+    "math_algorithm": [
+      "Train a sequence model (RNN, Transformer) that takes all past states, actions, rewards as input and outputs actions for the current state.",
+      "The policy receives growing context: at step t, it reads experience from steps 1 to t-1, then predicts action at step t.",
+      "During meta-training, sample a task, roll out the policy for n episodes with memory across those episodes, then update the policy to maximize total discounted reward.",
+      "At test time, run the same policy in a new task for n episodes. The policy's memory grows within those episodes, but resets when you switch to a new task.",
+      "The policy learns to allocate time: early episodes often explore because the policy has high uncertainty and cannot yet achieve high reward without information."
+    ],
+    "plain_checkpoint": "You can now explain why an agent trained on many tasks can adapt to a new task with just a few episodes, and describe how memory and reward shape the agent to explore when uncertain and exploit when confident."
+  },
+  {
+    "number": 14,
+    "core_problem": "You build a robot or train an AI, but it never tries new things. It gets stuck doing the safest action it knows, missing much better possibilities. How do you make it search wisely for hidden rewards?",
+    "topic_explanation": "Exploration means deliberately choosing actions partly to gather information, not just to get immediate reward right now. Some tasks make this obvious: Breakout gives you a score every few seconds, so learning works fast. But Montezuma's Revenge hides the reward behind a long chain—you must get a key, then open a door, then progress. An agent starting fresh sees no reward signal until months of random luck. Regret measures this cost: the reward you lose by not already knowing the best action. Good exploration keeps regret growing slowly, not linearly. Three approaches balance this: epsilon-greedy flips a coin sometimes to try new things, optimism assumes unknown actions are good until proven bad, and posterior sampling maintains beliefs about possible worlds and acts as if one is real. Meta-exploration goes further: across many tasks, learn what kinds of information-gathering actually work.",
+    "detail_explanation": "The core mechanism is converting uncertainty into directed action. Regret assumes you compare your total reward to what an oracle would have earned knowing everything in advance. The gap reveals how much learning cost you. In bandits, this is simple: each choice has an unknown payoff, period. In longer MDPs, the same idea spreads across time. An action might teach you something valuable later, even if it pays off nothing now. Posterior sampling works by keeping a distribution over possible worlds. You sample one plausible world from that distribution, act inside it as if it were real, then update your beliefs from what happens. This naturally avoids purely random exploration—you stay inside your uncertainty set, trying things that seem plausible. The failure case: if your uncertainty model is badly wrong, exploration wastes time on distractions. For large domains like language models from scratch, exploration is intractable; you need a pre-trained foundation model to narrow the search space first.",
+    "core_ideas": [
+      "Exploration means paying a small cost now to learn which future paths are truly better than others.",
+      "Regret measures learning cost as reward lost compared with knowing the best action in advance forever.",
+      "Uncertainty about actions and outcomes drives good exploration more than randomness alone.",
+      "Meta-exploration learns what kinds of information-gathering work across a family of related tasks.",
+      "Posterior sampling turns uncertainty into directed action by sampling plausible worlds and committing to one."
+    ],
+    "coverage_explanation": [
+      "The lecture starts by showing why some RL tasks are easy only because reward is frequent enough. Sparse-reward tasks are different: the agent may need a long sequence before any useful score appears, so the current best-looking action can trap learning. Exploration is introduced as the missing behavior that searches for information, not just immediate score.",
+      "The instructor then uses bandits to explain exploration cleanly. Regret measures the cost of learning. Epsilon-greedy, optimism, and posterior sampling are presented as different ways to act under uncertainty. The lecture later returns to meta RL, where exploration is not just about trying actions, but collecting information that reveals the hidden task."
+    ],
+    "discussion_flow": [
+      "Standard RL works when reward is frequent; sparse rewards trap learning because the agent sees no signal until a long lucky sequence.",
+      "Regret formalizes the cost of learning: the gap between what you earned and what an all-knowing agent would have earned.",
+      "Bandits strip exploration down to one-step decisions with unknown stochastic payoffs; regret can be sublinear if you explore smartly.",
+      "Uncertainty is the key lever: algorithms balance trying high-uncertainty actions against exploiting what you know best.",
+      "Posterior sampling maintains plausible worlds and acts on one, naturally spreading exploration across high-uncertainty regions.",
+      "Meta-exploration decouples task learning from task execution by training an exploration policy to predict latent task features separately from a policy that exploits reward."
+    ],
+    "examples": [
+      "A kitchen robot must open drawers to find ingredients before cooking; random arm flailing wastes time but exploring drawers gathers critical information.",
+      "In a Mao game, you see no rules, only penalties for breaking them; exploration means systematic testing to infer the hidden rules.",
+      "A language model reasoner must try different proof strategies; some lead nowhere while others reveal a solution path.",
+      "Drug testing for a plague: choosing greedy picks the drug you tested once and saw work, missing that a barely-tested drug might save more lives if you explore it more."
+    ],
+    "math_algorithm": [
+      "Regret = optimal reward times T minus your actual total reward over T episodes; measures the learning cost.",
+      "Epsilon-greedy: with small probability epsilon, pick a random action; otherwise pick the current best-known one.",
+      "Optimism: track average reward per action plus a bonus for uncertainty; give unseen actions highest bonuses.",
+      "Posterior sampling: maintain a distribution over possible reward functions or task parameters; sample one, act optimally in that world, update the distribution.",
+      "Meta-exploration: train an exploration policy to collect data that reduces prediction error on a latent task representation; separate this from the execution policy."
+    ],
+    "plain_checkpoint": "You can now explain why an agent stuck on one action needs exploration, how regret measures the learning cost, why posterior sampling works, and how learning exploration habits across tasks beats learning from scratch."
+  },
+  {
+    "number": 15,
+    "core_problem": "Long tasks with hundreds of tiny actions create a credit assignment problem: when failure occurs, it is unclear which early action caused it. One flat policy must choose every single movement, spreading feedback across an impossible chain.",
+    "topic_explanation": "Hierarchical reinforcement learning solves long tasks by splitting the decision-making into levels. A high-level policy chooses subgoals infrequently (like 'pick up the cup'). A low-level policy turns each subgoal into actual movements and runs every step. This splits a hard credit problem into two easier ones. The high level judges whether a good subgoal was chosen. The low level judges whether that subgoal was actually reached. Each level gets clearer, faster feedback. A household robot does not reason about every motor command while planning room cleaning; it chooses 'pick up the shirt' at the high level, then the low level handles arm angles and gripper positions to actually do it.",
+    "detail_explanation": "Long sequences create a brutal credit problem. If a robot fails after two hundred actions, which of those two hundred mattered? Hierarchical structure shortens the feedback chain by creating intermediate milestones. The high level checks whether sensible milestones were chosen; the low level checks whether each milestone was reached. This does not remove learning, but it moves the problem into two smaller, more solvable versions. The key design choices are: what counts as a subgoal (language, images, GPS coordinates), when to switch to a new subgoal (after completion or after a fixed time), and how much state each level needs. Bad subgoal choices still fail, but good ones let credit flow over much shorter horizons.",
+    "core_ideas": [
+      "Long task chains are hard because credit must flow backward through hundreds of steps to assign blame.",
+      "A hierarchy splits one impossible problem into two simpler problems with shorter feedback chains.",
+      "The high-level policy chooses goals at low frequency; the low-level policy executes actions at high frequency.",
+      "Different representations work for different domains: language for cooking, GPS for navigation, images for manipulation.",
+      "Subgoals must match the true structure of the task and must connect smoothly from one to the next.",
+      "The low-level policy needs to see states where the high-level policy would actually send it to avoid gaps."
+    ],
+    "coverage_explanation": [
+      "The lecture begins by tying together multi-task RL and meta RL, then moves to tasks that are long enough that a flat policy becomes hard to train. In these tasks, one small mistake can stop progress or leave the agent repeating the same failed behavior.",
+      "The instructor then develops hierarchy as a way to break the long task into smaller pieces. A high-level policy chooses goals, tasks, or skills. A low-level policy executes actions to satisfy that choice. The lecture explains supervision for each level, when the high level should act, how goals and skills can be represented, and why household robot tasks often use this split."
+    ],
+    "discussion_flow": [
+      "Flat policies fail on long tasks because credit cannot cross hundreds of steps without noise drowning it out.",
+      "Subgoals create intermediate supervision: the high level judges goal selection; the low level judges goal achievement.",
+      "High level reasons at low frequency (once per second or less); low level acts at high frequency (many times per second).",
+      "Subgoal representation matters: GPS works for navigation; language works for cooking; images work for object manipulation.",
+      "Misalignment happens when low-level skills do not overlap properly or when high-level goals are vague or unreachable.",
+      "Fixed-frequency switching is simpler and more robust than trying to detect when a goal is truly completed."
+    ],
+    "examples": [
+      "A robot cleaning a room: high level says 'pick up the shirt,' low level controls the arm to grasp and lift it.",
+      "A car driving to Yosemite: high level generates waypoint coordinates, low level steers to stay on the path.",
+      "Baking a cheesecake: you do not reason about every muscle; you choose 'buy ingredients' then the low level figures out walking and shopping.",
+      "A robot stuck in a loop: if the low level fails at a subgoal, the high level keeps giving the same command and the robot never escapes."
+    ],
+    "math_algorithm": [
+      "Sample from high-level policy on current state to pick a subgoal g; this happens at low frequency.",
+      "Repeatedly sample from low-level policy with state and subgoal g; execute action; observe new state.",
+      "After subgoal is reached (or fixed time passes), query high-level policy again with updated state.",
+      "Low-level policy gets reward for reaching the subgoal; high-level gets reward for completing the full task.",
+      "Low-level learns state-to-action mapping for many subgoals; high-level learns which subgoal to pick next.",
+      "Both policies see the same full state observation; subgoal representation is the only difference between them."
+    ],
+    "plain_checkpoint": "You can now explain why long tasks need hierarchy, describe how high-level and low-level policies split the work, pick a sensible subgoal representation for a new domain, and identify failure modes like unreachable goals or missing state coverage."
+  },
+  {
+    "number": 16,
+    "core_problem": "A real robot cannot practice learning if a human must reset the world after each failed attempt. How can a robot keep improving without constant human help resetting the scene?",
+    "topic_explanation": "Standard reinforcement learning assumes something magical happens between attempts: the world resets to a clean starting state. In a simulator, you call env.reset(). In the real world, someone has to physically put everything back. This hidden assumption makes most RL algorithms unsuitable for physical robots that must learn on their own. Autonomous robot learning removes that assumption. The robot must keep practicing from whatever state it ends up in. The challenge: when the robot makes mistakes and gets stuck in bad states, the data it collects becomes useless for learning the main task. The solution is to teach the robot two things—how to do the task and how to recover or return to useful states—so it can keep generating its own practice opportunities.",
+    "detail_explanation": "The core insight is that learning from bad states is extremely hard. If a robot makes one mistake and drifts far from the good states, it will collect data from this bad region. Even if on-policy or off-policy learning uses that data, the data shows states that do not lead to the goal. The robot learns to fail from those bad states, not to succeed from them. Additionally, if the robot ever does reach the goal, it stays there collecting reward—but this concentrated goal-region data does not teach the policy how to reach the goal from earlier starting points. The fix is to add a recovery mechanism: a second policy trained to bring the robot back to useful states. This backward policy uses expert demonstrations or the initial state distribution as a target. By cycling forward-backward-forward-backward, the robot always generates fresh attempts from workable positions. The tradeoff: the backward policy is an auxiliary tool discarded after learning, so it seems wasteful, but it makes autonomous learning possible.",
+    "core_ideas": [
+      "Standard episodic RL hides a reset assumption: after each trial, the world magically returns to the start.",
+      "Real robots cannot reset without human help, so autonomous learning requires robots to recover from their own mistakes.",
+      "A backward or reset policy brings the robot to useful states, enabling continuous practice without external resets.",
+      "Poor task proposals can waste practice time; autonomous selection of next tasks lets robots pursue feasible learning opportunities.",
+      "Expert state distributions define useful recovery targets that prevent the robot from drifting to unrecoverable regions."
+    ],
+    "coverage_explanation": [
+      "The lecture starts by pointing out the reset assumption in standard robot RL. Many algorithms act as if each failed attempt can be followed by a clean restart. Physical robots usually need a human or a separate controller to make that happen, so the learning setup itself becomes unrealistic unless reset is handled.",
+      "The instructor then reframes the problem as autonomous learning. The robot must keep collecting useful data from the states it reaches. The lecture covers reset-free learning, reset or backward policies, expert state distributions, task proposal, and how language models might help guide practice in unfamiliar situations."
+    ],
+    "discussion_flow": [
+      "Physical robots do not reset automatically, so standard RL algorithms break in the real world.",
+      "Two evaluation modes exist: lifetime reward during learning (Mars rover case) and quality of the final policy after learning (cooking robot case).",
+      "Without reset, the robot drifts to bad states or gets stuck in goal-only regions, so off-policy or on-policy updates cannot recover the missing trajectory.",
+      "A backward policy learns to return the world to useful states, enabling forward-backward-forward cycles of practice.",
+      "Expert demonstrations define a state distribution the backward policy can reset to, rather than only returning to the narrow initial state.",
+      "Task proposers let robots choose what to practice next from their current state, avoiding impossible tasks and keeping learning efficient."
+    ],
+    "examples": [
+      "A robot arm learning to grasp: after it knocks over the object, it must learn to pick up the object again rather than wait for a human reset.",
+      "A mobile robot navigating to a destination: when it makes a wrong turn, it must learn to navigate back to a good state, not get stuck in the wrong place.",
+      "A humanoid learning to walk: if it falls, the backward policy learns to stand up so the forward walk task can be practiced again.",
+      "A multi-step assembly task: the robot must propose task proposals that work from its current state, practicing pick-up if the object is on the floor or assembly if the object is already in hand."
+    ],
+    "math_algorithm": [
+      "Initialize robot from a starting state. Repeat: run forward policy, update forward policy on task reward, run backward policy, update backward policy to reach expert states, with no reset between cycles.",
+      "Expert state distribution: train a discriminator to distinguish states visited by experts from states visited by the learning policy, using this loss to shape the backward reward.",
+      "Task proposal: given current state, predict or select from a predefined set of feasible tasks (z_i) that are safe and achievable from this state, then execute and learn the multi-task policy on this selected task.",
+      "State distribution drift: if the policy visits only goal states late in training, the replay buffer loses coverage of the path from start to goal, so the policy cannot return to success from earlier states."
+    ],
+    "plain_checkpoint": "You can now explain why real robots need backward policies and task proposals to learn without human resets, and why standard episodic RL algorithms assume something the physical world does not provide."
+  },
+  {
+    "number": 17,
+    "core_problem": "Robot policies trained in simulation often fail on real hardware because simulation never perfectly matches the physical world. How do you make a robot generalize from cheap simulated practice to unpredictable real-world terrain, weight changes, and sensor noise?",
+    "topic_explanation": "The core idea is to run enormous numbers of practice runs in simulation because it is vastly cheaper and faster than real-world practice. A robot learning to walk can be trained on a billion simulated steps in weeks. But simulation is an approximation. If the learned policy relies on specific physics values (like friction or mass) that are wrong in reality, the policy fails when deployed. The solution is to randomize the simulation during training: change terrain type, friction, mass, sensor noise, and other parameters constantly so the policy learns to work across many conditions. This makes the real world just another variation the policy has already seen. Additionally, use rapid adaptation: a separate neural network estimates the current physical conditions from the robot's movement history and feeds those estimates to the main policy in real-time, letting it adjust its behavior within seconds of encountering an obstacle.",
+    "detail_explanation": "Simulation-scale RL works because it converts an expensive physical problem into a cheap computational one. Instead of a robot practicing in the real world for months, it practices billions of times in a digital simulator in days. Reward functions must penalize energy waste and hardware damage (which simulation ignores), not just task success. Domain randomization prevents the policy from overfitting to simulator details. When training a policy on a fixed mass, it learns mass-specific gaits that break when the robot is heavier. But when mass randomizes across training, the policy learns gaits robust to different masses. The failure mode is that randomization must include the right dimensions: if you never randomize friction in training, a slippery surface in reality will break the policy. Rapid adaptation fills this gap by continuously estimating hidden physical conditions from proprioceptive signals (the difference between commanded and actual movement reveals slips, weight shifts, and contact changes). The tradeoff is computational cost: a small adaptation network runs constantly, consuming 10 percent of available compute, but enabling zero-shot deployment without manual tuning.",
+    "core_ideas": [
+      "Simulation is cheap practice; real robots practice a billion times in simulation for weeks instead of months on hardware.",
+      "A fixed policy trained on fixed physics fails on real terrain; domain randomization exposes it to many physics variations.",
+      "The policy must learn to accept physical conditions as inputs and adjust its behavior accordingly at training time.",
+      "Rapid adaptation estimates hidden physical properties from movement history during deployment, updating in real-time.",
+      "Proprioceptive history reveals contact events, slips, and mass changes that the policy uses to self-correct without vision.",
+      "Sim-to-real transfer succeeds when the simulator includes the right reward penalties and the policy sees enough randomization."
+    ],
+    "coverage_explanation": [
+      "The guest lecture opens by comparing imitation learning and reinforcement learning in robotics. Imitation learning is described as useful for pretraining from existing data, while RL is emphasized when the system has a clear reward and can generate large amounts of practice data. The point is to separate learning from examples from learning by scored attempts.",
+      "The lecture then uses robot locomotion and sim-to-real transfer as the concrete setting. It explains reward design for movement, the huge number of simulated samples needed, the gap between simulation and physical hardware, and adaptation methods that let a policy infer terrain, mass, contact, or other hidden conditions from recent history."
+    ],
+    "discussion_flow": [
+      "Simulation is affordable: a billion practice runs cost compute, not hardware wear or safety risk.",
+      "Fixed physics fails: a policy trained on one mass or friction breaks when reality differs even slightly.",
+      "Randomization during training exposes policy to physics variation so it learns robust movement principles.",
+      "Adaptation fills remaining gaps: network estimates hidden conditions from movement history and tells policy how to adjust.",
+      "Proprioceptive signals (motor commands vs. achieved movement) reveal terrain, mass, contact, and slips without vision.",
+      "Zero-shot deployment: trained policy transfers to real world without manual tuning because adaptation runs automatically."
+    ],
+    "examples": [
+      "A quadruped trained in simulation with mass randomized learns to walk over rocks, mud, sand, and grass with the same policy without retraining.",
+      "When a 5 kg load drops onto a 12 kg robot, the adaptation module detects the sudden force change from motor commands and adjusts leg stiffness within one step.",
+      "A robot trained on terrain height map randomization learns to climb stairs and stepping stones, using only proprioceptive feedback without cameras.",
+      "A drone with two different motor configurations (different arm length and mass) uses the same policy because rapid adaptation estimates its current morphology."
+    ],
+    "math_algorithm": [
+      "Train base policy on randomized physics: vary mass, friction, terrain in simulation so policy learns world-agnostic movement.",
+      "Reward function includes task (velocity tracking), energy (minimize work and heat), and hardware protection (minimize impacts).",
+      "Adaptation module uses history of commanded and achieved joint positions to estimate extrinsics (compressed physics parameters) at 10 Hz.",
+      "Base policy consumes estimated extrinsics and current state to produce actions at 100 Hz, enabling real-time correction.",
+      "DAgger supervision: run student adaptation module in simulation, collect data, supervise with ground-truth extrinsics from simulator.",
+      "Deploy both modules together: base policy runs on deployed weights, adaptation module updates estimates online during each rollout."
+    ],
+    "plain_checkpoint": "You can now explain why simulation alone is not enough for sim-to-real transfer, how domain randomization and rapid adaptation fill the gap, and why proprioceptive history (not vision) often enables robots to handle unpredictable terrain zero-shot."
+  },
+  {
+    "number": 18,
+    "core_problem": "How do you pick research problems that matter and run experiments that prove your solution works, not just looks good on paper?",
+    "topic_explanation": "Real progress in deep RL depends on two things: choosing problems worth solving and testing them honestly. When reward is easy to verify (chess, code, math), RL wins. When reward is messy (chatbots, personalization, safety), the approach breaks. Then comes evaluation. A method may work perfectly on a benchmark but fail in deployment because the test did not match the real world. The second half teaches research practice: start from a genuine problem you observe, not a method you want to apply; test the core assumption before building everything else; watch for early signs it works; pivot fast if evidence stays weak.",
+    "detail_explanation": "The first part shows where current RL struggles: problem setup (reward is ambiguous for robots, chatbots, YouTube), methods (old data can trap you, video models hallucinate out-of-distribution actions, scaling has tradeoffs), and deployment (formal safety proofs assume conditions that do not hold, mistakes compound in the wild, evaluation requires expensive online rollouts). The second part teaches that good research is problem-driven, not method-driven. Before building infrastructure, run a simple experiment that tests whether your core idea can work at all. Try many ideas fast and discard bad ones. Do not fall in love with an idea; love solving the problem. When something does not want to work after real effort, scoping down or pivoting is honest, not failure.",
+    "core_ideas": [
+      "Reward definition is a design and ethics choice, not a solved detail you can ignore.",
+      "Evaluation in real deployment differs from benchmarks in sample cost, safety risk, and rare failures.",
+      "Strong initial results do not guarantee that a method survives beyond its test setup.",
+      "Problem-driven research finds the bottleneck and targets it, not whichever method sounds elegant.",
+      "Early risk testing on the simplest version avoids months building infrastructure for a broken idea.",
+      "Honest failure and pivoting show good judgment; false hope wastes time."
+    ],
+    "coverage_explanation": [
+      "The final lecture first surveys open problems. It focuses on problem setup, reward definition, prior data, safety, deployment, and evaluation. The instructor emphasizes that many RL successes happen where rewards are easy to check, while many real systems require scores that involve human judgment and competing goals.",
+      "The lecture then turns into research advice. It explains how to choose a problem, why the upper bound of the problem matters, how to run targeted experiments, why early signs of life matter, and when to pivot. The coverage connects technical RL questions with the practical question of what evidence would make a research claim believable."
+    ],
+    "discussion_flow": [
+      "Real wins in RL happen where reward is checkable; most real systems have messy, competing goals.",
+      "Evaluation is hard because the benchmark does not match deployment: different users, rare failures, changing conditions.",
+      "Safety proofs and benchmarks often assume conditions that break in the wild, so trust honest deployment testing.",
+      "Good research starts from a real problem you see, not a method you want to apply or a paper you want to write.",
+      "Test the core unknown early on the simplest possible setup; avoid building months of infrastructure on a broken foundation.",
+      "When evidence stays weak after real effort, rescope or pivot; false hope and sunk-cost thinking are research killers."
+    ],
+    "examples": [
+      "Human raters prefer confident chatbot answers over correct ones, so preference optimization trains overconfidence, not factuality.",
+      "A pretrained video model predicts the task succeeding even for actions it was never trained on, because the data lacked failure cases.",
+      "An AI doctor achieved 92% alone but 76% with human partners, worse than human alone, because the interface assumed the AI was always right."
+    ],
+    "math_algorithm": [
+      "Reward function design: choosing what to measure is not an engineering detail; it shapes behavior and must reflect real goals.",
+      "Frontload risk: before coding, run the simplest experiment that tests the core unknown in one day, not three months.",
+      "Iterate fast: try many ideas, discard failing ones in days, commit only after seeing signs of life on results.",
+      "Simplify until it works: if nothing works, strip it down to a single task, get that working, then grow back up.",
+      "Diagnose with others: talking through assumptions with peers reveals whether you should change strategy or tools.",
+      "Pivot decision: frame it as 'current project vs. project B vs. project C' to make concrete choices, not vague anxiety."
+    ],
+    "plain_checkpoint": "You can now explain why an RL system can look successful on a benchmark but fail in deployment, how to pick a research problem that matters, and why testing your core idea early and small before building everything else saves months of wasted work."
+  },
+  {
+    "number": 19,
+    "core_problem": "Learning how much future reward you get from each action is the foundation of all value-based control, but the path from basic Bellman updates to neural networks involves hard choices about bias, variance, stability, and sample efficiency that determine whether anything actually works.",
+    "topic_explanation": "Start by rebuilding Q-learning from first principles in a small GridWorld where a robot tries to reach a gem. A Q-value estimates the total future reward you expect after taking a particular action in a state. The key idea is the Bellman equation: the Q-value of an action now equals the immediate reward plus the discounted best Q-value you can reach next. This is recursive—you can propagate that backward from the goal to every earlier state by iterating the update. Fitted Q iteration does exactly this: it repeatedly fits a function to reward-plus-discounted-next-Q targets until the Q-values stabilize. A hard practical question follows: when the Q-table is replaced by a neural network, should you learn from complete rollouts (Monte Carlo—unbiased but noisy) or one-step guesses (temporal-difference—biased but low-variance)? The answer matters for how fast learning works and how stable it stays.",
+    "detail_explanation": "Why this matters: value functions let you reason about what the agent can do step by step, rather than waiting for an entire rollout to see if an action was good. In a grid, reward at the goal propagates backward because each square's value depends on where you can move next. Bellman updates are the mechanism: they say that value comes from immediate reward plus the value of the square reachable by optimal action. Once you use a neural network, three new problems appear. First, the target and the prediction are both functions of the same network, which creates a moving target and training instability—you fix this by stopping gradients or using a separate target network. Second, random errors in the Q-function get amplified by the max operation in the Bellman update, causing persistent overestimation—you fix this with ensembles or by using different networks for selection and evaluation. Third, the choice between Monte Carlo (wait for full reward) and temporal-difference (guess with current value) determines the bias-variance tradeoff: you must pick based on how noisy your environment is.",
+    "core_ideas": [
+      "A value Q(s,a) estimates future reward from action a in state s; the Bellman equation recursively defines it as reward now plus best future Q.",
+      "Fitted Q iteration propagates reward backward by repeatedly updating Q-values toward reward plus discounted best next Q until convergence.",
+      "Temporal-difference learning uses one-step value guesses to reduce variance but introduces bias; Monte Carlo waits for full outcomes for unbiased but noisy targets.",
+      "Neural network function approximation enables scaling to large state spaces but creates optimization instability that requires target networks, gradient clipping, and ensemble methods.",
+      "Q-value overestimation propagates through dynamic programming updates because noise in the max operation is positive-biased; ensembles and double-learning reduce this."
+    ],
+    "coverage_explanation": [
+      "The tutorial starts from a small GridWorld so the value ideas are visible without neural networks. It defines the MDP pieces, then explains V, Q, and advantage using the grid: how good a state is, how good an action from that state is, and how much better that action is than the state's usual value.",
+      "The tutorial then develops the Bellman update and fitted Q iteration. Reward at the goal is propagated backward through the grid by repeatedly updating Q-values from current reward plus discounted future value. The later coverage compares temporal-difference targets with Monte Carlo rollouts and explains why these practical choices matter when Q-functions are approximated."
+    ],
+    "discussion_flow": [
+      "Start with GridWorld: robot, gem, states, actions, rewards, discount factor; show value propagation visually from terminal state backward.",
+      "Define V(s) as state value and Q(s,a) as action value; show how advantage A(s,a)=Q(s,a)-V(s) compares actions at a state.",
+      "Write Bellman equation Q*=E[r+γ·max Q*] and iterative update Q_k+1; demonstrate that starting from terminal reward, value spreads backward.",
+      "Compare Monte Carlo rollouts (full trajectory sum) with one-step TD targets (reward plus value guess); show bias-variance tradeoff table.",
+      "Introduce parametric Q-learning with neural networks; explain target network, semi-gradient, and why these stabilize optimization.",
+      "Analyze Q-value overestimation from max noise and show ensemble methods reduce it; connect to practical deep Q-learning (DQN)."
+    ],
+    "examples": [
+      "GridWorld robot starts far from gem with all Q-values zero; after one iteration, states one step from gem get nonzero Q; after multiple iterations, reward information spreads backward to far states.",
+      "In a maze, two sampled trajectories (A to B and C to D) can be stitched into A to D by one-step value estimates, achieving coverage that full rollouts might miss.",
+      "If you use Monte Carlo, you wait for the robot to reach the gem and backtrack; if you use TD, you update immediately using your guess of the next state's value, so you learn faster but risking wrong guesses.",
+      "Error in predicting Q at one state gets multiplied by the discount factor and max operation on the next state; over many steps this compounds into huge overestimation unless you use ensembles."
+    ],
+    "math_algorithm": [
+      "Bellman equation Q*(s,a)=E[r(s,a)+γ·max(Q*(s')) | s,a]: immediate reward plus discounted best future Q value.",
+      "Fitted Q iteration update Q_k+1(s,a) ← r+γ·max(Q_k(s')) repeatedly until Q stabilizes to the optimal Q.",
+      "One-step TD target y=r+γ·max(Q(s')) approximates the Bellman backup using current Q estimate, introducing bias but enabling learning from single transitions.",
+      "Monte Carlo target y=Σ γ^t r_t over full episode is unbiased but requires complete rollout and has high variance from stochastic rewards and transitions.",
+      "Neural network Q-learning loss L=(Q_φ(s,a) - (r+γ·max(Q_θ(s'))))^2 where φ are online weights, θ are frozen target weights to stabilize learning."
+    ],
+    "plain_checkpoint": "You can now explain what a Q-value is, how the Bellman equation relates current reward to future value, why you might wait for rollouts or use one-step guesses, and what can go wrong when you use a neural network to approximate Q-values."
+  }
+]

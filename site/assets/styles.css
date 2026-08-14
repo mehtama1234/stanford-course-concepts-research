@@ -58,6 +58,13 @@ code { white-space: normal; overflow-wrap: anywhere; color: #374151; }
 .lecture-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 18px; }
 .lecture-grid section { min-width: 0; }
 .lecture-flow .flow-step { min-height: 138px; }
+.approach-stack { display: grid; gap: 12px; }
+.approach-card { background: #fbfcfc; }
+.approach-card h4 { margin: 0 0 8px; font-size: 18px; }
+.principle-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.principle-grid article { padding: 14px; }
+.principle-grid h3 { font-size: 17px; }
+.principle-grid p { color: var(--muted); margin-bottom: 0; }
 @media (max-width: 820px) {
   .topbar { align-items: flex-start; flex-direction: column; padding: 12px 18px; }
   main { padding: 18px; }
@@ -68,4 +75,5 @@ code { white-space: normal; overflow-wrap: anywhere; color: #374151; }
   .flow-step { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .flow-step:last-child { border-bottom: 0; }
   .lecture-heading, .lecture-grid { display: grid; grid-template-columns: 1fr; }
+  .principle-grid { grid-template-columns: 1fr; }
 }

@@ -25,10 +25,107 @@ def esc(value: Any) -> str:
     return html.escape(str(value), quote=True)
 
 
+def topic_copy(value: Any) -> str:
+    text = str(value)
+    replacements = [
+        ("The final lecture steps back from ", "Step back from "),
+        ("The final lecture first surveys ", "Survey "),
+        ("The lecture starts from ", "Start from "),
+        ("The lecture starts with ", "Start with "),
+        ("The lecture starts by ", "Start by "),
+        ("The lecture begins by ", "Begin by "),
+        ("The lecture begins with ", "Begin with "),
+        ("The lecture first narrows ", "Narrow "),
+        ("The lecture first completes ", "Complete "),
+        ("The lecture then shifts to ", "Then move to "),
+        ("The lecture then uses ", "Then use "),
+        ("The lecture then turns into ", "Then turn this into "),
+        ("The lecture turns into ", "Turn this into "),
+        ("The lecture studies ", "Study "),
+        ("The lecture introduces ", "Introduce "),
+        ("The lecture adds ", "Add "),
+        ("The lecture focuses on ", "Focus on "),
+        ("The lecture moves from ", "Move from "),
+        ("The lecture narrows ", "Narrow "),
+        ("The lecture finishes ", "Finish "),
+        ("The lecture compares ", "Compare "),
+        ("The lecture asks ", "Ask "),
+        ("The lecture points out ", ""),
+        ("This lecture treats ", "Treat "),
+        ("This lecture has ", "This topic has "),
+        ("This robotics lecture points out ", ""),
+        ("The instructor explains ", ""),
+        ("The instructor then explains ", "Then "),
+        ("The instructor then uses ", "Then use "),
+        ("The instructor then develops ", "Then develop "),
+        ("The instructor then reframes ", "Then reframe "),
+        ("The instructor brings in ", "Then use "),
+        ("The instructor emphasizes ", ""),
+        ("the instructor explains ", ""),
+        ("the instructor then explains ", "then "),
+        ("the instructor then uses ", "then use "),
+        ("the instructor then develops ", "then develop "),
+        ("the instructor then reframes ", "then reframe "),
+        ("the instructor brings in ", "then use "),
+        ("the instructor emphasizes ", ""),
+    ]
+    for old, new in replacements:
+        text = text.replace(old, new)
+    direct_rewrites = [
+        ("The split between a high-level policy and a low-level policy.", "The useful split is between a high-level policy and a low-level policy."),
+        ("the split between a high-level policy and a low-level policy.", "the useful split is between a high-level policy and a low-level policy."),
+        ("The lecture's focus on action distributions matters because expert behavior can have branches.", "Action distributions matter because expert behavior can have branches."),
+        ("The lecture's methods are different ways to stay close to what the log can justify while still improving beyond plain copying.", "Offline RL methods are different ways to stay close to what the log can justify while still improving beyond plain copying."),
+        ("The lecture's RL framing treats each partial solution as a state and each next step as an action.", "The RL framing treats each partial solution as a state and each next step as an action."),
+        ("The lecture's planning loop is therefore cautious:", "The planning loop is therefore cautious:"),
+        ("The lecture's design questions matter because bad skills or bad switching rules can hide failure.", "Those design choices matter because bad skills or bad switching rules can hide failure."),
+        ("The topic's design questions matter because bad skills or bad switching rules can hide failure.", "Those design choices matter because bad skills or bad switching rules can hide failure."),
+        ("The topic explains the recursive nature of this estimate.", "The estimate is recursive."),
+        ("The topic explains coverage:", "Coverage means:"),
+        ("The topic explains why ", "The reason "),
+        ("The topic discusses sampling ", "One method is sampling "),
+        ("The topic discusses reset policies, backward policies, expert state distributions, and task proposals as ways to make practice continue without human intervention.", "Reset policies, backward policies, expert state distributions, and task proposals are ways to make practice continue without human intervention."),
+        ("The topic discusses robustness, adaptation from recent history, and whether explicit terrain maps are needed.", "Robustness, adaptation from recent history, and terrain information decide whether the policy keeps working outside the simulator."),
+        ("The topic stresses that ", "The hard part is that "),
+        ("The topic also stresses ", ""),
+        ("The topic also explains why ", "The reason "),
+        ("The guest lecture compares ", "Compare "),
+        ("the guest lecture compares ", "compare "),
+    ]
+    for old, new in direct_rewrites:
+        text = text.replace(old, new)
+    removable = [
+        "The lecture explains ",
+        "This lecture explains ",
+        "The topic explains ",
+        "This topic explains ",
+        "The lecture discusses ",
+        "This lecture discusses ",
+        "The topic discusses ",
+        "This topic discusses ",
+        "The lecture also explains ",
+        "The topic also explains ",
+        "The lecture also stresses ",
+        "The topic also stresses ",
+        "The lecture stresses ",
+        "The topic stresses ",
+        "The lecture covers ",
+        "The topic covers ",
+    ]
+    for phrase in removable:
+        pattern = rf"(^|(?<=[.!?])\s+){re.escape(phrase)}"
+        text = re.sub(pattern, lambda match: match.group(1), text)
+    for old, new in direct_rewrites:
+        text = text.replace(old, new)
+    text = re.sub(r"(^|(?<=[.!?])\s+)([a-z])", lambda match: match.group(1) + match.group(2).upper(), text)
+    return text
+
+
 def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
     prefix = "../" * depth
     nav = [
         ("index.html", "Overview", "overview"),
+        ("deep-rl.html", "Deep RL", "deep_rl"),
         ("concepts.html", "Concepts", "concepts"),
         ("themes.html", "Themes", "themes"),
         ("families.html", "Method Families", "families"),
@@ -260,6 +357,434 @@ def build_concepts(concepts: list[dict[str, Any]], evidence: list[dict[str, Any]
         write(SITE / "concepts" / f"{concept['id']}.html", page(concept["name"], body, "concepts", depth=1))
 
 
+DEEP_RL_COURSE = "stanford-cs224r-deep-rl-spring-2025"
+
+DEEP_RL_LECTURE_GUIDE: dict[int, dict[str, Any]] = {
+    1: {
+        "core_problem": "An agent must choose actions before it knows the full result. The lecture sets up that problem: a choice changes the next situation, and the useful score may arrive later.",
+        "plain_takeaway": "Deep RL is about learning a rule for acting. The rule is tested by running it, seeing what happens, and changing it so future choices work better.",
+        "key_terms": [
+            ("agent", "the learner that chooses"),
+            ("state", "the situation the learner uses"),
+            ("action", "one move the learner can make"),
+            ("reward", "the score after a move or after a chain of moves"),
+        ],
+        "before_next": "Be able to say what the learner sees, what it can do, and what score says the action helped.",
+        "concepts": ["policy", "reward", "credit_assignment"],
+    },
+    2: {
+        "core_problem": "Sometimes trial and error is costly. A robot, driver, or assistant may need to start from examples of good behavior instead of learning only by mistakes.",
+        "plain_takeaway": "Imitation learning copies actions from examples. The hard part is that small errors can move the learner into situations the examples did not cover.",
+        "key_terms": [
+            ("demonstration", "an example of what an expert did"),
+            ("behavior cloning", "training the learner to copy expert actions"),
+            ("distribution shift", "ending up in situations the examples did not show"),
+        ],
+        "before_next": "Know why copying one step at a time can fail after several steps.",
+        "concepts": ["policy", "agents_and_tools", "generalization"],
+    },
+    3: {
+        "core_problem": "The learner has a rule with adjustable numbers, but the score comes after sampled actions. We need a way to push the rule toward actions that led to better scores.",
+        "plain_takeaway": "Policy gradient raises the chance of actions that did better than expected and lowers the chance of actions that did worse.",
+        "key_terms": [
+            ("policy", "the rule that picks action odds"),
+            ("gradient", "a direction for changing the rule"),
+            ("return", "the total future score from a point"),
+        ],
+        "before_next": "Understand why the learner must connect a sampled action to the later score before it can update the rule.",
+        "concepts": ["policy", "policy_gradient", "credit_assignment"],
+    },
+    4: {
+        "core_problem": "Raw trial scores are noisy. A good action can happen in a bad run, and a bad action can happen in a lucky run.",
+        "plain_takeaway": "Actor-critic splits the job. The actor chooses. The critic estimates how good the situation or action is, so updates have a better comparison point.",
+        "key_terms": [
+            ("actor", "the chooser"),
+            ("critic", "the judge that estimates future score"),
+            ("baseline", "a normal score used for comparison"),
+            ("advantage", "how much better an action was than the comparison point"),
+        ],
+        "before_next": "Know why a comparison point can make learning less noisy.",
+        "concepts": ["policy_gradient", "actor_critic", "credit_assignment"],
+    },
+    5: {
+        "core_problem": "Fresh experience is expensive. The course asks when the learner can reuse old experience instead of throwing it away.",
+        "plain_takeaway": "Off-policy actor-critic learns from data made by another rule, but it must correct for the fact that the old rule chose actions with different odds.",
+        "key_terms": [
+            ("on-policy", "learning from the current rule's own runs"),
+            ("off-policy", "learning from runs made by another rule"),
+            ("importance weight", "a correction for different action odds"),
+        ],
+        "before_next": "Be clear about the danger: old data can help, but it can also give a biased picture of what the current rule would do.",
+        "concepts": ["policy", "policy_gradient", "actor_critic", "q_learning"],
+    },
+    6: {
+        "core_problem": "Instead of directly learning which action to take, the learner can ask a simpler question: how much future score should I expect if I take this action here?",
+        "plain_takeaway": "Q-learning learns action values. After that, choosing can be as simple as picking the action with the highest estimated value.",
+        "key_terms": [
+            ("Q-value", "estimated future score for one action in one situation"),
+            ("Bellman update", "new estimate equals immediate score plus estimated future score"),
+            ("bootstrapping", "training an estimate using another estimate"),
+        ],
+        "before_next": "Understand why using your own estimates as targets can become unstable.",
+        "concepts": ["q_learning", "credit_assignment", "exploration", "policy"],
+    },
+    7: {
+        "core_problem": "In some settings the learner cannot try new actions. It only has a fixed log of past experience.",
+        "plain_takeaway": "Offline RL must learn from old data without pretending the data covers every action. The central question is what the log actually proves.",
+        "key_terms": [
+            ("offline data", "stored past experience"),
+            ("coverage", "which situations and actions the data actually includes"),
+            ("out-of-data action", "an action the learner wants but the log barely supports"),
+        ],
+        "before_next": "Know why a high estimated value is not trustworthy when the data barely contains that action.",
+        "concepts": ["offline_rl", "q_learning", "policy", "actor_critic"],
+    },
+    8: {
+        "core_problem": "The score may not be given by the world. A person may know which behavior is better but not how to write the right reward rule.",
+        "plain_takeaway": "Reward learning turns judgments, examples, or preferences into a score that can train the agent.",
+        "key_terms": [
+            ("reward model", "a learned scorer"),
+            ("preference", "a comparison saying which outcome is better"),
+            ("mis-specified reward", "a score that rewards the wrong behavior"),
+        ],
+        "before_next": "Be able to explain why the learned score can be wrong even when the learner optimizes it well.",
+        "concepts": ["reward", "offline_rl", "q_learning", "rl_for_llms"],
+    },
+    9: {
+        "core_problem": "Language models already know how to produce text, but we may want to steer answers toward what people prefer.",
+        "plain_takeaway": "RL for LLMs uses feedback about answers to change the model's output rule. The action is often the next token or a whole answer.",
+        "key_terms": [
+            ("language policy", "the model's odds over next words or answers"),
+            ("human feedback", "people judging which answer is better"),
+            ("alignment", "making useful behavior score higher than unwanted behavior"),
+        ],
+        "before_next": "Know the difference between predicting text and being trained to produce preferred text.",
+        "concepts": ["rl_for_llms", "reward", "fine_tuning", "scaling_laws"],
+    },
+    10: {
+        "core_problem": "For reasoning, the final answer may hide which earlier step helped or hurt. The learner needs feedback across a chain of written steps.",
+        "plain_takeaway": "RL for reasoning treats intermediate work as a sequence of choices. The hard part is deciding which step deserves credit for the final answer.",
+        "key_terms": [
+            ("reasoning trace", "the visible chain of work"),
+            ("process feedback", "scoring steps, not only final answers"),
+            ("advantage", "how much a choice improved the expected result"),
+        ],
+        "before_next": "Be able to say why a correct final answer is not enough information to judge every step.",
+        "concepts": ["reasoning_traces", "rl_for_llms", "policy_gradient", "actor_critic", "q_learning", "generalization"],
+    },
+    11: {
+        "core_problem": "Real trial and error can be slow or costly. If the learner can predict what will happen, it can plan before acting.",
+        "plain_takeaway": "Model-based RL learns or uses a model of consequences, then searches possible actions inside that model.",
+        "key_terms": [
+            ("world model", "a predictor of next situations"),
+            ("planning", "testing possible moves before making one"),
+            ("model error", "wrong predictions that lead to bad choices"),
+        ],
+        "before_next": "Know why planning helps only as much as the prediction model can be trusted.",
+        "concepts": ["model_based_rl", "offline_rl", "exploration"],
+    },
+    12: {
+        "core_problem": "A learner may need to handle many tasks, not just one fixed goal.",
+        "plain_takeaway": "Multi-task RL tries to share what is common across tasks while still choosing actions for the current task.",
+        "key_terms": [
+            ("task", "the goal or setting that changes"),
+            ("shared policy", "one rule reused across tasks"),
+            ("task information", "the clue that tells the learner which goal it is solving now"),
+        ],
+        "before_next": "Understand why sharing can help when tasks overlap and hurt when the tasks need different behavior.",
+        "concepts": ["policy", "model_based_rl", "generalization"],
+    },
+    13: {
+        "core_problem": "A learner may face a new task and need to adapt quickly from little experience.",
+        "plain_takeaway": "Meta RL trains the learner so that learning itself becomes faster on new but related tasks.",
+        "key_terms": [
+            ("meta learning", "learning how to learn faster"),
+            ("adaptation", "changing behavior after a small amount of new experience"),
+            ("task family", "a set of related problems"),
+        ],
+        "before_next": "Know the difference between learning one task and learning a way to adapt across tasks.",
+        "concepts": ["exploration", "generalization", "transformer_block"],
+    },
+    14: {
+        "core_problem": "The learner cannot know which actions are good if it never tries anything uncertain.",
+        "plain_takeaway": "Exploration is the controlled act of trying actions to learn more, even when another action currently looks better.",
+        "key_terms": [
+            ("exploration", "trying to learn what is unknown"),
+            ("exploitation", "using the best-known action"),
+            ("uncertainty", "not knowing enough yet to trust an estimate"),
+        ],
+        "before_next": "Be able to explain why always picking the current best-looking action can trap the learner.",
+        "concepts": ["exploration", "q_learning", "model_based_rl"],
+    },
+    15: {
+        "core_problem": "Long tasks are hard if the learner must choose every tiny action from scratch.",
+        "plain_takeaway": "Hierarchical RL uses larger actions made from smaller actions. The learner can choose a skill, then let that skill handle details.",
+        "key_terms": [
+            ("hierarchy", "big choices built from small choices"),
+            ("skill", "a reusable action pattern"),
+            ("subgoal", "a smaller target inside the larger task"),
+        ],
+        "before_next": "Know why grouping actions can make long-horizon problems easier, and why bad groups can hide mistakes.",
+        "concepts": ["policy", "exploration", "model_based_rl", "attention"],
+    },
+    16: {
+        "core_problem": "Robots act in the physical world, where data is costly and small errors can matter.",
+        "plain_takeaway": "RL for robots connects policies to sensors, motors, imitation, simulation, and real deployment.",
+        "key_terms": [
+            ("embodied agent", "a learner with sensors and physical actions"),
+            ("simulation", "a practice world"),
+            ("deployment", "running the learned rule in the real world"),
+        ],
+        "before_next": "Understand why a policy that works in a simulator may fail on real hardware.",
+        "concepts": ["agents_and_tools", "evaluation", "policy", "generalization"],
+    },
+    17: {
+        "core_problem": "Robot intelligence needs more than one narrow trained behavior. It needs perception, action, memory, and adaptation to work together.",
+        "plain_takeaway": "The lecture points toward systems that combine learned skills and broader models so robots can handle open-ended tasks.",
+        "key_terms": [
+            ("perception", "turning sensor input into useful state"),
+            ("skill reuse", "using an old behavior inside a new task"),
+            ("open-ended task", "a task where the exact situation is not fixed in advance"),
+        ],
+        "before_next": "Know why a robot needs both a way to understand the scene and a way to choose useful actions.",
+        "concepts": ["agents_and_tools", "policy", "generalization", "model_based_rl"],
+    },
+    18: {
+        "core_problem": "Frontier systems are judged not only by training scores but by whether they work under new tasks, new users, and real constraints.",
+        "plain_takeaway": "The final lecture asks what still blocks reliable agents: measurement, generalization, data, planning, and deployment.",
+        "key_terms": [
+            ("frontier", "the current edge of what systems can do"),
+            ("evaluation", "tests that reveal what works and what fails"),
+            ("generalization", "working on cases not seen during training"),
+        ],
+        "before_next": "Be able to name what evidence would convince you that a learned agent really works outside the training setup.",
+        "concepts": ["evaluation", "exploration", "model_based_rl", "generalization"],
+    },
+    19: {
+        "core_problem": "Q-learning has several moving parts, and the tutorial reviews how state value, action value, rewards, and updates fit together.",
+        "plain_takeaway": "The review makes the value idea explicit: judge an action by immediate score plus the future score expected after it.",
+        "key_terms": [
+            ("value function", "estimated future score from a situation"),
+            ("action value", "estimated future score after one action"),
+            ("discount", "giving later scores less weight than sooner scores"),
+        ],
+        "before_next": "Be able to write the story of a Q update in words before using the equation.",
+        "concepts": ["q_learning", "actor_critic", "model_based_rl", "credit_assignment"],
+    },
+}
+
+
+def format_duration(seconds: int | None) -> str:
+    if not seconds:
+        return "duration unavailable"
+    minutes, sec = divmod(int(seconds), 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours:
+        return f"{hours}h {minutes}m"
+    return f"{minutes}m {sec}s"
+
+
+def lecture_number(record: dict[str, Any]) -> int:
+    title = record.get("expected_title", "")
+    match = re.search(r"Lecture\s+(\d+)", title)
+    if match:
+        return int(match.group(1))
+    return int(record.get("course_index", 0))
+
+
+def deep_rl_evidence_by_title(evidence: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+    by_title: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for ev in evidence:
+        if ev.get("course") == DEEP_RL_COURSE:
+            by_title[ev["video_title"]].append(ev)
+    return by_title
+
+
+def concept_links(concept_ids: list[str], concept_by_id: dict[str, dict[str, Any]]) -> str:
+    links = []
+    for concept_id in concept_ids:
+        concept = concept_by_id.get(concept_id)
+        if concept:
+            links.append(f'<a class="chip" href="concepts/{esc(concept_id)}.html">{esc(concept["name"])}</a>')
+    return " ".join(links)
+
+
+def deep_rl_big_picture() -> str:
+    return """
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: some problems cannot be solved by labeling one input with one answer. A learner may need to act, wait, see what changed, and then act again. The first action can make the next situation easier or harder. The score may arrive much later. Deep RL is the study of how to improve a learned action rule under those conditions.</p>
+  <p>The course keeps rebuilding the same core loop. The learner has a situation, chooses an action, receives new information, and changes its future rule. Every topic in the course exists because one part of that loop is hard.</p>
+  <div class="principle-grid">
+    <article><h3>Behavior Needs Names</h3><p>Before learning can start, we need names for the learner, the situation, the move, the run through time, the score, and the rule that chooses moves.</p></article>
+    <article><h3>Copying Is Not Enough</h3><p>Imitation can start behavior, but copied mistakes move the learner into new situations where the examples may no longer help.</p></article>
+    <article><h3>Delayed Scores Need Credit</h3><p>If a reward comes later, the learner must decide which earlier action helped or hurt. Policy gradients, values, advantages, and Q-functions are different tools for this problem.</p></article>
+    <article><h3>Old Data Has Limits</h3><p>Offline and off-policy methods reuse past experience, but old data only supports the actions and situations it actually contains.</p></article>
+    <article><h3>The Score Can Be Wrong</h3><p>Reward learning and RL for LLMs ask how to train from human judgment, and why a learned score can be gamed if it misses what people meant.</p></article>
+    <article><h3>Planning Needs A World Guess</h3><p>Model-based RL learns what happens next so the agent can test actions before taking them. The danger is that a wrong model can make bad actions look good.</p></article>
+    <article><h3>Many Tasks Need Reuse</h3><p>Multi-task, goal-conditioned, meta, and hierarchical methods ask how one learner can reuse pieces of behavior across goals, tasks, and long plans.</p></article>
+    <article><h3>Real Use Breaks Clean Assumptions</h3><p>Robots, exploration, and deployment remove the clean reset, perfect reward, and narrow test setup. The course ends by asking what evidence would prove the agent really works.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-2:</strong> define the learning problem and show why expert copying is useful but brittle.</li>
+    <li><strong>Lectures 3-6:</strong> build online value and policy learning: policy gradients, actor-critic, off-policy correction, and Q-learning.</li>
+    <li><strong>Lectures 7-10:</strong> move to fixed data, learned rewards, and language-model training, where the agent cannot freely explore or the score comes from people.</li>
+    <li><strong>Lectures 11-15:</strong> add prediction, reuse, adaptation, exploration, and hierarchy so the agent can plan, solve many tasks, and handle long tasks.</li>
+    <li><strong>Lectures 16-18 plus the tutorial:</strong> test the ideas in robotics, frontiers, and a clean Q-learning review where the Bellman idea is visible.</li>
+  </ol>
+</section>
+"""
+
+
+def deep_rl_lecture_card(
+    lecture: dict[str, Any],
+    guide: dict[str, Any],
+    approaches: list[dict[str, Any]],
+    evidence_rows: list[dict[str, Any]],
+    concept_by_id: dict[str, dict[str, Any]],
+) -> str:
+    number = lecture_number(lecture)
+    title = lecture.get("expected_title") or lecture.get("title")
+    fallback = DEEP_RL_LECTURE_GUIDE.get(number, {})
+    guide_concepts = guide.get("concepts", fallback.get("concepts", []))
+    examples = guide.get("examples", [])
+    math_steps = guide.get("math_algorithm", [])
+    core_ideas_html = "".join(f"<li>{esc(topic_copy(item))}</li>" for item in guide.get("core_ideas", []))
+    approaches_html = "".join(
+        f"""
+<article class="approach-card">
+  <h4>{esc(approach['name'])}</h4>
+  <dl>
+    <dt>Problem</dt><dd>{esc(approach['problem'])}</dd>
+    <dt>How It Works</dt><dd>{esc(approach['how_it_works'])}</dd>
+    <dt>Why It Matters</dt><dd>{esc(approach['why_it_matters'])}</dd>
+    <dt>Where It Breaks</dt><dd>{esc(approach['failure_mode'])}</dd>
+  </dl>
+</article>
+"""
+        for approach in approaches
+    )
+    examples_html = "".join(f"<li>{esc(item)}</li>" for item in examples)
+    math_html = "".join(f"<li>{esc(item)}</li>" for item in math_steps)
+    if evidence_rows:
+        evidence_html = "".join(
+            f'<li><a href="evidence.html#{esc(ev["id"])}">{esc(ev["id"])}</a> '
+            f'<span class="time">{esc(ev.get("timestamp_start") or "time unavailable")}</span>: '
+            f'{esc(ev.get("lecture_argument", ev.get("paraphrased_claim", "")))}</li>'
+            for ev in evidence_rows
+        )
+    else:
+        evidence_html = "<li>No reviewed evidence span is attached yet, but the local transcript is available.</li>"
+    return f"""
+<article class="lecture-card" id="lecture-{number}">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture {number}</p>
+      <h2>{esc(title)}</h2>
+    </div>
+    <a class="button" href="{esc(lecture['url'])}">Open video</a>
+  </div>
+  <p class="meta">{esc(format_duration(lecture.get('duration')))} · {esc(lecture.get('word_count', 'unknown'))} transcript words</p>
+  {flow_diagram(
+      "Study Path",
+      [
+          ("Problem", topic_copy(guide["core_problem"])),
+          ("Core Idea", "Start with the detailed topic explanation below, then use the examples and algorithm notes."),
+          ("Math", "Use the algorithm and equation notes as the minimum technical spine."),
+          ("Check", guide["plain_checkpoint"]),
+      ],
+      "lecture-flow",
+  )}
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>{esc(topic_copy(guide.get("topic_explanation", "")))}</p>
+    <p>{esc(topic_copy(guide.get("detail_explanation", "")))}</p>
+    <h3>Core Ideas</h3>
+    <ul>{core_ideas_html}</ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">{approaches_html}</div>
+    <h3>Examples Used</h3>
+    <ul>{examples_html}</ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul>{math_html}</ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>{esc(guide["plain_checkpoint"])}</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips">{concept_links(guide_concepts, concept_by_id)}</p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list">{evidence_html}</ul>
+    <p><code>{esc(lecture["clean_txt"])}</code></p>
+  </section>
+</article>
+"""
+
+
+def build_deep_rl(
+    transcript_index: list[dict[str, Any]],
+    concepts: list[dict[str, Any]],
+    evidence: list[dict[str, Any]],
+    lecture_guides: list[dict[str, Any]] | None = None,
+    lecture_approaches: list[dict[str, Any]] | None = None,
+) -> None:
+    lectures = [
+        record
+        for record in transcript_index
+        if record.get("course_slug") == DEEP_RL_COURSE and record.get("transcript_status") == "available"
+    ]
+    lectures.sort(key=lambda record: int(record.get("course_index", 0)))
+    concept_by_id = {concept["id"]: concept for concept in concepts}
+    evidence_by_title = deep_rl_evidence_by_title(evidence)
+    guide_by_number = {
+        int(guide["number"]): guide
+        for guide in (lecture_guides or [])
+    } or DEEP_RL_LECTURE_GUIDE
+    approaches_by_number = {
+        int(record["number"]): record.get("approaches", [])
+        for record in (lecture_approaches or [])
+    }
+    lecture_links = " ".join(
+        f'<a class="chip" href="#lecture-{lecture_number(lecture)}">{esc(lecture.get("expected_title", lecture.get("title", "")))}</a>'
+        for lecture in lectures
+    )
+    cards = []
+    for lecture in lectures:
+        number = lecture_number(lecture)
+        guide = guide_by_number.get(number)
+        if not guide:
+            continue
+        cards.append(
+            deep_rl_lecture_card(
+                lecture,
+                guide,
+                approaches_by_number.get(number, []),
+                evidence_by_title.get(lecture["title"], []),
+                concept_by_id,
+            )
+        )
+    body = f"""
+<section class="page-head">
+  <p class="eyebrow">Stanford CS224R Deep Reinforcement Learning</p>
+  <h1>Deep RL Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section states the concrete problem, the order of topics, the examples, and the equations or algorithm moves.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Deep RL studies a learner that acts, sees what changed, receives a score, and changes its future action rule. The course keeps returning to five hard facts: the score can arrive late, data can be missing, learned scores can be wrong, real trial and error can be costly, and tests can miss behavior that matters.</p>
+  <p class="chips">{lecture_links}</p>
+</section>
+{deep_rl_big_picture()}
+<section class="stack">
+  {''.join(cards)}
+</section>
+"""
+    write(SITE / "deep-rl.html", page("Deep RL Lecture Guide", body, "deep_rl"))
+
+
 def evidence_row(ev: dict[str, Any], link_prefix: str = "") -> str:
     timestamp = ev.get("timestamp_start") or "timestamp unavailable"
     terms = ", ".join(ev.get("matched_terms", []))
@@ -452,6 +977,19 @@ code { white-space: normal; overflow-wrap: anywhere; color: #374151; }
 .flow-step:last-child { border-right: 0; }
 .flow-step span { display: inline-flex; align-items: center; min-height: 28px; margin-bottom: 10px; padding: 4px 8px; border-radius: 6px; background: var(--soft); color: var(--accent-dark); font-size: 13px; font-weight: 800; }
 .flow-step p { margin: 0; color: var(--muted); font-size: 14px; overflow-wrap: anywhere; }
+.lecture-card { margin: 16px 0; }
+.lecture-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.lecture-heading h2 { margin-top: 0; }
+.lecture-grid { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 18px; }
+.lecture-grid section { min-width: 0; }
+.lecture-flow .flow-step { min-height: 138px; }
+.approach-stack { display: grid; gap: 12px; }
+.approach-card { background: #fbfcfc; }
+.approach-card h4 { margin: 0 0 8px; font-size: 18px; }
+.principle-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+.principle-grid article { padding: 14px; }
+.principle-grid h3 { font-size: 17px; }
+.principle-grid p { color: var(--muted); margin-bottom: 0; }
 @media (max-width: 820px) {
   .topbar { align-items: flex-start; flex-direction: column; padding: 12px 18px; }
   main { padding: 18px; }
@@ -461,6 +999,8 @@ code { white-space: normal; overflow-wrap: anywhere; color: #374151; }
   .flow-steps { grid-template-columns: 1fr; }
   .flow-step { min-height: 0; border-right: 0; border-bottom: 1px solid var(--line); }
   .flow-step:last-child { border-bottom: 0; }
+  .lecture-heading, .lecture-grid { display: grid; grid-template-columns: 1fr; }
+  .principle-grid { grid-template-columns: 1fr; }
 }
 """
     write(SITE / "assets/styles.css", css)
@@ -471,10 +1011,14 @@ def main() -> None:
     themes = load_json("analysis/themes/theme-map.json")
     subthemes = load_json("analysis/themes/subtheme-map.json")
     evidence = load_json("analysis/evidence/evidence-ledger.json")
+    transcript_index = load_json("raw-material/youtube/transcript-index.json")
+    lecture_guides = load_json("analysis/deep-rl/lecture-guide.json")
+    lecture_approaches = load_json("analysis/deep-rl/lecture-approaches.json")
     primitives = load_json("analysis/throughlines/primitives.json")
     families = load_json("analysis/throughlines/method-families.json")
     build_assets()
     build_index(concepts, themes, evidence)
+    build_deep_rl(transcript_index, concepts, evidence, lecture_guides, lecture_approaches)
     build_concepts(concepts, evidence)
     build_themes(themes, subthemes, concepts)
     build_families(families, evidence)
