@@ -125,6 +125,7 @@ def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
     prefix = "../" * depth
     nav = [
         ("index.html", "Overview", "overview"),
+        ("llms.html", "LLMs", "llms"),
         ("deep-rl.html", "Deep RL", "deep_rl"),
         ("diffusion.html", "Diffusion", "diffusion"),
         ("concepts.html", "Concepts", "concepts"),
@@ -360,6 +361,7 @@ def build_concepts(concepts: list[dict[str, Any]], evidence: list[dict[str, Any]
 
 DEEP_RL_COURSE = "stanford-cs224r-deep-rl-spring-2025"
 DIFFUSION_COURSE = "stanford-cme296-diffusion-large-vision-models-spring-2026"
+LLM_COURSE = "stanford-cme295-transformers-llms-autumn-2025"
 
 DEEP_RL_LECTURE_GUIDE: dict[int, dict[str, Any]] = {
     1: {
@@ -965,6 +967,94 @@ def build_diffusion(
     write(SITE / "diffusion.html", page("Diffusion Lecture Guide", body, "diffusion"))
 
 
+def llm_big_picture() -> str:
+    return """
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: text is a chain of pieces, and each piece gets its meaning from other pieces around it. Transformers and LLMs are built around that fact. The model turns text into tokens, turns tokens into vectors, lets vectors compare with each other, trains on prediction, then gets tuned and tested for useful behavior.</p>
+  <p>The course keeps rebuilding one pipeline: represent the text, mix context with attention, train the model to predict, tune the model toward desired answers, extend it with reasoning or tools, and evaluate whether it actually works.</p>
+  <div class="principle-grid">
+    <article><h3>Text Needs Pieces</h3><p>Tokenization decides the units the model can see and predict.</p></article>
+    <article><h3>Pieces Need Numbers</h3><p>Embeddings turn tokens into vectors that can be compared and changed.</p></article>
+    <article><h3>Context Changes Meaning</h3><p>Attention lets each token pull information from other tokens.</p></article>
+    <article><h3>Order Must Be Added</h3><p>Position information tells the model where each token sits.</p></article>
+    <article><h3>Prediction Teaches Patterns</h3><p>Next-token pretraining teaches grammar, facts, style, and code structure at scale.</p></article>
+    <article><h3>Tuning Shapes Behavior</h3><p>Fine-tuning and preference training turn a predictor into a more useful assistant.</p></article>
+    <article><h3>Tools Extend The Model</h3><p>Retrieval and tool calls let the system use outside information and actions.</p></article>
+    <article><h3>Scores Are Partial</h3><p>Evaluation must check correctness, usefulness, safety, cost, and failure cases.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-3:</strong> build the transformer and LLM pipeline from tokens, embeddings, attention, order, blocks, and next-token prediction.</li>
+    <li><strong>Lectures 4-5:</strong> explain large-scale training and post-training: data, compute, optimization, fine-tuning, and preference tuning.</li>
+    <li><strong>Lectures 6-7:</strong> extend the base model into reasoning and agent systems with traces, verifiers, retrieval, and tools.</li>
+    <li><strong>Lecture 8:</strong> asks how to measure behavior without confusing benchmark scores for real usefulness.</li>
+    <li><strong>Lecture 9:</strong> recaps the full pipeline and shows how to read new trends by finding the bottleneck they change.</li>
+  </ol>
+</section>
+"""
+
+
+def build_llms(
+    transcript_index: list[dict[str, Any]],
+    concepts: list[dict[str, Any]],
+    evidence: list[dict[str, Any]],
+    lecture_guides: list[dict[str, Any]],
+    lecture_approaches: list[dict[str, Any]],
+) -> None:
+    lectures = [
+        record
+        for record in transcript_index
+        if record.get("course_slug") == LLM_COURSE and record.get("transcript_status") == "available"
+    ]
+    lectures.sort(key=lambda record: int(record.get("course_index", 0)))
+    concept_by_id = {concept["id"]: concept for concept in concepts}
+    evidence_by_title = course_evidence_by_title(evidence, LLM_COURSE)
+    guide_by_number = {int(guide["number"]): guide for guide in lecture_guides}
+    approaches_by_number = {
+        int(record["number"]): record.get("approaches", [])
+        for record in lecture_approaches
+    }
+    lecture_links = " ".join(
+        f'<a class="chip" href="#lecture-{lecture_number(lecture)}">{esc(lecture.get("expected_title", lecture.get("title", "")))}</a>'
+        for lecture in lectures
+    )
+    cards = []
+    for lecture in lectures:
+        number = lecture_number(lecture)
+        guide = guide_by_number.get(number)
+        if not guide:
+            continue
+        cards.append(
+            diffusion_lecture_card(
+                lecture,
+                guide,
+                approaches_by_number.get(number, []),
+                evidence_by_title.get(lecture["title"], []),
+                concept_by_id,
+            )
+        )
+    body = f"""
+<section class="page-head">
+  <p class="eyebrow">Stanford CME295 Transformers And LLMs</p>
+  <h1>LLM Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Transformers and LLMs study how text becomes vectors, how context is mixed, how prediction becomes pretraining, how tuning changes behavior, and how reasoning, tools, and evaluation turn a raw model into a usable system.</p>
+  <p class="chips">{lecture_links}</p>
+</section>
+{llm_big_picture()}
+<section class="stack">
+  {''.join(cards)}
+</section>
+"""
+    write(SITE / "llms.html", page("LLM Lecture Guide", body, "llms"))
+
+
 def evidence_row(ev: dict[str, Any], link_prefix: str = "") -> str:
     timestamp = ev.get("timestamp_start") or "timestamp unavailable"
     terms = ", ".join(ev.get("matched_terms", []))
@@ -1196,10 +1286,13 @@ def main() -> None:
     lecture_approaches = load_json("analysis/deep-rl/lecture-approaches.json")
     diffusion_guides = load_json("analysis/diffusion/lecture-guide.json")
     diffusion_approaches = load_json("analysis/diffusion/lecture-approaches.json")
+    llm_guides = load_json("analysis/llms/lecture-guide.json")
+    llm_approaches = load_json("analysis/llms/lecture-approaches.json")
     primitives = load_json("analysis/throughlines/primitives.json")
     families = load_json("analysis/throughlines/method-families.json")
     build_assets()
     build_index(concepts, themes, evidence)
+    build_llms(transcript_index, concepts, evidence, llm_guides, llm_approaches)
     build_deep_rl(transcript_index, concepts, evidence, lecture_guides, lecture_approaches)
     build_diffusion(transcript_index, concepts, evidence, diffusion_guides, diffusion_approaches)
     build_concepts(concepts, evidence)

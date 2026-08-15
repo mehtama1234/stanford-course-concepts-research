@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLM Lecture Guide · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="active" href="llms.html">LLMs</a>
+<a class="" href="deep-rl.html">Deep RL</a>
+<a class="" href="diffusion.html">Diffusion</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">Stanford CME295 Transformers And LLMs</p>
+  <h1>LLM Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Transformers and LLMs study how text becomes vectors, how context is mixed, how prediction becomes pretraining, how tuning changes behavior, and how reasoning, tools, and evaluation turn a raw model into a usable system.</p>
+  <p class="chips"><a class="chip" href="#lecture-1">Lecture 1 - Transformer</a> <a class="chip" href="#lecture-2">Lecture 2 - Transformer-Based Models &amp; Tricks</a> <a class="chip" href="#lecture-3">Lecture 3 - Tranformers &amp; Large Language Models</a> <a class="chip" href="#lecture-4">Lecture 4 - LLM Training</a> <a class="chip" href="#lecture-5">Lecture 5 - LLM tuning</a> <a class="chip" href="#lecture-6">Lecture 6 - LLM Reasoning</a> <a class="chip" href="#lecture-7">Lecture 7 - Agentic LLMs</a> <a class="chip" href="#lecture-8">Lecture 8 - LLM Evaluation</a> <a class="chip" href="#lecture-9">Lecture 9 - Recap &amp; Current Trends</a></p>
+</section>
+
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: text is a chain of pieces, and each piece gets its meaning from other pieces around it. Transformers and LLMs are built around that fact. The model turns text into tokens, turns tokens into vectors, lets vectors compare with each other, trains on prediction, then gets tuned and tested for useful behavior.</p>
+  <p>The course keeps rebuilding one pipeline: represent the text, mix context with attention, train the model to predict, tune the model toward desired answers, extend it with reasoning or tools, and evaluate whether it actually works.</p>
+  <div class="principle-grid">
+    <article><h3>Text Needs Pieces</h3><p>Tokenization decides the units the model can see and predict.</p></article>
+    <article><h3>Pieces Need Numbers</h3><p>Embeddings turn tokens into vectors that can be compared and changed.</p></article>
+    <article><h3>Context Changes Meaning</h3><p>Attention lets each token pull information from other tokens.</p></article>
+    <article><h3>Order Must Be Added</h3><p>Position information tells the model where each token sits.</p></article>
+    <article><h3>Prediction Teaches Patterns</h3><p>Next-token pretraining teaches grammar, facts, style, and code structure at scale.</p></article>
+    <article><h3>Tuning Shapes Behavior</h3><p>Fine-tuning and preference training turn a predictor into a more useful assistant.</p></article>
+    <article><h3>Tools Extend The Model</h3><p>Retrieval and tool calls let the system use outside information and actions.</p></article>
+    <article><h3>Scores Are Partial</h3><p>Evaluation must check correctness, usefulness, safety, cost, and failure cases.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-3:</strong> build the transformer and LLM pipeline from tokens, embeddings, attention, order, blocks, and next-token prediction.</li>
+    <li><strong>Lectures 4-5:</strong> explain large-scale training and post-training: data, compute, optimization, fine-tuning, and preference tuning.</li>
+    <li><strong>Lectures 6-7:</strong> extend the base model into reasoning and agent systems with traces, verifiers, retrieval, and tools.</li>
+    <li><strong>Lecture 8:</strong> asks how to measure behavior without confusing benchmark scores for real usefulness.</li>
+    <li><strong>Lecture 9:</strong> recaps the full pipeline and shows how to read new trends by finding the bottleneck they change.</li>
+  </ol>
+</section>
+
+<section class="stack">
+
+<article class="lecture-card" id="lecture-1">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 1</p>
+      <h2>Lecture 1 - Transformer</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=Ub3GoFaUcds">Open video</a>
+  </div>
+  <p class="meta">1h 41m · 12891 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Language is a sequence, and each word depends on other words that may be nearby or far away.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain a transformer as a stack of blocks where each token repeatedly looks at other tokens and updates its vector.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>The transformer solves a basic reading problem. A model receives a line of tokens and must decide which earlier or nearby tokens matter for understanding each token. Older sequence models read mostly step by step, which made long-range links hard to carry. Attention changes the operation: each token can compare itself with other tokens and pull in the information it needs. This makes the model less like a single narrow memory and more like a table where every token can look across the table.</p>
+    <p>The central object is not a word but a vector, a list of numbers representing a token. Attention builds three views of each token: a query that asks what it needs, a key that says what it offers, and a value that contains the information to pass along. Matching queries to keys gives weights. Those weights mix values. A transformer block repeats this with several heads, then uses a feed-forward network and normalization to update the token vectors. The result is a system that can build context-sensitive meanings from the whole sequence.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Tokens must be turned into vectors before the model can compare or update them.</li><li>Self-attention lets each token decide which other tokens matter for its current meaning.</li><li>Queries, keys, and values separate asking, matching, and carrying information.</li><li>Transformer blocks stack attention, feed-forward updates, residual paths, and normalization.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Self-attention</h4>
+  <dl>
+    <dt>Problem</dt><dd>Each token needs information from other tokens in the same sequence.</dd>
+    <dt>How It Works</dt><dd>Compute query, key, and value vectors, use query-key matches to weight value vectors, and mix the information back into each token.</dd>
+    <dt>Why It Matters</dt><dd>It lets the model build context-sensitive token meanings instead of reading with one narrow memory.</dd>
+    <dt>Where It Breaks</dt><dd>Attention can be expensive for long contexts and can focus on misleading tokens.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Transformer block stacking</h4>
+  <dl>
+    <dt>Problem</dt><dd>One attention pass is not enough to build rich language representations.</dd>
+    <dt>How It Works</dt><dd>Repeat attention, feed-forward updates, residual paths, and normalization across many layers so each layer refines the token vectors produced by earlier layers.</dd>
+    <dt>Why It Matters</dt><dd>Stacking lets later layers build more abstract features from earlier token relations.</dd>
+    <dt>Where It Breaks</dt><dd>Deep stacks become unstable or expensive without careful normalization and residual design.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>In &#x27;the animal did not cross the street because it was tired&#x27;, attention helps decide what &#x27;it&#x27; refers to.</li><li>A token for &#x27;bank&#x27; can mean a financial place or river edge depending on nearby tokens.</li><li>A long document can contain a relevant fact many tokens before the answer.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Map each token id to an embedding vector.</li><li>Compute Q, K, and V vectors from each token vector.</li><li>Score token pairs with QK^T, scale the scores, and apply softmax.</li><li>Use the attention weights to mix V vectors.</li><li>Apply feed-forward layers, residual connections, and normalization.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain a transformer as a stack of blocks where each token repeatedly looks at other tokens and updates its vector.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/tokenization.html">Tokenization</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/attention.html">Attention</a> <a class="chip" href="concepts/transformer_block.html">Transformer Block</a> <a class="chip" href="concepts/positional_encoding.html">Position And Order</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/001-Ub3GoFaUcds-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 1 - Transformer.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-2">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 2</p>
+      <h2>Lecture 2 - Transformer-Based Models &amp; Tricks</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=yT84Y5zCnaA">Open video</a>
+  </div>
+  <p class="meta">1h 47m · 12914 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Attention compares tokens but loses order unless the model is told where each token sits and which future tokens are off limits.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain why transformers need order, masks, multiple heads, residuals, and normalization to become usable language models.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Transformer tricks exist because the simple attention idea is not enough by itself. If a model only sees a bag of token vectors, it may know which words appear but not their order. Position encodings add location information so &#x27;dog bites man&#x27; differs from &#x27;man bites dog.&#x27; Other design choices make training stable and efficient: masking prevents future-token leakage, multi-head attention lets the model compare tokens in several ways, and normalization keeps activations from drifting too far.</p>
+    <p>The first-principles question is what information the block must preserve. It needs content, order, causality, and stable signal size. Content comes from embeddings. Order comes from position encodings. Causality comes from masks when the model predicts the next token. Multiple heads let the model track different relations at once, such as grammar, reference, and topic. Residual connections protect earlier information from being overwritten. These are not cosmetic tricks; each one fixes a specific failure in the plain attention setup.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Position encodings add order information that self-attention does not naturally contain.</li><li>Causal masks stop the model from seeing future tokens during next-token training.</li><li>Multi-head attention lets different heads track different relationships.</li><li>Residual paths and normalization keep deep transformer stacks trainable.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Positional encoding</h4>
+  <dl>
+    <dt>Problem</dt><dd>Plain attention does not know token order.</dd>
+    <dt>How It Works</dt><dd>Add or combine position information with token embeddings before attention layers process them.</dd>
+    <dt>Why It Matters</dt><dd>It lets the model distinguish sequences with the same words in different orders.</dd>
+    <dt>Where It Breaks</dt><dd>Poor position handling can break long-context behavior or confuse order-sensitive tasks.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Causal masking</h4>
+  <dl>
+    <dt>Problem</dt><dd>A next-token model must not see future answer tokens during training.</dd>
+    <dt>How It Works</dt><dd>Block attention from each token to later tokens by masking future attention scores.</dd>
+    <dt>Why It Matters</dt><dd>It keeps the training task honest and matches generation, where future tokens are unknown.</dd>
+    <dt>Where It Breaks</dt><dd>Wrong masks leak answers or prevent the model from using valid context.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>The same words in a different order can mean the opposite thing.</li><li>A next-token model should not peek at the answer token during training.</li><li>One attention head may track subject-verb relation while another tracks topic words.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Add or combine positional vectors with token embeddings.</li><li>Apply a mask that sets illegal future attention scores to a very negative value.</li><li>Run several attention heads in parallel and concatenate their outputs.</li><li>Use residual addition so each layer updates rather than replaces the representation.</li><li>Use layer normalization to keep vector scale manageable.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain why transformers need order, masks, multiple heads, residuals, and normalization to become usable language models.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/positional_encoding.html">Position And Order</a> <a class="chip" href="concepts/attention.html">Attention</a> <a class="chip" href="concepts/transformer_block.html">Transformer Block</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-02">ev-embeddings-02</a> <span class="time">00:10:39.810</span>: The CME295 recap places embeddings immediately after tokenization: once input text is divided into atomic units, the next step is to represent those tokens numerically so the transformer can process them.</li><li><a href="evidence.html#ev-positional_encoding-01">ev-positional_encoding-01</a> <span class="time">00:10:39.810</span>: The CME295 transformer tricks lecture explains that direct token-to-token attention loses the sequential processing signal that RNNs had, so the model must inject position information.</li><li><a href="evidence.html#ev-attention-01">ev-attention-01</a> <span class="time">00:01:32.760</span>: The CME295 lecture recap explains self-attention by naming the mechanics directly: every token can attend to the other tokens in the sequence; queries ask which tokens are similar; keys are used for comparison; values are the information copied forward; and softmax(QK^T / sqrt(d_k))V is the compact formula for this operation.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/002-yT84Y5zCnaA-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 2 - Transformer-Based Models &amp; Tricks.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-3">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 3</p>
+      <h2>Lecture 3 - Tranformers &amp; Large Language Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=Q5baLehv5So">Open video</a>
+  </div>
+  <p class="meta">1h 48m · 13345 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A language model must turn raw text into prediction practice that teaches grammar, facts, style, and useful patterns.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain pretraining as massive next-token prediction that forces the model to learn useful text patterns, while still producing probabilities rather than truth guarantees.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Large language models begin with a simple training game: predict missing or next tokens from context. The game is simple, but the data is huge. Tokenization cuts text into units. Embeddings turn those units into vectors. Transformer layers update the vectors using context. The output head turns the final vector into probabilities over possible next tokens. Repeating this over massive text teaches the model many patterns because good prediction requires grammar, world facts, style, code structure, and task habits.</p>
+    <p>The key is that next-token prediction is not only about the next word. To predict well, the model must compress useful information about what came before. It must track syntax, topic, names, references, and common reasoning patterns. The model does not store a database in a clean symbolic form. It stores many statistical regularities in its weights. This explains both strength and weakness: it can generalize patterns broadly, but it can also invent plausible text when the needed fact is absent or uncertain.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Tokenization defines the pieces the model can directly predict.</li><li>Pretraining uses a broad prediction task to learn many language patterns at once.</li><li>The output is a probability distribution over next tokens, not a guaranteed fact.</li><li>Scale helps because more data and parameters let the model store and combine more patterns.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Next-token pretraining</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model needs a broad signal that can be created from raw text at scale.</dd>
+    <dt>How It Works</dt><dd>Train the model to predict the next token from previous context across a very large corpus.</dd>
+    <dt>Why It Matters</dt><dd>Good prediction forces the model to learn grammar, facts, style, code patterns, and common reasoning habits.</dd>
+    <dt>Where It Breaks</dt><dd>Predicting likely text can produce fluent falsehoods and does not guarantee helpful behavior.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Token-to-logit pipeline</h4>
+  <dl>
+    <dt>Problem</dt><dd>Text must become model input and model output in a computable form.</dd>
+    <dt>How It Works</dt><dd>Tokenize text, embed token ids, process vectors through transformer blocks, and project final vectors to vocabulary logits.</dd>
+    <dt>Why It Matters</dt><dd>It is the basic mechanism behind modern LLM training and generation.</dd>
+    <dt>Where It Breaks</dt><dd>Tokenizer choices, context limits, or bad probability calibration can damage output quality.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>After &#x27;The capital of France is&#x27;, the model should put high probability on &#x27;Paris&#x27;.</li><li>In code, indentation and prior function names shape the next-token prediction.</li><li>A rare factual question may produce a fluent but wrong answer if the pattern is weak.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Tokenize text into ids.</li><li>Map ids to embeddings and add position information.</li><li>Run transformer blocks over the context.</li><li>Project final vectors to vocabulary logits.</li><li>Train with cross-entropy loss against the true next token.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain pretraining as massive next-token prediction that forces the model to learn useful text patterns, while still producing probabilities rather than truth guarantees.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/tokenization.html">Tokenization</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/scaling_laws.html">Scaling Laws</a> <a class="chip" href="concepts/transformer_block.html">Transformer Block</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-01">ev-tokenization-01</a> <span class="time">00:02:36.320</span>: The CME295 recap describes tokenization as dividing input text into atomic units before those units can be represented and processed by transformer models.</li><li><a href="evidence.html#ev-embeddings-05">ev-embeddings-05</a> <span class="time">00:02:20.200</span>: The CME295 transformer lecture uses BERT as an example where encoded embeddings are meaningful and expressive enough to support tasks such as classification.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/003-Q5baLehv5So-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 3 - Tranformers &amp; Large Language Models.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-4">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 4</p>
+      <h2>Lecture 4 - LLM Training</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=VlA_jt_3Qc4">Open video</a>
+  </div>
+  <p class="meta">1h 47m · 13926 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Training an LLM is expensive and unstable because every token, optimizer choice, data mixture, and scale decision changes what the model learns.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain LLM training as a scaled prediction system where data, optimization, validation, and compute choices decide what the model actually learns.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>LLM training turns the next-token game into a large engineering system. The basic update is clear: predict tokens, measure loss, change weights. The hard part is doing that at scale without wasting compute or corrupting the signal. Data must be cleaned and mixed. Batches must feed hardware efficiently. Learning rates must change over time. Validation must show whether the model is learning patterns that transfer, not only memorizing training text. Scaling choices decide how much data, compute, and parameter count to use.</p>
+    <p>The first-principles issue is that every training token is a lesson. Bad data teaches bad habits. Duplicate data can make memorization easier. Poor mixing can overfit the model to one style or domain. Too large a learning rate can destroy progress; too small can waste compute. Mixture-of-experts and related scaling ideas try to increase capacity without activating every parameter on every token. The goal is not only low loss but useful behavior after training, which means the training system must be measured carefully.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>The training loop is prediction, loss measurement, gradient update, and validation.</li><li>Data quality and data mix shape the model as much as architecture does.</li><li>Scaling requires tradeoffs among parameters, tokens, compute, and inference cost.</li><li>Validation and test sets are needed because training loss can hide memorization or weak transfer.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Large-scale pretraining system</h4>
+  <dl>
+    <dt>Problem</dt><dd>A useful LLM requires huge amounts of data and compute without unstable optimization.</dd>
+    <dt>How It Works</dt><dd>Feed curated token batches through the model, compute cross-entropy loss, backpropagate gradients, and validate on held-out data.</dd>
+    <dt>Why It Matters</dt><dd>It turns the simple prediction task into a reliable training process at scale.</dd>
+    <dt>Where It Breaks</dt><dd>Bad data, bad schedules, duplicates, or poor validation can waste compute or teach bad behavior.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Efficient scaling</h4>
+  <dl>
+    <dt>Problem</dt><dd>More capability usually costs more training and inference compute.</dd>
+    <dt>How It Works</dt><dd>Use scaling choices, routing, or sparse activation so capacity grows without activating every parameter for every token.</dd>
+    <dt>Why It Matters</dt><dd>It makes larger models more practical to train or serve.</dd>
+    <dt>Where It Breaks</dt><dd>Efficiency tricks can add routing errors, uneven expert use, or difficult system complexity.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A model trained on messy web text may learn toxic, duplicated, or low-quality patterns.</li><li>A validation split catches cases where training loss improves but unseen examples do not.</li><li>Mixture-of-experts can route a token to a subset of parameters instead of using the whole model.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Sample token batches from a curated data mixture.</li><li>Compute next-token cross-entropy loss.</li><li>Backpropagate gradients through transformer weights.</li><li>Update weights with an optimizer and learning-rate schedule.</li><li>Track training, validation, and held-out performance.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain LLM training as a scaled prediction system where data, optimization, validation, and compute choices decide what the model actually learns.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/scaling_laws.html">Scaling Laws</a> <a class="chip" href="concepts/generalization.html">Generalization</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-scaling_laws-01">ev-scaling_laws-01</a> <span class="time">00:04:50.840</span>: The CME295 LLM training lecture discusses mixture-of-experts as a way to scale LLMs without paying the inference cost of activating every parameter.</li><li><a href="evidence.html#ev-generalization-02">ev-generalization-02</a> <span class="time">00:08:06.720</span>: The CME295 training lecture describes the standard split between training, validation, and test sets, then mentions adapting that pattern for another use case.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/004-VlA_jt_3Qc4-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 4 - LLM Training.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-5">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 5</p>
+      <h2>Lecture 5 - LLM tuning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=PmW_TMQ3l0I">Open video</a>
+  </div>
+  <p class="meta">1h 47m · 13228 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A pretrained model can predict text but may not follow instructions, prefer helpful answers, or behave safely.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain tuning as the extra training that turns a text predictor into a model that follows instructions and prefers better answers.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Tuning changes a base model into a more useful assistant. Pretraining teaches broad language ability. Supervised fine-tuning teaches the model to answer in desired formats using examples. Preference tuning then uses comparisons between answers to push the model toward responses people prefer. The core idea is that predicting internet text is not the same as serving a user. A useful assistant needs extra training signals that describe the desired behavior. Those signals tell the model how to respond when several fluent completions are possible but only some are helpful, honest, or safe.</p>
+    <p>The first-principles split is between knowledge and behavior. Pretraining gives many patterns, but it does not define what answer style, refusal behavior, detail level, or safety policy is preferred. Fine-tuning supplies direct demonstrations. Preference tuning supplies relative judgment: answer A is better than answer B. Reward models, RL-style tuning, and direct preference objectives are different ways to turn those comparisons into weight updates. The failure mode is optimizing the proxy instead of the real user need: a model can become verbose, evasive, flattering, or reward-hacking.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Pretraining gives broad capability but not necessarily desired assistant behavior.</li><li>Supervised fine-tuning teaches by demonstration.</li><li>Preference tuning teaches from comparisons between possible answers.</li><li>A learned preference signal can be useful but can also be gamed.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Supervised fine-tuning</h4>
+  <dl>
+    <dt>Problem</dt><dd>A pretrained model may not answer in the desired format or style.</dd>
+    <dt>How It Works</dt><dd>Train on prompt-response examples that demonstrate the wanted behavior, so the model learns how instructions should map to complete answers.</dd>
+    <dt>Why It Matters</dt><dd>It teaches instruction following more directly than raw next-token pretraining.</dd>
+    <dt>Where It Breaks</dt><dd>The model can overfit the examples or inherit narrow demonstration habits.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Preference tuning</h4>
+  <dl>
+    <dt>Problem</dt><dd>Many answer qualities are easier to compare than to write as exact labels.</dd>
+    <dt>How It Works</dt><dd>Collect chosen/rejected answer pairs and update the model through a reward model, RL objective, or direct preference loss.</dd>
+    <dt>Why It Matters</dt><dd>It moves the model toward answers people judge better after it already knows language.</dd>
+    <dt>Where It Breaks</dt><dd>The preference signal can reward style over truth or be gamed by the model.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A base model may continue a prompt instead of answering it helpfully.</li><li>A preference label may choose the clearer of two answers to the same question.</li><li>A tuned model can over-refuse if safety examples dominate too bluntly.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Start from a pretrained model.</li><li>Fine-tune on prompt-response demonstrations.</li><li>Collect chosen and rejected answers for the same prompt.</li><li>Train a reward model or direct preference objective from those pairs.</li><li>Update the language policy while limiting harmful drift from the base model.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain tuning as the extra training that turns a text predictor into a model that follows instructions and prefers better answers.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a> <a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-pretraining-01">ev-pretraining-01</a> <span class="time">00:02:20.620</span>: The CME295 tuning lecture recaps pretraining as the compute-heavy first stage that teaches the model language and code structure from a lot of data, while leaving it as a next-token predictor.</li><li><a href="evidence.html#ev-fine_tuning-02">ev-fine_tuning-02</a> <span class="time">00:02:35.700</span>: The CME295 tuning lecture identifies supervised fine-tuning as the second step after pretraining, because a raw pretrained model is not yet specialized for the desired behavior.</li><li><a href="evidence.html#ev-reward-01">ev-reward-01</a> <span class="time">00:04:57.250</span>: The CME295 tuning lecture explains preference tuning as a third stage after pretraining and supervised fine-tuning: the model already knows language and the task style, but now must be aligned with what humans like or with a chosen metric.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/005-PmW_TMQ3l0I-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 5 - LLM tuning.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-6">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 6</p>
+      <h2>Lecture 6 - LLM Reasoning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=k5Fh-UgTuCo">Open video</a>
+  </div>
+  <p class="meta">1h 47m · 13136 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Some tasks need several steps, and a final answer alone gives weak information about which step helped.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain reasoning training as learning which intermediate text steps make the final answer more likely to be correct.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>LLM reasoning asks how to make a model handle problems where the answer depends on intermediate work. A normal model can emit a quick answer, but math, planning, code, and logic often need a chain of steps. A reasoning trace makes that chain visible. The model writes partial work, uses it as context, and then produces the answer. Training can reward final correctness, imitate good traces, or use process-level signals that judge intermediate steps. The main question is how to make the written steps improve the answer instead of merely making the answer look thoughtful.</p>
+    <p>The credit problem is the same one seen in RL. If the final answer is wrong, which earlier step caused the failure? If the final answer is right, which steps were actually necessary? Reasoning methods try to create better feedback by sampling several attempts, checking final answers, using verifiers, or scoring prefixes. The danger is that longer text is not automatically better reasoning. A trace can be fluent but wrong, circular, or padded. The useful target is not more words; it is steps that increase the chance of a correct answer.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Reasoning traces make intermediate work visible to the model and evaluator.</li><li>Final-answer reward is sparse because it says little about individual steps.</li><li>Verifiers and process feedback try to judge partial solutions.</li><li>Longer reasoning can help or hurt depending on whether the steps are actually useful.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Reasoning traces</h4>
+  <dl>
+    <dt>Problem</dt><dd>A final answer does not show the intermediate choices that produced it.</dd>
+    <dt>How It Works</dt><dd>Let the model generate intermediate written steps and use those steps as context before the final answer.</dd>
+    <dt>Why It Matters</dt><dd>It gives the model a workspace for multi-step tasks and exposes partial work for checking.</dd>
+    <dt>Where It Breaks</dt><dd>The trace can be long, fluent, and still wrong or unnecessary.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Verifier-guided reasoning</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model needs feedback about which attempted solutions are likely correct.</dd>
+    <dt>How It Works</dt><dd>Sample candidate traces or answers, score them with a verifier or final check, and train or select using that score.</dd>
+    <dt>Why It Matters</dt><dd>It can improve hard tasks where one sample is unreliable.</dd>
+    <dt>Where It Breaks</dt><dd>A weak verifier can reward shortcuts, superficial correctness, or overfit solution styles.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A math solution may fail because of one early algebra mistake.</li><li>A code answer may need planning, implementation, and testing steps.</li><li>Sampling several traces can find one correct solution even when many attempts fail.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Represent a problem plus current written prefix as the state.</li><li>Generate the next reasoning step as the action.</li><li>Score final correctness or intermediate process quality.</li><li>Use successful traces, verifier scores, or preference signals to update the model.</li><li>Measure pass rate and robustness, not only trace length.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain reasoning training as learning which intermediate text steps make the final answer more likely to be correct.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/reasoning_traces.html">Reasoning Traces</a> <a class="chip" href="concepts/rl_for_llms.html">RL For LLMs</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-reasoning_traces-01">ev-reasoning_traces-01</a> <span class="time">00:00:18.960</span>: The CME295 reasoning lecture distinguishes vanilla LLM response generation from reasoning models that produce a reasoning chain and then a response.</li><li><a href="evidence.html#ev-evaluation-04">ev-evaluation-04</a> <span class="time">00:12:04.240</span>: The CME295 reasoning lecture names BLEU and ROUGE as rule-based metrics for translation and summarization, using them as examples of task-specific evaluation signals.</li><li><a href="evidence.html#ev-rl_for_llms-01">ev-rl_for_llms-01</a> <span class="time">00:00:18.960</span>: The CME295 reasoning lecture explicitly connects LLM reasoning to the previous preference-tuning lecture, saying that many methods from tuning become foundations for reasoning.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/006-k5Fh-UgTuCo-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 6 - LLM Reasoning.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-7">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 7</p>
+      <h2>Lecture 7 - Agentic LLMs</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=h-7S6HNq0Vg">Open video</a>
+  </div>
+  <p class="meta">1h 49m · 13821 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A language model alone only produces text; many useful tasks require outside information, tools, memory, and actions.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain an agentic LLM as a model wrapped in retrieval, tools, observations, and control rules so it can work beyond one text reply.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Agentic LLMs extend the model beyond one response. The model may retrieve documents, call tools, write code, inspect results, and decide what to do next. Retrieval adds outside knowledge by searching chunks of text using embeddings. Tool calling gives the model access to calculators, databases, browsers, code runners, or APIs. An agent loop lets the model observe, plan, act, observe again, and stop when the task is done. The shift is from answering from memory to controlling a small work process around the model.</p>
+    <p>The first-principles issue is that text prediction is not enough when the answer depends on fresh facts or external effects. A model&#x27;s weights are fixed after training, so retrieval supplies current or private information. A model can describe arithmetic, but a calculator can compute it reliably. A model can suggest code, but a runtime can test it. The main risk is control: tool errors, bad retrieval, prompt injection, hidden assumptions, and endless loops can make an agent worse than a single careful answer.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Retrieval gives the model external context that was not stored reliably in its weights.</li><li>Embeddings let the system search for chunks with similar meaning.</li><li>Tool calling lets the model delegate operations it should not do from memory.</li><li>Agent loops combine planning, action, observation, and stopping rules.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Retrieval-augmented generation</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model weights may not contain current, private, or exact information.</dd>
+    <dt>How It Works</dt><dd>Embed the query and documents, retrieve relevant chunks, and place them into the model context before answering.</dd>
+    <dt>Why It Matters</dt><dd>It gives the model grounded information without retraining the whole model.</dd>
+    <dt>Where It Breaks</dt><dd>Bad retrieval or prompt injection can make the answer worse than using no retrieval.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Tool-calling agent loop</h4>
+  <dl>
+    <dt>Problem</dt><dd>Some tasks require actions outside text generation.</dd>
+    <dt>How It Works</dt><dd>Let the model choose structured tool calls, execute them, feed observations back, and repeat until done.</dd>
+    <dt>Why It Matters</dt><dd>It lets the system calculate, search, code, inspect, and update state.</dd>
+    <dt>Where It Breaks</dt><dd>The loop can call the wrong tool, trust bad outputs, leak data, or fail to stop.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A model retrieves a company policy document before answering an HR question.</li><li>A model calls a calculator instead of doing long arithmetic from memory.</li><li>A coding agent writes a test, runs it, reads the error, and edits the code.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Embed the user query and document chunks into vectors.</li><li>Retrieve nearest chunks and place them into the context.</li><li>Let the model choose a tool call with structured arguments when needed.</li><li>Execute the tool and feed the observation back to the model.</li><li>Repeat until a stopping condition or final answer is reached.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain an agentic LLM as a model wrapped in retrieval, tools, observations, and control rules so it can work beyond one text reply.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/attention.html">Attention</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-06">ev-embeddings-06</a> <span class="time">00:20:34.500</span>: The CME295 agentic LLM lecture links retrieval directly to embeddings: when the system needs to retrieve outside information, it computes embeddings for chunks or queries so nearby vectors can be used as lookup candidates.</li><li><a href="evidence.html#ev-agents_and_tools-01">ev-agents_and_tools-01</a> <span class="time">00:00:45.040</span>: The CME295 agentic LLM lecture states the shift from an LLM on its own to an LLM interacting with outside systems through RAG, tool calling, and agents.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/007-h-7S6HNq0Vg-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 7 - Agentic LLMs.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-8">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 8</p>
+      <h2>Lecture 8 - LLM Evaluation</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=8fNP4N46RRo">Open video</a>
+  </div>
+  <p class="meta">1h 49m · 13617 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Without measurement, we cannot know whether an LLM improved, regressed, or only learned to look better on a narrow test.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain LLM evaluation as building evidence for a specific use case, because no single benchmark proves a model is good.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>LLM evaluation asks what behavior should count as success. A model may answer one benchmark well and still fail real users. It may be fluent and wrong, safe and unhelpful, or helpful and unsafe. Evaluation therefore needs several kinds of tests: task accuracy, instruction following, factuality, reasoning, robustness, safety, bias, tool use, latency, cost, and human preference. The point is not to find one perfect metric. The point is to build enough evidence for the intended use.</p>
+    <p>The first-principles problem is mismatch between a score and the real goal. BLEU and ROUGE can help with translation or summarization but miss deeper usefulness. Multiple-choice benchmarks are scalable but can be memorized or overfit. Human ratings capture preference but are noisy and expensive. Agent tasks test real workflows but are harder to reproduce. Good evaluation slices the task: what user, what domain, what failure, what cost, what risk. Averages are dangerous because they hide rare failures that may matter most.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Evaluation must match the use case, not just the model family.</li><li>Automatic metrics are scalable but incomplete.</li><li>Human preference is valuable but noisy and setup-dependent.</li><li>Safety, robustness, cost, and latency are part of real model quality.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Task-specific evaluation</h4>
+  <dl>
+    <dt>Problem</dt><dd>A general benchmark may not measure the behavior a real use case needs.</dd>
+    <dt>How It Works</dt><dd>Define target tasks and failure modes, then measure accuracy, usefulness, safety, cost, and latency on those slices.</dd>
+    <dt>Why It Matters</dt><dd>It turns evaluation into evidence for a concrete deployment rather than a vanity score.</dd>
+    <dt>Where It Breaks</dt><dd>Bad slices or contaminated benchmarks can hide real regressions.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Human and preference evaluation</h4>
+  <dl>
+    <dt>Problem</dt><dd>Some answer qualities are subjective or hard to capture with rules.</dd>
+    <dt>How It Works</dt><dd>Ask people or preference models to compare outputs on clarity, helpfulness, correctness, and policy fit.</dd>
+    <dt>Why It Matters</dt><dd>It captures aspects of user experience that automatic metrics miss.</dd>
+    <dt>Where It Breaks</dt><dd>Judgments can be noisy, biased, expensive, and sensitive to rubric wording.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A summarizer can score well on overlap metrics while omitting the key fact.</li><li>A model can pass a math benchmark if similar problems were in training data.</li><li>A support chatbot must be measured for correctness, helpfulness, refusal behavior, and escalation.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Define the target behavior and failure modes before choosing metrics.</li><li>Use task-specific automatic scores where they are meaningful.</li><li>Run human or model-assisted preference checks for subjective quality.</li><li>Slice results by domain, difficulty, user group, safety category, and tool-use path.</li><li>Track regressions across model versions, not only headline averages.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain LLM evaluation as building evidence for a specific use case, because no single benchmark proves a model is good.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a> <a class="chip" href="concepts/reward.html">Reward</a> <a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-evaluation-01">ev-evaluation-01</a> <span class="time">00:00:11.880</span>: The CME295 evaluation lecture opens by saying that without measuring LLM performance, we do not know what to improve, then frames the class around quantifying behavior across different cases.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/008-8fNP4N46RRo-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 8 - LLM Evaluation.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-9">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 9</p>
+      <h2>Lecture 9 - Recap &amp; Current Trends</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=Q86qzJ1K1Ss">Open video</a>
+  </div>
+  <p class="meta">1h 51m · 13881 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The field changes quickly, so the useful skill is seeing how new methods modify the same core transformer and training loop.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to read a new LLM paper by locating which part of the pipeline it changes and what bottleneck it is trying to remove.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>The recap and trends lecture ties the course together. The basic pipeline is still visible: tokenize text, embed tokens, add order, process with transformer blocks, pretrain on prediction, tune for desired behavior, add reasoning or tools when needed, and evaluate carefully. Current trends change pieces of that pipeline. Some change architecture or attention. Some change training data and scale. Some change post-training. Some add retrieval, tools, multimodal inputs, or agent loops. The practical habit is to stop reading new methods as names and start reading them as changes to one part of the pipeline.</p>
+    <p>The first-principles way to read trends is to ask which bottleneck is being attacked. Is the model too expensive? Then look for sparse activation, smaller models, distillation, or better inference. Does it lack fresh knowledge? Look for retrieval. Does it fail multi-step tasks? Look for reasoning, search, verification, or tool use. Does it fail evaluation? Look for better benchmarks and deployment tests. New names matter less than the pressure they respond to and the tradeoff they create.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Most new LLM work changes representation, architecture, training, tuning, tools, reasoning, or evaluation.</li><li>A trend is easier to understand when tied to the bottleneck it tries to fix.</li><li>Multimodal and agentic systems reuse transformer ideas while adding new inputs and actions.</li><li>Every improvement has a tradeoff in cost, reliability, controllability, or evaluation.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Pipeline-based paper reading</h4>
+  <dl>
+    <dt>Problem</dt><dd>New LLM papers can look unrelated because each names a different component.</dd>
+    <dt>How It Works</dt><dd>Locate the method in the pipeline: tokens, embeddings, attention, training objective, tuning, retrieval, tools, reasoning, or evaluation.</dd>
+    <dt>Why It Matters</dt><dd>It turns new trends into understandable modifications of known parts.</dd>
+    <dt>Where It Breaks</dt><dd>A method can change several parts at once, so oversimplifying the location can miss the real tradeoff.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Bottleneck-first analysis</h4>
+  <dl>
+    <dt>Problem</dt><dd>Trends are hard to judge if they are read only as names or demos.</dd>
+    <dt>How It Works</dt><dd>Ask what bottleneck the method attacks, what object it introduces, and what failure mode remains.</dd>
+    <dt>Why It Matters</dt><dd>It keeps attention on mechanism and tradeoff instead of hype.</dd>
+    <dt>Where It Breaks</dt><dd>The stated bottleneck may differ from the real deployment bottleneck.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A retrieval system changes the knowledge bottleneck without retraining the whole model.</li><li>A sparse model changes inference cost by activating only part of the network.</li><li>A multimodal model reuses sequence processing but adds image or audio tokens.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Locate the method inside the pipeline: tokenization, embedding, block, objective, tuning, tool loop, or evaluation.</li><li>Name the bottleneck it addresses.</li><li>Identify the new object it introduces, such as a routing rule, retriever, verifier, or multimodal encoder.</li><li>Ask how the object changes training or inference.</li><li>Check what failure mode or tradeoff remains.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to read a new LLM paper by locating which part of the pipeline it changes and what bottleneck it is trying to remove.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/transformer_block.html">Transformer Block</a> <a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/fine_tuning.html">Fine-Tuning And Preference Learning</a> <a class="chip" href="concepts/reasoning_traces.html">Reasoning Traces</a> <a class="chip" href="concepts/agents_and_tools.html">Agents, Retrieval, And Tools</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/vision_transformers.html">Vision Transformers</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-embeddings-04">ev-embeddings-04</a> <span class="time">00:02:30.490</span>: The CME295 recap moves from dividing text into atomic units to representing those units, making embeddings the next required step after tokenization.</li><li><a href="evidence.html#ev-transformer_block-01">ev-transformer_block-01</a> <span class="time">00:05:55.580</span>: The CME295 recap organizes the course around how the transformer pieces fit together: text is tokenized, represented as embeddings, and then processed by transformer machinery across the rest of the model.</li><li><a href="evidence.html#ev-vision_transformers-02">ev-vision_transformers-02</a> <span class="time">00:51:26.940</span>: The CME295 recap connects transformer ideas to broader model trends, including image settings, while CME296 supplies the large-vision context where images are generated and evaluated.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme295-transformers-llms-autumn-2025/clean/009-Q86qzJ1K1Ss-Stanford CME295 Transformers &amp; LLMs ｜ Autumn 2025 ｜ Lecture 9 - Recap &amp; Current Trends.txt</code></p>
+  </section>
+</article>
+
+</section>
+</main>
+</body>
+</html>
