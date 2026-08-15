@@ -1,14 +1,17 @@
 [
   {
     "number": 1,
-    "core_problem": "Unsupervised learning asks how a model can learn structure from data without being handed the desired answer for each example. The central difficulty is deciding what the learner should treat as evidence when nobody tells it the right category, action, caption, or property.",
-    "topic_explanation": "Deep unsupervised learning starts from a simple pressure: most data has no clean label, but it still contains structure. Images contain repeated shapes, text contains grammar, video contains motion, and scientific data contains physical regularities. The learner must use the data itself as the teacher. Instead of mapping inputs to provided labels, it builds a model of how data is arranged, how examples can be generated, or what representation makes future tasks easier. A useful way to think about the whole course is this: labels are only one kind of information. Repetition, co-occurrence, smooth change, missing-part prediction, and the ability to reproduce examples are also information. A model can learn from those signals if the training objective forces it to keep the real structure and discard accidental noise.",
-    "detail_explanation": "The course introduces families of answers to this pressure. Likelihood models try to assign probability to data. Latent variable models explain observations through hidden causes. GANs learn by comparison with a critic. Diffusion models learn by corrupting and repairing data. Self-supervised methods create their own prediction tasks. The shared first principle is compression with use: learn the hidden regularities that make data predictable, generatable, or useful for another task. This introduction matters because it gives a map for later choices. Autoregressive models make ordered predictions. Flows preserve information through invertible maps. VAEs use hidden codes. GANs use a learned judge. Diffusion uses repair after corruption. Self-supervised learning creates prediction tasks from the input itself. Each family is a different answer to the same question: what signal can raw data provide?",
+    "core_problem": "Unsupervised learning asks how a model can learn structure from data without being handed the desired answer for each example. The central difficulty is deciding what the learner should treat as evidence when nobody tells it the right category, action, caption, or property. The hard part is not just missing labels; it is choosing a training signal that forces the model to learn real structure instead of memorizing surface detail.",
+    "topic_explanation": "Deep unsupervised learning starts from a simple pressure: most data has no clean label, but it still contains structure. Images contain repeated shapes, text contains grammar, video contains motion, and scientific data contains physical regularities. The learner must use the data itself as the teacher. Instead of mapping inputs to provided labels, it builds a model of how data is arranged, how examples can be generated, or what representation makes future tasks easier. A useful way to think about the whole course is this: labels are only one kind of information. Repetition, co-occurrence, smooth change, missing-part prediction, and the ability to reproduce examples are also information. A model can learn from those signals if the training objective forces it to keep the real structure and discard accidental noise. A useful model must decide what kind of regularity matters. If the goal is density, it must assign probability to real examples. If the goal is sampling, it must turn simple randomness into realistic examples. If the goal is representation, it must keep factors that help future tasks. These goals overlap but are not identical, which is why the course compares several model families instead of treating unsupervised learning as one method.",
+    "detail_explanation": "The course introduces families of answers to this pressure. Likelihood models try to assign probability to data. Latent variable models explain observations through hidden causes. GANs learn by comparison with a critic. Diffusion models learn by corrupting and repairing data. Self-supervised methods create their own prediction tasks. The shared first principle is compression with use: learn the hidden regularities that make data predictable, generatable, or useful for another task. This introduction matters because it gives a map for later choices. Autoregressive models make ordered predictions. Flows preserve information through invertible maps. VAEs use hidden codes. GANs use a learned judge. Diffusion uses repair after corruption. Self-supervised learning creates prediction tasks from the input itself. Each family is a different answer to the same question: what signal can raw data provide? The first-principles map is input, hidden structure, training signal, and evaluation. The input is raw x. Hidden structure may be a latent code z, an ordering over parts, a path from noise to data, or an invariant representation. The training signal may be likelihood, reconstruction, discrimination, denoising, or contrastive agreement. The evaluation must match the goal, because a model can have useful features but weak samples, or sharp samples but poor likelihood.",
     "core_ideas": [
       "Unsupervised learning uses raw data as the main source of supervision.",
       "Generative models learn how data could be produced, not only how to classify it.",
       "Representations are useful when they keep important factors and discard noise.",
-      "Different model families trade tractable likelihood, sample quality, stability, and usable features."
+      "Different model families trade tractable likelihood, sample quality, stability, and usable features.",
+      "Different unsupervised objectives answer different questions about the same data.",
+      "A useful objective blocks trivial copying and makes hidden structure necessary for low loss.",
+      "Evaluation must match the intended use: probability, generation, representation, control, or scientific validity."
     ],
     "discussion_flow": [
       "Start from the lack of labels.",
@@ -20,13 +23,20 @@
     ],
     "examples": [
       "A pile of unlabeled images still contains edges, objects, lighting, and scene types.",
-      "A text corpus teaches grammar and style even without manual labels."
+      "A text corpus teaches grammar and style even without manual labels.",
+      "A model trained to reconstruct images can learn compression without learning a good sampler.",
+      "A representation that ignores color may help object recognition but hurt medical imaging where color changes can matter."
     ],
     "math_algorithm": [
       "Choose a modeling goal: likelihood, sample generation, representation, or downstream transfer.",
       "Define the observed data x and possible hidden variables z.",
       "Train by maximizing likelihood, minimizing reconstruction error, matching distributions, or solving a self-supervised task.",
-      "Evaluate by sample quality, likelihood, representation usefulness, or task transfer."
+      "Evaluate by sample quality, likelihood, representation usefulness, or task transfer.",
+      "Write the dataset as samples x ~ p_data(x), where p_data is unknown and only samples are observed.",
+      "Choose the object to learn: p_theta(x), p_theta(x|z), a generator G_theta(z), a score s_theta(x,t), or an encoder f_theta(x).",
+      "Define the training signal so real data creates targets: log likelihood, reconstruction error, discriminator loss, denoising target, masked-token target, or contrastive agreement.",
+      "Check for trivial solutions: identity copying, memorization, collapsed codes, collapsed generators, shortcut augmentations, or benchmark leakage.",
+      "Match evaluation to the learned object: likelihood for density, FID or human review for samples, linear probe or transfer for representations, and external tests for scientific outputs."
     ],
     "plain_checkpoint": "You should be able to explain deep unsupervised learning as learning structure from raw data when labels are missing or incomplete.",
     "concepts": [
@@ -38,14 +48,17 @@
   },
   {
     "number": 2,
-    "core_problem": "A complex example can be modeled by breaking it into an ordered sequence of smaller conditional predictions.",
-    "topic_explanation": "Autoregressive modeling turns generation into a chain rule. Instead of producing the whole image, audio clip, or sentence at once, the model predicts one piece at a time given previous pieces. This makes likelihood exact because the probability of the full object becomes a product of conditional probabilities. The model learns the next pixel, token, or sample from the context already generated. The method is simple in principle but powerful in scale. If a sentence has ten tokens, the model learns token two from token one, token three from tokens one and two, and so on. For images, the same idea can use pixels or patches. For audio, it can use waveform samples or codes. The order creates a training target at every position, so one example gives many prediction problems.",
-    "detail_explanation": "The strength is clarity: training and evaluation use the same conditional prediction objective, and probabilities are tractable. The weakness is ordering and speed. The model must choose an order, and generation is often sequential because later pieces depend on earlier pieces. If early choices are bad, later predictions must live with them. Autoregressive models are powerful because they replace one huge joint problem with many smaller prediction problems. The lecture also makes clear why this family became central for language. Text already has a natural order, and next-token prediction uses that order directly. But the same idea is less natural for unordered data, because the chosen order can make nearby structure look far away. The model is exact as a probability model only because it commits to a factorization.",
+    "core_problem": "A complex example can be modeled by breaking it into an ordered sequence of smaller conditional predictions. The ordering must make the joint probability computable while still giving each prediction enough useful context.",
+    "topic_explanation": "Autoregressive modeling turns generation into a chain rule. Instead of producing the whole image, audio clip, or sentence at once, the model predicts one piece at a time given previous pieces. This makes likelihood exact because the probability of the full object becomes a product of conditional probabilities. The model learns the next pixel, token, or sample from the context already generated. The method is simple in principle but powerful in scale. If a sentence has ten tokens, the model learns token two from token one, token three from tokens one and two, and so on. For images, the same idea can use pixels or patches. For audio, it can use waveform samples or codes. The order creates a training target at every position, so one example gives many prediction problems. The chain rule is exact for any order, but the chosen order changes the learning problem. A left-to-right language model has a natural prefix. An image raster order is artificial: nearby pixels below or to the right are hidden even though they are visually close. The model succeeds when each conditional distribution is easy enough to learn and rich enough to capture the dependencies needed for the full object.",
+    "detail_explanation": "The strength is clarity: training and evaluation use the same conditional prediction objective, and probabilities are tractable. The weakness is ordering and speed. The model must choose an order, and generation is often sequential because later pieces depend on earlier pieces. If early choices are bad, later predictions must live with them. Autoregressive models are powerful because they replace one huge joint problem with many smaller prediction problems. Text already has a natural order, and next-token prediction uses that order directly. But the same idea is less natural for unordered data, because the chosen order can make nearby structure look far away. The model is exact as a probability model only because it commits to a factorization. Training and sampling differ. During training, teacher forcing gives the model the true previous pieces, so every position can be trained in parallel. During sampling, previous pieces are generated by the model itself. This creates exposure to its own mistakes. Sampling controls such as temperature, top-k, or nucleus sampling change whether the model follows the highest-probability continuation or explores lower-probability alternatives.",
     "core_ideas": [
       "The chain rule converts a joint probability into ordered conditional probabilities.",
       "Training can use teacher forcing because the true previous pieces are known.",
       "Sampling is usually sequential and can be slow.",
-      "Ordering choices shape what context is available at each prediction."
+      "Ordering choices shape what context is available at each prediction.",
+      "The chain rule is exact, but the factorization order controls what context each predictor sees.",
+      "Teacher forcing gives clean training context; sampling must live with generated context.",
+      "Autoregressive models provide exact likelihood but pay a sequential sampling cost."
     ],
     "discussion_flow": [
       "Define the data as an ordered sequence.",
@@ -57,13 +70,21 @@
     ],
     "examples": [
       "Next-token language modeling predicts the next token from previous tokens.",
-      "PixelCNN-style image models predict pixels in raster order."
+      "PixelCNN-style image models predict pixels in raster order.",
+      "In audio generation, a bad early waveform sample can affect later predicted samples.",
+      "In image generation, raster order hides lower pixels while predicting upper pixels even though they may be visually related."
     ],
     "math_algorithm": [
       "Factor p(x) as product_i p(x_i | x_<i).",
       "Use cross-entropy or negative log likelihood for each conditional prediction.",
       "During training, condition on true earlier pieces.",
-      "During sampling, feed back generated earlier pieces."
+      "During sampling, feed back generated earlier pieces.",
+      "Choose an order for components x_1,...,x_D; the order may be natural for text or designed for images, audio, or tokens.",
+      "Use the chain rule p_theta(x)=product_{i=1}^D p_theta(x_i | x_1,...,x_{i-1}).",
+      "Train by minimizing negative log likelihood: L(theta) = -sum_i log p_theta(x_i | x_<i).",
+      "Use teacher forcing during training, meaning x_<i comes from the data rather than from the model sample.",
+      "Sample by drawing x_1, then x_2 ~ p_theta(.|x_1), and continuing until all components are produced.",
+      "Control randomness at sampling with temperature or truncation methods, trading diversity against risk of low-quality samples."
     ],
     "plain_checkpoint": "You should be able to explain autoregressive modeling as exact probability modeling by predicting one ordered piece at a time.",
     "concepts": [
@@ -75,14 +96,17 @@
   },
   {
     "number": 3,
-    "core_problem": "A model may need exact likelihood and fast sampling, but that requires transformations whose volume change can be computed. The method must keep every bit of information needed to go backward, while still bending a simple distribution into the shape of real data.",
-    "topic_explanation": "Flow models start with a simple distribution such as a Gaussian and learn an invertible transformation to the data distribution. Because the transformation can be run both ways, the model can map data to noise for likelihood and noise to data for sampling. The key constraint is invertibility: the transformation must not destroy information, because the inverse must exist. Think of a flow as a reversible machine. One direction turns simple noise into a data-like sample. The other direction turns a real example back into simple noise. Because nothing is thrown away, the model can say exactly how surprising a data point is under the base noise after accounting for how the machine stretches space.",
-    "detail_explanation": "The central math handle is change of variables. If the model knows how volume changes under the transformation, it can compute the probability of the transformed point. This gives exact likelihood, but it restricts architecture design. Layers must be invertible and have tractable Jacobian determinants. Flow models show the tradeoff between mathematical cleanliness and expressive flexibility. This is why the Jacobian determinant matters. If a map expands a small region, probability density drops; if it compresses a region, density rises. The determinant measures that volume change. Flow layers are therefore judged by two demands at once: can they express complex transformations, and can their inverse and determinant be computed cheaply enough to train?",
+    "core_problem": "A model may need exact likelihood and fast sampling, but that requires transformations whose volume change can be computed. The method must keep every bit of information needed to go backward, while still bending a simple distribution into the shape of real data. Exact likelihood requires knowing how the transformation changes volume at every point, not only being able to generate samples.",
+    "topic_explanation": "Flow models start with a simple distribution such as a Gaussian and learn an invertible transformation to the data distribution. Because the transformation can be run both ways, the model can map data to noise for likelihood and noise to data for sampling. The key constraint is invertibility: the transformation must not destroy information, because the inverse must exist. Think of a flow as a reversible machine. One direction turns simple noise into a data-like sample. The other direction turns a real example back into simple noise. Because nothing is thrown away, the model can say exactly how surprising a data point is under the base noise after accounting for how the machine stretches space. A flow is a bijection: every data point has one noise point and every noise point maps to one data point. That one-to-one property is why likelihood is tractable. If the map squeezes a region, density rises; if it stretches a region, density falls. The model therefore learns both shape and volume change. This makes flows mathematically clean but forces architecture choices that normal neural networks do not have to obey.",
+    "detail_explanation": "The central math handle is change of variables. If the model knows how volume changes under the transformation, it can compute the probability of the transformed point. This gives exact likelihood, but it restricts architecture design. Layers must be invertible and have tractable Jacobian determinants. Flow models show the tradeoff between mathematical cleanliness and expressive flexibility. This is why the Jacobian determinant matters. If a map expands a small region, probability density drops; if it compresses a region, density rises. The determinant measures that volume change. Flow layers are therefore judged by two demands at once: can they express complex transformations, and can their inverse and determinant be computed cheaply enough to train? Coupling layers are the practical compromise. Split the vector into two parts. Leave one part unchanged and use it to shift or scale the other part. Because half the vector is unchanged during the layer, inversion is easy and the Jacobian has a triangular form, so the determinant is cheap. Stacking many layers with permutations lets information eventually mix across all dimensions while keeping each step tractable.",
     "core_ideas": [
       "Flows learn invertible maps between simple noise and data.",
       "Exact likelihood comes from the change-of-variables formula.",
       "The Jacobian determinant measures how the map stretches or shrinks volume.",
-      "Architecture is constrained because every layer must be invertible or tractable."
+      "Architecture is constrained because every layer must be invertible or tractable.",
+      "Invertibility gives exact reverse mapping but prevents ordinary lossy compression.",
+      "The determinant term is not optional; it is how probability mass is conserved under transformation.",
+      "Coupling and autoregressive layers trade expressiveness for computable inverse and determinant."
     ],
     "discussion_flow": [
       "Start from a simple base distribution.",
@@ -94,13 +118,21 @@
     ],
     "examples": [
       "A warped grid shows how simple noise can be bent into a complex data shape.",
-      "RealNVP-style coupling layers update part of a vector while keeping inversion easy."
+      "RealNVP-style coupling layers update part of a vector while keeping inversion easy.",
+      "If a map stretches a small blob into a large area, each point in that area must receive lower probability density.",
+      "A coupling layer can update the right half of an image code using the left half, then later swap roles."
     ],
     "math_algorithm": [
       "Sample z from a simple base p(z).",
       "Map x = f_theta(z) for generation.",
       "Map z = f_theta^{-1}(x) for likelihood.",
-      "Compute log p(x)=log p(z)+log|det dz/dx|."
+      "Compute log p(x)=log p(z)+log|det dz/dx|.",
+      "Let z ~ p_z(z), usually a standard Gaussian, and x = f_theta(z) where f_theta is invertible.",
+      "For a data point x, compute z = f_theta^{-1}(x).",
+      "Use change of variables: log p_x(x) = log p_z(z) + log |det(d f_theta^{-1}(x) / dx)|.",
+      "For a coupling layer, split x into x_a and x_b, keep y_a=x_a, and set y_b=x_b * exp(s(x_a)) + t(x_a).",
+      "The inverse is x_b=(y_b - t(y_a))*exp(-s(y_a)), so sampling and likelihood both remain practical.",
+      "The log determinant for that coupling layer is sum s(x_a), avoiding a full expensive determinant."
     ],
     "plain_checkpoint": "You should be able to explain flows as invertible transformations that keep exact probability computation possible.",
     "concepts": [
@@ -112,14 +144,18 @@
   },
   {
     "number": 4,
-    "core_problem": "Observed data often has hidden causes, but those causes are not directly labeled. A model needs a way to explain an observation through hidden factors even though those factors are never directly written in the dataset.",
-    "topic_explanation": "Latent variable models explain an observation through hidden variables. An image might be caused by object identity, pose, lighting, background, and style. A VAE turns this idea into a trainable model with two parts: an encoder that guesses a distribution over hidden causes from data, and a decoder that reconstructs or generates data from a sampled hidden code. The VAE view starts from a common-sense idea: what we see is often produced by causes we do not see. A face image comes from identity, pose, lighting, expression, camera, and background. The model invents a hidden code for those causes. The encoder maps an image to a distribution over possible codes, because many hidden explanations could fit the same observation.",
-    "detail_explanation": "The hard part is that exact posterior inference over hidden causes is usually intractable. VAEs use an approximate posterior and optimize a lower bound. The reconstruction term asks the decoder to explain the data. The KL term keeps the hidden-code distribution close to a simple prior so sampling works. This creates a tradeoff: too much pressure on the prior can make codes uninformative; too little can make generation messy. The decoder then asks whether a sampled code can explain the data. Training balances two forces. Reconstruction asks the code to carry enough information to rebuild the example. The prior penalty asks the codes to live in a clean, sampleable space. If reconstruction dominates, sampling from the prior may fail. If the prior dominates, the code may stop carrying useful information.",
+    "core_problem": "Observed data often has hidden causes, but those causes are not directly labeled. A model needs a way to explain an observation through hidden factors even though those factors are never directly written in the dataset. The model needs hidden variables that explain data while still forming a smooth space from which new samples can be drawn.",
+    "topic_explanation": "Latent variable models explain an observation through hidden variables. An image might be caused by object identity, pose, lighting, background, and style. A VAE turns this idea into a trainable model with two parts: an encoder that guesses a distribution over hidden causes from data, and a decoder that reconstructs or generates data from a sampled hidden code. The VAE view starts from a common-sense idea: what we see is often produced by causes we do not see. A face image comes from identity, pose, lighting, expression, camera, and background. The model invents a hidden code for those causes. The encoder maps an image to a distribution over possible codes, because many hidden explanations could fit the same observation. A VAE has to solve two jobs that pull against each other. The encoder should place similar examples near related hidden codes and keep enough information to reconstruct. The prior should keep the hidden space organized so sampling random z values produces meaningful outputs. If codes are unconstrained, reconstruction is easy but random sampling fails. If codes are forced too strongly toward the prior, they stop carrying the details needed to reconstruct.",
+    "detail_explanation": "The hard part is that exact posterior inference over hidden causes is usually intractable. VAEs use an approximate posterior and optimize a lower bound. The reconstruction term asks the decoder to explain the data. The KL term keeps the hidden-code distribution close to a simple prior so sampling works. This creates a tradeoff: too much pressure on the prior can make codes uninformative; too little can make generation messy. The decoder then asks whether a sampled code can explain the data. Training balances two forces. Reconstruction asks the code to carry enough information to rebuild the example. The prior penalty asks the codes to live in a clean, sampleable space. If reconstruction dominates, sampling from the prior may fail. If the prior dominates, the code may stop carrying useful information. The ELBO is the training compromise. The reconstruction term rewards explaining x from z. The KL term penalizes an approximate posterior q_phi(z|x) that drifts too far from the prior p(z). The reparameterization trick makes sampling differentiable by writing z = mu_phi(x) + sigma_phi(x) * epsilon, with epsilon drawn from a fixed Gaussian. This moves randomness outside the learned parameters so gradients can train the encoder.",
     "core_ideas": [
       "Latent variables represent hidden causes or compressed factors behind observations.",
       "The encoder approximates hidden causes from data.",
       "The decoder generates or reconstructs data from hidden codes.",
-      "The VAE objective balances reconstruction against a prior-matching penalty."
+      "The VAE objective balances reconstruction against a prior-matching penalty.",
+      "The encoder returns a distribution over hidden codes, not just one fixed code.",
+      "The decoder learns p_theta(x|z), a distribution of observations given a hidden cause.",
+      "The KL term keeps codes sampleable; the reconstruction term keeps codes informative.",
+      "The reparameterization trick turns random sampling into a differentiable computation path."
     ],
     "discussion_flow": [
       "Introduce hidden causes behind observations.",
@@ -131,13 +167,21 @@
     ],
     "examples": [
       "A face image can be explained by latent factors such as pose, identity, and lighting.",
-      "A handwritten digit can be encoded into a small vector and decoded back into pixels."
+      "A handwritten digit can be encoded into a small vector and decoded back into pixels.",
+      "If every digit image gets an isolated code island, reconstruction may work but sampling between islands produces nonsense.",
+      "If the decoder is too powerful, it may reconstruct using little information from z, causing posterior collapse."
     ],
     "math_algorithm": [
       "Choose prior p(z), decoder p_theta(x|z), and encoder q_phi(z|x).",
       "Sample z through the reparameterization trick.",
       "Optimize reconstruction likelihood plus KL regularization.",
-      "Generate by sampling z from the prior and decoding."
+      "Generate by sampling z from the prior and decoding.",
+      "Choose a prior p(z), commonly N(0,I), an encoder q_phi(z|x), and a decoder p_theta(x|z).",
+      "Optimize the evidence lower bound: ELBO = E_{q_phi(z|x)}[log p_theta(x|z)] - KL(q_phi(z|x) || p(z)).",
+      "Use z = mu_phi(x) + sigma_phi(x) * epsilon, epsilon ~ N(0,I), so gradients pass through mu and sigma.",
+      "For a Gaussian encoder, compute KL to N(0,I) analytically from mu and sigma.",
+      "Train by maximizing ELBO or minimizing reconstruction loss plus KL penalty.",
+      "Generate by sampling z ~ p(z) and decoding x ~ p_theta(x|z)."
     ],
     "plain_checkpoint": "You should be able to explain a VAE as learning hidden codes that reconstruct data while staying sampleable from a simple prior.",
     "concepts": [
@@ -149,14 +193,18 @@
   },
   {
     "number": 5,
-    "core_problem": "Likelihood can be hard to write down, so a generator can instead learn from a judge that compares real and fake samples.",
-    "topic_explanation": "GANs set up a contest. The generator tries to produce samples that look real. The discriminator tries to tell real samples from generated samples. The generator improves by finding ways to fool the discriminator. This avoids writing an explicit likelihood and can produce sharp samples because the feedback comes from whether samples look realistic rather than from pixel-by-pixel averaging. GANs replace a hand-written probability with a learned comparison game. The generator does not need to say how likely an image is. It only needs to produce an image that the discriminator cannot separate from real data. The discriminator becomes a moving measurement of what looks fake. This is useful when realism is hard to capture with a fixed formula.",
-    "detail_explanation": "The price is instability. The generator and discriminator learn together, so the target keeps moving. If the discriminator is too strong, the generator gets weak feedback. If the generator finds a narrow trick, it may produce limited kinds of samples, called mode collapse. GANs are important because they made implicit generation powerful, but they also show why adversarial training is hard to control. The contest is also the source of the trouble. The generator is not chasing a fixed target; it is chasing a discriminator that changes after every update. The discriminator can become too good and give little useful gradient, or the generator can find a narrow way to fool it. That narrow behavior is mode collapse: many inputs produce a small range of outputs.",
+    "core_problem": "Likelihood can be hard to write down, so a generator can instead learn from a judge that compares real and fake samples. The generator must match the data distribution using only feedback from a learned judge, without ever receiving a direct likelihood target.",
+    "topic_explanation": "GANs set up a contest. The generator tries to produce samples that look real. The discriminator tries to tell real samples from generated samples. The generator improves by finding ways to fool the discriminator. This avoids writing an explicit likelihood and can produce sharp samples because the feedback comes from whether samples look realistic rather than from pixel-by-pixel averaging. GANs replace a hand-written probability with a learned comparison game. The generator does not need to say how likely an image is. It only needs to produce an image that the discriminator cannot separate from real data. The discriminator becomes a moving measurement of what looks fake. This is useful when realism is hard to capture with a fixed formula. GAN training is distribution matching through classification. The discriminator asks: did this example come from the dataset or from the generator? If it can tell, it gives a learning signal. The generator asks: how should I change my samples so the discriminator classifies them as real? The loss is indirect because the generator is not told the correct image for a noise vector; it is only told whether the sample looks like it came from the same distribution.",
+    "detail_explanation": "The price is instability. The generator and discriminator learn together, so the target keeps moving. If the discriminator is too strong, the generator gets weak feedback. If the generator finds a narrow trick, it may produce limited kinds of samples, called mode collapse. GANs are important because they made implicit generation powerful, but they also show why adversarial training is hard to control. The contest is also the source of the trouble. The generator is not chasing a fixed target; it is chasing a discriminator that changes after every update. The discriminator can become too good and give little useful gradient, or the generator can find a narrow way to fool it. That narrow behavior is mode collapse: many inputs produce a small range of outputs. The minimax setup creates a moving game. The discriminator improves at finding current generator flaws. The generator improves at hiding them. At ideal equilibrium, generated samples and real samples are indistinguishable, so the discriminator cannot do better than random guessing. In practice, gradients can vanish when the discriminator is too strong, and the generator can collapse to a few high-scoring sample types instead of covering all modes.",
     "core_ideas": [
       "GANs learn an implicit generator without requiring a tractable likelihood.",
       "The discriminator supplies a learned training signal by comparing real and fake samples.",
       "Sharp samples can emerge because realism is judged distributionally.",
-      "Training can be unstable because both sides change during learning."
+      "Training can be unstable because both sides change during learning.",
+      "GANs learn by matching distributions through a classifier, not by reconstructing examples.",
+      "The discriminator is a learned loss whose definition changes during training.",
+      "Equilibrium means fake and real distributions are hard to distinguish, not that every sample is perfect.",
+      "Mode collapse is a coverage failure: sample quality can look high while diversity is low."
     ],
     "discussion_flow": [
       "Define generator and discriminator.",
@@ -168,13 +216,21 @@
     ],
     "examples": [
       "A fake-image detector gives feedback to an image generator.",
-      "Mode collapse occurs when many random inputs produce similar-looking outputs."
+      "Mode collapse occurs when many random inputs produce similar-looking outputs.",
+      "A face generator may learn one common face type that fools the discriminator but ignore many ages or lighting conditions.",
+      "A discriminator may focus on texture artifacts rather than high-level object correctness."
     ],
     "math_algorithm": [
       "Sample noise z and generate G(z).",
       "Train D(x) high for real data and low for generated data.",
       "Train G to make D(G(z)) high.",
-      "Monitor diversity and discriminator-generator balance."
+      "Monitor diversity and discriminator-generator balance.",
+      "Sample real data x ~ p_data and noise z ~ p_z.",
+      "Generate fake sample x_fake = G_theta(z).",
+      "Train D_psi to maximize log D_psi(x_real) + log(1 - D_psi(G_theta(z))).",
+      "Train G_theta to make D_psi(G_theta(z)) large, often using the non-saturating loss -log D_psi(G_theta(z)).",
+      "Alternate discriminator and generator updates so neither side outruns the other too far.",
+      "Monitor both fidelity and diversity because discriminator loss alone can hide mode collapse."
     ],
     "plain_checkpoint": "You should be able to explain GANs as generator-versus-judge training, with sharp samples but unstable optimization.",
     "concepts": [
@@ -186,14 +242,18 @@
   },
   {
     "number": 6,
-    "core_problem": "A model can avoid one-shot generation by learning to reverse a gradual corruption process. Generation is hard when done in one jump, so the method turns it into many small corrections from noise toward data.",
-    "topic_explanation": "Diffusion models learn generation by first making destruction easy. Add noise to real data step by step until it becomes almost pure noise. Then train a model to reverse the process one step at a time. At generation time, start from noise and repeatedly clean it. This turns a huge generation jump into many smaller denoising decisions. Diffusion uses a training trick that gives the model a clear answer key. Start with a real example, choose a noise level, add known noise, and ask the network to predict the noise or the clean direction. Because the corruption is made by us, the target is known. The model practices repair at many noise levels, from nearly clean data to almost pure noise.",
-    "detail_explanation": "The training target is clear because the added noise is known. The model learns how to estimate or remove noise at different noise levels. Early steps decide broad structure; later steps refine details. Diffusion is stable compared with adversarial training, but sampling can be slow because many reverse steps are needed. Guidance and distillation are common ways to improve control or speed. At sampling time the direction reverses. Start from random noise and repeatedly apply the learned repair rule. The time or noise-level input tells the network what kind of repair is needed. High-noise steps decide broad layout because little detail remains. Low-noise steps refine texture and small structure. This makes training stable, but it creates a compute cost during sampling.",
+    "core_problem": "A model can avoid one-shot generation by learning to reverse a gradual corruption process. Generation is hard when done in one jump, so the method turns it into many small corrections from noise toward data. The model must learn the direction from corrupted data back toward clean data at many different corruption levels.",
+    "topic_explanation": "Diffusion models learn generation by first making destruction easy. Add noise to real data step by step until it becomes almost pure noise. Then train a model to reverse the process one step at a time. At generation time, start from noise and repeatedly clean it. This turns a huge generation jump into many smaller denoising decisions. Diffusion uses a training trick that gives the model a clear answer key. Start with a real example, choose a noise level, add known noise, and ask the network to predict the noise or the clean direction. Because the corruption is made by us, the target is known. The model practices repair at many noise levels, from nearly clean data to almost pure noise. Diffusion training creates supervised denoising examples from unlabeled data. Pick a clean example, pick a noise level, add Gaussian noise, and ask the network to recover the noise or the clean signal. The model therefore sees a continuum of tasks: at high noise it must infer broad structure, at medium noise it must decide missing content, and at low noise it must repair details. Generation reverses this learned repair process.",
+    "detail_explanation": "The training target is clear because the added noise is known. The model learns how to estimate or remove noise at different noise levels. Early steps decide broad structure; later steps refine details. Diffusion is stable compared with adversarial training, but sampling can be slow because many reverse steps are needed. Guidance and distillation are common ways to improve control or speed. At sampling time the direction reverses. Start from random noise and repeatedly apply the learned repair rule. The time or noise-level input tells the network what kind of repair is needed. High-noise steps decide broad layout because little detail remains. Low-noise steps refine texture and small structure. This makes training stable, but it creates a compute cost during sampling. The most common parameterization predicts epsilon, the noise that was added. Since x_t is built from x_0 and epsilon by a known formula, predicting epsilon also gives a way to estimate x_0 or the score direction. The time embedding is crucial because the correct denoising behavior changes with noise level. Sampling methods then decide how many reverse steps to take and how much randomness to inject at each step.",
     "core_ideas": [
       "Forward diffusion corrupts data with known noise.",
       "Reverse diffusion learns many small denoising updates.",
       "Noise level or time is an input because each stage needs different behavior.",
-      "Sampling trades compute for quality and control."
+      "Sampling trades compute for quality and control.",
+      "The noise target is known because the training process adds the noise itself.",
+      "Predicting noise, predicting clean data, and predicting score are related parameterizations of the same repair problem.",
+      "Time conditioning tells the network which denoising task it is solving.",
+      "Sampling quality depends on both the learned denoiser and the numerical reverse process."
     ],
     "discussion_flow": [
       "Define the forward noising process.",
@@ -205,13 +265,21 @@
     ],
     "examples": [
       "An image slowly becomes static during the forward process.",
-      "Static becomes a coherent image through repeated reverse cleanup."
+      "Static becomes a coherent image through repeated reverse cleanup.",
+      "At high noise, the model can only infer coarse layout such as face-like or room-like structure.",
+      "At low noise, the model mostly fixes edges, texture, and small artifacts."
     ],
     "math_algorithm": [
       "Sample clean x_0, time t, and noise epsilon.",
       "Construct noisy x_t.",
       "Train epsilon_theta(x_t,t) to predict epsilon.",
-      "Sample by iterating from x_T noise toward x_0."
+      "Sample by iterating from x_T noise toward x_0.",
+      "Choose a noise schedule with alpha_bar_t controlling how much clean signal remains at time t.",
+      "Sample x_0 from data, t from a timestep distribution, and epsilon ~ N(0,I).",
+      "Construct x_t = sqrt(alpha_bar_t) x_0 + sqrt(1-alpha_bar_t) epsilon.",
+      "Train epsilon_theta(x_t,t) with mean squared error ||epsilon - epsilon_theta(x_t,t)||^2.",
+      "Estimate clean data during sampling using x0_hat = (x_t - sqrt(1-alpha_bar_t) epsilon_theta(x_t,t)) / sqrt(alpha_bar_t).",
+      "Iterate reverse updates from x_T ~ N(0,I) toward x_0, using a DDPM, DDIM, or other sampler."
     ],
     "plain_checkpoint": "You should be able to explain diffusion as learning to undo known noise corruption step by step.",
     "concepts": [
@@ -223,14 +291,18 @@
   },
   {
     "number": 7,
-    "core_problem": "A model can learn useful representations by creating prediction tasks from unlabeled data itself. The model needs useful features from unlabeled examples, so the training task must be created from the input itself.",
-    "topic_explanation": "Self-supervised learning makes labels out of structure already present in data. Instead of asking humans to label every image or sentence, the method hides, transforms, compares, or predicts parts of the input. The model learns representations because solving the pretext task requires understanding meaningful structure. For images, it may compare augmented views. For language, it may predict missing or next tokens. For video, it may use time and motion. Self-supervised learning asks the data to create its own questions. In contrastive learning, two views of the same item should lead to nearby representations. In masked prediction, the visible part should predict the hidden part. In both cases, the model is forced to represent something stable about the example because surface-level copying is made difficult.",
-    "detail_explanation": "The goal is not always generation. Often the goal is a representation that transfers to later tasks with few labels. Contrastive learning pulls related views together and pushes unrelated views apart. Masked prediction asks the model to fill missing content. The failure mode is shortcut learning: the model may solve the artificial task using superficial cues that do not help downstream. The design of the task decides what the representation keeps. If crop, color, or noise changes are treated as irrelevant, the model learns to ignore them. That helps when those changes do not matter for later tasks. It hurts when the ignored detail is actually important. Self-supervision is therefore not label-free magic; it is a choice about which differences should count.",
+    "core_problem": "A model can learn useful representations by creating prediction tasks from unlabeled data itself. The model needs useful features from unlabeled examples, so the training task must be created from the input itself. The training task must make the model keep stable meaning while ignoring changes that should not matter for later use.",
+    "topic_explanation": "Self-supervised learning makes labels out of structure already present in data. Instead of asking humans to label every image or sentence, the method hides, transforms, compares, or predicts parts of the input. The model learns representations because solving the pretext task requires understanding meaningful structure. For images, it may compare augmented views. For language, it may predict missing or next tokens. For video, it may use time and motion. Self-supervised learning asks the data to create its own questions. In contrastive learning, two views of the same item should lead to nearby representations. In masked prediction, the visible part should predict the hidden part. In both cases, the model is forced to represent something stable about the example because surface-level copying is made difficult. Self-supervised learning is not simply \u201cno labels.\u201d It creates labels from the data transformation itself. In contrastive learning, the label is that two views came from the same original example. In masked prediction, the label is the hidden part. In temporal prediction, the label may be what comes next. The design choice is what invariances the task teaches: crop invariance, color invariance, order sensitivity, local detail, or global semantics.",
+    "detail_explanation": "The goal is not always generation. Often the goal is a representation that transfers to later tasks with few labels. Contrastive learning pulls related views together and pushes unrelated views apart. Masked prediction asks the model to fill missing content. The failure mode is shortcut learning: the model may solve the artificial task using superficial cues that do not help downstream. The design of the task decides what the representation keeps. If crop, color, or noise changes are treated as irrelevant, the model learns to ignore them. That helps when those changes do not matter for later tasks. It hurts when the ignored detail is actually important. Self-supervision is therefore not label-free magic; it is a choice about which differences should count. Contrastive learning depends on positives, negatives, and a similarity score. The positive pair should share meaning; negatives should usually not share the same instance. Masked prediction depends on hiding enough content that context is needed, but not so much that the task becomes impossible. Both methods can fail if shortcuts solve the pretext task: for example, using image border artifacts, color statistics, or token frequency instead of semantic structure.",
     "core_ideas": [
       "Self-supervision creates training targets from unlabeled data.",
       "Representations are judged by transfer, not only by pretext-task accuracy.",
       "Contrastive learning compares positive and negative pairs.",
-      "Masked prediction forces the model to infer missing structure from context."
+      "Masked prediction forces the model to infer missing structure from context.",
+      "The pretext task defines what information is preserved and what information is discarded.",
+      "Contrastive methods learn by arranging representations in a space with near positives and far negatives.",
+      "Masked methods learn by reconstructing missing information from context.",
+      "Augmentations are assumptions about what changes should not affect meaning."
     ],
     "discussion_flow": [
       "Motivate learning without labels.",
@@ -242,13 +314,21 @@
     ],
     "examples": [
       "Two crops of the same image form a positive pair in contrastive learning.",
-      "A masked word or image patch must be predicted from context."
+      "A masked word or image patch must be predicted from context.",
+      "A crop augmentation assumes the object identity remains even if part of the image is missing.",
+      "A language mask task forces the model to use surrounding words rather than a manual label."
     ],
     "math_algorithm": [
       "Choose an augmentation, mask, or prediction rule.",
       "Encode inputs into representation vectors.",
       "Optimize contrastive, reconstruction, or prediction loss.",
-      "Evaluate representations on downstream tasks."
+      "Evaluate representations on downstream tasks.",
+      "Create two augmented views v1=a1(x), v2=a2(x) from the same example and treat them as a positive pair.",
+      "Encode views as h1=f_theta(v1), h2=f_theta(v2), often followed by a projection head.",
+      "Use a contrastive loss such as InfoNCE: -log exp(sim(h1,h2)/tau) divided by the sum over positive and negative similarities.",
+      "For masked prediction, replace selected input parts with mask tokens or noise and predict the original hidden parts.",
+      "Evaluate representation quality with frozen features, linear probes, fine-tuning, or transfer tasks.",
+      "Audit shortcuts by changing augmentations, negatives, mask rates, and downstream tasks."
     ],
     "plain_checkpoint": "You should be able to explain self-supervised learning as making useful training signals from the data itself.",
     "concepts": [
@@ -260,14 +340,18 @@
   },
   {
     "number": 8,
-    "core_problem": "Language modeling is a self-supervised task scaled up with transformers, data, and compute. Language models show how a simple unsupervised-style prediction task can become powerful when scaled across huge text data.",
-    "topic_explanation": "Large language models fit naturally into deep unsupervised learning because next-token prediction creates labels from raw text. The model sees previous tokens and predicts the next token. At huge scale, this teaches grammar, facts, style, code patterns, and task formats. The same transformer machinery from supervised NLP becomes a broad generative model when trained on enough text. Large language models fit naturally into this course because next-token prediction is a self-made target. Text supplies its own supervision: every prefix asks for the next token. The transformer supplies the machinery for using context. Attention lets each token gather information from other tokens, and stacked blocks repeatedly refine the representation before the next-token distribution is produced.",
-    "detail_explanation": "The first-principles point is that prediction compresses structure. To predict well, the model must represent what the context means and what continuations are plausible. But likelihood over text is not the same as truth or usefulness. A model can produce fluent wrong text. Post-training, retrieval, tools, and evaluation are needed because self-supervised pretraining alone does not define desired behavior. The lecture connects objective, architecture, and scale. The objective is simple, but the data is broad and the model is large enough to absorb many patterns. That produces useful behavior, but the training goal is still prediction, not truth or helpfulness. Post-training and evaluation are needed because a predictor can continue a pattern that is fluent while being wrong or unsafe.",
+    "core_problem": "Language modeling is a self-supervised task scaled up with transformers, data, and compute. Language models show how a simple unsupervised-style prediction task can become powerful when scaled across huge text data. LLMs show how an unsupervised-style token prediction task can become a general-purpose model when paired with transformer context mixing and scale.",
+    "topic_explanation": "Large language models fit naturally into deep unsupervised learning because next-token prediction creates labels from raw text. The model sees previous tokens and predicts the next token. At huge scale, this teaches grammar, facts, style, code patterns, and task formats. The same transformer machinery from supervised NLP becomes a broad generative model when trained on enough text. Large language models fit naturally into this course because next-token prediction is a self-made target. Text supplies its own supervision: every prefix asks for the next token. The transformer supplies the machinery for using context. Attention lets each token gather information from other tokens, and stacked blocks repeatedly refine the representation before the next-token distribution is produced. In this course, LLMs are a case study in self-supervised learning at scale. The data already contains the target: the next token. The model does not need a human label for every sentence. But the prediction task is hard enough that reducing loss requires learning grammar, facts, style, code patterns, and common reasoning traces. The transformer supplies the context machinery that lets the model use long prefixes efficiently during training.",
+    "detail_explanation": "The first-principles point is that prediction compresses structure. To predict well, the model must represent what the context means and what continuations are plausible. But likelihood over text is not the same as truth or usefulness. A model can produce fluent wrong text. Post-training, retrieval, tools, and evaluation are needed because self-supervised pretraining alone does not define desired behavior. Objective, architecture, and scale connect directly. The objective is simple, but the data is broad and the model is large enough to absorb many patterns. That produces useful behavior, but the training goal is still prediction, not truth or helpfulness. Post-training and evaluation are needed because a predictor can continue a pattern that is fluent while being wrong or unsafe. The same objective has limits. A next-token model learns to continue distributions of text; it does not directly optimize truth, usefulness, or safety. That is why post-training, retrieval, tool use, and evaluation become necessary around the base model. From the unsupervised learning viewpoint, the important lesson is that a simple pretext task can become powerful if the data is broad, the model is expressive, and the scale is large enough.",
     "core_ideas": [
       "Next-token prediction is self-supervised because the next token is already in the text.",
       "Scale turns a simple prediction task into broad capability.",
       "The output is a probability distribution over tokens, not a truth guarantee.",
-      "Post-training is needed to shape behavior beyond raw text prediction."
+      "Post-training is needed to shape behavior beyond raw text prediction.",
+      "Next-token prediction is self-supervised because the target token is already present in the sequence.",
+      "The transformer converts prior context into a hidden state used to predict the next token.",
+      "Scale makes the simple objective cover many skills but does not change the objective into truth-seeking.",
+      "Post-training and evaluation repair gaps left by raw prediction."
     ],
     "discussion_flow": [
       "Connect language modeling to self-supervised learning.",
@@ -279,13 +363,21 @@
     ],
     "examples": [
       "A web text corpus supplies billions of next-token examples without manual labels.",
-      "A code model learns syntax and common APIs by predicting code tokens."
+      "A code model learns syntax and common APIs by predicting code tokens.",
+      "Predicting code tokens teaches indentation, syntax, library names, and common programming patterns.",
+      "Predicting dialogue teaches conversational form, but not necessarily honesty or calibrated uncertainty."
     ],
     "math_algorithm": [
       "Tokenize text into ids.",
       "Use transformer blocks to process context.",
       "Predict next-token logits.",
-      "Train with cross-entropy over raw text."
+      "Train with cross-entropy over raw text.",
+      "Tokenize text into t_1,...,t_n and train on prefixes t_1...t_i with target t_{i+1}.",
+      "Compute hidden states h_i = Transformer(t_1...t_i) with causal masking.",
+      "Project h_i to logits over the vocabulary and apply softmax to get p_theta(t_{i+1}|t_<=i).",
+      "Minimize cross-entropy -log p_theta(true next token) over all positions and batches.",
+      "Generate by repeatedly sampling a token, appending it to context, and recomputing or caching transformer states.",
+      "Use post-training or retrieval when the desired behavior is not fully specified by next-token likelihood."
     ],
     "plain_checkpoint": "You should be able to explain LLMs as very large self-supervised sequence models trained by next-token prediction.",
     "concepts": [
@@ -297,14 +389,18 @@
   },
   {
     "number": 9,
-    "core_problem": "Video generation must model both appearance and time, so each frame must look good and agree with nearby frames.",
-    "topic_explanation": "Generative video adds a time problem to image generation. A single image can be plausible on its own, but video requires consistency: objects must keep identity, motion must be smooth, and the scene must obey time. Models can extend diffusion, autoregressive, or latent methods so they generate across frames instead of only pixels in one image. Video generation extends image generation by adding time. The model must produce frames that look realistic by themselves and also agree across time. A person, object, or room cannot randomly change identity from one frame to the next. Motion must be plausible, camera movement must be handled, and long-range events must remain connected.",
-    "detail_explanation": "The hard part is that errors compound through time. If the model changes an object identity, camera path, or physical relation, the video feels broken even if individual frames are sharp. The model must represent temporal context and often use latent video spaces to keep compute manageable. Evaluation is also harder because quality includes frame realism, motion realism, prompt following, and temporal consistency. The lecture\u2019s core pressure is cost and coherence. Raw video is much larger than a single image, so many systems work in latent spaces or use compressed video tokens. But compression does not remove the need for temporal reasoning. The generator must decide what stays fixed, what moves, what appears, what disappears, and how uncertainty should unfold across future frames.",
+    "core_problem": "Video generation must model both appearance and time, so each frame must look good and agree with nearby frames. Video generation must model spatial realism and time consistency at once, so it cannot treat frames as unrelated images.",
+    "topic_explanation": "Generative video adds a time problem to image generation. A single image can be plausible on its own, but video requires consistency: objects must keep identity, motion must be smooth, and the scene must obey time. Models can extend diffusion, autoregressive, or latent methods so they generate across frames instead of only pixels in one image. Video generation extends image generation by adding time. The model must produce frames that look realistic by themselves and also agree across time. A person, object, or room cannot randomly change identity from one frame to the next. Motion must be plausible, camera movement must be handled, and long-range events must remain connected. Video adds a new dependency: the world must persist across frames. A good frame at time t is not enough if the object changes identity at time t+1. The model needs a representation of motion, object permanence, camera movement, and scene state. Because raw video is huge, modern systems often compress video into latent tokens before generation, then model both spatial and temporal dependencies in that smaller space.",
+    "detail_explanation": "The hard part is that errors compound through time. If the model changes an object identity, camera path, or physical relation, the video feels broken even if individual frames are sharp. The model must represent temporal context and often use latent video spaces to keep compute manageable. Evaluation is also harder because quality includes frame realism, motion realism, prompt following, and temporal consistency. The core pressure is cost and coherence. Raw video is much larger than a single image, so many systems work in latent spaces or use compressed video tokens. But compression does not remove the need for temporal reasoning. The generator must decide what stays fixed, what moves, what appears, what disappears, and how uncertainty should unfold across future frames. The hard parts are long-range consistency and cost. Short clips can use attention or convolution across space and time, but long videos require memory management, chunking, or conditioning on previous frames. A model may learn local smooth motion while still failing at long-range story consistency. Evaluation must therefore check flicker, identity preservation, physics, prompt following, and whether motion is plausible rather than only checking individual frame quality.",
     "core_ideas": [
       "Video generation adds temporal consistency to visual sample quality.",
       "Models must represent motion, identity, and scene state across frames.",
       "Latent spaces help reduce the cost of generating many frames.",
-      "Evaluation must check flicker, object persistence, and prompt-conditioned motion."
+      "Evaluation must check flicker, object persistence, and prompt-conditioned motion.",
+      "Video is a space-time object, not just a stack of independent images.",
+      "Latent video models reduce cost by generating compressed frame representations.",
+      "Temporal attention or 3D convolutions let information move across frames.",
+      "Long videos need additional memory, conditioning, or chunking to prevent drift."
     ],
     "discussion_flow": [
       "Start from image generation.",
@@ -316,13 +412,21 @@
     ],
     "examples": [
       "A generated person should not change face identity between frames.",
-      "A moving object should follow a coherent path rather than jump randomly."
+      "A moving object should follow a coherent path rather than jump randomly.",
+      "A generated dog should keep the same fur pattern and body shape while moving.",
+      "A camera pan should reveal a consistent room rather than a new random scene each frame."
     ],
     "math_algorithm": [
       "Represent video as frames or latent tokens over time.",
       "Condition generation on text, previous frames, or motion controls.",
       "Use temporal attention, 3D convolutions, or sequential sampling.",
-      "Evaluate realism, motion, consistency, and alignment."
+      "Evaluate realism, motion, consistency, and alignment.",
+      "Represent video as x with dimensions time T, height H, width W, and channels C.",
+      "Encode frames or clips into latent tokens z = E(x) to reduce spatial and temporal cost.",
+      "Train a generative model p_theta(z_t | context) or a denoiser epsilon_theta(z_noise, time, text, frame_time) over latent video tokens.",
+      "Use temporal position embeddings so the model can distinguish frame order and motion direction.",
+      "Condition later frames on earlier frames, keyframes, text prompts, or motion controls to reduce drift.",
+      "Evaluate with frame quality plus temporal metrics such as flicker, identity consistency, and motion plausibility."
     ],
     "plain_checkpoint": "You should be able to explain generative video as image generation plus the extra burden of time consistency.",
     "concepts": [
@@ -334,14 +438,18 @@
   },
   {
     "number": 10,
-    "core_problem": "Small labeled sets can be amplified with unlabeled data, but only if the unlabeled structure matches the task.",
-    "topic_explanation": "Semi-supervised learning combines a few labels with many unlabeled examples. The model uses labels to anchor the task and unlabeled data to learn the shape of the input distribution. Distribution alignment asks how to make predictions or representations behave consistently across related data sources, such as domains with different style, lighting, or sensor properties. Semi-supervised learning sits between supervised and unsupervised learning. A small labeled set says what the task means. A large unlabeled set shows more of the data distribution. The method tries to use both: labels anchor the meaning of classes, while unlabeled examples teach where the real examples lie and how decision boundaries should pass through the space.",
-    "detail_explanation": "The first principle is that unlabeled data is useful when its structure says something about the labels or target behavior. Pseudo-labeling, consistency regularization, and alignment losses all assume that nearby or transformed examples should have compatible predictions. The danger is confirmation error: wrong pseudo-labels can reinforce themselves, and alignment can erase real differences that matter. Distribution alignment adds another pressure. If the model predicts too many examples as one class, or if unlabeled data has a different balance than labeled data, training can drift. Alignment and consistency methods try to keep predictions stable under small changes and keep the output distribution reasonable. These methods help only when their assumptions match the data.",
+    "core_problem": "Small labeled sets can be amplified with unlabeled data, but only if the unlabeled structure matches the task. The learner must use unlabeled data without letting its own wrong guesses or wrong distribution assumptions corrupt the classifier.",
+    "topic_explanation": "Semi-supervised learning combines a few labels with many unlabeled examples. The model uses labels to anchor the task and unlabeled data to learn the shape of the input distribution. Distribution alignment asks how to make predictions or representations behave consistently across related data sources, such as domains with different style, lighting, or sensor properties. Semi-supervised learning sits between supervised and unsupervised learning. A small labeled set says what the task means. A large unlabeled set shows more of the data distribution. The method tries to use both: labels anchor the meaning of classes, while unlabeled examples teach where the real examples lie and how decision boundaries should pass through the space. Semi-supervised learning uses a small labeled set to define the task and a larger unlabeled set to shape the decision boundary. The key assumption is that real data forms structure: examples in the same dense region or under small augmentations should often share labels. Pseudo-labeling turns confident predictions into temporary labels. Consistency regularization asks predictions to stay stable under harmless transformations.",
+    "detail_explanation": "The first principle is that unlabeled data is useful when its structure says something about the labels or target behavior. Pseudo-labeling, consistency regularization, and alignment losses all assume that nearby or transformed examples should have compatible predictions. The danger is confirmation error: wrong pseudo-labels can reinforce themselves, and alignment can erase real differences that matter. Distribution alignment adds another pressure. If the model predicts too many examples as one class, or if unlabeled data has a different balance than labeled data, training can drift. Alignment and consistency methods try to keep predictions stable under small changes and keep the output distribution reasonable. These methods help only when their assumptions match the data. Distribution alignment handles class balance and domain shift. If the model predicts too many unlabeled examples as one class, training may collapse toward that class. Alignment adjusts predictions so the aggregate output distribution matches a prior or expected balance. This is useful only when the prior is right. If the unlabeled data has different classes or a different class mixture, alignment can force confident wrong answers.",
     "core_ideas": [
       "Semi-supervised learning uses labeled and unlabeled data together.",
       "Pseudo-labeling turns confident model predictions into temporary labels.",
       "Consistency regularization asks predictions to survive harmless changes.",
-      "Distribution alignment tries to reduce harmful shifts between domains."
+      "Distribution alignment tries to reduce harmful shifts between domains.",
+      "Labeled data defines label meaning; unlabeled data reveals the shape of the input distribution.",
+      "Pseudo-labels are useful only when confidence is meaningful.",
+      "Consistency regularization turns invariance assumptions into training pressure.",
+      "Distribution alignment can correct drift or create drift depending on whether its assumptions are true."
     ],
     "discussion_flow": [
       "Define the labeled-data shortage.",
@@ -353,13 +461,21 @@
     ],
     "examples": [
       "A classifier trained on a few labeled images can use many unlabeled images from the same domain.",
-      "A model trained on synthetic images may need alignment before working on real camera images."
+      "A model trained on synthetic images may need alignment before working on real camera images.",
+      "A classifier trained on few labeled cats and dogs can use many unlabeled pet images if predictions are stable under crop and color changes.",
+      "If unlabeled data contains foxes but labels only include cats and dogs, pseudo-labeling may force foxes into wrong classes."
     ],
     "math_algorithm": [
       "Train on supervised loss for labeled examples.",
       "Generate pseudo-labels for confident unlabeled examples.",
       "Apply consistency loss across augmentations.",
-      "Add alignment loss between source and target distributions."
+      "Add alignment loss between source and target distributions.",
+      "Train an initial model on labeled pairs (x_l, y_l) with supervised cross-entropy.",
+      "For unlabeled x_u, compute p_theta(y|x_u) and create pseudo-label y_hat when confidence exceeds a threshold.",
+      "Apply augmentations a(x_u) and require p_theta(y|x_u) to match p_theta(y|a(x_u)) through a consistency loss.",
+      "Combine supervised loss and unsupervised loss with a weight lambda.",
+      "For distribution alignment, rescale batch predictions so their average matches a target class prior.",
+      "Monitor confirmation bias by checking whether pseudo-label errors increase over training."
     ],
     "plain_checkpoint": "You should be able to explain semi-supervised learning as using unlabeled data to support a small labeled task without blindly trusting it.",
     "concepts": [
@@ -371,14 +487,18 @@
   },
   {
     "number": 11,
-    "core_problem": "Scientific generation must obey domain constraints, not only produce plausible-looking samples. Scientific generation must create objects that are not only data-like but also valid under physical, chemical, biological, or experimental constraints.",
-    "topic_explanation": "Generative modeling for science uses the same model families for molecules, proteins, materials, and physical systems. The goal is not just a pretty sample; the output must satisfy constraints from chemistry, geometry, energy, function, or experiment. A protein sequence or structure, for example, must fold, bind, remain stable, and serve a purpose. Generative modeling for science changes the meaning of success. A natural image model can be judged by realism. A protein, molecule, or material must satisfy constraints that come from the world. Shape, energy, binding, stability, and function matter. The data may be sparse, expensive, biased, or produced by measurement pipelines rather than ordinary web collection.",
-    "detail_explanation": "The first-principles issue is that scientific data has hidden rules. Many generated samples can look syntactically valid but fail physically or biologically. Generative models need domain representations, constraints, simulators, or scoring functions. The useful question is what makes a sample valid and testable in the real world. Evaluation often requires expensive computation or experiments, so uncertainty and filtering matter. This pushes models toward conditioning and constraint handling. The generator may need to respect a target property, a known structure, a sequence, or a physical rule. It may also need to propose candidates for real experiments, where failure costs time and money. The model is useful only if its samples survive checks outside the training loss.",
+    "core_problem": "Scientific generation must obey domain constraints, not only produce plausible-looking samples. Scientific generation must create objects that are not only data-like but also valid under physical, chemical, biological, or experimental constraints. Scientific data generation must satisfy constraints outside the dataset, such as geometry, chemistry, physics, function, and experimental testability.",
+    "topic_explanation": "Generative modeling for science uses the same model families for molecules, proteins, materials, and physical systems. The goal is not just a pretty sample; the output must satisfy constraints from chemistry, geometry, energy, function, or experiment. A protein sequence or structure, for example, must fold, bind, remain stable, and serve a purpose. Generative modeling for science changes the meaning of success. A natural image model can be judged by realism. A protein, molecule, or material must satisfy constraints that come from the world. Shape, energy, binding, stability, and function matter. The data may be sparse, expensive, biased, or produced by measurement pipelines rather than ordinary web collection. Generative modeling for science is different from making plausible media. The output may be a protein sequence, molecular graph, structure, material, or biological design. It must obey rules that are only partly visible in the training set. A sample that looks likely under data may still fail to fold, bind, synthesize, or function. This makes conditioning, constraints, uncertainty, and external validation central.",
+    "detail_explanation": "The first-principles issue is that scientific data has hidden rules. Many generated samples can look syntactically valid but fail physically or biologically. Generative models need domain representations, constraints, simulators, or scoring functions. The useful question is what makes a sample valid and testable in the real world. Evaluation often requires expensive computation or experiments, so uncertainty and filtering matter. This pushes models toward conditioning and constraint handling. The generator may need to respect a target property, a known structure, a sequence, or a physical rule. It may also need to propose candidates for real experiments, where failure costs time and money. The model is useful only if its samples survive checks outside the training loss. The representation decides what errors are possible. A molecule as a string can create invalid chemistry unless grammar or validity checks are added. A graph representation makes bonds explicit. A 3D representation can encode geometry but must respect rotations, translations, and physical symmetries. Many scientific models condition on target properties and then filter or optimize candidates with separate predictors, simulators, or experiments.",
     "core_ideas": [
       "Scientific generative models must respect physical, chemical, or biological constraints.",
       "Representations such as sequences, graphs, and 3D coordinates shape what can be generated.",
       "A useful sample must be testable, stable, and functional, not only likely under data.",
-      "Evaluation is expensive, so filtering and uncertainty matter."
+      "Evaluation is expensive, so filtering and uncertainty matter.",
+      "Scientific generation is judged by real-world validity, not only data resemblance.",
+      "The representation must respect domain structure such as graphs, sequences, coordinates, or symmetries.",
+      "Conditioning turns random generation into design for a target property.",
+      "External tests and uncertainty estimates matter because training loss is not enough."
     ],
     "discussion_flow": [
       "Map generative modeling to scientific design.",
@@ -390,13 +510,21 @@
     ],
     "examples": [
       "Protein design must consider sequence, structure, folding, and binding.",
-      "Molecule generation must satisfy valence and property constraints."
+      "Molecule generation must satisfy valence and property constraints.",
+      "A protein design must be checked for folding stability and function, not just sequence likelihood.",
+      "A molecule generator must avoid invalid valence and impossible bond structures."
     ],
     "math_algorithm": [
       "Choose a representation such as sequence, graph, or coordinates.",
       "Train a generative model over known examples.",
       "Condition or guide generation toward desired properties.",
-      "Filter with physics, learned scores, or experimental proxies."
+      "Filter with physics, learned scores, or experimental proxies.",
+      "Choose a domain representation: sequence, graph, 3D coordinates, voxel field, or latent code.",
+      "Condition the generator on desired property c, such as binding target, stability, activity, or structure.",
+      "Train likelihood, diffusion, flow, or autoregressive objectives on scientific data while preserving domain constraints.",
+      "Use equivariant architectures when rotations and translations should not change the underlying object.",
+      "Filter generated candidates with property predictors, physics simulators, docking, or laboratory assays.",
+      "Track uncertainty and out-of-distribution distance because generated candidates may leave the reliable training region."
     ],
     "plain_checkpoint": "You should be able to explain scientific generative modeling as generation under real-world constraints and costly evaluation.",
     "concepts": [
@@ -408,14 +536,18 @@
   },
   {
     "number": 12,
-    "core_problem": "A 3D scene must explain many 2D views consistently, not just produce one image. A model must infer a 3D scene from 2D photos, then render views that were not directly observed.",
-    "topic_explanation": "Neural radiance fields model a scene as a continuous function. Given a 3D location and viewing direction, the function predicts density and color. Rendering a camera view means tracing rays through that field and accumulating color along each ray. The model is trained so rendered views match observed images from different cameras. Neural radiance fields start from the fact that a photo is a 2D record of light from a 3D scene. If we know camera poses, each pixel corresponds to a ray through space. The model learns a function over 3D locations and viewing directions. For each point, it predicts density and color, which are combined along rays to match training images.",
-    "detail_explanation": "The core idea is inverse rendering. The model is not handed the full 3D scene; it finds a scene representation that would explain the photos. This requires consistency across views. If one view shows an object at a location, other views must agree. NeRFs are powerful because they store a scene continuously, but they can be slow, need enough views, and struggle when lighting, motion, or geometry assumptions break. The method is unsupervised in the sense that the supervision is ordinary posed images, not hand-labeled 3D geometry. Geometry is recovered because the same scene must explain many views. If a point is truly part of a surface, many camera rays should agree about it. Sparse views, bad poses, or reflective surfaces make that agreement weak and can produce artifacts.",
+    "core_problem": "A 3D scene must explain many 2D views consistently, not just produce one image. A model must infer a 3D scene from 2D photos, then render views that were not directly observed. NeRF must learn the hidden 3D field that could have produced the observed 2D photos from known camera positions.",
+    "topic_explanation": "Neural radiance fields model a scene as a continuous function. Given a 3D location and viewing direction, the function predicts density and color. Rendering a camera view means tracing rays through that field and accumulating color along each ray. The model is trained so rendered views match observed images from different cameras. Neural radiance fields start from the fact that a photo is a 2D record of light from a 3D scene. If we know camera poses, each pixel corresponds to a ray through space. The model learns a function over 3D locations and viewing directions. For each point, it predicts density and color, which are combined along rays to match training images. A NeRF represents a scene as a continuous function rather than a mesh or voxel grid. Give the function a 3D point and a viewing direction; it returns density and color. A camera ray passes through many points in space. The rendered pixel is the accumulated color along that ray, weighted by how much density blocks or emits light. Training adjusts the function so rendered pixels match the observed photos.",
+    "detail_explanation": "The core idea is inverse rendering. The model is not handed the full 3D scene; it finds a scene representation that would explain the photos. This requires consistency across views. If one view shows an object at a location, other views must agree. NeRFs are powerful because they store a scene continuously, but they can be slow, need enough views, and struggle when lighting, motion, or geometry assumptions break. The method is unsupervised in the sense that the supervision is ordinary posed images, not hand-labeled 3D geometry. Geometry is recovered because the same scene must explain many views. If a point is truly part of a surface, many camera rays should agree about it. Sparse views, bad poses, or reflective surfaces make that agreement weak and can produce artifacts. Multi-view consistency is the source of geometry. A surface point should explain matching evidence from many camera angles. Empty space should have low density because rays pass through it without color contribution. View direction matters because shiny or reflective surfaces can look different from different angles. NeRF is powerful because it uses ordinary images as supervision, but it can struggle with sparse views, moving scenes, wrong camera poses, and slow rendering.",
     "core_ideas": [
       "A NeRF represents a scene as a continuous function over 3D position and view direction.",
       "Volume rendering turns the field into predicted camera images.",
       "Training matches rendered images to observed views.",
-      "Multi-view consistency is the key constraint that makes 3D recoverable."
+      "Multi-view consistency is the key constraint that makes 3D recoverable.",
+      "A NeRF stores a scene in neural network weights as a continuous radiance and density field.",
+      "Volume rendering turns the field into image pixels through ray integration.",
+      "Camera poses connect 2D pixels to 3D rays.",
+      "Multi-view agreement is what lets geometry emerge without direct 3D labels."
     ],
     "discussion_flow": [
       "Motivate why 3D representation is needed.",
@@ -427,14 +559,22 @@
     ],
     "examples": [
       "A set of photos of a room can train a field that renders a new camera angle.",
-      "A ray through empty space accumulates little density before hitting a surface."
+      "A ray through empty space accumulates little density before hitting a surface.",
+      "A chair surface receives high density where many camera rays agree that a visible object exists.",
+      "Empty air between the camera and the object should contribute little color or density."
     ],
     "math_algorithm": [
       "Input 3D point x and view direction d to a neural field.",
       "Predict density sigma and color c.",
       "Sample points along camera rays.",
       "Integrate colors and densities to render pixels.",
-      "Optimize rendered pixels against real images."
+      "Optimize rendered pixels against real images.",
+      "For each training image, use known camera intrinsics and pose to cast a ray r(s)=o+s d through each pixel.",
+      "Sample points along the ray and evaluate the neural field F_theta(position, direction) -> (color c, density sigma).",
+      "Convert densities into alpha weights that represent how likely light is absorbed or emitted at each sample.",
+      "Compute pixel color as a weighted sum of sampled colors along the ray, approximating the volume rendering integral.",
+      "Minimize photometric loss between rendered pixels and observed pixels over many views.",
+      "Render a new view by casting rays from a new camera pose through the learned field."
     ],
     "plain_checkpoint": "You should be able to explain NeRF as learning a continuous 3D scene that can render many camera views consistently.",
     "concepts": [
@@ -446,14 +586,18 @@
   },
   {
     "number": 13,
-    "core_problem": "Different data types must be connected in a shared system without losing what makes each type different.",
-    "topic_explanation": "Multimodal models connect text, images, audio, video, or actions. The problem is that each modality has its own structure: text is token order, images are spatial grids, audio is time signals, and video is space plus time. A multimodal model must encode each form and then align them so a text prompt can refer to an image, an image can be captioned, or a video can be queried. Multimodal models ask how different kinds of data can share meaning. A caption and an image are not the same object, but they can refer to the same scene. Audio and video can describe the same event. A model needs a bridge so that information from one form can guide understanding or generation in another form.",
-    "detail_explanation": "The first-principles operation is alignment across representations. Contrastive learning can pull matching image-text pairs together. Cross-attention can let text guide image features or image features guide text. Generative multimodal systems can condition one modality on another. The failure mode is shallow matching: the model may learn common captions and visual shortcuts without grounding relations, counts, or detailed scene structure. Two main moves appear. Alignment puts paired items near each other in a shared representation space. Conditioning lets one modality directly steer another during generation, often through cross-attention. Both moves are powerful because they make text, images, audio, and other signals usable together. They also inherit bias from pairings in the data and can bind the wrong parts together.",
+    "core_problem": "Different data types must be connected in a shared system without losing what makes each type different. Multimodal models must connect signals with different shapes, such as text tokens and image patches, without pretending they are identical.",
+    "topic_explanation": "Multimodal models connect text, images, audio, video, or actions. The problem is that each modality has its own structure: text is token order, images are spatial grids, audio is time signals, and video is space plus time. A multimodal model must encode each form and then align them so a text prompt can refer to an image, an image can be captioned, or a video can be queried. Multimodal models ask how different kinds of data can share meaning. A caption and an image are not the same object, but they can refer to the same scene. Audio and video can describe the same event. A model needs a bridge so that information from one form can guide understanding or generation in another form. Multimodal learning builds bridges. Alignment methods place paired items, such as an image and its caption, near each other in a shared embedding space. Conditioning methods let one modality steer another, such as text guiding image generation or an image guiding a caption. The main challenge is binding: the model must connect the right words to the right visual regions or the right sounds to the right events.",
+    "detail_explanation": "The first-principles operation is alignment across representations. Contrastive learning can pull matching image-text pairs together. Cross-attention can let text guide image features or image features guide text. Generative multimodal systems can condition one modality on another. The failure mode is shallow matching: the model may learn common captions and visual shortcuts without grounding relations, counts, or detailed scene structure. Two main moves appear. Alignment puts paired items near each other in a shared representation space. Conditioning lets one modality directly steer another during generation, often through cross-attention. Both moves are powerful because they make text, images, audio, and other signals usable together. They also inherit bias from pairings in the data and can bind the wrong parts together. Contrastive alignment learns a shared space from positive pairs and negatives. Cross-attention conditioning lets features in one stream query features in another stream. Joint transformers may put all tokens from all modalities into one sequence, while dual encoders keep streams separate until a similarity score is computed. Each design trades speed, fine-grained interaction, retrieval quality, and generation control.",
     "core_ideas": [
       "Each modality needs a representation suited to its structure.",
       "Alignment connects related items across modalities.",
       "Contrastive losses and cross-attention are common alignment tools.",
-      "A multimodal model can retrieve, caption, answer, or generate across data types."
+      "A multimodal model can retrieve, caption, answer, or generate across data types.",
+      "Alignment makes different modalities comparable in one representation space.",
+      "Conditioning lets one modality control generation or interpretation in another.",
+      "Fine-grained binding is harder than global matching.",
+      "Architecture choice controls whether modalities interact early, late, or repeatedly."
     ],
     "discussion_flow": [
       "Define modalities and their different structures.",
@@ -465,13 +609,21 @@
     ],
     "examples": [
       "An image and its caption should land near each other in representation space.",
-      "A text prompt can condition an image or video generator."
+      "A text prompt can condition an image or video generator.",
+      "A caption saying \u201cred cup on a blue table\u201d requires binding red to cup and blue to table.",
+      "An image-text retrieval model should put the matching caption closer than unrelated captions."
     ],
     "math_algorithm": [
       "Encode image patches, text tokens, or audio frames.",
       "Project modality features into a shared space.",
       "Use contrastive loss on matched and mismatched pairs.",
-      "Use cross-attention for conditional reasoning or generation."
+      "Use cross-attention for conditional reasoning or generation.",
+      "Encode image x_img into vector or patch features f_img and text x_txt into vector or token features f_txt.",
+      "For contrastive alignment, maximize similarity of matched image-text pairs and minimize similarity to mismatched pairs using an InfoNCE-style loss.",
+      "For cross-attention, let queries from one modality attend to keys and values from another modality.",
+      "For generative conditioning, inject text, image, or audio features into denoising, autoregressive, or decoder steps.",
+      "Evaluate both global matching and fine-grained binding with retrieval tests, captioning checks, VQA, or prompt-following tests.",
+      "Audit bias because paired web data can encode shallow correlations between words and visual patterns."
     ],
     "plain_checkpoint": "You should be able to explain multimodal learning as aligning different data forms so they can condition, retrieve, or explain each other.",
     "concepts": [
@@ -483,14 +635,18 @@
   },
   {
     "number": 14,
-    "core_problem": "Modern generative models need computation arranged so training and inference fit hardware limits. Very large unsupervised and generative models cannot be trained by one device, so the computation itself must be split carefully.",
-    "topic_explanation": "Parallelization asks how to make large models run fast enough. Some model families are naturally sequential, like autoregressive generation where token i depends on earlier tokens. Transformers allow more parallel training because all positions in a sequence can be processed together under a mask. Hardware efficiency depends on batching, memory movement, attention cost, and how computation is split across devices. Parallelization is part of the learning story because scale changes what methods are possible. A model may have too many parameters for one accelerator, a batch may be too large, or the training run may take too long. Splitting work across devices sounds simple, but every split creates communication: devices must exchange gradients, activations, weights, or partial matrix products.",
-    "detail_explanation": "The first-principles issue is dependency. If one computation truly needs the result of another, it cannot be fully parallelized. If the dependencies can be masked, batched, or rearranged, hardware can do more work at once. This affects which generative models are practical. A mathematically good model may be too slow if it cannot use hardware well. Parallelization is therefore part of the method, not just implementation detail. The lecture separates different bottlenecks. Data parallelism copies the model and splits examples. Model parallelism splits weights or layers. Tensor parallelism splits large operations. Pipeline parallelism sends different microbatches through different layer stages. The right choice depends on memory, bandwidth, compute balance, and whether devices spend time working or waiting.",
+    "core_problem": "Modern generative models need computation arranged so training and inference fit hardware limits. Very large unsupervised and generative models cannot be trained by one device, so the computation itself must be split carefully. Parallel training must split computation without breaking the mathematical dependencies that make the model correct.",
+    "topic_explanation": "Parallelization asks how to make large models run fast enough. Some model families are naturally sequential, like autoregressive generation where token i depends on earlier tokens. Transformers allow more parallel training because all positions in a sequence can be processed together under a mask. Hardware efficiency depends on batching, memory movement, attention cost, and how computation is split across devices. Parallelization is part of the learning story because scale changes what methods are possible. A model may have too many parameters for one accelerator, a batch may be too large, or the training run may take too long. Splitting work across devices sounds simple, but every split creates communication: devices must exchange gradients, activations, weights, or partial matrix products. Large unsupervised models need many devices because the data, parameters, activations, and optimizer states can exceed one machine. But not every computation can be parallelized freely. Matrix multiplications can be split, batches can be split, layers can be split, and sequence positions can sometimes be processed together. Autoregressive generation remains sequential over output tokens because each new token depends on earlier generated tokens.",
+    "detail_explanation": "The first-principles issue is dependency. If one computation truly needs the result of another, it cannot be fully parallelized. If the dependencies can be masked, batched, or rearranged, hardware can do more work at once. This affects which generative models are practical. A mathematically good model may be too slow if it cannot use hardware well. Parallelization is therefore part of the method, not just implementation detail. Separate the bottlenecks clearly. Data parallelism copies the model and splits examples. Model parallelism splits weights or layers. Tensor parallelism splits large operations. Pipeline parallelism sends different microbatches through different layer stages. The right choice depends on memory, bandwidth, compute balance, and whether devices spend time working or waiting. The main bottleneck is often communication, not raw arithmetic. Data parallelism requires gradient synchronization. Tensor parallelism requires devices to exchange partial matrix results. Pipeline parallelism can leave devices idle if microbatches are not scheduled well. Model parallelism solves memory pressure but creates coordination cost. Good parallelization matches the split to the bottleneck: memory, compute, bandwidth, latency, or sequence length.",
     "core_ideas": [
       "Parallelism is limited by real dependencies in the computation graph.",
       "Transformer training can process many sequence positions at once with causal masks.",
       "Autoregressive sampling remains sequential at generation time.",
-      "Memory bandwidth and device communication can dominate runtime."
+      "Memory bandwidth and device communication can dominate runtime.",
+      "Parallelism is limited by real dependency structure, not just available hardware.",
+      "Data parallelism splits examples; tensor parallelism splits operations; pipeline parallelism splits layers.",
+      "Communication cost can erase compute gains.",
+      "Training can be parallel across known tokens, while autoregressive sampling is sequential across generated tokens."
     ],
     "discussion_flow": [
       "Define dependency as the barrier to parallel work.",
@@ -502,13 +658,21 @@
     ],
     "examples": [
       "Training a transformer can compute losses for many positions in one pass.",
-      "Generating text one token at a time cannot fully parallelize across future tokens."
+      "Generating text one token at a time cannot fully parallelize across future tokens.",
+      "Training a causal transformer can process all positions in a known sequence at once with a mask, but generation must append one token at a time.",
+      "A model split across GPUs may run slower if the GPUs spend more time exchanging activations than computing."
     ],
     "math_algorithm": [
       "Represent computation as a dependency graph.",
       "Batch independent examples and positions where possible.",
       "Use masking to preserve causal correctness.",
-      "Split tensors or batches across devices when models are too large."
+      "Split tensors or batches across devices when models are too large.",
+      "For data parallelism, copy model weights to each device, split the batch, compute local gradients, all-reduce gradients, then apply the same update.",
+      "For tensor parallelism, split a large matrix multiply such as XW across devices by columns or rows and combine partial outputs.",
+      "For pipeline parallelism, assign layer groups to devices and pass microbatches through stages to reduce idle time.",
+      "For sequence or context parallelism, split long sequence activations while preserving attention dependencies and communication for needed keys and values.",
+      "Estimate memory as parameters plus gradients plus optimizer states plus activations, then choose parallelism to fit the largest component.",
+      "Measure throughput, utilization, communication time, and numerical equivalence to ensure the split preserves the intended training update."
     ],
     "plain_checkpoint": "You should be able to explain parallelization as arranging model computation around dependency limits and hardware cost.",
     "concepts": [
