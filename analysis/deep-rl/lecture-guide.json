@@ -510,7 +510,9 @@
     "examples": [
       "A legged robot trained on many terrains learns which terrain it faces by trying a few steps, then adapts its gait. The first steps reveal friction and slope; later steps exploit that knowledge.",
       "An agent trained on many mazes does not know which maze it enters. It explores branches, observes dead ends, then takes the direct path once it has mapped the structure.",
-      "A language model given examples of how a new user wants responses reformatted builds a hypothesis about the style, then applies that style without being told the rule explicitly."
+      "A language model given examples of how a new user wants responses reformatted builds a hypothesis about the style, then applies that style without being told the rule explicitly.",
+      "A robot dropped into one of five structurally identical mazes cannot distinguish them by looking around; in its first two episodes it deliberately visits corner landmarks and junction markers to identify which maze it entered, encoding those clues in memory; in its third and fourth episodes it heads directly to the goal because memory now holds the revealed identity and the policy exploits this information.",
+      "A normally-trained agent that masters a particular navigation task must retrain from scratch when moved to a new but similar building layout, discarding all learned skills; a meta-trained agent adapts in two to three episodes because it learned how to figure out a task through deliberate information-seeking, not memorized solutions for one specific layout."
     ],
     "math_algorithm": [
       "Train a sequence model (RNN, Transformer) that takes all past states, actions, rewards as input and outputs actions for the current state.",
@@ -550,7 +552,9 @@
       "A kitchen robot must open drawers to find ingredients before cooking; random arm flailing wastes time but exploring drawers gathers critical information.",
       "In a Mao game, you see no rules, only penalties for breaking them; exploration means systematic testing to infer the hidden rules.",
       "A language model reasoner must try different proof strategies; some lead nowhere while others reveal a solution path.",
-      "Drug testing for a plague: choosing greedy picks the drug you tested once and saw work, missing that a barely-tested drug might save more lives if you explore it more."
+      "Drug testing for a plague: choosing greedy picks the drug you tested once and saw work, missing that a barely-tested drug might save more lives if you explore it more.",
+      "Two medicines with unknown cure rates: you keep a belief (a range of plausible cure rates) for each. At each step, you sample one plausible cure rate from each medicine's belief, then pick whichever looks better and give it to the next patient. You see the outcome and tighten that medicine's belief. Early on, both beliefs are wide, so sampling often draws different values and you try both; as data accumulates and beliefs narrow, one medicine's sampled rate consistently beats the other, so you stop exploring the worse one.",
+      "Upper-confidence bonus in action: Medicine A was tried five times with four successes (estimate 80%, low uncertainty so small bonus); Medicine B was tried once with one success (estimate 100%, high uncertainty so large bonus). B's upper-confidence value might be 100% + 25% bonus = 125%, beating A's 80% + 2% bonus = 82%, so you try B next. After ten more tries of B you see only six successes; B's estimate drops to 70% and its bonus shrinks because you now know it well, so its upper-confidence value falls to 72%, and you stop exploring it in favor of A's proven 80%."
     ],
     "math_algorithm": [
       "Regret = the optimal policy's expected return over T minus your actual return over T (for a one-shot choice this reduces to the best action repeated T times); measures the learning cost.",
@@ -709,15 +713,15 @@
     "examples": [
       "Human raters prefer confident chatbot answers over correct ones, so preference optimization trains overconfidence, not factuality.",
       "A pretrained video model predicts the task succeeding even for actions it was never trained on, because the data lacked failure cases.",
-      "An AI doctor achieved 92% alone but 76% with human partners, worse than human alone, because the interface assumed the AI was always right."
+      "In some studies, the human-AI team scored below the AI working alone, worse than human alone, because the interface assumed the AI was always right."
     ],
     "math_algorithm": [
-      "Reward function design: choosing what to measure is not an engineering detail; it shapes behavior and must reflect real goals.",
-      "Frontload risk: before coding, run the simplest experiment that tests the core unknown in one day, not three months.",
-      "Iterate fast: try many ideas, discard failing ones in days, commit only after seeing signs of life on results.",
-      "Simplify until it works: if nothing works, strip it down to a single task, get that working, then grow back up.",
-      "Diagnose with others: talking through assumptions with peers reveals whether you should change strategy or tools.",
-      "Pivot decision: frame it as 'current project vs. project B vs. project C' to make concrete choices, not vague anxiety."
+      "Reward ambiguity for messy goals: chatbots, robots, and content personalization all require human judgment to define success, and small differences in reward design lead to large differences in learned behavior.",
+      "Offline data traps: when a policy is trained only on old data, it overrates unseen actions because it never learned what happens if those actions are taken, leading to unsafe extrapolation in deployment.",
+      "Video model hallucination on out-of-distribution actions: learned world models and video predictors confidently forecast success for actions far from the training data, because the data contained only successful trajectories and lacked examples of failure.",
+      "Scaling tradeoffs in deep RL: as problems grow, compute cost, sample efficiency, and training stability pull in different directions, forcing a choice between sample-efficient methods that scale poorly and scalable methods that need huge datasets.",
+      "Safety proofs with unrealistic assumptions: formal verification that a trained policy is safe often assumes simplified rewards, known dynamics, or bounded state spaces that do not hold in real deployment, leaving gaps between proof and practice.",
+      "Error compounding over long deployment: small mistakes and distribution shifts accumulate over hundreds or thousands of steps in the real world, and the policy has no mechanism to recognize it is in trouble and ask for help or reset."
     ],
     "plain_checkpoint": "You can now explain why an RL system can look successful on a benchmark but fail in deployment, how to pick a research problem that matters, and why testing your core idea early and small before building everything else saves months of wasted work."
   },
