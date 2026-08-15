@@ -1,14 +1,16 @@
 [
   {
     "number": 1,
-    "core_problem": "Language is a sequence, and each word depends on other words that may be nearby or far away.",
-    "topic_explanation": "The transformer solves a basic reading problem. A model receives a line of tokens and must decide which earlier or nearby tokens matter for understanding each token. Older sequence models read mostly step by step, which made long-range links hard to carry. Attention changes the operation: each token can compare itself with other tokens and pull in the information it needs. This makes the model less like a single narrow memory and more like a table where every token can look across the table.",
-    "detail_explanation": "The central object is not a word but a vector, a list of numbers representing a token. Attention builds three views of each token: a query that asks what it needs, a key that says what it offers, and a value that contains the information to pass along. Matching queries to keys gives weights. Those weights mix values. A transformer block repeats this with several heads, then uses a feed-forward network and normalization to update the token vectors. The result is a system that can build context-sensitive meanings from the whole sequence.",
+    "core_problem": "Language is a sequence, and each word depends on other words that may be nearby or far away. Language is not just a list of words. Meaning depends on which words point to which other words, and those links can cross long distances.",
+    "topic_explanation": "The transformer solves a basic reading problem. A model receives a line of tokens and must decide which earlier or nearby tokens matter for understanding each token. Older sequence models read mostly step by step, which made long-range links hard to carry. Attention changes the operation: each token can compare itself with other tokens and pull in the information it needs. This makes the model less like a single narrow memory and more like a table where every token can look across the table. The practical question is how to let every token use the rest of the sequence without forcing the model to squeeze the past through one small hidden state. A recurrent model reads left to right and must carry old information forward step by step. A transformer instead lets all tokens sit in memory at once. Each token asks which other tokens are useful right now, receives a weighted mixture of their information, and updates its own vector.",
+    "detail_explanation": "The central object is not a word but a vector, a list of numbers representing a token. Attention builds three views of each token: a query that asks what it needs, a key that says what it offers, and a value that contains the information to pass along. Matching queries to keys gives weights. Those weights mix values. A transformer block repeats this with several heads, then uses a feed-forward network and normalization to update the token vectors. The result is a system that can build context-sensitive meanings from the whole sequence. The important detail is that attention is content-based lookup. The query is the request, the keys are labels on possible sources, and the values are the information being copied. If a query and key point in similar directions, their dot product is large, so that source gets more weight after softmax. Several heads run this lookup in parallel, which lets one head track grammar while another tracks reference or topic. The feed-forward layer then changes each token vector independently after context has been mixed.",
     "core_ideas": [
       "Tokens must be turned into vectors before the model can compare or update them.",
       "Self-attention lets each token decide which other tokens matter for its current meaning.",
       "Queries, keys, and values separate asking, matching, and carrying information.",
-      "Transformer blocks stack attention, feed-forward updates, residual paths, and normalization."
+      "Transformer blocks stack attention, feed-forward updates, residual paths, and normalization.",
+      "Attention is a learned lookup table built from the current token vectors, not a fixed grammar rule.",
+      "The same token can receive different meaning in different contexts because its attention pattern changes with the surrounding text."
     ],
     "discussion_flow": [
       "Start from the problem of representing a text sequence.",
@@ -21,28 +23,45 @@
     "examples": [
       "In 'the animal did not cross the street because it was tired', attention helps decide what 'it' refers to.",
       "A token for 'bank' can mean a financial place or river edge depending on nearby tokens.",
-      "A long document can contain a relevant fact many tokens before the answer."
+      "A long document can contain a relevant fact many tokens before the answer.",
+      "In a legal sentence, a clause at the end may change the meaning of a term near the start.",
+      "In code, a variable use may need to attend to its definition many lines earlier."
     ],
     "math_algorithm": [
       "Map each token id to an embedding vector.",
       "Compute Q, K, and V vectors from each token vector.",
       "Score token pairs with QK^T, scale the scores, and apply softmax.",
       "Use the attention weights to mix V vectors.",
-      "Apply feed-forward layers, residual connections, and normalization."
+      "Apply feed-forward layers, residual connections, and normalization.",
+      "For each token vector x_i, compute q_i = x_i W_Q, k_i = x_i W_K, and v_i = x_i W_V; the learned matrices decide what counts as a request, a match label, and carried information.",
+      "For token i attending to token j, compute score_ij = q_i \u00b7 k_j / sqrt(d_k); the square-root scaling prevents dot products from growing too large as vector dimension increases.",
+      "Apply softmax over all allowed j so scores become nonnegative weights that sum to 1; this turns raw compatibility into a weighted choice over context.",
+      "Compute output_i = sum_j weight_ij v_j, then project and add it back through a residual path so attention updates the token instead of replacing it.",
+      "Run a position-wise feed-forward network on each token after attention; this gives the model nonlinear feature-building after information has been gathered.",
+      "Stack many blocks so later layers can attend to relations built by earlier layers rather than only raw token embeddings."
     ],
     "plain_checkpoint": "You should be able to explain a transformer as a stack of blocks where each token repeatedly looks at other tokens and updates its vector.",
-    "concepts": ["tokenization", "embeddings", "attention", "transformer_block", "positional_encoding"]
+    "concepts": [
+      "tokenization",
+      "embeddings",
+      "attention",
+      "transformer_block",
+      "positional_encoding"
+    ]
   },
   {
     "number": 2,
-    "core_problem": "Attention compares tokens but loses order unless the model is told where each token sits and which future tokens are off limits.",
-    "topic_explanation": "Transformer tricks exist because the simple attention idea is not enough by itself. If a model only sees a bag of token vectors, it may know which words appear but not their order. Position encodings add location information so 'dog bites man' differs from 'man bites dog.' Other design choices make training stable and efficient: masking prevents future-token leakage, multi-head attention lets the model compare tokens in several ways, and normalization keeps activations from drifting too far.",
-    "detail_explanation": "The first-principles question is what information the block must preserve. It needs content, order, causality, and stable signal size. Content comes from embeddings. Order comes from position encodings. Causality comes from masks when the model predicts the next token. Multiple heads let the model track different relations at once, such as grammar, reference, and topic. Residual connections protect earlier information from being overwritten. These are not cosmetic tricks; each one fixes a specific failure in the plain attention setup.",
+    "core_problem": "Attention compares tokens but loses order unless the model is told where each token sits and which future tokens are off limits. A transformer must know order, obey the prediction rules, remain numerically stable, and still use many different kinds of token relationships at once.",
+    "topic_explanation": "Transformer tricks exist because the simple attention idea is not enough by itself. If a model only sees a bag of token vectors, it may know which words appear but not their order. Position encodings add location information so 'dog bites man' differs from 'man bites dog.' Other design choices make training stable and efficient: masking prevents future-token leakage, multi-head attention lets the model compare tokens in several ways, and normalization keeps activations from drifting too far. These tricks are best understood as repairs to plain attention. Plain attention compares token contents but is nearly indifferent to position unless position is added. It also has no built-in notion of time, so a next-token model would cheat by seeing future tokens unless a causal mask blocks them. Deep stacks can also destroy or distort signals unless residual connections and normalization keep information flowing in controlled ranges.",
+    "detail_explanation": "The first-principles question is what information the block must preserve. It needs content, order, causality, and stable signal size. Content comes from embeddings. Order comes from position encodings. Causality comes from masks when the model predicts the next token. Multiple heads let the model track different relations at once, such as grammar, reference, and topic. Residual connections protect earlier information from being overwritten. These are not cosmetic tricks; each one fixes a specific failure in the plain attention setup. Position can be absolute, relative, sinusoidal, learned, or rotary, but the purpose is the same: make distance and order visible to attention. Causal masking changes the attention matrix by making future locations illegal before softmax. Multi-head attention is not just duplication; each head has its own learned projections, so it can carve the sequence into different relation spaces. Residual paths let each layer learn a change to the vector, while normalization keeps scales comparable from layer to layer.",
     "core_ideas": [
       "Position encodings add order information that self-attention does not naturally contain.",
       "Causal masks stop the model from seeing future tokens during next-token training.",
       "Multi-head attention lets different heads track different relationships.",
-      "Residual paths and normalization keep deep transformer stacks trainable."
+      "Residual paths and normalization keep deep transformer stacks trainable.",
+      "A transformer without position information cannot reliably distinguish many order-sensitive meanings.",
+      "Masking is part of the training objective because it defines what information the model is allowed to use.",
+      "Normalization and residuals are what make very deep stacks trainable rather than numerically fragile."
     ],
     "discussion_flow": [
       "Review the basic transformer block.",
@@ -55,28 +74,44 @@
     "examples": [
       "The same words in a different order can mean the opposite thing.",
       "A next-token model should not peek at the answer token during training.",
-      "One attention head may track subject-verb relation while another tracks topic words."
+      "One attention head may track subject-verb relation while another tracks topic words.",
+      "In translation, the same phrase can need different ordering in the target language.",
+      "In autocomplete, the model may use all previous tokens but must not use the token it is supposed to predict."
     ],
     "math_algorithm": [
       "Add or combine positional vectors with token embeddings.",
       "Apply a mask that sets illegal future attention scores to a very negative value.",
       "Run several attention heads in parallel and concatenate their outputs.",
       "Use residual addition so each layer updates rather than replaces the representation.",
-      "Use layer normalization to keep vector scale manageable."
+      "Use layer normalization to keep vector scale manageable.",
+      "Create a position signal p_i for each location and combine it with token embedding e_i, commonly by addition or by changing attention scores through relative or rotary position handling.",
+      "Build an attention mask M where M_ij = 0 for allowed context positions and M_ij = -infinity for illegal future positions; add M before softmax.",
+      "For H heads, compute separate Q_h, K_h, V_h projections; each head returns a context vector and the heads are concatenated then projected.",
+      "Use residual update x <- x + attention(norm(x)) or x <- norm(x + attention(x)), depending on pre-norm or post-norm design.",
+      "Use a feed-forward network such as W_2 activation(W_1 x) on each position independently; this expands and contracts the hidden dimension to build nonlinear features.",
+      "Check whether the design preserves long-context behavior, because position schemes and masks often fail first when sequence length changes."
     ],
     "plain_checkpoint": "You should be able to explain why transformers need order, masks, multiple heads, residuals, and normalization to become usable language models.",
-    "concepts": ["positional_encoding", "attention", "transformer_block", "embeddings"]
+    "concepts": [
+      "positional_encoding",
+      "attention",
+      "transformer_block",
+      "embeddings"
+    ]
   },
   {
     "number": 3,
-    "core_problem": "A language model must turn raw text into prediction practice that teaches grammar, facts, style, and useful patterns.",
-    "topic_explanation": "Large language models begin with a simple training game: predict missing or next tokens from context. The game is simple, but the data is huge. Tokenization cuts text into units. Embeddings turn those units into vectors. Transformer layers update the vectors using context. The output head turns the final vector into probabilities over possible next tokens. Repeating this over massive text teaches the model many patterns because good prediction requires grammar, world facts, style, code structure, and task habits.",
-    "detail_explanation": "The key is that next-token prediction is not only about the next word. To predict well, the model must compress useful information about what came before. It must track syntax, topic, names, references, and common reasoning patterns. The model does not store a database in a clean symbolic form. It stores many statistical regularities in its weights. This explains both strength and weakness: it can generalize patterns broadly, but it can also invent plausible text when the needed fact is absent or uncertain.",
+    "core_problem": "A language model must turn raw text into prediction practice that teaches grammar, facts, style, and useful patterns. The model needs a training signal that is available for trillions of tokens and rich enough to teach more than spelling.",
+    "topic_explanation": "Large language models begin with a simple training game: predict missing or next tokens from context. The game is simple, but the data is huge. Tokenization cuts text into units. Embeddings turn those units into vectors. Transformer layers update the vectors using context. The output head turns the final vector into probabilities over possible next tokens. Repeating this over massive text teaches the model many patterns because good prediction requires grammar, world facts, style, code structure, and task habits. Next-token prediction works because the next token is a small local target that depends on many larger facts. To predict a word in a story, the model may need character identity, tense, topic, style, and world knowledge. To predict a line of code, it may need function names, indentation, types, and earlier branches. The objective looks narrow, but the pressure to reduce loss forces the network to build broad internal features.",
+    "detail_explanation": "The key is that next-token prediction is not only about the next word. To predict well, the model must compress useful information about what came before. It must track syntax, topic, names, references, and common reasoning patterns. The model does not store a database in a clean symbolic form. It stores many statistical regularities in its weights. This explains both strength and weakness: it can generalize patterns broadly, but it can also invent plausible text when the needed fact is absent or uncertain. The pipeline is simple but every part matters. The tokenizer decides which symbols exist. Embeddings give those symbols movable numeric representations. Transformer layers mix context. The output projection gives one score, called a logit, for each vocabulary item. Softmax turns logits into probabilities, and cross-entropy punishes the model when the true next token has low probability. During generation, the model samples or chooses from that distribution, which is why temperature and decoding choices change behavior.",
     "core_ideas": [
       "Tokenization defines the pieces the model can directly predict.",
       "Pretraining uses a broad prediction task to learn many language patterns at once.",
       "The output is a probability distribution over next tokens, not a guaranteed fact.",
-      "Scale helps because more data and parameters let the model store and combine more patterns."
+      "Scale helps because more data and parameters let the model store and combine more patterns.",
+      "The loss is local at each token, but good performance requires broad context compression.",
+      "The vocabulary is both the output space and a design constraint imposed by tokenization.",
+      "Generation is repeated use of the same next-token distribution, so decoding choices shape final behavior."
     ],
     "discussion_flow": [
       "Begin with the full pipeline from text to tokens to vectors.",
@@ -89,28 +124,46 @@
     "examples": [
       "After 'The capital of France is', the model should put high probability on 'Paris'.",
       "In code, indentation and prior function names shape the next-token prediction.",
-      "A rare factual question may produce a fluent but wrong answer if the pattern is weak."
+      "A rare factual question may produce a fluent but wrong answer if the pattern is weak.",
+      "A model predicting a closing parenthesis in code must track earlier syntax.",
+      "A model predicting a quote in dialogue must track who is speaking and what style they use."
     ],
     "math_algorithm": [
       "Tokenize text into ids.",
       "Map ids to embeddings and add position information.",
       "Run transformer blocks over the context.",
       "Project final vectors to vocabulary logits.",
-      "Train with cross-entropy loss against the true next token."
+      "Train with cross-entropy loss against the true next token.",
+      "Given tokens t_1...t_n, train on pairs where the input prefix t_1...t_i predicts target t_{i+1}.",
+      "After transformer layers produce hidden vector h_i, compute logits z_i = h_i W_vocab + b over every token in the vocabulary.",
+      "Convert logits to probabilities with softmax(z)_k = exp(z_k) / sum_m exp(z_m).",
+      "Use cross-entropy loss L_i = -log p(t_{i+1} | t_1...t_i), then average across positions and batch examples.",
+      "During generation, append the selected next token to the context and repeat the same forward pass pattern until a stop rule is reached.",
+      "Use temperature, top-k, or nucleus sampling to trade deterministic high-probability text against diversity and risk."
     ],
     "plain_checkpoint": "You should be able to explain pretraining as massive next-token prediction that forces the model to learn useful text patterns, while still producing probabilities rather than truth guarantees.",
-    "concepts": ["tokenization", "embeddings", "pretraining", "scaling_laws", "transformer_block"]
+    "concepts": [
+      "tokenization",
+      "embeddings",
+      "pretraining",
+      "scaling_laws",
+      "transformer_block"
+    ]
   },
   {
     "number": 4,
-    "core_problem": "Training an LLM is expensive and unstable because every token, optimizer choice, data mixture, and scale decision changes what the model learns.",
-    "topic_explanation": "LLM training turns the next-token game into a large engineering system. The basic update is clear: predict tokens, measure loss, change weights. The hard part is doing that at scale without wasting compute or corrupting the signal. Data must be cleaned and mixed. Batches must feed hardware efficiently. Learning rates must change over time. Validation must show whether the model is learning patterns that transfer, not only memorizing training text. Scaling choices decide how much data, compute, and parameter count to use.",
-    "detail_explanation": "The first-principles issue is that every training token is a lesson. Bad data teaches bad habits. Duplicate data can make memorization easier. Poor mixing can overfit the model to one style or domain. Too large a learning rate can destroy progress; too small can waste compute. Mixture-of-experts and related scaling ideas try to increase capacity without activating every parameter on every token. The goal is not only low loss but useful behavior after training, which means the training system must be measured carefully.",
+    "core_problem": "Training an LLM is expensive and unstable because every token, optimizer choice, data mixture, and scale decision changes what the model learns. Scaling an LLM is a resource allocation problem: each dollar of compute must be divided among model size, token count, data quality, and training stability.",
+    "topic_explanation": "LLM training turns the next-token game into a large engineering system. The basic update is clear: predict tokens, measure loss, change weights. The hard part is doing that at scale without wasting compute or corrupting the signal. Data must be cleaned and mixed. Batches must feed hardware efficiently. Learning rates must change over time. Validation must show whether the model is learning patterns that transfer, not only memorizing training text. Scaling choices decide how much data, compute, and parameter count to use. Large-scale training is not just running the loss longer. The data mixture decides what lessons the model sees. The optimizer decides how strongly each batch changes the weights. The schedule decides when learning is aggressive and when it settles. The hardware setup decides whether the run is efficient or stuck waiting on communication. Scaling laws matter because they give a rough way to choose model size and number of tokens instead of guessing.",
+    "detail_explanation": "The first-principles issue is that every training token is a lesson. Bad data teaches bad habits. Duplicate data can make memorization easier. Poor mixing can overfit the model to one style or domain. Too large a learning rate can destroy progress; too small can waste compute. Mixture-of-experts and related scaling ideas try to increase capacity without activating every parameter on every token. The goal is not only low loss but useful behavior after training, which means the training system must be measured carefully. A training run is a controlled stream of evidence. Clean high-value tokens improve general behavior; duplicates and low-quality pages can teach memorization or bad style. Batch size changes gradient noise. Learning-rate warmup avoids early instability, and decay prevents late updates from bouncing around a good solution. Checkpoints and validation catch collapse before the full budget is wasted. Sparse or routed models try to increase total capacity while activating only part of the network per token, but routing creates load-balancing and serving problems.",
     "core_ideas": [
       "The training loop is prediction, loss measurement, gradient update, and validation.",
       "Data quality and data mix shape the model as much as architecture does.",
       "Scaling requires tradeoffs among parameters, tokens, compute, and inference cost.",
-      "Validation and test sets are needed because training loss can hide memorization or weak transfer."
+      "Validation and test sets are needed because training loss can hide memorization or weak transfer.",
+      "Compute-optimal training asks how to balance parameter count and token count for a fixed budget.",
+      "Data curation is part of the model because the model learns the distribution it is shown.",
+      "Optimization stability matters because one bad run can waste enormous compute.",
+      "Sparse activation increases capacity but adds routing and system complexity."
     ],
     "discussion_flow": [
       "Start from the basic pretraining loss.",
@@ -123,28 +176,45 @@
     "examples": [
       "A model trained on messy web text may learn toxic, duplicated, or low-quality patterns.",
       "A validation split catches cases where training loss improves but unseen examples do not.",
-      "Mixture-of-experts can route a token to a subset of parameters instead of using the whole model."
+      "Mixture-of-experts can route a token to a subset of parameters instead of using the whole model.",
+      "A code-heavy data mix improves programming ability but may reduce performance on ordinary dialogue if it crowds out other text.",
+      "A duplicate-heavy dataset can make validation look good on contaminated benchmarks while hurting real generalization."
     ],
     "math_algorithm": [
       "Sample token batches from a curated data mixture.",
       "Compute next-token cross-entropy loss.",
       "Backpropagate gradients through transformer weights.",
       "Update weights with an optimizer and learning-rate schedule.",
-      "Track training, validation, and held-out performance."
+      "Track training, validation, and held-out performance.",
+      "Define the model size N, training tokens D, and compute budget C; scaling-law thinking studies loss as a function of these quantities instead of treating bigger as automatically better.",
+      "Train by minimizing average next-token cross-entropy over sampled batches from a weighted data mixture.",
+      "Use gradient clipping, warmup, decay, and optimizer state such as Adam moments to keep updates stable during a long run.",
+      "Track validation loss by domain so improvements in one data slice do not hide regressions in another.",
+      "Checkpoint frequently and evaluate samples, benchmark tasks, and loss curves to catch divergence or data bugs.",
+      "For mixture-of-experts, route each token to selected experts, add a load-balancing term, and measure both quality and routing imbalance."
     ],
     "plain_checkpoint": "You should be able to explain LLM training as a scaled prediction system where data, optimization, validation, and compute choices decide what the model actually learns.",
-    "concepts": ["pretraining", "scaling_laws", "generalization", "evaluation"]
+    "concepts": [
+      "pretraining",
+      "scaling_laws",
+      "generalization",
+      "evaluation"
+    ]
   },
   {
     "number": 5,
-    "core_problem": "A pretrained model can predict text but may not follow instructions, prefer helpful answers, or behave safely.",
-    "topic_explanation": "Tuning changes a base model into a more useful assistant. Pretraining teaches broad language ability. Supervised fine-tuning teaches the model to answer in desired formats using examples. Preference tuning then uses comparisons between answers to push the model toward responses people prefer. The core idea is that predicting internet text is not the same as serving a user. A useful assistant needs extra training signals that describe the desired behavior. Those signals tell the model how to respond when several fluent completions are possible but only some are helpful, honest, or safe.",
-    "detail_explanation": "The first-principles split is between knowledge and behavior. Pretraining gives many patterns, but it does not define what answer style, refusal behavior, detail level, or safety policy is preferred. Fine-tuning supplies direct demonstrations. Preference tuning supplies relative judgment: answer A is better than answer B. Reward models, RL-style tuning, and direct preference objectives are different ways to turn those comparisons into weight updates. The failure mode is optimizing the proxy instead of the real user need: a model can become verbose, evasive, flattering, or reward-hacking.",
+    "core_problem": "A pretrained model can predict text but may not follow instructions, prefer helpful answers, or behave safely. A base model learns how text continues, but users need a model that understands requests, refuses harmful work, gives calibrated help, and follows a preferred style.",
+    "topic_explanation": "Tuning changes a base model into a more useful assistant. Pretraining teaches broad language ability. Supervised fine-tuning teaches the model to answer in desired formats using examples. Preference tuning then uses comparisons between answers to push the model toward responses people prefer. The core idea is that predicting internet text is not the same as serving a user. A useful assistant needs extra training signals that describe the desired behavior. Those signals tell the model how to respond when several fluent completions are possible but only some are helpful, honest, or safe. Post-training changes the model\u2019s behavior distribution. Supervised fine-tuning shows the model examples of the interaction pattern: a prompt comes in, a useful answer comes out. Preference tuning handles cases where many answers are possible and only some are better. Pairwise comparisons say which answer people prefer, and the training objective increases the probability of chosen answers relative to rejected ones while trying not to erase the base model\u2019s broad knowledge.",
+    "detail_explanation": "The first-principles split is between knowledge and behavior. Pretraining gives many patterns, but it does not define what answer style, refusal behavior, detail level, or safety policy is preferred. Fine-tuning supplies direct demonstrations. Preference tuning supplies relative judgment: answer A is better than answer B. Reward models, RL-style tuning, and direct preference objectives are different ways to turn those comparisons into weight updates. The failure mode is optimizing the proxy instead of the real user need: a model can become verbose, evasive, flattering, or reward-hacking. The central tension is helpful shift without destructive drift. If tuning is too weak, the model remains a raw text completer. If it is too strong or narrow, the model can become formulaic, over-safe, or worse at tasks not represented in the tuning data. Reward-model RL, KL-regularized policy updates, and direct preference methods are different ways to turn comparisons into weight updates. The proxy must be watched because models can learn surface patterns that score well without truly being correct or useful.",
     "core_ideas": [
       "Pretraining gives broad capability but not necessarily desired assistant behavior.",
       "Supervised fine-tuning teaches by demonstration.",
       "Preference tuning teaches from comparisons between possible answers.",
-      "A learned preference signal can be useful but can also be gamed."
+      "A learned preference signal can be useful but can also be gamed.",
+      "Instruction tuning teaches the interface between user requests and assistant answers.",
+      "Preference tuning changes relative probabilities among possible completions, not only absolute correctness.",
+      "KL or similar constraints exist to stop the tuned model from drifting too far from the useful base model.",
+      "Safety tuning is a behavior-shaping problem and can fail through over-refusal or under-refusal."
     ],
     "discussion_flow": [
       "Separate pretraining from post-training.",
@@ -157,28 +227,46 @@
     "examples": [
       "A base model may continue a prompt instead of answering it helpfully.",
       "A preference label may choose the clearer of two answers to the same question.",
-      "A tuned model can over-refuse if safety examples dominate too bluntly."
+      "A tuned model can over-refuse if safety examples dominate too bluntly.",
+      "A raw model prompted with a question may continue with another question-answer pair rather than directly helping.",
+      "A preference dataset may rank a concise correct answer above a long confident but wrong answer."
     ],
     "math_algorithm": [
       "Start from a pretrained model.",
       "Fine-tune on prompt-response demonstrations.",
       "Collect chosen and rejected answers for the same prompt.",
       "Train a reward model or direct preference objective from those pairs.",
-      "Update the language policy while limiting harmful drift from the base model."
+      "Update the language policy while limiting harmful drift from the base model.",
+      "For supervised fine-tuning, train on prompt-response text and compute loss only on the assistant response tokens when appropriate.",
+      "For preference data, collect tuples (prompt, chosen_answer, rejected_answer).",
+      "In reward modeling, fit R(prompt, answer) so chosen answers receive higher scores than rejected answers, often with a Bradley-Terry style loss.",
+      "In RL-style tuning, update the policy to increase reward while adding a KL penalty that keeps it near the reference model.",
+      "In direct preference optimization, update log-probability ratios so chosen answers become more likely than rejected answers without separately training a reward model.",
+      "Evaluate tuned behavior on helpfulness, factuality, safety, calibration, and task-specific regressions."
     ],
     "plain_checkpoint": "You should be able to explain tuning as the extra training that turns a text predictor into a model that follows instructions and prefers better answers.",
-    "concepts": ["fine_tuning", "reward", "rl_for_llms", "pretraining", "evaluation"]
+    "concepts": [
+      "fine_tuning",
+      "reward",
+      "rl_for_llms",
+      "pretraining",
+      "evaluation"
+    ]
   },
   {
     "number": 6,
-    "core_problem": "Some tasks need several steps, and a final answer alone gives weak information about which step helped.",
-    "topic_explanation": "LLM reasoning asks how to make a model handle problems where the answer depends on intermediate work. A normal model can emit a quick answer, but math, planning, code, and logic often need a chain of steps. A reasoning trace makes that chain visible. The model writes partial work, uses it as context, and then produces the answer. Training can reward final correctness, imitate good traces, or use process-level signals that judge intermediate steps. The main question is how to make the written steps improve the answer instead of merely making the answer look thoughtful.",
-    "detail_explanation": "The credit problem is the same one seen in RL. If the final answer is wrong, which earlier step caused the failure? If the final answer is right, which steps were actually necessary? Reasoning methods try to create better feedback by sampling several attempts, checking final answers, using verifiers, or scoring prefixes. The danger is that longer text is not automatically better reasoning. A trace can be fluent but wrong, circular, or padded. The useful target is not more words; it is steps that increase the chance of a correct answer.",
+    "core_problem": "Some tasks need several steps, and a final answer alone gives weak information about which step helped. Multi-step tasks need a way to assign credit to intermediate moves, not just reward or punish the final sentence.",
+    "topic_explanation": "LLM reasoning asks how to make a model handle problems where the answer depends on intermediate work. A normal model can emit a quick answer, but math, planning, code, and logic often need a chain of steps. A reasoning trace makes that chain visible. The model writes partial work, uses it as context, and then produces the answer. Training can reward final correctness, imitate good traces, or use process-level signals that judge intermediate steps. The main question is how to make the written steps improve the answer instead of merely making the answer look thoughtful. Reasoning training treats answer generation as a sequence of choices. A model can write a plan, derive equations, inspect code, or try alternatives before finalizing. The written trace becomes working memory: later tokens can attend to earlier steps. But a trace is useful only if it carries real problem-solving information. A long explanation that merely sounds careful can still be false, so training and evaluation must separate useful intermediate work from decorative text.",
+    "detail_explanation": "The credit problem is the same one seen in RL. If the final answer is wrong, which earlier step caused the failure? If the final answer is right, which steps were actually necessary? Reasoning methods try to create better feedback by sampling several attempts, checking final answers, using verifiers, or scoring prefixes. The danger is that longer text is not automatically better reasoning. A trace can be fluent but wrong, circular, or padded. The useful target is not more words; it is steps that increase the chance of a correct answer. Several mechanisms attack the credit problem. Chain-of-thought imitation copies traces from data. Self-consistency samples many traces and chooses an answer that appears repeatedly. Verifiers score final answers or intermediate steps. Process supervision gives feedback before the end, which can catch wrong turns earlier. RL-style methods can optimize final correctness, but sparse reward is noisy; process reward is denser but harder to label and can itself be gamed.",
     "core_ideas": [
       "Reasoning traces make intermediate work visible to the model and evaluator.",
       "Final-answer reward is sparse because it says little about individual steps.",
       "Verifiers and process feedback try to judge partial solutions.",
-      "Longer reasoning can help or hurt depending on whether the steps are actually useful."
+      "Longer reasoning can help or hurt depending on whether the steps are actually useful.",
+      "A reasoning trace is useful when it changes the computation, not when it only explains after the fact.",
+      "Sampling multiple attempts trades extra compute for a better chance of finding a correct path.",
+      "Outcome supervision is cheap but sparse; process supervision is richer but more expensive.",
+      "Verifiers become part of the system and bring their own failure modes."
     ],
     "discussion_flow": [
       "Define the difference between quick answer generation and multi-step reasoning.",
@@ -191,28 +279,45 @@
     "examples": [
       "A math solution may fail because of one early algebra mistake.",
       "A code answer may need planning, implementation, and testing steps.",
-      "Sampling several traces can find one correct solution even when many attempts fail."
+      "Sampling several traces can find one correct solution even when many attempts fail.",
+      "For a proof, an invalid early assumption can make every later step look polished but wrong.",
+      "For code repair, running tests gives stronger feedback than reading the generated explanation."
     ],
     "math_algorithm": [
       "Represent a problem plus current written prefix as the state.",
       "Generate the next reasoning step as the action.",
       "Score final correctness or intermediate process quality.",
       "Use successful traces, verifier scores, or preference signals to update the model.",
-      "Measure pass rate and robustness, not only trace length."
+      "Measure pass rate and robustness, not only trace length.",
+      "Represent generation as states s_t = problem plus generated prefix, actions a_t = next tokens or next reasoning step, and terminal reward from correctness.",
+      "For imitation, maximize likelihood of reference reasoning traces token by token.",
+      "For verifier selection, sample K candidate traces, compute scores V(trace, answer), and choose or train on high-scoring candidates.",
+      "For process reward, assign rewards r_t to intermediate steps and train the model to prefer prefixes that stay on a valid path.",
+      "Use search methods such as best-of-N, tree search, or stepwise reranking when one greedy sample is unreliable.",
+      "Evaluate both final answer accuracy and whether the trace is faithful, because a correct answer can be paired with a misleading explanation."
     ],
     "plain_checkpoint": "You should be able to explain reasoning training as learning which intermediate text steps make the final answer more likely to be correct.",
-    "concepts": ["reasoning_traces", "rl_for_llms", "reward", "evaluation"]
+    "concepts": [
+      "reasoning_traces",
+      "rl_for_llms",
+      "reward",
+      "evaluation"
+    ]
   },
   {
     "number": 7,
-    "core_problem": "A language model alone only produces text; many useful tasks require outside information, tools, memory, and actions.",
-    "topic_explanation": "Agentic LLMs extend the model beyond one response. The model may retrieve documents, call tools, write code, inspect results, and decide what to do next. Retrieval adds outside knowledge by searching chunks of text using embeddings. Tool calling gives the model access to calculators, databases, browsers, code runners, or APIs. An agent loop lets the model observe, plan, act, observe again, and stop when the task is done. The shift is from answering from memory to controlling a small work process around the model.",
-    "detail_explanation": "The first-principles issue is that text prediction is not enough when the answer depends on fresh facts or external effects. A model's weights are fixed after training, so retrieval supplies current or private information. A model can describe arithmetic, but a calculator can compute it reliably. A model can suggest code, but a runtime can test it. The main risk is control: tool errors, bad retrieval, prompt injection, hidden assumptions, and endless loops can make an agent worse than a single careful answer.",
+    "core_problem": "A language model alone only produces text; many useful tasks require outside information, tools, memory, and actions. Many real tasks require the model to fetch facts, run tools, inspect results, and change course, instead of producing one answer from fixed weights.",
+    "topic_explanation": "Agentic LLMs extend the model beyond one response. The model may retrieve documents, call tools, write code, inspect results, and decide what to do next. Retrieval adds outside knowledge by searching chunks of text using embeddings. Tool calling gives the model access to calculators, databases, browsers, code runners, or APIs. An agent loop lets the model observe, plan, act, observe again, and stop when the task is done. The shift is from answering from memory to controlling a small work process around the model. Agentic systems wrap a language model in a loop. The model receives a task and context, decides whether it needs outside information or an action, calls a tool in a structured format, observes the result, and decides the next step. Retrieval is one common tool: convert text chunks and the query into embeddings, search for nearby chunks, and insert them into context. Code execution, calculators, browsers, and databases give the model abilities that text prediction alone cannot reliably provide.",
+    "detail_explanation": "The first-principles issue is that text prediction is not enough when the answer depends on fresh facts or external effects. A model's weights are fixed after training, so retrieval supplies current or private information. A model can describe arithmetic, but a calculator can compute it reliably. A model can suggest code, but a runtime can test it. The main risk is control: tool errors, bad retrieval, prompt injection, hidden assumptions, and endless loops can make an agent worse than a single careful answer. The hard part is control and trust. Retrieved text may be irrelevant, stale, malicious, or only partly related. Tool outputs may fail, be misread, or need follow-up checks. The model must decide when enough evidence has been gathered and when to stop. Memory adds another risk because old information can be wrong or sensitive. Good agent design constrains tool schemas, limits permissions, verifies results, logs actions, and evaluates full task completion rather than only answer fluency.",
     "core_ideas": [
       "Retrieval gives the model external context that was not stored reliably in its weights.",
       "Embeddings let the system search for chunks with similar meaning.",
       "Tool calling lets the model delegate operations it should not do from memory.",
-      "Agent loops combine planning, action, observation, and stopping rules."
+      "Agent loops combine planning, action, observation, and stopping rules.",
+      "Retrieval turns a closed-book model into an open-book system, but the book pages must be chosen correctly.",
+      "Tool calls externalize operations that need exactness, freshness, or side effects.",
+      "The observe-act loop creates new failure modes because each step changes the next input.",
+      "Security and stopping rules are central, not optional, because the model can be manipulated by tool outputs."
     ],
     "discussion_flow": [
       "Start from the limit of a standalone language model.",
@@ -225,28 +330,45 @@
     "examples": [
       "A model retrieves a company policy document before answering an HR question.",
       "A model calls a calculator instead of doing long arithmetic from memory.",
-      "A coding agent writes a test, runs it, reads the error, and edits the code."
+      "A coding agent writes a test, runs it, reads the error, and edits the code.",
+      "A research assistant may search papers, quote the relevant part, and then synthesize only from retrieved evidence.",
+      "A coding agent may edit a file, run tests, read failures, and patch again."
     ],
     "math_algorithm": [
       "Embed the user query and document chunks into vectors.",
       "Retrieve nearest chunks and place them into the context.",
       "Let the model choose a tool call with structured arguments when needed.",
       "Execute the tool and feed the observation back to the model.",
-      "Repeat until a stopping condition or final answer is reached."
+      "Repeat until a stopping condition or final answer is reached.",
+      "Embed query q and document chunks d_i into vectors, compute similarity such as q \u00b7 d_i or cosine similarity, and retrieve the top-k chunks.",
+      "Construct a prompt that separates user instruction, retrieved evidence, tool results, and model scratch state so sources are not confused.",
+      "Represent a tool call as structured arguments validated against a schema, then execute it outside the model.",
+      "Append the observation to context and let the model choose the next action: answer, retrieve, compute, edit, test, or stop.",
+      "Use guards such as permission boundaries, source ranking, prompt-injection filters, and output validation before trusting tool results.",
+      "Evaluate agents by completed tasks, tool mistakes, cost, latency, and recoverability from failed actions."
     ],
     "plain_checkpoint": "You should be able to explain an agentic LLM as a model wrapped in retrieval, tools, observations, and control rules so it can work beyond one text reply.",
-    "concepts": ["agents_and_tools", "embeddings", "attention", "evaluation"]
+    "concepts": [
+      "agents_and_tools",
+      "embeddings",
+      "attention",
+      "evaluation"
+    ]
   },
   {
     "number": 8,
-    "core_problem": "Without measurement, we cannot know whether an LLM improved, regressed, or only learned to look better on a narrow test.",
-    "topic_explanation": "LLM evaluation asks what behavior should count as success. A model may answer one benchmark well and still fail real users. It may be fluent and wrong, safe and unhelpful, or helpful and unsafe. Evaluation therefore needs several kinds of tests: task accuracy, instruction following, factuality, reasoning, robustness, safety, bias, tool use, latency, cost, and human preference. The point is not to find one perfect metric. The point is to build enough evidence for the intended use.",
-    "detail_explanation": "The first-principles problem is mismatch between a score and the real goal. BLEU and ROUGE can help with translation or summarization but miss deeper usefulness. Multiple-choice benchmarks are scalable but can be memorized or overfit. Human ratings capture preference but are noisy and expensive. Agent tasks test real workflows but are harder to reproduce. Good evaluation slices the task: what user, what domain, what failure, what cost, what risk. Averages are dangerous because they hide rare failures that may matter most.",
+    "core_problem": "Without measurement, we cannot know whether an LLM improved, regressed, or only learned to look better on a narrow test. Evaluation must measure the behavior people actually need, because a single benchmark score can hide failures in truth, safety, cost, or robustness.",
+    "topic_explanation": "LLM evaluation asks what behavior should count as success. A model may answer one benchmark well and still fail real users. It may be fluent and wrong, safe and unhelpful, or helpful and unsafe. Evaluation therefore needs several kinds of tests: task accuracy, instruction following, factuality, reasoning, robustness, safety, bias, tool use, latency, cost, and human preference. The point is not to find one perfect metric. The point is to build enough evidence for the intended use. LLM evaluation is hard because language tasks are open-ended. Two answers can both be useful, and a fluent answer can still be wrong. A benchmark is only a sample from a larger behavior space, so it can miss rare but important failures. Good evaluation therefore starts by naming the use case, the users, the allowed sources of information, the cost limits, and the failures that matter most.",
+    "detail_explanation": "The first-principles problem is mismatch between a score and the real goal. BLEU and ROUGE can help with translation or summarization but miss deeper usefulness. Multiple-choice benchmarks are scalable but can be memorized or overfit. Human ratings capture preference but are noisy and expensive. Agent tasks test real workflows but are harder to reproduce. Good evaluation slices the task: what user, what domain, what failure, what cost, what risk. Averages are dangerous because they hide rare failures that may matter most. Automatic metrics are useful when the target is clear, such as exact math answer, unit test pass rate, or multiple-choice accuracy. Human preference is useful when style, usefulness, or judgment matters, but it is noisy and expensive. LLM-as-judge can scale evaluation, but it can share biases with the models being judged. Contamination is a constant risk: if benchmark answers appeared in training data, the score may measure memory rather than general ability. Robust evaluation uses slices, adversarial cases, held-out private sets, and regression tests over time.",
     "core_ideas": [
       "Evaluation must match the use case, not just the model family.",
       "Automatic metrics are scalable but incomplete.",
       "Human preference is valuable but noisy and setup-dependent.",
-      "Safety, robustness, cost, and latency are part of real model quality."
+      "Safety, robustness, cost, and latency are part of real model quality.",
+      "Evaluation is a measurement design problem, not a leaderboard ritual.",
+      "Different tasks need different evidence: exact match, tests, human judgment, grounded citation checks, or safety review.",
+      "Benchmark contamination and distribution shift can make a high score misleading.",
+      "Cost and latency are part of quality when the model must be deployed."
     ],
     "discussion_flow": [
       "Start from the need to quantify behavior before improving it.",
@@ -259,28 +381,45 @@
     "examples": [
       "A summarizer can score well on overlap metrics while omitting the key fact.",
       "A model can pass a math benchmark if similar problems were in training data.",
-      "A support chatbot must be measured for correctness, helpfulness, refusal behavior, and escalation."
+      "A support chatbot must be measured for correctness, helpfulness, refusal behavior, and escalation.",
+      "A model can score well on general question answering while failing a company\u2019s internal policy questions.",
+      "A code model may write plausible code that fails hidden tests or creates a security bug."
     ],
     "math_algorithm": [
       "Define the target behavior and failure modes before choosing metrics.",
       "Use task-specific automatic scores where they are meaningful.",
       "Run human or model-assisted preference checks for subjective quality.",
       "Slice results by domain, difficulty, user group, safety category, and tool-use path.",
-      "Track regressions across model versions, not only headline averages."
+      "Track regressions across model versions, not only headline averages.",
+      "Define the target task distribution and create test slices for common cases, rare cases, adversarial cases, and safety-sensitive cases.",
+      "For closed-answer tasks, compute accuracy, exact match, calibration, or pass@k where pass@k estimates whether any of k samples succeeds.",
+      "For code, run unit tests and hidden tests; separate compile errors, runtime errors, wrong answers, and unsafe behavior.",
+      "For open-ended answers, collect pairwise preferences or rubric scores with multiple judges and measure agreement.",
+      "Check contamination by searching for benchmark items in training data when possible and by keeping private holdout sets.",
+      "Track quality together with inference cost, latency, refusal rate, citation faithfulness, and regression over model versions."
     ],
     "plain_checkpoint": "You should be able to explain LLM evaluation as building evidence for a specific use case, because no single benchmark proves a model is good.",
-    "concepts": ["evaluation", "generalization", "reward", "agents_and_tools"]
+    "concepts": [
+      "evaluation",
+      "generalization",
+      "reward",
+      "agents_and_tools"
+    ]
   },
   {
     "number": 9,
-    "core_problem": "The field changes quickly, so the useful skill is seeing how new methods modify the same core transformer and training loop.",
-    "topic_explanation": "The recap and trends lecture ties the course together. The basic pipeline is still visible: tokenize text, embed tokens, add order, process with transformer blocks, pretrain on prediction, tune for desired behavior, add reasoning or tools when needed, and evaluate carefully. Current trends change pieces of that pipeline. Some change architecture or attention. Some change training data and scale. Some change post-training. Some add retrieval, tools, multimodal inputs, or agent loops. The practical habit is to stop reading new methods as names and start reading them as changes to one part of the pipeline.",
-    "detail_explanation": "The first-principles way to read trends is to ask which bottleneck is being attacked. Is the model too expensive? Then look for sparse activation, smaller models, distillation, or better inference. Does it lack fresh knowledge? Look for retrieval. Does it fail multi-step tasks? Look for reasoning, search, verification, or tool use. Does it fail evaluation? Look for better benchmarks and deployment tests. New names matter less than the pressure they respond to and the tradeoff they create.",
+    "core_problem": "The field changes quickly, so the useful skill is seeing how new methods modify the same core transformer and training loop. New LLM trends are easier to understand when each one is mapped to the part of the system it changes and the bottleneck it tries to remove.",
+    "topic_explanation": "The recap ties the course together. The basic pipeline is still visible: tokenize text, embed tokens, add order, process with transformer blocks, pretrain on prediction, tune for desired behavior, add reasoning or tools when needed, and evaluate carefully. Current trends change pieces of that pipeline. Some change architecture or attention. Some change training data and scale. Some change post-training. Some add retrieval, tools, multimodal inputs, or agent loops. The practical habit is to stop reading new methods as names and start reading them as changes to one part of the pipeline. The recap is not just a list of topics. It gives a reading method. Every new paper changes some part of the pipeline: data, tokenizer, position handling, attention, architecture, pretraining objective, scaling recipe, post-training, retrieval, tools, reasoning, memory, evaluation, or serving. Once you locate the changed part, ask what pressure motivated it: speed, context length, factuality, reasoning accuracy, safety, cost, data quality, or controllability.",
+    "detail_explanation": "The first-principles way to read trends is to ask which bottleneck is being attacked. Is the model too expensive? Then look for sparse activation, smaller models, distillation, or better inference. Does it lack fresh knowledge? Look for retrieval. Does it fail multi-step tasks? Look for reasoning, search, verification, or tool use. Does it fail evaluation? Look for better benchmarks and deployment tests. New names matter less than the pressure they respond to and the tradeoff they create. This matters because demos often hide tradeoffs. A method that improves long context may raise memory cost. A reasoning method may improve math while slowing every answer. A tuning method may improve preference scores while hurting calibration. A retrieval system may reduce hallucination only when retrieval is correct. The durable skill is to read mechanisms: what object is introduced, what loss or rule changes, what evidence supports it, and what failure remains after the claimed improvement.",
     "core_ideas": [
       "Most new LLM work changes representation, architecture, training, tuning, tools, reasoning, or evaluation.",
       "A trend is easier to understand when tied to the bottleneck it tries to fix.",
       "Multimodal and agentic systems reuse transformer ideas while adding new inputs and actions.",
-      "Every improvement has a tradeoff in cost, reliability, controllability, or evaluation."
+      "Every improvement has a tradeoff in cost, reliability, controllability, or evaluation.",
+      "The LLM stack can be read as connected layers from tokens through deployment.",
+      "A trend is meaningful only when its bottleneck and tradeoff are clear.",
+      "Most methods buy one improvement with a cost in compute, data, complexity, or robustness.",
+      "Evaluation must match the bottleneck the method claims to solve."
     ],
     "discussion_flow": [
       "Recap the pipeline from tokens to transformer blocks to model outputs.",
@@ -293,16 +432,32 @@
     "examples": [
       "A retrieval system changes the knowledge bottleneck without retraining the whole model.",
       "A sparse model changes inference cost by activating only part of the network.",
-      "A multimodal model reuses sequence processing but adds image or audio tokens."
+      "A multimodal model reuses sequence processing but adds image or audio tokens.",
+      "A long-context paper should be read by asking how it changes position handling, attention cost, or memory.",
+      "A new post-training method should be read by asking what preference signal it uses and what behavior it might over-optimize."
     ],
     "math_algorithm": [
       "Locate the method inside the pipeline: tokenization, embedding, block, objective, tuning, tool loop, or evaluation.",
       "Name the bottleneck it addresses.",
       "Identify the new object it introduces, such as a routing rule, retriever, verifier, or multimodal encoder.",
       "Ask how the object changes training or inference.",
-      "Check what failure mode or tradeoff remains."
+      "Check what failure mode or tradeoff remains.",
+      "For any new method, identify the modified object: data distribution, representation, attention rule, loss, reward, retrieval index, tool policy, or evaluation set.",
+      "Write the before-and-after computation: what tensor, probability, score, or decision changes?",
+      "Name the bottleneck: context length, sample quality, factual grounding, reasoning credit, training cost, inference cost, or safety behavior.",
+      "Check what evidence would prove the claim: loss curves, benchmark slices, ablations, human evals, latency, cost, or failure-case audits.",
+      "Look for the remaining failure mode, because every method leaves some pressure unsolved.",
+      "Place the paper back into the course map so it becomes an extension of known machinery rather than an isolated trend."
     ],
     "plain_checkpoint": "You should be able to read a new LLM paper by locating which part of the pipeline it changes and what bottleneck it is trying to remove.",
-    "concepts": ["transformer_block", "pretraining", "fine_tuning", "reasoning_traces", "agents_and_tools", "evaluation", "vision_transformers"]
+    "concepts": [
+      "transformer_block",
+      "pretraining",
+      "fine_tuning",
+      "reasoning_traces",
+      "agents_and_tools",
+      "evaluation",
+      "vision_transformers"
+    ]
   }
 ]

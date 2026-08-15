@@ -1,38 +1,173 @@
 [
-  {"number": 1, "approaches": [
-    {"name": "Self-attention", "problem": "Each token needs information from other tokens in the same sequence.", "how_it_works": "Compute query, key, and value vectors, use query-key matches to weight value vectors, and mix the information back into each token.", "why_it_matters": "It lets the model build context-sensitive token meanings instead of reading with one narrow memory.", "failure_mode": "Attention can be expensive for long contexts and can focus on misleading tokens."},
-    {"name": "Transformer block stacking", "problem": "One attention pass is not enough to build rich language representations.", "how_it_works": "Repeat attention, feed-forward updates, residual paths, and normalization across many layers so each layer refines the token vectors produced by earlier layers.", "why_it_matters": "Stacking lets later layers build more abstract features from earlier token relations.", "failure_mode": "Deep stacks become unstable or expensive without careful normalization and residual design."}
-  ]},
-  {"number": 2, "approaches": [
-    {"name": "Positional encoding", "problem": "Plain attention does not know token order.", "how_it_works": "Add or combine position information with token embeddings before attention layers process them.", "why_it_matters": "It lets the model distinguish sequences with the same words in different orders.", "failure_mode": "Poor position handling can break long-context behavior or confuse order-sensitive tasks."},
-    {"name": "Causal masking", "problem": "A next-token model must not see future answer tokens during training.", "how_it_works": "Block attention from each token to later tokens by masking future attention scores.", "why_it_matters": "It keeps the training task honest and matches generation, where future tokens are unknown.", "failure_mode": "Wrong masks leak answers or prevent the model from using valid context."}
-  ]},
-  {"number": 3, "approaches": [
-    {"name": "Next-token pretraining", "problem": "The model needs a broad signal that can be created from raw text at scale.", "how_it_works": "Train the model to predict the next token from previous context across a very large corpus.", "why_it_matters": "Good prediction forces the model to learn grammar, facts, style, code patterns, and common reasoning habits.", "failure_mode": "Predicting likely text can produce fluent falsehoods and does not guarantee helpful behavior."},
-    {"name": "Token-to-logit pipeline", "problem": "Text must become model input and model output in a computable form.", "how_it_works": "Tokenize text, embed token ids, process vectors through transformer blocks, and project final vectors to vocabulary logits.", "why_it_matters": "It is the basic mechanism behind modern LLM training and generation.", "failure_mode": "Tokenizer choices, context limits, or bad probability calibration can damage output quality."}
-  ]},
-  {"number": 4, "approaches": [
-    {"name": "Large-scale pretraining system", "problem": "A useful LLM requires huge amounts of data and compute without unstable optimization.", "how_it_works": "Feed curated token batches through the model, compute cross-entropy loss, backpropagate gradients, and validate on held-out data.", "why_it_matters": "It turns the simple prediction task into a reliable training process at scale.", "failure_mode": "Bad data, bad schedules, duplicates, or poor validation can waste compute or teach bad behavior."},
-    {"name": "Efficient scaling", "problem": "More capability usually costs more training and inference compute.", "how_it_works": "Use scaling choices, routing, or sparse activation so capacity grows without activating every parameter for every token.", "why_it_matters": "It makes larger models more practical to train or serve.", "failure_mode": "Efficiency tricks can add routing errors, uneven expert use, or difficult system complexity."}
-  ]},
-  {"number": 5, "approaches": [
-    {"name": "Supervised fine-tuning", "problem": "A pretrained model may not answer in the desired format or style.", "how_it_works": "Train on prompt-response examples that demonstrate the wanted behavior, so the model learns how instructions should map to complete answers.", "why_it_matters": "It teaches instruction following more directly than raw next-token pretraining.", "failure_mode": "The model can overfit the examples or inherit narrow demonstration habits."},
-    {"name": "Preference tuning", "problem": "Many answer qualities are easier to compare than to write as exact labels.", "how_it_works": "Collect chosen/rejected answer pairs and update the model through a reward model, RL objective, or direct preference loss.", "why_it_matters": "It moves the model toward answers people judge better after it already knows language.", "failure_mode": "The preference signal can reward style over truth or be gamed by the model."}
-  ]},
-  {"number": 6, "approaches": [
-    {"name": "Reasoning traces", "problem": "A final answer does not show the intermediate choices that produced it.", "how_it_works": "Let the model generate intermediate written steps and use those steps as context before the final answer.", "why_it_matters": "It gives the model a workspace for multi-step tasks and exposes partial work for checking.", "failure_mode": "The trace can be long, fluent, and still wrong or unnecessary."},
-    {"name": "Verifier-guided reasoning", "problem": "The model needs feedback about which attempted solutions are likely correct.", "how_it_works": "Sample candidate traces or answers, score them with a verifier or final check, and train or select using that score.", "why_it_matters": "It can improve hard tasks where one sample is unreliable.", "failure_mode": "A weak verifier can reward shortcuts, superficial correctness, or overfit solution styles."}
-  ]},
-  {"number": 7, "approaches": [
-    {"name": "Retrieval-augmented generation", "problem": "The model weights may not contain current, private, or exact information.", "how_it_works": "Embed the query and documents, retrieve relevant chunks, and place them into the model context before answering.", "why_it_matters": "It gives the model grounded information without retraining the whole model.", "failure_mode": "Bad retrieval or prompt injection can make the answer worse than using no retrieval."},
-    {"name": "Tool-calling agent loop", "problem": "Some tasks require actions outside text generation.", "how_it_works": "Let the model choose structured tool calls, execute them, feed observations back, and repeat until done.", "why_it_matters": "It lets the system calculate, search, code, inspect, and update state.", "failure_mode": "The loop can call the wrong tool, trust bad outputs, leak data, or fail to stop."}
-  ]},
-  {"number": 8, "approaches": [
-    {"name": "Task-specific evaluation", "problem": "A general benchmark may not measure the behavior a real use case needs.", "how_it_works": "Define target tasks and failure modes, then measure accuracy, usefulness, safety, cost, and latency on those slices.", "why_it_matters": "It turns evaluation into evidence for a concrete deployment rather than a vanity score.", "failure_mode": "Bad slices or contaminated benchmarks can hide real regressions."},
-    {"name": "Human and preference evaluation", "problem": "Some answer qualities are subjective or hard to capture with rules.", "how_it_works": "Ask people or preference models to compare outputs on clarity, helpfulness, correctness, and policy fit.", "why_it_matters": "It captures aspects of user experience that automatic metrics miss.", "failure_mode": "Judgments can be noisy, biased, expensive, and sensitive to rubric wording."}
-  ]},
-  {"number": 9, "approaches": [
-    {"name": "Pipeline-based paper reading", "problem": "New LLM papers can look unrelated because each names a different component.", "how_it_works": "Locate the method in the pipeline: tokens, embeddings, attention, training objective, tuning, retrieval, tools, reasoning, or evaluation.", "why_it_matters": "It turns new trends into understandable modifications of known parts.", "failure_mode": "A method can change several parts at once, so oversimplifying the location can miss the real tradeoff."},
-    {"name": "Bottleneck-first analysis", "problem": "Trends are hard to judge if they are read only as names or demos.", "how_it_works": "Ask what bottleneck the method attacks, what object it introduces, and what failure mode remains.", "why_it_matters": "It keeps attention on mechanism and tradeoff instead of hype.", "failure_mode": "The stated bottleneck may differ from the real deployment bottleneck."}
-  ]}
+  {
+    "number": 1,
+    "approaches": [
+      {
+        "name": "Self-attention",
+        "problem": "Each token needs a way to fetch relevant information from any other token in the same sequence, including distant words, variables, names, or clauses.",
+        "how_it_works": "Turn every token vector into a query, key, and value. The query says what this token is looking for. The key says what each other token offers. Dot products between queries and keys become attention weights after softmax. The token then receives a weighted sum of value vectors, so its new representation contains information from the selected context.",
+        "why_it_matters": "This replaces a narrow left-to-right memory with direct content-based lookup across the whole context, which is the central operation behind transformer language models.",
+        "failure_mode": "The cost grows quickly with context length, and the model can attend strongly to irrelevant or misleading tokens if the learned match is wrong."
+      },
+      {
+        "name": "Transformer block stacking",
+        "problem": "One attention lookup can mix context, but language understanding often requires several rounds of relation building and nonlinear feature changes.",
+        "how_it_works": "A block runs attention to exchange information across tokens, then a feed-forward network to transform each token independently. Residual connections preserve earlier information while adding updates, and normalization keeps vector scales stable. Stacking many blocks lets later layers operate on relations built by earlier layers.",
+        "why_it_matters": "Depth lets the model move from raw token patterns to richer features such as reference, syntax, topic, code structure, and answer-relevant context.",
+        "failure_mode": "Very deep stacks can become expensive, unstable, or hard to serve if normalization, residual layout, memory, and parallelism are poorly designed."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "approaches": [
+      {
+        "name": "Positional encoding",
+        "problem": "Self-attention compares token content but does not naturally know whether one token came first, later, nearby, or far away.",
+        "how_it_works": "Attach position information to each token, either by adding learned or sinusoidal position vectors, using relative position terms in attention, or rotating query and key vectors with position-dependent transformations. This makes order and distance visible during query-key matching.",
+        "why_it_matters": "Order changes meaning. The model needs position to understand syntax, chronology, code structure, and long-context references.",
+        "failure_mode": "A position scheme can fail outside its trained context length or make extrapolation brittle when documents become longer than training examples."
+      },
+      {
+        "name": "Causal masking",
+        "problem": "A next-token model must learn from past context only; if it can see future tokens during training, the task becomes dishonest and generation will not match training.",
+        "how_it_works": "Before softmax, add a mask to the attention score matrix so token i cannot attend to token j when j is in the future. Illegal scores become effectively negative infinity, so their softmax weights become zero.",
+        "why_it_matters": "The mask defines the allowed information flow and makes next-token training match real generation, where future tokens do not exist yet.",
+        "failure_mode": "A wrong mask can leak answers, block valid context, break packed sequences, or silently train a model that behaves differently at inference time."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "approaches": [
+      {
+        "name": "Next-token pretraining",
+        "problem": "The model needs a training objective that can be produced from raw text at huge scale without humans labeling every example.",
+        "how_it_works": "For each position in a text sequence, give the model the previous tokens and train it to assign high probability to the actual next token. Cross-entropy turns that probability into a loss. Repeating this over many domains forces the model to encode grammar, facts, code patterns, style, and common reasoning moves.",
+        "why_it_matters": "It converts ordinary text into dense supervision: every token position becomes a lesson, which is why large models can be trained on broad unlabeled corpora.",
+        "failure_mode": "The objective rewards likely continuations, not guaranteed truth, helpfulness, or safety; a model can be fluent and wrong."
+      },
+      {
+        "name": "Token-to-logit pipeline",
+        "problem": "Text must be turned into numbers the model can process and then turned back into a probability over possible next text pieces.",
+        "how_it_works": "A tokenizer maps text to token ids. An embedding table maps ids to vectors. Transformer blocks update those vectors with context. The final hidden vector is multiplied by an output matrix to produce logits over the vocabulary. Softmax converts logits into probabilities used for loss or sampling.",
+        "why_it_matters": "This pipeline is the concrete path from raw text to trainable neural computation and back to generated language.",
+        "failure_mode": "Bad tokenization, limited context, poor calibration, or bad decoding settings can damage behavior even when the transformer itself is strong."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "approaches": [
+      {
+        "name": "Large-scale pretraining system",
+        "problem": "A simple loss does not automatically become a good model; large training runs can waste compute, collapse, memorize, or learn bad data patterns.",
+        "how_it_works": "Build a curated data mixture, sample batches, run forward passes, compute next-token loss, backpropagate gradients, update weights with a scheduled optimizer, and track validation by domain. The system also needs checkpointing, data audits, deduplication, and hardware parallelism so progress is stable and measurable.",
+        "why_it_matters": "The training system is what turns the transformer architecture into a capable model; data and optimization choices often matter as much as the block design.",
+        "failure_mode": "Data bugs, duplicate benchmarks, unstable learning rates, bad batch construction, or weak validation can produce a costly model that looks good on the wrong evidence."
+      },
+      {
+        "name": "Efficient scaling",
+        "problem": "More parameters and more tokens usually improve capability, but training and serving cost can become too high.",
+        "how_it_works": "Use scaling-law estimates to allocate compute among model size and data size. Use efficiency ideas such as mixture-of-experts, sparse activation, better kernels, and parallel training so only part of the model or hardware path is active for each token where possible.",
+        "why_it_matters": "Efficient scaling lets teams buy more useful capacity per unit of compute and makes large models practical to train and serve.",
+        "failure_mode": "Routing imbalance, communication overhead, expert collapse, or serving complexity can erase the efficiency gain."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "approaches": [
+      {
+        "name": "Supervised fine-tuning",
+        "problem": "A pretrained model may continue text instead of following instructions, and it may not know the answer style expected in a user-facing assistant.",
+        "how_it_works": "Train the model on prompt-response demonstrations. The prompt is provided as context and the loss is usually applied to the desired answer tokens. This increases the probability of the demonstrated response style, format, and task behavior.",
+        "why_it_matters": "It teaches the model the interaction contract: read the request, answer directly, use the desired format, and follow task-specific conventions.",
+        "failure_mode": "The model can overfit demonstration style, become too narrow, copy mistakes in the examples, or lose some base-model breadth if tuning is too aggressive."
+      },
+      {
+        "name": "Preference tuning",
+        "problem": "Many qualities such as helpfulness, clarity, safety, and tone are easier to compare between two answers than to encode as one exact target answer.",
+        "how_it_works": "Collect pairs of answers to the same prompt where one is chosen and one is rejected. Train a reward model, run RL with a KL constraint, or use a direct preference loss that raises the relative probability of chosen answers over rejected answers.",
+        "why_it_matters": "It shapes behavior beyond imitation and lets the model prefer better answers when many fluent completions are possible.",
+        "failure_mode": "The model can optimize the preference proxy through verbosity, flattery, over-refusal, or style tricks that win comparisons without improving truth."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "approaches": [
+      {
+        "name": "Reasoning traces",
+        "problem": "Hard tasks often require intermediate state, but a final answer hides the steps that led there.",
+        "how_it_works": "Let the model generate intermediate text such as a plan, derivation, scratch work, or code outline before the final answer. The trace remains in context, so later tokens can attend to earlier work and build on it. Training can imitate reference traces or prefer traces that lead to correct outcomes.",
+        "why_it_matters": "A visible workspace can make multi-step computation more reliable and gives training or evaluation systems something to inspect before the final answer.",
+        "failure_mode": "The trace can be unfaithful, padded, circular, or persuasive while the underlying answer is still wrong."
+      },
+      {
+        "name": "Verifier-guided reasoning",
+        "problem": "One sampled solution may be wrong, and final correctness alone gives weak feedback about which path was good.",
+        "how_it_works": "Generate several candidate traces or answers, score them with a verifier, unit test, equation checker, human label, or process reward model, then select the best candidate or train the model toward higher-scoring steps and answers.",
+        "why_it_matters": "It turns extra inference or checking compute into higher reliability on tasks where mistakes are common.",
+        "failure_mode": "A weak verifier becomes a new target to game and may reward superficial signs of correctness rather than valid reasoning."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "approaches": [
+      {
+        "name": "Retrieval-augmented generation",
+        "problem": "The model\u2019s weights may not contain current, private, rare, or exact information needed for an answer.",
+        "how_it_works": "Split documents into chunks, embed chunks and queries into vectors, retrieve the nearest relevant chunks, and place those chunks into the model context with instructions to answer from them. The language model then conditions on retrieved evidence instead of relying only on memory.",
+        "why_it_matters": "It lets a fixed model use fresh or private knowledge without retraining and gives answers a source trail that can be checked.",
+        "failure_mode": "Retrieval can return irrelevant, stale, adversarial, or incomplete chunks; the model can also ignore good evidence or overtrust bad evidence."
+      },
+      {
+        "name": "Tool-calling agent loop",
+        "problem": "Some tasks require exact computation, external side effects, file edits, searches, or tests that text generation alone cannot perform reliably.",
+        "how_it_works": "Give the model a set of tools with schemas. The model chooses a tool call, arguments are validated, the tool runs, and the observation is appended to context. The model repeats observe, decide, act, and observe until it can answer or stop.",
+        "why_it_matters": "It turns an LLM from a text generator into a controller for a bounded work process, letting it calculate, inspect, retrieve, execute, and verify.",
+        "failure_mode": "The loop can call the wrong tool, trust malicious output, leak sensitive data, spend too much money, or continue without a stopping condition."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "approaches": [
+      {
+        "name": "Task-specific evaluation",
+        "problem": "A general leaderboard score may not measure the behavior needed for a real product, research workflow, or safety case.",
+        "how_it_works": "Define the actual task distribution, expected users, allowed evidence, and unacceptable failures. Build slices for common cases, edge cases, adversarial cases, and regressions. Measure correctness, grounding, safety, latency, cost, and reliability separately instead of collapsing everything into one vague score.",
+        "why_it_matters": "It makes evaluation decision-relevant: the score tells whether the model works for the intended use, not merely whether it performs well on a public benchmark.",
+        "failure_mode": "If the slices are too narrow, contaminated, or poorly labeled, evaluation can bless a model that fails in deployment."
+      },
+      {
+        "name": "Human and preference evaluation",
+        "problem": "Some answer qualities, such as clarity, usefulness, and tone, cannot be fully captured by exact-match metrics.",
+        "how_it_works": "Ask human raters or calibrated judge models to compare outputs using a rubric. Aggregate multiple judgments, check agreement, and separate dimensions such as factuality, helpfulness, style, safety, and citation faithfulness.",
+        "why_it_matters": "It captures user-facing quality that automatic metrics miss and supplies data for preference tuning.",
+        "failure_mode": "Judgments can be noisy, biased, expensive, rubric-sensitive, or gamed by answers that sound confident."
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "approaches": [
+      {
+        "name": "Pipeline-based paper reading",
+        "problem": "New LLM papers often introduce names and demos that make the field look like disconnected tricks.",
+        "how_it_works": "Place the method into the pipeline: tokenizer, embedding, position handling, attention, architecture, pretraining data, loss, post-training, retrieval, tools, reasoning, serving, or evaluation. Then compare the old and new computation at that location.",
+        "why_it_matters": "It turns new work into a concrete modification of known machinery, which makes papers easier to understand and compare.",
+        "failure_mode": "Some methods change several parts at once, so forcing them into one slot can hide the real source of improvement."
+      },
+      {
+        "name": "Bottleneck-first analysis",
+        "problem": "It is easy to mistake a trend for progress if the bottleneck and tradeoff are not named.",
+        "how_it_works": "Ask what pressure the method attacks, what object or objective it changes, what evidence would prove success, and what failure remains. Read ablations and deployment constraints before accepting the headline claim.",
+        "why_it_matters": "This keeps attention on mechanism and consequence instead of demos, branding, or benchmark cherry-picking.",
+        "failure_mode": "The stated bottleneck in a paper may not be the bottleneck in a real system, so the method can be technically valid but practically irrelevant."
+      }
+    ]
+  }
 ]
