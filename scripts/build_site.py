@@ -791,7 +791,7 @@ def build_deep_rl(
 <section class="page-head">
   <p class="eyebrow">Stanford CS224R Deep Reinforcement Learning</p>
   <h1>Deep RL Lecture Guide</h1>
-  <p>This page reads the course lecture by lecture from the local transcripts. Each section states the concrete problem, the order of topics, the examples, and the equations or algorithm moves.</p>
+  <p>Deep RL studies how a learner improves actions when each move changes what happens next, rewards may arrive late, and the useful training signal has to be extracted from experience.</p>
 </section>
 <section>
   <h2>Course Spine</h2>
@@ -961,7 +961,7 @@ def build_diffusion(
 <section class="page-head">
   <p class="eyebrow">Stanford CME296 Diffusion And Large Vision Models</p>
   <h1>Diffusion Lecture Guide</h1>
-  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+  <p>Diffusion and vision generation study how to move from simple noise or compressed codes into structured images, videos, and visual worlds by learning small reliable update directions.</p>
 </section>
 <section>
   <h2>Course Spine</h2>
@@ -1050,7 +1050,7 @@ def build_deep_unsupervised(
 <section class="page-head">
   <p class="eyebrow">UC Berkeley CS294-158 Deep Unsupervised Learning</p>
   <h1>Deep Unsupervised Learning Lecture Guide</h1>
-  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+  <p>Deep unsupervised learning studies how raw data can teach a model without ordinary labels by exposing repeated structure, hidden causes, predictable parts, and useful representations.</p>
 </section>
 <section>
   <h2>Course Spine</h2>
@@ -1138,7 +1138,7 @@ def build_llms(
 <section class="page-head">
   <p class="eyebrow">Stanford CME295 Transformers And LLMs</p>
   <h1>LLM Lecture Guide</h1>
-  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+  <p>Transformers and LLMs study how text becomes tokens and vectors, how attention mixes context, and how prediction, tuning, tools, reasoning, and evaluation shape useful behavior.</p>
 </section>
 <section>
   <h2>Course Spine</h2>

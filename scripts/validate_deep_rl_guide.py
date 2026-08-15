@@ -206,6 +206,10 @@ def main() -> int:
             "The lecture&#x27;s",
             "This lecture explains",
             "The instructor explains",
+            "This page reads",
+            "lecture by lecture",
+            "lecture-summary filler",
+            "order of topics",
         ]
         for phrase in blocked_visible_phrases:
             if phrase in html:

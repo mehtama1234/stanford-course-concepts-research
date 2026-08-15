@@ -51,6 +51,10 @@ BLOCKED_VISIBLE_PHRASES = [
     "The lecture&#x27;s",
     "This lecture explains",
     "The instructor explains",
+    "This page reads",
+    "lecture by lecture",
+    "lecture-summary filler",
+    "order of topics",
 ]
 
 
