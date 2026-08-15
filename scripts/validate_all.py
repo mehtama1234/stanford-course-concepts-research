@@ -20,6 +20,7 @@ def main() -> int:
         run(["python3", "scripts/validate_llm_guide.py"])
         run(["python3", "scripts/validate_deep_rl_guide.py"])
         run(["python3", "scripts/validate_diffusion_guide.py"])
+        run(["python3", "scripts/validate_deep_unsupervised_guide.py"])
         run(["python3", "scripts/validate_site.py"])
         run(["python3", "scripts/audit_evidence_fidelity.py"])
         run(["python3", "scripts/audit_editorial_quality.py"])

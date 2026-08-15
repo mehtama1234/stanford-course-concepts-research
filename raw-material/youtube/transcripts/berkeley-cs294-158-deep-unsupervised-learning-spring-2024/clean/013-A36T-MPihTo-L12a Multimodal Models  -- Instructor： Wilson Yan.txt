@@ -1,0 +1,3777 @@
+okay um I guess we can get started so as
+okay um I guess we can get started so as
+okay um I guess we can get started so as
+Peter mentioned I'll be covering mainly
+Peter mentioned I'll be covering mainly
+Peter mentioned I'll be covering mainly
+multimodal
+multimodal
+multimodal
+models um and then some other stuff
+models um and then some other stuff
+models um and then some other stuff
+which I will outline but yeah let's get
+which I will outline but yeah let's get
+which I will outline but yeah let's get
+started
+started
+started
+so uh I guess what are multimodal models
+so uh I guess what are multimodal models
+so uh I guess what are multimodal models
+very broadly it's kind of
+very broadly it's kind of
+very broadly it's kind of
+self-explanatory models that can
+self-explanatory models that can
+self-explanatory models that can
+incorporate multiple modalities Um this
+incorporate multiple modalities Um this
+incorporate multiple modalities Um this
+can there's like a lot of different
+can there's like a lot of different
+can there's like a lot of different
+modalities available but the main ones
+modalities available but the main ones
+modalities available but the main ones
+that people generally work on right now
+that people generally work on right now
+that people generally work on right now
+are to images and video which are very
+are to images and video which are very
+are to images and video which are very
+similar if you count it as like images
+similar if you count it as like images
+similar if you count it as like images
+and videos are just like the vision
+and videos are just like the vision
+and videos are just like the vision
+modality um there's text and audio and
+modality um there's text and audio and
+modality um there's text and audio and
+there could be more if you do robotics
+there could be more if you do robotics
+there could be more if you do robotics
+there could be other like sensory data
+there could be other like sensory data
+there could be other like sensory data
+there could be like touch like tactile
+there could be like touch like tactile
+there could be like touch like tactile
+sensory um but these are the predominant
+sensory um but these are the predominant
+sensory um but these are the predominant
+ones that are currently used right now I
+ones that are currently used right now I
+ones that are currently used right now I
+think most mostly because it's just due
+think most mostly because it's just due
+think most mostly because it's just due
+to the availability of data that you can
+to the availability of data that you can
+to the availability of data that you can
+actually just scrape online um like if
+actually just scrape online um like if
+actually just scrape online um like if
+you scrape YouTube you'll have video and
+you scrape YouTube you'll have video and
+you scrape YouTube you'll have video and
+audio and you could get text if you do
+audio and you could get text if you do
+audio and you could get text if you do
+labeling uh text is easy to scrape and
+labeling uh text is easy to scrape and
+labeling uh text is easy to scrape and
+images are also pretty easy to scrape
+images are also pretty easy to scrape
+images are also pretty easy to scrape
+and in the end when we learn these
+and in the end when we learn these
+and in the end when we learn these
+multimodel models there are some
+multimodel models there are some
+multimodel models there are some
+outcomes that we would like uh the first
+outcomes that we would like uh the first
+outcomes that we would like uh the first
+is we would obviously want to achieve
+is we would obviously want to achieve
+is we would obviously want to achieve
+some sort of multimodel understanding um
+some sort of multimodel understanding um
+some sort of multimodel understanding um
+where you can like understand both
+where you can like understand both
+where you can like understand both
+images and text and learn how they like
+images and text and learn how they like
+images and text and learn how they like
+interplate together and then the second
+interplate together and then the second
+interplate together and then the second
+one which is a little bit more difficult
+one which is a little bit more difficult
+one which is a little bit more difficult
+um is that we want to achieve better un
+um is that we want to achieve better un
+um is that we want to achieve better un
+modal understanding so like if I have
+modal understanding so like if I have
+modal understanding so like if I have
+image data and Text data and I TR train
+image data and Text data and I TR train
+image data and Text data and I TR train
+jointly on both these two modalities can
+jointly on both these two modalities can
+jointly on both these two modalities can
+I have a better understanding of just
+I have a better understanding of just
+I have a better understanding of just
+Language by itself or just images by
+itself and this is a brief outline of
+itself and this is a brief outline of
+itself and this is a brief outline of
+the different models I'll be talking
+the different models I'll be talking
+the different models I'll be talking
+about most of these will just be uh I
+about most of these will just be uh I
+about most of these will just be uh I
+guess I'll be broadly covering the
+guess I'll be broadly covering the
+guess I'll be broadly covering the
+different kinds of architectures and
+different kinds of architectures and
+different kinds of architectures and
+types of models that people have done
+types of models that people have done
+types of models that people have done
+and like kind of like how they're
+and like kind of like how they're
+and like kind of like how they're
+trained there won't be anything new in
+trained there won't be anything new in
+trained there won't be anything new in
+terms of like generative models uh like
+terms of like generative models uh like
+terms of like generative models uh like
+like we basically covered everything
+like we basically covered everything
+like we basically covered everything
+most of these are autoaggressive
+most of these are autoaggressive
+most of these are autoaggressive
+sometimes there's diffusion those are
+sometimes there's diffusion those are
+sometimes there's diffusion those are
+probably the main two um so we most
+probably the main two um so we most
+probably the main two um so we most
+mostly focus on like uh what kinds of
+mostly focus on like uh what kinds of
+mostly focus on like uh what kinds of
+models they are how they're structured
+models they are how they're structured
+models they are how they're structured
+and also like what capabilities that
+and also like what capabilities that
+and also like what capabilities that
+we're seeing with current like Large
+we're seeing with current like Large
+we're seeing with current like Large
+Scale Models like uh like gp4 or Gemini
+Scale Models like uh like gp4 or Gemini
+Scale Models like uh like gp4 or Gemini
+and stuff that they can do and where
+and stuff that they can do and where
+and stuff that they can do and where
+they might fail and then so that's the
+they might fail and then so that's the
+they might fail and then so that's the
+first four of the different kinds of
+first four of the different kinds of
+first four of the different kinds of
+models that I've kind of like separated
+models that I've kind of like separated
+models that I've kind of like separated
+um and the last one that I'll just be
+um and the last one that I'll just be
+um and the last one that I'll just be
+talking about some parallelization in
+talking about some parallelization in
+talking about some parallelization in
+Transformers this is kind of related to
+Transformers this is kind of related to
+Transformers this is kind of related to
+um a part of lecture that we were
+um a part of lecture that we were
+um a part of lecture that we were
+supposed to cover in the llm lecture
+supposed to cover in the llm lecture
+supposed to cover in the llm lecture
+that we didn't get time to but so we
+that we didn't get time to but so we
+that we didn't get time to but so we
+moved it here and it's a pretty good um
+moved it here and it's a pretty good um
+moved it here and it's a pretty good um
+ending in terms of basically all these
+ending in terms of basically all these
+ending in terms of basically all these
+models we're covering are essentially
+models we're covering are essentially
+models we're covering are essentially
+Transformers in some form and the last
+Transformers in some form and the last
+Transformers in some form and the last
+part is just some practical applications
+part is just some practical applications
+part is just some practical applications
+of how you actually parallelize it if
+of how you actually parallelize it if
+of how you actually parallelize it if
+you have like a thousand devices how do
+you have like a thousand devices how do
+you have like a thousand devices how do
+you train on that um so it could be very
+you train on that um so it could be very
+you train on that um so it could be very
+useful okay so the first part is on
+useful okay so the first part is on
+useful okay so the first part is on
+bidirectional models which bidirectional
+bidirectional models which bidirectional
+bidirectional models which bidirectional
+in this in this sense that it's just
+in this in this sense that it's just
+in this in this sense that it's just
+like let's say not a causal Transformer
+like let's say not a causal Transformer
+like let's say not a causal Transformer
+so clip will just categorize as like by
+so clip will just categorize as like by
+so clip will just categorize as like by
+directional model uh well I guess
+directional model uh well I guess
+directional model uh well I guess
+technically the the text encoder is
+technically the the text encoder is
+technically the the text encoder is
+causal but um it's not it's not that's
+causal but um it's not it's not that's
+causal but um it's not it's not that's
+not really used in any way right now um
+not really used in any way right now um
+not really used in any way right now um
+and yeah so the so there's been so we
+and yeah so the so there's been so we
+and yeah so the so there's been so we
+covered clip already I think Peter
+covered clip already I think Peter
+covered clip already I think Peter
+covered it in like the self-supervised
+covered it in like the self-supervised
+covered it in like the self-supervised
+or like one of the lectures before so I
+or like one of the lectures before so I
+or like one of the lectures before so I
+won't go into how that works but it is a
+won't go into how that works but it is a
+won't go into how that works but it is a
+contrastive objective and you learn an
+contrastive objective and you learn an
+contrastive objective and you learn an
+image and text encoder and you can use
+image and text encoder and you can use
+image and text encoder and you can use
+clip to do some pretty cool things the
+clip to do some pretty cool things the
+clip to do some pretty cool things the
+original paper did image classification
+original paper did image classification
+original paper did image classification
+which is I think the easiest application
+which is I think the easiest application
+which is I think the easiest application
+where you can just take an image and
+where you can just take an image and
+where you can just take an image and
+then you can compute its clip score
+then you can compute its clip score
+then you can compute its clip score
+alignment with different uh classes and
+alignment with different uh classes and
+alignment with different uh classes and
+then classify according to the class of
+then classify according to the class of
+then classify according to the class of
+the highest alignment uh
+the highest alignment uh
+the highest alignment uh
+one one neat thing about this
+one one neat thing about this
+one one neat thing about this
+classification that you can actually
+classification that you can actually
+classification that you can actually
+achieve with these text image models in
+achieve with these text image models in
+achieve with these text image models in
+comparison to let's say image only so
+comparison to let's say image only so
+comparison to let's say image only so
+let's say if you did like Sim clear or
+let's say if you did like Sim clear or
+let's say if you did like Sim clear or
+something on um on imag net and then you
+something on um on imag net and then you
+something on um on imag net and then you
+did like a linear probe or something or
+did like a linear probe or something or
+did like a linear probe or something or
+you you train a classifier from that
+you you train a classifier from that
+you you train a classifier from that
+pre-trained backbone to classify imag
+pre-trained backbone to classify imag
+pre-trained backbone to classify imag
+net something that I I don't have the
+net something that I I don't have the
+net something that I I don't have the
+plot here but something that was
+plot here but something that was
+plot here but something that was
+interesting that kind of clip showed
+interesting that kind of clip showed
+interesting that kind of clip showed
+Improvement on was it was a lot more
+Improvement on was it was a lot more
+Improvement on was it was a lot more
+robust
+robust
+robust
+um than the image only ones in terms of
+um than the image only ones in terms of
+um than the image only ones in terms of
+like how robust it is to certain like
+like how robust it is to certain like
+like how robust it is to certain like
+distribution changes in the in images
+distribution changes in the in images
+distribution changes in the in images
+compared to image only
+compared to image only
+compared to image only
+ones so that's like potentially one
+ones so that's like potentially one
+ones so that's like potentially one
+benefit of like combining text and
+benefit of like combining text and
+benefit of like combining text and
+images the other one which they was
+images the other one which they was
+images the other one which they was
+explored I believe in the dolly paper
+explored I believe in the dolly paper
+explored I believe in the dolly paper
+originally was they used the clips score
+originally was they used the clips score
+originally was they used the clips score
+as a ranker so because essentially you
+as a ranker so because essentially you
+as a ranker so because essentially you
+have your image and you have your text
+have your image and you have your text
+have your image and you have your text
+and then you can compute how aligned
+and then you can compute how aligned
+and then you can compute how aligned
+these these two elements are and for
+these these two elements are and for
+these these two elements are and for
+what they did was they just would
+what they did was they just would
+what they did was they just would
+generate let's say if you had like a
+generate let's say if you had like a
+generate let's say if you had like a
+text caption and you can generate like
+text caption and you can generate like
+text caption and you can generate like
+maybe like 10 or 100 images um and then
+maybe like 10 or 100 images um and then
+maybe like 10 or 100 images um and then
+if you want to choose one pair from that
+if you want to choose one pair from that
+if you want to choose one pair from that
+you can just compute the clip scores for
+you can just compute the clip scores for
+you can just compute the clip scores for
+all 100 Pairs and then choose the one
+all 100 Pairs and then choose the one
+all 100 Pairs and then choose the one
+that has the highest alignment which
+that has the highest alignment which
+that has the highest alignment which
+usually works pretty
+usually works pretty
+usually works pretty
+well this was some work from uh a j that
+well this was some work from uh a j that
+well this was some work from uh a j that
+used to be in our lab it was called it
+used to be in our lab it was called it
+used to be in our lab it was called it
+was like kind of one of
+was like kind of one of
+was like kind of one of
+the original like text to 3D papers
+the original like text to 3D papers
+the original like text to 3D papers
+and it's called dream Fields this was in
+and it's called dream Fields this was in
+and it's called dream Fields this was in
+its beginning phases so it wasn't like
+its beginning phases so it wasn't like
+its beginning phases so it wasn't like
+you know super like crystal clear but it
+you know super like crystal clear but it
+you know super like crystal clear but it
+showed like some pretty cool
+showed like some pretty cool
+showed like some pretty cool
+capabilities in transferring like what
+capabilities in transferring like what
+capabilities in transferring like what
+clip understands about language into
+clip understands about language into
+clip understands about language into
+generating 3D and what this essentially
+generating 3D and what this essentially
+generating 3D and what this essentially
+did was you like initialize like a Nerf
+did was you like initialize like a Nerf
+did was you like initialize like a Nerf
+a Nerf parameters and then you just
+a Nerf parameters and then you just
+a Nerf parameters and then you just
+optimize your Nerf parameters to um to
+optimize your Nerf parameters to um to
+optimize your Nerf parameters to um to
+align with a high clip score with a
+align with a high clip score with a
+align with a high clip score with a
+given text caption so if the text
+given text caption so if the text
+given text caption so if the text
+caption was like like an armchair in the
+caption was like like an armchair in the
+caption was like like an armchair in the
+shape of AOC Auto then you would start
+shape of AOC Auto then you would start
+shape of AOC Auto then you would start
+with an like random parameters you would
+with an like random parameters you would
+with an like random parameters you would
+use a Nerf to render and then you would
+use a Nerf to render and then you would
+use a Nerf to render and then you would
+take like a you you render like an image
+take like a you you render like an image
+take like a you you render like an image
+of it like an an image of the 3D object
+of it like an an image of the 3D object
+of it like an an image of the 3D object
+and then you would feed that through the
+and then you would feed that through the
+and then you would feed that through the
+the clip image encoder and compute the
+the clip image encoder and compute the
+the clip image encoder and compute the
+clip score and then you would back
+clip score and then you would back
+clip score and then you would back
+propagate back to the to update the the
+propagate back to the to update the the
+propagate back to the to update the the
+Nerf parameters there there's some more
+Nerf parameters there there's some more
+Nerf parameters there there's some more
+stuff like Nerf specific things to try
+stuff like Nerf specific things to try
+stuff like Nerf specific things to try
+to encourage it to generate image like
+to encourage it to generate image like
+to encourage it to generate image like
+objects things to encourage like the
+objects things to encourage like the
+objects things to encourage like the
+occupancy of um like the resulting 3D
+occupancy of um like the resulting 3D
+occupancy of um like the resulting 3D
+structure but at its core it's
+structure but at its core it's
+structure but at its core it's
+essentially just optimizing
+clip and this was like in the very
+clip and this was like in the very
+clip and this was like in the very
+beginnings of like text to image stuff
+beginnings of like text to image stuff
+beginnings of like text to image stuff
+where this was before text to image
+where this was before text to image
+where this was before text to image
+models or text to image generation
+models or text to image generation
+models or text to image generation
+models existed and this was another way
+models existed and this was another way
+models existed and this was another way
+to generate an image quote unquote
+to generate an image quote unquote
+to generate an image quote unquote
+generate from a text caption uh where
+generate from a text caption uh where
+generate from a text caption uh where
+they would do something kind of neat is
+they would do something kind of neat is
+they would do something kind of neat is
+that they would just essentially just
+that they would just essentially just
+that they would just essentially just
+take a VQ Gan embedding space um and
+take a VQ Gan embedding space um and
+take a VQ Gan embedding space um and
+then they they would start with like a
+then they they would start with like a
+then they they would start with like a
+random like latent they would feed it
+random like latent they would feed it
+random like latent they would feed it
+through the VQ Gan decoder um and then
+through the VQ Gan decoder um and then
+through the VQ Gan decoder um and then
+like take some crops and feed those
+like take some crops and feed those
+like take some crops and feed those
+crops into the the clip the clip image
+crops into the the clip the clip image
+crops into the the clip the clip image
+encoder and then have it aligned with
+encoder and then have it aligned with
+encoder and then have it aligned with
+some some like some like user specified
+some some like some like user specified
+some some like some like user specified
+text caption and and you can generate
+text caption and and you can generate
+text caption and and you can generate
+some kind of like weird images and then
+some kind of like weird images and then
+some kind of like weird images and then
+essentially this is very similar to
+essentially this is very similar to
+essentially this is very similar to
+dream Fields where you're optimizing
+dream Fields where you're optimizing
+dream Fields where you're optimizing
+like per data point so this is you're
+like per data point so this is you're
+like per data point so this is you're
+you're doing like like gradient descent
+you're doing like like gradient descent
+you're doing like like gradient descent
+or gradient Ascent on the um on like the
+or gradient Ascent on the um on like the
+or gradient Ascent on the um on like the
+VQ Gan latent embed itself so there's no
+VQ Gan latent embed itself so there's no
+VQ Gan latent embed itself so there's no
+like neural nut that's being trained
+like neural nut that's being trained
+like neural nut that's being trained
+here it's just using all pre-trained
+here it's just using all pre-trained
+here it's just using all pre-trained
+models um and you get like some weird
+models um and you get like some weird
+models um and you get like some weird
+things like it's very like there's a lot
+things like it's very like there's a lot
+things like it's very like there's a lot
+of weird artifacts you can see a lot of
+of weird artifacts you can see a lot of
+of weird artifacts you can see a lot of
+like repetitive patterns um mostly
+like repetitive patterns um mostly
+like repetitive patterns um mostly
+because it's not because you're
+because it's not because you're
+because it's not because you're
+optimizing eclip score which can have
+optimizing eclip score which can have
+optimizing eclip score which can have
+like some really weird areas in like the
+like some really weird areas in like the
+like some really weird areas in like the
+image space that have really high
+image space that have really high
+image space that have really high
+alignment but you can get some kind of
+alignment but you can get some kind of
+alignment but you can get some kind of
+cool cool stuff um and then after that
+cool cool stuff um and then after that
+cool cool stuff um and then after that
+you can also even do clip guidance for
+you can also even do clip guidance for
+you can also even do clip guidance for
+for diffusion models and that tends to
+for diffusion models and that tends to
+for diffusion models and that tends to
+work well when you actually have a model
+work well when you actually have a model
+work well when you actually have a model
+that actually can generate an image
+that actually can generate an image
+that actually can generate an image
+um but yeah this is like stuff you can
+um but yeah this is like stuff you can
+um but yeah this is like stuff you can
+use with clip in terms of like image
+Generation Um why do I have the same
+Generation Um why do I have the same
+Generation Um why do I have the same
+slide all right let's skip that
+slide all right let's skip that
+slide all right let's skip that
+okay and then there's a lot of other
+okay and then there's a lot of other
+okay and then there's a lot of other
+ones in other domains that people have
+ones in other domains that people have
+ones in other domains that people have
+actually used um the it it's used first
+actually used um the it it's used first
+actually used um the it it's used first
+bullet point it's used as a backbone
+bullet point it's used as a backbone
+bullet point it's used as a backbone
+very commonly if you take uh some
+very commonly if you take uh some
+very commonly if you take uh some
+pre-train if you want to train like a
+pre-train if you want to train like a
+pre-train if you want to train like a
+vision language model um you generally
+vision language model um you generally
+vision language model um you generally
+take like a pre-trained LM that
+take like a pre-trained LM that
+take like a pre-trained LM that
+understands text and a pre-trained like
+understands text and a pre-trained like
+understands text and a pre-trained like
+some sort of pre-ra image encoder that
+some sort of pre-ra image encoder that
+some sort of pre-ra image encoder that
+can understand vision and then you kind
+can understand vision and then you kind
+can understand vision and then you kind
+of combine them and then clip is a very
+of combine them and then clip is a very
+of combine them and then clip is a very
+common uh like Vision encoder that's
+common uh like Vision encoder that's
+common uh like Vision encoder that's
+used as like a pre-trained
+used as like a pre-trained
+used as like a pre-trained
+backbone uh and yeah for representations
+backbone uh and yeah for representations
+backbone uh and yeah for representations
+also kind of as like a pre-trained
+also kind of as like a pre-trained
+also kind of as like a pre-trained
+backbone for like stable diffusion they
+backbone for like stable diffusion they
+backbone for like stable diffusion they
+cross they cross attend on the on the
+cross they cross attend on the on the
+cross they cross attend on the on the
+text embeddings for um for like on the
+text embeddings for um for like on the
+text embeddings for um for like on the
+text encodings of the the clip text
+text encodings of the the clip text
+text encodings of the the clip text
+encoder to condition on language and
+encoder to condition on language and
+encoder to condition on language and
+then the last one is is one paper where
+then the last one is is one paper where
+then the last one is is one paper where
+they it's called cliport which is a
+they it's called cliport which is a
+they it's called cliport which is a
+paper where
+paper where
+paper where
+they is in the context of Robotics of
+they is in the context of Robotics of
+they is in the context of Robotics of
+where they kind of like uh train like a
+where they kind of like uh train like a
+where they kind of like uh train like a
+robotic policy that could do different
+robotic policy that could do different
+robotic policy that could do different
+tasks um with some like fancy
+tasks um with some like fancy
+tasks um with some like fancy
+architecture design but at its core it
+architecture design but at its core it
+architecture design but at its core it
+was initialized from the the image
+was initialized from the the image
+was initialized from the the image
+encoder for clip and so what that kind
+encoder for clip and so what that kind
+encoder for clip and so what that kind
+of allowed you to do is you could train
+of allowed you to do is you could train
+of allowed you to do is you could train
+you can learn a policy to do stuff on
+you can learn a policy to do stuff on
+you can learn a policy to do stuff on
+like a subset of objects so you can ask
+like a subset of objects so you can ask
+like a subset of objects so you can ask
+it to pick up like a red block or like a
+it to pick up like a red block or like a
+it to pick up like a red block or like a
+teddy bear and then um it could
+teddy bear and then um it could
+teddy bear and then um it could
+generalize to different objects or
+generalize to different objects or
+generalize to different objects or
+different colors or or stuff that is
+different colors or or stuff that is
+different colors or or stuff that is
+still in in distribution of clip but
+still in in distribution of clip but
+still in in distribution of clip but
+wasn't necessarily trained um in the
+wasn't necessarily trained um in the
+wasn't necessarily trained um in the
+downstream
+policy yeah and the last point is kind
+policy yeah and the last point is kind
+policy yeah and the last point is kind
+of alludes to that is that for most
+of alludes to that is that for most
+of alludes to that is that for most
+cases you can like have like some small
+cases you can like have like some small
+cases you can like have like some small
+amount of fine tuning data for a
+amount of fine tuning data for a
+amount of fine tuning data for a
+specific task you want to solve and if
+specific task you want to solve and if
+specific task you want to solve and if
+you fine tune with clip then it could
+you fine tune with clip then it could
+you fine tune with clip then it could
+hopefully like generalize to to
+hopefully like generalize to to
+hopefully like generalize to to
+different unseen visual concepts um that
+different unseen visual concepts um that
+different unseen visual concepts um that
+we're not seeing during fine
+we're not seeing during fine
+we're not seeing during fine
+tuning
+yes
+um so I I guess clip is very useful
+um so I I guess clip is very useful
+um so I I guess clip is very useful
+something contents talk like let's say
+something contents talk like let's say
+something contents talk like let's say
+for cliport it's very useful because um
+for cliport it's very useful because um
+for cliport it's very useful because um
+there's a language component so you have
+there's a language component so you have
+there's a language component so you have
+a task you specify uh put the red block
+a task you specify uh put the red block
+a task you specify uh put the red block
+on the green bowl and um and now it can
+on the green bowl and um and now it can
+on the green bowl and um and now it can
+generalize to a different task that was
+generalize to a different task that was
+generalize to a different task that was
+like put the the teddy bear in the brown
+like put the the teddy bear in the brown
+like put the the teddy bear in the brown
+box or something uh potentially uh
+box or something uh potentially uh
+box or something uh potentially uh
+so in that sense clip is probably the
+so in that sense clip is probably the
+so in that sense clip is probably the
+main use for like text to image encoder
+main use for like text to image encoder
+main use for like text to image encoder
+that can generalize things um but I'm
+that can generalize things um but I'm
+that can generalize things um but I'm
+not sure about like like image only
+not sure about like like image only
+not sure about like like image only
+probably wouldn't be able to do that
+probably wouldn't be able to do that
+probably wouldn't be able to do that
+well because you would have to learn the
+well because you would have to learn the
+well because you would have to learn the
+text understanding from scratch
+essentially and okay so this was another
+essentially and okay so this was another
+essentially and okay so this was another
+paper called M3 AE
+paper called M3 AE
+paper called M3 AE
+and the general way this works is fairly
+and the general way this works is fairly
+and the general way this works is fairly
+straightforward if you're familiar with
+straightforward if you're familiar with
+straightforward if you're familiar with
+how Mae works is Mae is essentially this
+how Mae works is Mae is essentially this
+how Mae works is Mae is essentially this
+top half so you have your image and then
+top half so you have your image and then
+top half so you have your image and then
+you you mask it out
+you you mask it out
+you you mask it out
+uh you you feed in the unmasked uh or
+uh you you feed in the unmasked uh or
+uh you you feed in the unmasked uh or
+you feed in the yeah the unmasked
+you feed in the yeah the unmasked
+you feed in the yeah the unmasked
+patches through your encoder and then
+patches through your encoder and then
+patches through your encoder and then
+you try to decode the rest the original
+you try to decode the rest the original
+you try to decode the rest the original
+image uh m3e was just that plus text as
+image uh m3e was just that plus text as
+image uh m3e was just that plus text as
+well so it's like a ma plus like Bert I
+well so it's like a ma plus like Bert I
+well so it's like a ma plus like Bert I
+guess where you also mask out the
+guess where you also mask out the
+guess where you also mask out the
+language tokens same architecture style
+language tokens same architecture style
+language tokens same architecture style
+but now your input to the encoder just
+but now your input to the encoder just
+but now your input to the encoder just
+concatenated uh unmasked image and
+concatenated uh unmasked image and
+concatenated uh unmasked image and
+unmasked text tokens and then you try to
+unmasked text tokens and then you try to
+unmasked text tokens and then you try to
+decode the entire like text image pair
+decode the entire like text image pair
+decode the entire like text image pair
+modality there and then in this case you
+modality there and then in this case you
+modality there and then in this case you
+could also so in this case you could do
+could also so in this case you could do
+could also so in this case you could do
+it with text image pairs uh you could
+it with text image pairs uh you could
+it with text image pairs uh you could
+also do it with um like image only data
+also do it with um like image only data
+also do it with um like image only data
+in that case the text would be fully
+in that case the text would be fully
+in that case the text would be fully
+masked out you could use text only data
+masked out you could use text only data
+masked out you could use text only data
+in that case the images would be fully
+in that case the images would be fully
+in that case the images would be fully
+masked out um so you can use use it for
+masked out um so you can use use it for
+masked out um so you can use use it for
+any combination of those modalities but
+any combination of those modalities but
+any combination of those modalities but
+I believe this was mainly trained on
+I believe this was mainly trained on
+I believe this was mainly trained on
+text image
+text image
+text image
+data yeah so if you're
+um trying to
+remember I I don't remember off the top
+remember I I don't remember off the top
+remember I I don't remember off the top
+of my head it it could be they add
+of my head it it could be they add
+of my head it it could be they add
+position codings first here and then
+position codings first here and then
+position codings first here and then
+when it's um the are selected it it
+when it's um the are selected it it
+when it's um the are selected it it
+keeps like its relative position in the
+keeps like its relative position in the
+keeps like its relative position in the
+in the original image but I I don't
+in the original image but I I don't
+in the original image but I I don't
+remember exactly I have to see the
+code is there another
+question okay and one neat finding about
+question okay and one neat finding about
+question okay and one neat finding about
+M3 AE so this was compared to Mee so Mae
+M3 AE so this was compared to Mee so Mae
+M3 AE so this was compared to Mee so Mae
+just train on only images let's say yeah
+just train on only images let's say yeah
+just train on only images let's say yeah
+only images and M M3 AE trained on both
+only images and M M3 AE trained on both
+only images and M M3 AE trained on both
+the image and text and this was the
+the image and text and this was the
+the image and text and this was the
+linear probe accuracy I think on
+linear probe accuracy I think on
+linear probe accuracy I think on
+probably imag net imag net um but you do
+probably imag net imag net um but you do
+probably imag net imag net um but you do
+see a a very large boost in in like the
+see a a very large boost in in like the
+see a a very large boost in in like the
+the quality let's say the quality of the
+the quality let's say the quality of the
+the quality let's say the quality of the
+representation as as a function of how
+representation as as a function of how
+representation as as a function of how
+how good it is um as like a linear probe
+how good it is um as like a linear probe
+how good it is um as like a linear probe
+most likely because um the Capt like the
+most likely because um the Capt like the
+most likely because um the Capt like the
+the the labels or the targets for imag
+the the labels or the targets for imag
+the the labels or the targets for imag
+net are also are all very like like more
+net are also are all very like like more
+net are also are all very like like more
+language like in the sense of like it's
+language like in the sense of like it's
+language like in the sense of like it's
+like a do like a type of dog or a type
+like a do like a type of dog or a type
+like a do like a type of dog or a type
+of cat or a car or a truck uh which may
+of cat or a car or a truck uh which may
+of cat or a car or a truck uh which may
+have facilitated just better
+have facilitated just better
+have facilitated just better
+representations for for this kind of
+representations for for this kind of
+representations for for this kind of
+thing and with fine tuning there's less
+thing and with fine tuning there's less
+thing and with fine tuning there's less
+of a gap because now you can update all
+of a gap because now you can update all
+of a gap because now you can update all
+all the parameters but there's still
+all the parameters but there's still
+all the parameters but there's still
+some improvement especially
+some improvement especially
+some improvement especially
+um uh with you can get away with fine
+um uh with you can get away with fine
+um uh with you can get away with fine
+tuning less um like like fewer like a
+tuning less um like like fewer like a
+tuning less um like like fewer like a
+smaller part of the network to get
+smaller part of the network to get
+smaller part of the network to get
+pretty good
+performance
+yeah sorry
+yeah
+yeah
+yeah
+yeah and these are some visualizations
+yeah and these are some visualizations
+yeah and these are some visualizations
+of I believe essentially visualizing
+of I believe essentially visualizing
+of I believe essentially visualizing
+like the you can see that the green uh
+like the you can see that the green uh
+like the you can see that the green uh
+like the the green square there is uh
+like the the green square there is uh
+like the the green square there is uh
+what what parts of the text that green
+what what parts of the text that green
+what what parts of the text that green
+square token is attending to so focuses
+square token is attending to so focuses
+square token is attending to so focuses
+on the strawberries maybe too saturated
+on the strawberries maybe too saturated
+on the strawberries maybe too saturated
+but that
+but that
+but that
+says well it says straw and then
+might be bar that looks too long to be
+might be bar that looks too long to be
+might be bar that looks too long to be
+berries but but but yeah something like
+berries but but but yeah something like
+berries but but but yeah something like
+that um and then same thing for that
+that um and then same thing for that
+that um and then same thing for that
+thing over there can't see the oh okay
+thing over there can't see the oh okay
+thing over there can't see the oh okay
+so straw and then pound sign pound
+so straw and then pound sign pound
+so straw and then pound sign pound
+signed berries I I don't know why had
+signed berries I I don't know why had
+signed berries I I don't know why had
+those
+those
+those
+um and then the last oh the last one was
+um and then the last oh the last one was
+um and then the last oh the last one was
+a roof leaking and it was like a picture
+a roof leaking and it was like a picture
+a roof leaking and it was like a picture
+of like the the leak and it focuses on
+of like the the leak and it focuses on
+of like the the leak and it focuses on
+those those parts of the word or the
+those those parts of the word or the
+those those parts of the word or the
+sentence and this is also a ization of
+sentence and this is also a ization of
+sentence and this is also a ization of
+just like the the plots of like the
+just like the the plots of like the
+just like the the plots of like the
+representations where it's far better
+representations where it's far better
+representations where it's far better
+clustered for the m3a which had like
+clustered for the m3a which had like
+clustered for the m3a which had like
+text a supervision compared to Mae which
+text a supervision compared to Mae which
+text a supervision compared to Mae which
+you can kind of there are some like
+you can kind of there are some like
+you can kind of there are some like
+clusters but it's much more scattered
+clusters but it's much more scattered
+clusters but it's much more scattered
+than
+than
+than
+M3
+yeah oh I uh oh yeah yeah maybe yeah
+yeah oh I uh oh yeah yeah maybe yeah
+yeah oh I uh oh yeah yeah maybe yeah
+yeah that's that seems feasible yeah
+likely cool okay so those are the like
+likely cool okay so those are the like
+likely cool okay so those are the like
+that class of like bidirectional
+that class of like bidirectional
+that class of like bidirectional
+multimodel models um now I'll be
+multimodel models um now I'll be
+multimodel models um now I'll be
+covering just different kinds of more I
+covering just different kinds of more I
+covering just different kinds of more I
+guess more Transformer Focus models
+guess more Transformer Focus models
+guess more Transformer Focus models
+encoder decoder decoder only in like
+encoder decoder decoder only in like
+encoder decoder decoder only in like
+multi mod Generation Um but the first
+multi mod Generation Um but the first
+multi mod Generation Um but the first
+one would be kind of like encoder
+one would be kind of like encoder
+one would be kind of like encoder
+decoder style
+decoder style
+decoder style
+models um the first one is is flamingo
+models um the first one is is flamingo
+models um the first one is is flamingo
+so what this one does is so that the
+so what this one does is so that the
+so what this one does is so that the
+first thing they do is they leverage a
+first thing they do is they leverage a
+first thing they do is they leverage a
+pre-trained language model so pre-ra LM
+pre-trained language model so pre-ra LM
+pre-trained language model so pre-ra LM
+on just pure Text data and then the
+on just pure Text data and then the
+on just pure Text data and then the
+question is how can you is like now I
+question is how can you is like now I
+question is how can you is like now I
+wanted to be able to understand images
+wanted to be able to understand images
+wanted to be able to understand images
+so it's like how do you feed in in
+so it's like how do you feed in in
+so it's like how do you feed in in
+conditional images and Flamingo is one
+conditional images and Flamingo is one
+conditional images and Flamingo is one
+of the slightly more complicated
+of the slightly more complicated
+of the slightly more complicated
+architectural choices but the the way it
+architectural choices but the the way it
+architectural choices but the the way it
+works is essentially you have like your
+works is essentially you have like your
+works is essentially you have like your
+your end layers of your language model
+your end layers of your language model
+your end layers of your language model
+so on the right there you see like first
+so on the right there you see like first
+so on the right there you see like first
+LM block and LM block and then in
+LM block and LM block and then in
+LM block and LM block and then in
+between all of them you essentially
+between all of them you essentially
+between all of them you essentially
+insert um what they call this G gated
+insert um what they call this G gated
+insert um what they call this G gated
+cross detention plus dense layer it's
+cross detention plus dense layer it's
+cross detention plus dense layer it's
+it's it's like another gated Transformer
+it's it's like another gated Transformer
+it's it's like another gated Transformer
+block which you can then condition on
+block which you can then condition on
+block which you can then condition on
+images and the way they can images is
+images and the way they can images is
+images and the way they can images is
+they just have like a vision
+they just have like a vision
+they just have like a vision
+encoder um for exactly what it was it
+encoder um for exactly what it was it
+encoder um for exactly what it was it
+might have been some reset and then like
+might have been some reset and then like
+might have been some reset and then like
+a resonant that's pre-trained on like
+a resonant that's pre-trained on like
+a resonant that's pre-trained on like
+like image classification or some self
+like image classification or some self
+like image classification or some self
+supervisor objective it could be
+supervisor objective it could be
+supervisor objective it could be
+whatever and they used a perceiver
+whatever and they used a perceiver
+whatever and they used a perceiver
+resampler which I'm not sure if we
+resampler which I'm not sure if we
+resampler which I'm not sure if we
+covered perceiver in this class but at
+covered perceiver in this class but at
+covered perceiver in this class but at
+its core it it's just
+its core it it's just
+its core it it's just
+a it's just like a Transformer like
+a it's just like a Transformer like
+a it's just like a Transformer like
+architecture that will convert like any
+architecture that will convert like any
+architecture that will convert like any
+like variable Siz uh tokens so for
+like variable Siz uh tokens so for
+like variable Siz uh tokens so for
+example this Vision encoder could
+example this Vision encoder could
+example this Vision encoder could
+potentially output different like size
+potentially output different like size
+potentially output different like size
+tokens depending on the input resolution
+tokens depending on the input resolution
+tokens depending on the input resolution
+of the image if there like a larger
+of the image if there like a larger
+of the image if there like a larger
+resolution it could output more more
+resolution it could output more more
+resolution it could output more more
+tokens uh but the perceiver would just
+tokens uh but the perceiver would just
+tokens uh but the perceiver would just
+convert it process it so it's like it it
+convert it process it so it's like it it
+convert it process it so it's like it it
+computes an encoding that is a constant
+computes an encoding that is a constant
+computes an encoding that is a constant
+I think in this case it was 64 tokens
+I think in this case it was 64 tokens
+I think in this case it was 64 tokens
+per
+per
+per
+image and and the way they condition on
+image and and the way they condition on
+image and and the way they condition on
+it is they have this gate across
+it is they have this gate across
+it is they have this gate across
+attenion dense layer which is similar to
+attenion dense layer which is similar to
+attenion dense layer which is similar to
+a standard uh self attention layer so
+a standard uh self attention layer so
+a standard uh self attention layer so
+they have but instead of self attention
+they have but instead of self attention
+they have but instead of self attention
+it's cross attention so they cross
+it's cross attention so they cross
+it's cross attention so they cross
+attend um where the the query is like
+attend um where the the query is like
+attend um where the the query is like
+your the hidden states of your
+your the hidden states of your
+your the hidden states of your
+Transformer and then the key values is
+Transformer and then the key values is
+Transformer and then the key values is
+what you're cross attending to which is
+what you're cross attending to which is
+what you're cross attending to which is
+in this case is like the
+in this case is like the
+in this case is like the
+images or the images that you condition
+images or the images that you condition
+images or the images that you condition
+on and then after that it's the standard
+on and then after that it's the standard
+on and then after that it's the standard
+feat forward layer of like a standard
+feat forward layer of like a standard
+feat forward layer of like a standard
+Transformer block and the one different
+Transformer block and the one different
+Transformer block and the one different
+thing why they call it gated as well is
+thing why they call it gated as well is
+thing why they call it gated as well is
+because they add 10h gating in front of
+because they add 10h gating in front of
+because they add 10h gating in front of
+each each of the attention and and feed
+each each of the attention and and feed
+each each of the attention and and feed
+forward where the main purpose of this
+forward where the main purpose of this
+forward where the main purpose of this
+is that at
+is that at
+is that at
+initialization um the the gate will be
+initialization um the the gate will be
+initialization um the the gate will be
+zero so when you just start training the
+zero so when you just start training the
+zero so when you just start training the
+the model will be behave identically to
+the model will be behave identically to
+the model will be behave identically to
+like the original language model it was
+like the original language model it was
+like the original language model it was
+initialized from and then as you train
+initialized from and then as you train
+initialized from and then as you train
+it will learn how to incorporate um like
+it will learn how to incorporate um like
+it will learn how to incorporate um like
+the we will probably go like like go
+the we will probably go like like go
+the we will probably go like like go
+like deviate away from zero as it learns
+like deviate away from zero as it learns
+like deviate away from zero as it learns
+how to incorporate the image information
+how to incorporate the image information
+how to incorporate the image information
+to help predict the the tech the text
+to help predict the the tech the text
+to help predict the the tech the text
+that it needs to predict so so so one
+that it needs to predict so so so one
+that it needs to predict so so so one
+thing about this model and a lot of
+thing about this model and a lot of
+thing about this model and a lot of
+models I'll be talking about is that
+models I'll be talking about is that
+models I'll be talking about is that
+these models still only generate text
+these models still only generate text
+these models still only generate text
+but just learn how to condition on
+but just learn how to condition on
+but just learn how to condition on
+images so they can't generate images
+images so they can't generate images
+images so they can't generate images
+they only can generate
+text and this is an example of some of
+text and this is an example of some of
+text and this is an example of some of
+the the capabilities they showed for
+the the capabilities they showed for
+the the capabilities they showed for
+Flamingo so this is kind of like um like
+Flamingo so this is kind of like um like
+Flamingo so this is kind of like um like
+something kind of like in context
+something kind of like in context
+something kind of like in context
+learning or like task specification so
+learning or like task specification so
+learning or like task specification so
+it's like an image this is a chinella
+it's like an image this is a chinella
+it's like an image this is a chinella
+this is a Sheba and then it's asking you
+this is a Sheba and then it's asking you
+this is a Sheba and then it's asking you
+to like to to fill out the red like like
+to like to to fill out the red like like
+to like to to fill out the red like like
+it's it's like providing the first two
+it's it's like providing the first two
+it's it's like providing the first two
+examples as an example of like what the
+examples as an example of like what the
+examples as an example of like what the
+task is and then ask you um to to solve
+task is and then ask you um to to solve
+task is and then ask you um to to solve
+the the new task
+the the new task
+the the new task
+that it's um like the novel image it is
+that it's um like the novel image it is
+that it's um like the novel image it is
+um and other stuff like for different
+um and other stuff like for different
+um and other stuff like for different
+formatting so what's the title of this
+formatting so what's the title of this
+formatting so what's the title of this
+where is this painting stuff like that
+where is this painting stuff like that
+where is this painting stuff like that
+for QA um and this is like implicit like
+for QA um and this is like implicit like
+for QA um and this is like implicit like
+a kind of like a OCR task you're giving
+a kind of like a OCR task you're giving
+a kind of like a OCR task you're giving
+examples of OCR for reading signs then
+examples of OCR for reading signs then
+examples of OCR for reading signs then
+you ask it to to solve a new one um
+you ask it to to solve a new one um
+you ask it to to solve a new one um
+which is a new
+sign some other cool things uh top one
+sign some other cool things uh top one
+sign some other cool things uh top one
+is kind of I I guess it's like kind of
+is kind of I I guess it's like kind of
+is kind of I I guess it's like kind of
+like video understanding if you just
+like video understanding if you just
+like video understanding if you just
+concatenate like a sequence of frames in
+concatenate like a sequence of frames in
+concatenate like a sequence of frames in
+this case you probably can't add too
+this case you probably can't add too
+this case you probably can't add too
+many frames but you can ask a question
+many frames but you can ask a question
+many frames but you can ask a question
+about like this video and then they can
+about like this video and then they can
+about like this video and then they can
+try to answer it you can have
+try to answer it you can have
+try to answer it you can have
+conversational things about an image and
+conversational things about an image and
+conversational things about an image and
+um yeah you can have multiple questions
+um yeah you can have multiple questions
+um yeah you can have multiple questions
+about some image asking about certain
+about some image asking about certain
+about some image asking about certain
+aspects of it and other
+stuff and these are the quantitative
+stuff and these are the quantitative
+stuff and these are the quantitative
+results they had um
+results they had um
+results they had um
+pretty much like pretty far
+pretty much like pretty far
+pretty much like pretty far
+outperforming some previous like zero
+outperforming some previous like zero
+outperforming some previous like zero
+few shot State algorithms the um the
+few shot State algorithms the um the
+few shot State algorithms the um the
+dash line was is the state-of-the-art
+dash line was is the state-of-the-art
+dash line was is the state-of-the-art
+for like a fine tuned model like a kind
+for like a fine tuned model like a kind
+for like a fine tuned model like a kind
+of like benchmarks Benchmark specific
+of like benchmarks Benchmark specific
+of like benchmarks Benchmark specific
+fine tuned model uh so for some of them
+fine tuned model uh so for some of them
+fine tuned model uh so for some of them
+it was still underperforming zero shot
+it was still underperforming zero shot
+it was still underperforming zero shot
+to like the actual like fine tune State
+to like the actual like fine tune State
+to like the actual like fine tune State
+ofth art and for some of the other tasks
+ofth art and for some of the other tasks
+ofth art and for some of the other tasks
+it was outperforming it and on the right
+it was outperforming it and on the right
+it was outperforming it and on the right
+here it was generally one of the
+here it was generally one of the
+here it was generally one of the
+first studies I guess on like the
+first studies I guess on like the
+first studies I guess on like the
+scalability and capabilities of these
+scalability and capabilities of these
+scalability and capabilities of these
+models and what happens as you scale
+models and what happens as you scale
+models and what happens as you scale
+which as you can kind of expect the
+which as you can kind of expect the
+which as you can kind of expect the
+model gets better and better as you
+model gets better and better as you
+model gets better and better as you
+scale and this was mostly scaling the
+scale and this was mostly scaling the
+scale and this was mostly scaling the
+llm part of the
+network okay um this is another kind of
+network okay um this is another kind of
+network okay um this is another kind of
+this is closer to a more formal like
+this is closer to a more formal like
+this is closer to a more formal like
+encoder decoder Style Network that we
+encoder decoder Style Network that we
+encoder decoder Style Network that we
+see uh called poly
+see uh called poly
+see uh called poly
+so pretty straightforward architecture
+so pretty straightforward architecture
+so pretty straightforward architecture
+is you just have your image you have a
+is you just have your image you have a
+is you just have your image you have a
+vision Transformer which will basically
+vision Transformer which will basically
+vision Transformer which will basically
+essentially tokenize the image into like
+essentially tokenize the image into like
+essentially tokenize the image into like
+uh 256 tokens and then you would
+uh 256 tokens and then you would
+uh 256 tokens and then you would
+concatenate it with the language edings
+concatenate it with the language edings
+concatenate it with the language edings
+and feed it through the Transformer
+and feed it through the Transformer
+and feed it through the Transformer
+encoder um and that would output the
+encoder um and that would output the
+encoder um and that would output the
+representation for essentially the
+representation for essentially the
+representation for essentially the
+question so so usually the input would
+question so so usually the input would
+question so so usually the input would
+be like some question uh plus an image
+be like some question uh plus an image
+be like some question uh plus an image
+and then the decoder would answer the te
+and then the decoder would answer the te
+and then the decoder would answer the te
+or answer the question or to generate
+or answer the question or to generate
+or answer the question or to generate
+text condition on the encoder output so
+text condition on the encoder output so
+text condition on the encoder output so
+this is very similar to like the
+this is very similar to like the
+this is very similar to like the
+original original attention is all you
+original original attention is all you
+original original attention is all you
+need like encod or decoder architecture
+need like encod or decoder architecture
+need like encod or decoder architecture
+but just incorporating
+but just incorporating
+but just incorporating
+images and this one they had like a
+images and this one they had like a
+images and this one they had like a
+similar similar Trend as Flamingo where
+similar similar Trend as Flamingo where
+similar similar Trend as Flamingo where
+like the more scale you have the better
+like the more scale you have the better
+like the more scale you have the better
+and this they also did scale the
+and this they also did scale the
+and this they also did scale the
+division component as well you can see
+division component as well you can see
+division component as well you can see
+like vit G vit G and v e
+like vit G vit G and v e
+like vit G vit G and v e
+um and then another huge benefit which
+um and then another huge benefit which
+um and then another huge benefit which
+we'll see
+we'll see
+we'll see
+like quite frequently in all these
+like quite frequently in all these
+like quite frequently in all these
+Future Works is that like if you want to
+Future Works is that like if you want to
+Future Works is that like if you want to
+get a good performance Boost from a
+get a good performance Boost from a
+get a good performance Boost from a
+model like you you you can scale your
+model like you you you can scale your
+model like you you you can scale your
+model but another option is also to to
+model but another option is also to to
+model but another option is also to to
+scale your like the resolution of the
+scale your like the resolution of the
+scale your like the resolution of the
+image that you're inputting which will
+image that you're inputting which will
+image that you're inputting which will
+give you for some of these pretty large
+give you for some of these pretty large
+give you for some of these pretty large
+boosts especially let's say like text
+boosts especially let's say like text
+boosts especially let's say like text
+caps probably has a really large boost
+caps probably has a really large boost
+caps probably has a really large boost
+in performance and that could be
+in performance and that could be
+in performance and that could be
+understandable because it's mostly like
+understandable because it's mostly like
+understandable because it's mostly like
+kind of like a OCR like document reading
+kind of like a OCR like document reading
+kind of like a OCR like document reading
+potentially kind of t where um you need
+potentially kind of t where um you need
+potentially kind of t where um you need
+like finer grained patches to understand
+like finer grained patches to understand
+like finer grained patches to understand
+like the the text as like in pixel
+like the the text as like in pixel
+like the the text as like in pixel
+form but yeah so so I guess in the end
+form but yeah so so I guess in the end
+form but yeah so so I guess in the end
+if you want to improve performance there
+if you want to improve performance there
+if you want to improve performance there
+could be multiple ways to add add flops
+could be multiple ways to add add flops
+could be multiple ways to add add flops
+to your model essentially in the end
+to your model essentially in the end
+to your model essentially in the end
+it's like if you add flops it will
+it's like if you add flops it will
+it's like if you add flops it will
+probably be better and one way is to
+probably be better and one way is to
+probably be better and one way is to
+increase the size of your model with
+increase the size of your model with
+increase the size of your model with
+parameter count and the other way could
+parameter count and the other way could
+parameter count and the other way could
+be to just add flops through higher
+be to just add flops through higher
+be to just add flops through higher
+resolution because generally the higher
+resolution because generally the higher
+resolution because generally the higher
+resolution you have the the more uh the
+resolution you have the the more uh the
+resolution you have the the more uh the
+more tokens you have or the longer
+more tokens you have or the longer
+more tokens you have or the longer
+sequence length your Transformer so as
+sequence length your Transformer so as
+sequence length your Transformer so as
+you have more flops there as
+you have more flops there as
+you have more flops there as
+well but with no change in paramet
+well but with no change in paramet
+well but with no change in paramet
+count and after poly there were a few
+count and after poly there were a few
+count and after poly there were a few
+other papers throughout last few years
+other papers throughout last few years
+other papers throughout last few years
+so poly X um most I won't go too deep
+so poly X um most I won't go too deep
+so poly X um most I won't go too deep
+into these but most of it was just like
+into these but most of it was just like
+into these but most of it was just like
+better results through further scaling
+better results through further scaling
+better results through further scaling
+um more tinkering with the training
+um more tinkering with the training
+um more tinkering with the training
+schemes of like doing mixtures of
+schemes of like doing mixtures of
+schemes of like doing mixtures of
+different like self-supervised
+different like self-supervised
+different like self-supervised
+objectives and different like d like
+objectives and different like d like
+objectives and different like d like
+they had a lot of different like kind of
+they had a lot of different like kind of
+they had a lot of different like kind of
+like d noising tasks um
+like d noising tasks um
+like d noising tasks um
+and like the the the language model
+and like the the the language model
+and like the the the language model
+training um further trading with OCR
+training um further trading with OCR
+training um further trading with OCR
+objectives on the vision encoder which I
+objectives on the vision encoder which I
+objectives on the vision encoder which I
+think that was just essentially OCR
+think that was just essentially OCR
+think that was just essentially OCR
+training um for like unim model for the
+training um for like unim model for the
+training um for like unim model for the
+image encoder part and which did
+image encoder part and which did
+image encoder part and which did
+transfer well to to better OCR and the
+transfer well to to better OCR and the
+transfer well to to better OCR and the
+downstream model poly 3 um I think there
+downstream model poly 3 um I think there
+downstream model poly 3 um I think there
+that goal was to basically build a
+that goal was to basically build a
+that goal was to basically build a
+smaller model that was also very capable
+smaller model that was also very capable
+smaller model that was also very capable
+so before they were using I think a text
+so before they were using I think a text
+so before they were using I think a text
+encoder trained
+encoder trained
+encoder trained
+on OCR plus some like jft like their
+on OCR plus some like jft like their
+on OCR plus some like jft like their
+image classification like the the image
+image classification like the the image
+image classification like the the image
+classification data set they have at
+classification data set they have at
+classification data set they have at
+Google um but they S A sigp which does a
+Google um but they S A sigp which does a
+Google um but they S A sigp which does a
+lot of large scale text image training
+lot of large scale text image training
+lot of large scale text image training
+and they had other things of like a
+and they had other things of like a
+and they had other things of like a
+better data mixture of what kind of like
+better data mixture of what kind of like
+better data mixture of what kind of like
+OCR like high quality OCR data other
+OCR like high quality OCR data other
+OCR like high quality OCR data other
+sorts of high quality data going to
+sorts of high quality data going to
+sorts of high quality data going to
+higher resolutions this paper I believe
+higher resolutions this paper I believe
+higher resolutions this paper I believe
+they did like
+they did like
+they did like
+Progressive I think most of these papers
+Progressive I think most of these papers
+Progressive I think most of these papers
+did like poly X and poly 3 both did it
+did like poly X and poly 3 both did it
+did like poly X and poly 3 both did it
+but they do like Progressive training on
+but they do like Progressive training on
+but they do like Progressive training on
+higher and higher resolutions um poly 3
+higher and higher resolutions um poly 3
+higher and higher resolutions um poly 3
+they the like the largest resolution
+they the like the largest resolution
+they the like the largest resolution
+they train on was like around like 1,000
+they train on was like around like 1,000
+they train on was like around like 1,000
+by 1,000
+by 1,000
+by 1,000
+images and and yeah so the end result
+images and and yeah so the end result
+images and and yeah so the end result
+was pretty neat is that they had pretty
+was pretty neat is that they had pretty
+was pretty neat is that they had pretty
+similar performance to poly X while
+similar performance to poly X while
+similar performance to poly X while
+being around 10 times smaller so poly X
+being around 10 times smaller so poly X
+being around 10 times smaller so poly X
+was like 55 billion and poly 3 is like
+was like 55 billion and poly 3 is like
+was like 55 billion and poly 3 is like
+five
+billion yeah
+um I'm not entirely so I think in the
+um I'm not entirely so I think in the
+um I'm not entirely so I think in the
+end
+end
+end
+the I'm not 100% sure but I think what
+the I'm not 100% sure but I think what
+the I'm not 100% sure but I think what
+ends up happening is that the the
+ends up happening is that the the
+ends up happening is that the the
+encoder can um accept essentially
+encoder can um accept essentially
+encoder can um accept essentially
+variable resolution but what happens is
+variable resolution but what happens is
+variable resolution but what happens is
+you just have like more tokens as output
+you just have like more tokens as output
+you just have like more tokens as output
+and then those and then so that the
+and then those and then so that the
+and then those and then so that the
+downstream Transformer or as you train
+downstream Transformer or as you train
+downstream Transformer or as you train
+the entire model it can accept like a
+the entire model it can accept like a
+the entire model it can accept like a
+different sequence length
+essentially cool that was the encoder
+essentially cool that was the encoder
+essentially cool that was the encoder
+decoder uh decoder only is probably more
+decoder uh decoder only is probably more
+decoder uh decoder only is probably more
+common especially in like the larger
+common especially in like the larger
+common especially in like the larger
+Scale Models nowadays um this was one of
+Scale Models nowadays um this was one of
+Scale Models nowadays um this was one of
+the first paper that exported us back I
+the first paper that exported us back I
+the first paper that exported us back I
+don't know like three years ago called
+don't know like three years ago called
+don't know like three years ago called
+Frozen and very simple idea so it's also
+Frozen and very simple idea so it's also
+Frozen and very simple idea so it's also
+taken a pre-train language model uh in
+taken a pre-train language model uh in
+taken a pre-train language model uh in
+this case you take your vision encoder
+this case you take your vision encoder
+this case you take your vision encoder
+they Ed like a very simple like reset
+they Ed like a very simple like reset
+they Ed like a very simple like reset
+reset encoder um even the language model
+reset encoder um even the language model
+reset encoder um even the language model
+in that case in that time wasn't very
+in that case in that time wasn't very
+in that case in that time wasn't very
+good this was just kind of like a proof
+good this was just kind of like a proof
+good this was just kind of like a proof
+of concept kind of thing um they so they
+of concept kind of thing um they so they
+of concept kind of thing um they so they
+have their text image data and they F
+have their text image data and they F
+have their text image data and they F
+tune on it so in this case the image
+tune on it so in this case the image
+tune on it so in this case the image
+followed by let's say the caption and
+followed by let's say the caption and
+followed by let's say the caption and
+then everything is frozen except the div
+then everything is frozen except the div
+then everything is frozen except the div
+Vision encoder which is fine-tuned and
+Vision encoder which is fine-tuned and
+Vision encoder which is fine-tuned and
+the whole thing is is trained on on like
+the whole thing is is trained on on like
+the whole thing is is trained on on like
+the next token prediction loss for for
+language and these are some of the stuff
+language and these are some of the stuff
+language and these are some of the stuff
+they do very similar to like let's say
+they do very similar to like let's say
+they do very similar to like let's say
+Flamingo which is kind of around a
+Flamingo which is kind of around a
+Flamingo which is kind of around a
+similar time of like doing
+similar time of like doing
+similar time of like doing
+vqa
+vqa
+vqa
+um like f shot like yeah in like few
+um like f shot like yeah in like few
+um like f shot like yeah in like few
+shot tasks where you can specify um like
+shot tasks where you can specify um like
+shot tasks where you can specify um like
+inter leave data inter leave data is
+inter leave data inter leave data is
+inter leave data inter leave data is
+something that is more difficult to do
+something that is more difficult to do
+something that is more difficult to do
+in the encoder decoder style models
+in the encoder decoder style models
+in the encoder decoder style models
+because it's not clear how you would
+because it's not clear how you would
+because it's not clear how you would
+structure the input for encoder decoder
+structure the input for encoder decoder
+structure the input for encoder decoder
+um but for decoder only you can just
+um but for decoder only you can just
+um but for decoder only you can just
+treat the sequence as like a continuous
+treat the sequence as like a continuous
+treat the sequence as like a continuous
+stream of like tokens that you can
+stream of like tokens that you can
+stream of like tokens that you can
+concatenate to so it's much easier to
+concatenate to so it's much easier to
+concatenate to so it's much easier to
+have like these kinds of like task Tas
+have like these kinds of like task Tas
+have like these kinds of like task Tas
+specifications if you want to mix images
+specifications if you want to mix images
+specifications if you want to mix images
+and language
+together and
+together and
+together and
+after um after Frozen this was more
+after um after Frozen this was more
+after um after Frozen this was more
+recent after let's say llama came out
+recent after let's say llama came out
+recent after let's say llama came out
+from meta and then there were more like
+from meta and then there were more like
+from meta and then there were more like
+instruct fine tun so vuna is an example
+instruct fine tun so vuna is an example
+instruct fine tun so vuna is an example
+of a fine tune version of llama that was
+of a fine tune version of llama that was
+of a fine tune version of llama that was
+designed to like follow language
+designed to like follow language
+designed to like follow language
+instructions and so you can do a similar
+instructions and so you can do a similar
+instructions and so you can do a similar
+thing if you want a similar model for
+thing if you want a similar model for
+thing if you want a similar model for
+for images what you can do is these are
+for images what you can do is these are
+for images what you can do is these are
+pretty close to concurrent Works Min gp4
+pretty close to concurrent Works Min gp4
+pretty close to concurrent Works Min gp4
+and lava is that you can take your
+and lava is that you can take your
+and lava is that you can take your
+vicuna based model which is essentially
+vicuna based model which is essentially
+vicuna based model which is essentially
+llama um freeze it and then you can t
+llama um freeze it and then you can t
+llama um freeze it and then you can t
+this with a vision encoder so mini GPT
+this with a vision encoder so mini GPT
+this with a vision encoder so mini GPT
+uses this vit plus Q forer which is from
+uses this vit plus Q forer which is from
+uses this vit plus Q forer which is from
+a paper called blip 2 and lava uses a
+a paper called blip 2 and lava uses a
+a paper called blip 2 and lava uses a
+clip a clip image
+clip a clip image
+clip a clip image
+coder and
+coder and
+coder and
+then and then in between they have like
+then and then in between they have like
+then and then in between they have like
+a single like projection layer that
+a single like projection layer that
+a single like projection layer that
+basically Maps the dimensionality to the
+basically Maps the dimensionality to the
+basically Maps the dimensionality to the
+input of like the the vicuna
+input of like the the vicuna
+input of like the the vicuna
+Transformer
+Transformer
+Transformer
+and in most cases in this case the only
+and in most cases in this case the only
+and in most cases in this case the only
+thing you train is is like the the
+thing you train is is like the the
+thing you train is is like the the
+projection layer and it actually works
+projection layer and it actually works
+projection layer and it actually works
+pretty well in terms of like multimode
+pretty well in terms of like multimode
+pretty well in terms of like multimode
+understanding and this is pretty cheap
+understanding and this is pretty cheap
+understanding and this is pretty cheap
+because a lot of stuff is frozen and
+because a lot of stuff is frozen and
+because a lot of stuff is frozen and
+very little is actually fine-tune
+very little is actually fine-tune
+very little is actually fine-tune
+the the actual training scheme for lava
+the the actual training scheme for lava
+the the actual training scheme for lava
+was a little bit more complicated than
+was a little bit more complicated than
+was a little bit more complicated than
+mini gp4 they broke into two stages so
+mini gp4 they broke into two stages so
+mini gp4 they broke into two stages so
+in the first stage you you just train on
+in the first stage you you just train on
+in the first stage you you just train on
+a slightly larger set of like 600k text
+a slightly larger set of like 600k text
+a slightly larger set of like 600k text
+image Pairs and you you freeze the
+image Pairs and you you freeze the
+image Pairs and you you freeze the
+vision and language backbones and you
+vision and language backbones and you
+vision and language backbones and you
+only train the projection layer so
+only train the projection layer so
+only train the projection layer so
+that's like what mini gbd4 does and then
+that's like what mini gbd4 does and then
+that's like what mini gbd4 does and then
+stage two what you can do is uh you have
+stage two what you can do is uh you have
+stage two what you can do is uh you have
+like a lot more concentrated like high
+like a lot more concentrated like high
+like a lot more concentrated like high
+quality instruct data like well curated
+quality instruct data like well curated
+quality instruct data like well curated
+u a lot a lot smaller number where then
+u a lot a lot smaller number where then
+u a lot a lot smaller number where then
+you can fine-tune the entire thing
+you can fine-tune the entire thing
+you can fine-tune the entire thing
+except in this case they also just kept
+except in this case they also just kept
+except in this case they also just kept
+the vision backbone still
+the vision backbone still
+the vision backbone still
+frozen but the important thing was they
+frozen but the important thing was they
+frozen but the important thing was they
+also just fine- tune the language model
+also just fine- tune the language model
+also just fine- tune the language model
+itself which is which in general you
+itself which is which in general you
+itself which is which in general you
+should be able to have a lot better
+should be able to have a lot better
+should be able to have a lot better
+performance just because you're
+performance just because you're
+performance just because you're
+fine-tuning a larger portion of the
+fine-tuning a larger portion of the
+fine-tuning a larger portion of the
+model and these are some examples that
+model and these are some examples that
+model and these are some examples that
+they had some pretty cool ones
+they had some pretty cool ones
+they had some pretty cool ones
+so oh wait was this uh oh no so
+so oh wait was this uh oh no so
+so oh wait was this uh oh no so
+let's let's skip
+let's let's skip
+let's let's skip
+this okay that's fine
+this okay that's fine
+this okay that's fine
+um yeah and then they had some future
+um yeah and then they had some future
+um yeah and then they had some future
+they had like more iterations of this
+they had like more iterations of this
+they had like more iterations of this
+work they had lava 1.5 which larger
+work they had lava 1.5 which larger
+work they had lava 1.5 which larger
+resolution they saw better performance
+resolution they saw better performance
+resolution they saw better performance
+they instead of like a linear projection
+they instead of like a linear projection
+they instead of like a linear projection
+layer they just did an MLP and then
+layer they just did an MLP and then
+layer they just did an MLP and then
+maybe like a two- layer MLP and then
+maybe like a two- layer MLP and then
+maybe like a two- layer MLP and then
+they had just better instruct data with
+they had just better instruct data with
+they had just better instruct data with
+just better vqa data OCR data stuff like
+just better vqa data OCR data stuff like
+just better vqa data OCR data stuff like
+that to get better performance
+that to get better performance
+that to get better performance
+and they had some benchmarking against
+and they had some benchmarking against
+and they had some benchmarking against
+like some prior models here and in
+like some prior models here and in
+like some prior models here and in
+general performs pretty strongly
+general performs pretty strongly
+general performs pretty strongly
+especially like what I kind of see is
+especially like what I kind of see is
+especially like what I kind of see is
+like for example this model here uh with
+like for example this model here uh with
+like for example this model here uh with
+80 billion parameters still performs
+80 billion parameters still performs
+80 billion parameters still performs
+like quite a bit worse than
+like quite a bit worse than
+like quite a bit worse than
+lava so for most of these cases you can
+lava so for most of these cases you can
+lava so for most of these cases you can
+actually get really strong performance
+actually get really strong performance
+actually get really strong performance
+just by curating really good data
+just by curating really good data
+just by curating really good data
+especially if you look at performance in
+especially if you look at performance in
+especially if you look at performance in
+comparison to some of the other models
+comparison to some of the other models
+comparison to some of the other models
+with the same number of parameters like
+with the same number of parameters like
+with the same number of parameters like
+lava 1.5 with 7B versus some of the
+lava 1.5 with 7B versus some of the
+lava 1.5 with 7B versus some of the
+other 7B models um and even against some
+other 7B models um and even against some
+other 7B models um and even against some
+of the larger
+of the larger
+of the larger
+models so in this case like size size
+models so in this case like size size
+models so in this case like size size
+does help but then also like very high
+does help but then also like very high
+does help but then also like very high
+quality data curation and careful
+quality data curation and careful
+quality data curation and careful
+training can actually go a long
+way and for lava 1.6 that they
+way and for lava 1.6 that they
+way and for lava 1.6 that they
+released semi recently um they had like
+released semi recently um they had like
+released semi recently um they had like
+a they the the main novelty here was a
+a they the the main novelty here was a
+a they the the main novelty here was a
+different way to partition your input
+different way to partition your input
+different way to partition your input
+image and the way they do it is
+image and the way they do it is
+image and the way they do it is
+especially if you want to support really
+especially if you want to support really
+especially if you want to support really
+large resolution images is that after a
+large resolution images is that after a
+large resolution images is that after a
+certain point where your image
+certain point where your image
+certain point where your image
+resolution is too large what they do is
+resolution is too large what they do is
+resolution is too large what they do is
+they just tile your image into tiles of
+they just tile your image into tiles of
+they just tile your image into tiles of
+like smaller resolution images and then
+like smaller resolution images and then
+like smaller resolution images and then
+they encode those
+they encode those
+they encode those
+separately and then they flatten and
+separately and then they flatten and
+separately and then they flatten and
+concatenate everything as input uh and
+concatenate everything as input uh and
+concatenate everything as input uh and
+then they also have
+then they also have
+then they also have
+a like a kind of like a down sampled
+a like a kind of like a down sampled
+a like a kind of like a down sampled
+representation version or where they
+representation version or where they
+representation version or where they
+down sample it to the tile size and they
+down sample it to the tile size and they
+down sample it to the tile size and they
+encode it as input as well so you both
+encode it as input as well so you both
+encode it as input as well so you both
+have like this kind of like down sampled
+have like this kind of like down sampled
+have like this kind of like down sampled
+information that has potentially more
+information that has potentially more
+information that has potentially more
+higher level information about the image
+higher level information about the image
+higher level information about the image
+and then they have like the really fine
+and then they have like the really fine
+and then they have like the really fine
+GRE details of like the original high
+GRE details of like the original high
+GRE details of like the original high
+resolution image which could be really
+resolution image which could be really
+resolution image which could be really
+useful for like document understanding
+useful for like document understanding
+useful for like document understanding
+where you have a lot of really small
+characters and this was some of the mod
+characters and this was some of the mod
+characters and this was some of the mod
+the benchmarks they had uh like the last
+the benchmarks they had uh like the last
+the benchmarks they had uh like the last
+row called lava NEX this one they also
+row called lava NEX this one they also
+row called lava NEX this one they also
+scale up to
+scale up to
+scale up to
+34b and in general has pretty strong
+34b and in general has pretty strong
+34b and in general has pretty strong
+performance as especially as an open
+performance as especially as an open
+performance as especially as an open
+source model compared to some of the
+source model compared to some of the
+source model compared to some of the
+other
+ones even against some like the like for
+ones even against some like the like for
+ones even against some like the like for
+Gemini and
+jd4 yeah
+um perhaps I I think it's mainly data
+um perhaps I I think it's mainly data
+um perhaps I I think it's mainly data
+might not be an issue I think it's
+might not be an issue I think it's
+might not be an issue I think it's
+mainly just like a way to add flops to
+mainly just like a way to add flops to
+mainly just like a way to add flops to
+your model that can make it essentially
+your model that can make it essentially
+your model that can make it essentially
+just like do more computation per image
+just like do more computation per image
+just like do more computation per image
+that enables it to generally perform
+that enables it to generally perform
+that enables it to generally perform
+better
+better
+better
+datawise I mean you can always do more
+datawise I mean you can always do more
+datawise I mean you can always do more
+like potentially even like unimodal
+like potentially even like unimodal
+like potentially even like unimodal
+training on higher resolution images or
+training on higher resolution images or
+training on higher resolution images or
+even multimodal training so I don't
+even multimodal training so I don't
+even multimodal training so I don't
+think that's too much of an
+issue and and usually I guess one other
+issue and and usually I guess one other
+issue and and usually I guess one other
+point is that higher resolution there is
+point is that higher resolution there is
+point is that higher resolution there is
+more information but it's also not like
+more information but it's also not like
+more information but it's also not like
+significantly more information than like
+significantly more information than like
+significantly more information than like
+a 256x 256 image or
+something okay
+something okay
+something okay
+um brief uh I guess like
+um brief uh I guess like
+um brief uh I guess like
+guesswork characteriz that's what GPT 4V
+guesswork characteriz that's what GPT 4V
+guesswork characteriz that's what GPT 4V
+is doing because I I think the the um
+is doing because I I think the the um
+is doing because I I think the the um
+the lava 1.6 like tiling thing I
+the lava 1.6 like tiling thing I
+the lava 1.6 like tiling thing I
+mentioned um was most I think they
+mentioned um was most I think they
+mentioned um was most I think they
+mentioned in their blog post was it was
+mentioned in their blog post was it was
+mentioned in their blog post was it was
+probably inspired by how jbd 4V
+probably inspired by how jbd 4V
+probably inspired by how jbd 4V
+potentially does it they they don't say
+potentially does it they they don't say
+potentially does it they they don't say
+anything about it but you can guess from
+anything about it but you can guess from
+anything about it but you can guess from
+their pricing model um which if you if
+their pricing model um which if you if
+their pricing model um which if you if
+you play around because they have this
+you play around because they have this
+you play around because they have this
+Vision calculator here which basically
+Vision calculator here which basically
+Vision calculator here which basically
+tells you this input resolution or for
+tells you this input resolution or for
+tells you this input resolution or for
+this input resolution image how many
+this input resolution image how many
+this input resolution image how many
+tokens it is um in this case it's like
+tokens it is um in this case it's like
+tokens it is um in this case it's like
+255 tokens uh for this 512 x
+255 tokens uh for this 512 x
+255 tokens uh for this 512 x
+512 and from that you can kind of infer
+512 and from that you can kind of infer
+512 and from that you can kind of infer
+so if you use like the low resolution
+so if you use like the low resolution
+so if you use like the low resolution
+one you you'll get 85 tokens and then
+one you you'll get 85 tokens and then
+one you you'll get 85 tokens and then
+the full resolution 512 x 512 you get
+the full resolution 512 x 512 you get
+the full resolution 512 x 512 you get
+255 which is probably like 85 low
+255 which is probably like 85 low
+255 which is probably like 85 low
+resolution tokens plus like 170 um other
+resolution tokens plus like 170 um other
+resolution tokens plus like 170 um other
+tokens or like higher resolution tokens
+tokens or like higher resolution tokens
+tokens or like higher resolution tokens
+and then if you if you input any larger
+and then if you if you input any larger
+and then if you if you input any larger
+image than 512 x 512 so like 513 by 513
+image than 512 x 512 so like 513 by 513
+image than 512 x 512 so like 513 by 513
+what ends up happening is that um it
+what ends up happening is that um it
+what ends up happening is that um it
+gets like a very similar tiled Behavior
+gets like a very similar tiled Behavior
+gets like a very similar tiled Behavior
+so 513 by 513 would end up still being
+so 513 by 513 would end up still being
+so 513 by 513 would end up still being
+four tiles because it rounds up to the
+four tiles because it rounds up to the
+four tiles because it rounds up to the
+nearest 512 essentially so it kind of
+nearest 512 essentially so it kind of
+nearest 512 essentially so it kind of
+process it as like a 1024 by 1024 image
+process it as like a 1024 by 1024 image
+process it as like a 1024 by 1024 image
+and so this is very this is like very
+and so this is very this is like very
+and so this is very this is like very
+similar to how lava 1.6 is done and is
+similar to how lava 1.6 is done and is
+similar to how lava 1.6 is done and is
+probably how um GPT forv does something
+probably how um GPT forv does something
+probably how um GPT forv does something
+kind of like this but all
+kind of like this but all
+kind of like this but all
+hypothetical and in terms of
+hypothetical and in terms of
+hypothetical and in terms of
+capabilities uh there aett pretty few I
+capabilities uh there aett pretty few I
+capabilities uh there aett pretty few I
+guess category need category things that
+guess category need category things that
+guess category need category things that
+they can do there's like the gp4 and
+they can do there's like the gp4 and
+they can do there's like the gp4 and
+same thing with gpt3 and language models
+same thing with gpt3 and language models
+same thing with gpt3 and language models
+is that you can kind of act as a
+is that you can kind of act as a
+is that you can kind of act as a
+knowledge Bank in this case you have a
+knowledge Bank in this case you have a
+knowledge Bank in this case you have a
+knowledge Bank of more visual
+knowledge Bank of more visual
+knowledge Bank of more visual
+information so it knows it knows what a
+information so it knows it knows what a
+information so it knows it knows what a
+penny is uh it knows like what the what
+penny is uh it knows like what the what
+penny is uh it knows like what the what
+like this plant is and then maybe even
+like this plant is and then maybe even
+like this plant is and then maybe even
+like more famous shots or or shots of
+like more famous shots or or shots of
+like more famous shots or or shots of
+like a city with like famous landmarks
+like a city with like famous landmarks
+like a city with like famous landmarks
+that it will know um where it's
+located you can do
+located you can do
+located you can do
+OCR there's this one that was on pretty
+OCR there's this one that was on pretty
+OCR there's this one that was on pretty
+pop on Twitter I think when g54 VI came
+pop on Twitter I think when g54 VI came
+pop on Twitter I think when g54 VI came
+back this really complicated no parking
+back this really complicated no parking
+back this really complicated no parking
+sign uh basically a constraint
+sign uh basically a constraint
+sign uh basically a constraint
+satisfication problem where you ask it
+satisfication problem where you ask it
+satisfication problem where you ask it
+oh where can I actually or what time can
+oh where can I actually or what time can
+oh where can I actually or what time can
+I actually Park um or can I park in it
+I actually Park um or can I park in it
+I actually Park um or can I park in it
+right
+right
+right
+now and then it's goal to try to
+now and then it's goal to try to
+now and then it's goal to try to
+interpret all these all these weird
+interpret all these all these weird
+interpret all these all these weird
+things and to figure out oh when I can
+things and to figure out oh when I can
+things and to figure out oh when I can
+actually Park um and then other stuff of
+actually Park um and then other stuff of
+actually Park um and then other stuff of
+like B GPD 4V they also had like some
+like B GPD 4V they also had like some
+like B GPD 4V they also had like some
+like a pretty neat series of benchmarks
+like a pretty neat series of benchmarks
+like a pretty neat series of benchmarks
+on like different different tests
+on like different different tests
+on like different different tests
+different AP exams sat bar exam stuff
+different AP exams sat bar exam stuff
+different AP exams sat bar exam stuff
+like that um it can also do that which
+like that um it can also do that which
+like that um it can also do that which
+is a combination of like high level
+is a combination of like high level
+is a combination of like high level
+reasoning of like and and like visual
+reasoning of like and and like visual
+reasoning of like and and like visual
+understanding of of reading like certain
+understanding of of reading like certain
+understanding of of reading like certain
+diagram certain text and then doing
+diagram certain text and then doing
+diagram certain text and then doing
+processing to try to answer the
+question this was not exactly the same
+question this was not exactly the same
+question this was not exactly the same
+one that they showed in the original
+one that they showed in the original
+one that they showed in the original
+demo but I think someone someone else
+demo but I think someone someone else
+demo but I think someone someone else
+tried but you can also potentially even
+tried but you can also potentially even
+tried but you can also potentially even
+have like a mock diagram and then ask it
+have like a mock diagram and then ask it
+have like a mock diagram and then ask it
+to to Output code that follows the
+to to Output code that follows the
+to to Output code that follows the
+diagram it's obviously not probably not
+diagram it's obviously not probably not
+diagram it's obviously not probably not
+perfect and it's probably has a lot of
+perfect and it's probably has a lot of
+perfect and it's probably has a lot of
+error or it can only do easy things but
+error or it can only do easy things but
+error or it can only do easy things but
+pretty
+pretty
+pretty
+cool pretty cool
+cool pretty cool
+cool pretty cool
+capability at least to start
+capability at least to start
+capability at least to start
+with um and yeah these are some examples
+with um and yeah these are some examples
+with um and yeah these are some examples
+I believe from their like safety or
+I believe from their like safety or
+I believe from their like safety or
+System card but they it's like not
+System card but they it's like not
+System card but they it's like not
+perfect it does as as all of these
+perfect it does as as all of these
+perfect it does as as all of these
+models do they do hallucinate so a lot
+models do they do hallucinate so a lot
+models do they do hallucinate so a lot
+of these they can just sound very I mean
+of these they can just sound very I mean
+of these they can just sound very I mean
+reading this even I don't know if it's
+reading this even I don't know if it's
+reading this even I don't know if it's
+correct or not because I don't
+correct or not because I don't
+correct or not because I don't
+understand like bio or chem um but in
+understand like bio or chem um but in
+understand like bio or chem um but in
+these cases I I guess it is still wrong
+these cases I I guess it is still wrong
+these cases I I guess it is still wrong
+if like an expert verifies or for these
+if like an expert verifies or for these
+if like an expert verifies or for these
+cases about like scans of brain images
+cases about like scans of brain images
+cases about like scans of brain images
+where it's it's sometimes wrong but also
+where it's it's sometimes wrong but also
+where it's it's sometimes wrong but also
+sometimes right which is not very
+sometimes right which is not very
+sometimes right which is not very
+desirable Behavior if you if you want to
+desirable Behavior if you if you want to
+desirable Behavior if you if you want to
+be able to trust
+it cool and so that was gp4 there's gini
+it cool and so that was gp4 there's gini
+it cool and so that was gp4 there's gini
+1.5 which was essentially focused on
+1.5 which was essentially focused on
+1.5 which was essentially focused on
+longer context models um again we don't
+longer context models um again we don't
+longer context models um again we don't
+know what it is they mentioned some
+know what it is they mentioned some
+know what it is they mentioned some
+stuff about
+stuff about
+stuff about
+discret models maybe VQ plus coka um so
+discret models maybe VQ plus coka um so
+discret models maybe VQ plus coka um so
+it could be some sort of like discrete
+it could be some sort of like discrete
+it could be some sort of like discrete
+Auto encoder that was trained something
+Auto encoder that was trained something
+Auto encoder that was trained something
+similar to Koka which Koka does a
+similar to Koka which Koka does a
+similar to Koka which Koka does a
+combination of image captioning plus
+combination of image captioning plus
+combination of image captioning plus
+text to image contrastive objective so
+text to image contrastive objective so
+text to image contrastive objective so
+you can almost think of it as like part
+you can almost think of it as like part
+you can almost think of it as like part
+of it it's just like a VQ version of
+of it it's just like a VQ version of
+of it it's just like a VQ version of
+clip I
+guess okay
+guess okay
+guess okay
+um yeah so so mainly one thing is that
+um yeah so so mainly one thing is that
+um yeah so so mainly one thing is that
+their embedding could be discret
+their embedding could be discret
+their embedding could be discret
+I don't know I mean it is discreet and
+I don't know I mean it is discreet and
+I don't know I mean it is discreet and
+then um it also probably had like some
+then um it also probably had like some
+then um it also probably had like some
+sort of like text image like Supervision
+sort of like text image like Supervision
+sort of like text image like Supervision
+in the auto encoders
+training um and this was yeah so this
+training um and this was yeah so this
+training um and this was yeah so this
+these are some of the initial results
+these are some of the initial results
+these are some of the initial results
+they had this was focus on their like
+they had this was focus on their like
+they had this was focus on their like
+their long context focus of their model
+their long context focus of their model
+their long context focus of their model
+where they can process very long video
+where they can process very long video
+where they can process very long video
+one minute to one hour and this is a
+one minute to one hour and this is a
+one minute to one hour and this is a
+very classical like needle retrieval
+very classical like needle retrieval
+very classical like needle retrieval
+problem it was very common at first in
+problem it was very common at first in
+problem it was very common at first in
+in models where basically you insert
+in models where basically you insert
+in models where basically you insert
+like some like you have like a document
+like some like you have like a document
+like some like you have like a document
+of like a million tokens and then you
+of like a million tokens and then you
+of like a million tokens and then you
+insert some random fact um or some
+insert some random fact um or some
+insert some random fact um or some
+random number like let's say the the
+random number like let's say the the
+random number like let's say the the
+magic number is like 178 362 and then
+magic number is like 178 362 and then
+magic number is like 178 362 and then
+you ask it oh what is the magic number
+you ask it oh what is the magic number
+you ask it oh what is the magic number
+and then so it's essentially like a
+and then so it's essentially like a
+and then so it's essentially like a
+retrieval problem in like this long
+retrieval problem in like this long
+retrieval problem in like this long
+document um they did a similar thing for
+document um they did a similar thing for
+document um they did a similar thing for
+video I think they way the way they
+video I think they way the way they
+video I think they way the way they
+constructed this one was you have like a
+constructed this one was you have like a
+constructed this one was you have like a
+a 6 minute or 1 hour video and then in
+a 6 minute or 1 hour video and then in
+a 6 minute or 1 hour video and then in
+like in like a subset of the frames in a
+like in like a subset of the frames in a
+like in like a subset of the frames in a
+very narrow range like randomly in the
+very narrow range like randomly in the
+very narrow range like randomly in the
+video you just in they inserted a like
+video you just in they inserted a like
+video you just in they inserted a like
+kind of like an overlay caption of
+kind of like an overlay caption of
+kind of like an overlay caption of
+saying oh the magic number is is
+saying oh the magic number is is
+saying oh the magic number is is
+whatever um at different depths so so
+whatever um at different depths so so
+whatever um at different depths so so
+dep is where the needle or the magic
+dep is where the needle or the magic
+dep is where the needle or the magic
+numbers inserted and then the x or the x
+numbers inserted and then the x or the x
+numbers inserted and then the x or the x
+axis here is just the length of the
+axis here is just the length of the
+axis here is just the length of the
+video that it was trying to process and
+video that it was trying to process and
+video that it was trying to process and
+retrieve from and in general I mean the
+retrieve from and in general I mean the
+retrieve from and in general I mean the
+task is not too hard but uh still pretty
+task is not too hard but uh still pretty
+task is not too hard but uh still pretty
+impressive that you can actually do this
+impressive that you can actually do this
+impressive that you can actually do this
+pretty perfectly over really long
+pretty perfectly over really long
+pretty perfectly over really long
+contexts and I think that one even went
+contexts and I think that one even went
+contexts and I think that one even went
+up to yeah on the right when up to 10
+up to yeah on the right when up to 10
+up to yeah on the right when up to 10
+hours is pretty
+crazy and these are some like I guess
+crazy and these are some like I guess
+crazy and these are some like I guess
+still out would categorize as retrieval
+still out would categorize as retrieval
+still out would categorize as retrieval
+tasks but ones that make more sense or
+tasks but ones that make more sense or
+tasks but ones that make more sense or
+ones that are more natural so this one
+ones that are more natural so this one
+ones that are more natural so this one
+is you feeding like a video like a
+is you feeding like a video like a
+is you feeding like a video like a
+40-minute video of this shlock Holes
+40-minute video of this shlock Holes
+40-minute video of this shlock Holes
+movie and then you can ask it a question
+movie and then you can ask it a question
+movie and then you can ask it a question
+so it's like was it tell me some of the
+so it's like was it tell me some of the
+so it's like was it tell me some of the
+information about the piece of paper
+information about the piece of paper
+information about the piece of paper
+that removed from the person's pocket
+that removed from the person's pocket
+that removed from the person's pocket
+and the time code of the
+and the time code of the
+and the time code of the
+moment and then it can process this
+moment and then it can process this
+moment and then it can process this
+video and and find that exact moment and
+video and and find that exact moment and
+video and and find that exact moment and
+time code as well so I imagine they
+time code as well so I imagine they
+time code as well so I imagine they
+probably has some sort of like uh
+probably has some sort of like uh
+probably has some sort of like uh
+fine-tuning data that was similar in
+fine-tuning data that was similar in
+fine-tuning data that was similar in
+nature to this that they potentially
+nature to this that they potentially
+nature to this that they potentially
+collected not sure if it would just work
+collected not sure if it would just work
+collected not sure if it would just work
+well I guess you would have to have some
+well I guess you would have to have some
+well I guess you would have to have some
+sort of fine tuning data no matter what
+sort of fine tuning data no matter what
+sort of fine tuning data no matter what
+and the other one which is pretty cool
+and the other one which is pretty cool
+and the other one which is pretty cool
+so this one was like a a visual
+so this one was like a a visual
+so this one was like a a visual
+retrieval so they just someone drew like
+retrieval so they just someone drew like
+retrieval so they just someone drew like
+a really you know just like a sketch of
+a really you know just like a sketch of
+a really you know just like a sketch of
+like this uh like this water
+like this uh like this water
+like this uh like this water
+tanker with water pouring out of it and
+tanker with water pouring out of it and
+tanker with water pouring out of it and
+it was asking you to find this moment in
+it was asking you to find this moment in
+it was asking you to find this moment in
+the video or in the movie and then it
+the video or in the movie and then it
+the video or in the movie and then it
+can find like the visually correspondent
+can find like the visually correspondent
+can find like the visually correspondent
+scene that looks very
+scene that looks very
+scene that looks very
+similar which is pretty
+cool and this is some more stuff on Long
+cool and this is some more stuff on Long
+cool and this is some more stuff on Long
+context like more quantitative results
+context like more quantitative results
+context like more quantitative results
+of
+of
+of
+for some data for some benchmarks I
+for some data for some benchmarks I
+for some data for some benchmarks I
+think 1 hour video QA is one of the ones
+think 1 hour video QA is one of the ones
+think 1 hour video QA is one of the ones
+newly ones they created where um if
+newly ones they created where um if
+newly ones they created where um if
+you're processing long videos so there
+you're processing long videos so there
+you're processing long videos so there
+there's like multiple ways to process
+there's like multiple ways to process
+there's like multiple ways to process
+long videos so for example if my video
+long videos so for example if my video
+long videos so for example if my video
+model can only take in 16 frames then I
+model can only take in 16 frames then I
+model can only take in 16 frames then I
+can technically process a 1 hour long
+can technically process a 1 hour long
+can technically process a 1 hour long
+video if I take 16 frames like stride it
+video if I take 16 frames like stride it
+video if I take 16 frames like stride it
+across that one hour it's just very
+across that one hour it's just very
+across that one hour it's just very
+sparsely selected um but ideally in this
+sparsely selected um but ideally in this
+sparsely selected um but ideally in this
+case the the more the more dense frames
+case the the more the more dense frames
+case the the more the more dense frames
+that you can sample and process from uh
+that you can sample and process from uh
+that you can sample and process from uh
+the more complex questions you can
+the more complex questions you can
+the more complex questions you can
+answer or the more like Advanced
+answer or the more like Advanced
+answer or the more like Advanced
+capabilities you can have or understand
+capabilities you can have or understand
+capabilities you can have or understand
+about the video so in this case they
+about the video so in this case they
+about the video so in this case they
+kind of at least for their first men Mar
+kind of at least for their first men Mar
+kind of at least for their first men Mar
+they show like improving capability as
+they show like improving capability as
+they show like improving capability as
+you had inputed more frames into the
+you had inputed more frames into the
+you had inputed more frames into the
+model um and then for OS schema kind of
+model um and then for OS schema kind of
+model um and then for OS schema kind of
+like saturated after a little bit those
+like saturated after a little bit those
+like saturated after a little bit those
+are also much shorter videos as well
+are also much shorter videos as well
+are also much shorter videos as well
+three
+minutes okay that was decoder only
+minutes okay that was decoder only
+minutes okay that was decoder only
+models so now now I will be talking
+models so now now I will be talking
+models so now now I will be talking
+about quickly about multimodel
+about quickly about multimodel
+about quickly about multimodel
+generation and the way I'm phrasing
+generation and the way I'm phrasing
+generation and the way I'm phrasing
+multimodel generation is a lot of the
+multimodel generation is a lot of the
+multimodel generation is a lot of the
+video a lot of like the models we talked
+video a lot of like the models we talked
+video a lot of like the models we talked
+about in this entire class are usually
+about in this entire class are usually
+about in this entire class are usually
+generating one modality they could be
+generating one modality they could be
+generating one modality they could be
+conditioned on multiple modalities but
+conditioned on multiple modalities but
+conditioned on multiple modalities but
+it's usually generating one so there's
+it's usually generating one so there's
+it's usually generating one so there's
+like stable diffusion generates only
+like stable diffusion generates only
+like stable diffusion generates only
+images from text um these video
+images from text um these video
+images from text um these video
+generation models only generate video um
+generation models only generate video um
+generation models only generate video um
+video poet is probably one exception
+video poet is probably one exception
+video poet is probably one exception
+where they generate video audio
+where they generate video audio
+where they generate video audio
+um but now it's the question is like can
+um but now it's the question is like can
+um but now it's the question is like can
+we have a model that can like generate
+we have a model that can like generate
+we have a model that can like generate
+any number of modalities so we can
+any number of modalities so we can
+any number of modalities so we can
+generate both text and image or generate
+generate both text and image or generate
+generate both text and image or generate
+image from text or text from image um
+image from text or text from image um
+image from text or text from image um
+have a single model that that does all
+have a single model that that does all
+have a single model that that does all
+of this
+of this
+of this
+and this model I'll be briefly talking
+and this model I'll be briefly talking
+and this model I'll be briefly talking
+about which was pretty neat it was
+about which was pretty neat it was
+about which was pretty neat it was
+called Cod I guess any to any generation
+called Cod I guess any to any generation
+called Cod I guess any to any generation
+and the the goal for this paper was we
+and the the goal for this paper was we
+and the the goal for this paper was we
+have uh images videos language and audio
+have uh images videos language and audio
+have uh images videos language and audio
+and can we generate any of these
+and can we generate any of these
+and can we generate any of these
+modalities conditioned on any of those
+modalities conditioned on any of those
+modalities conditioned on any of those
+modalities
+modalities
+modalities
+so I feed it in an image and the text
+so I feed it in an image and the text
+so I feed it in an image and the text
+caption I want to generate video
+caption I want to generate video
+caption I want to generate video
+or image and audio and generate uh a
+or image and audio and generate uh a
+or image and audio and generate uh a
+text caption or or or basically any of
+text caption or or or basically any of
+text caption or or or basically any of
+these combinations of input and
+these combinations of input and
+these combinations of input and
+output and I'll only briefly talk about
+output and I'll only briefly talk about
+output and I'll only briefly talk about
+this if you're interested you can
+this if you're interested you can
+this if you're interested you can
+probably read more about it or see the
+probably read more about it or see the
+probably read more about it or see the
+examples they have on their site
+examples they have on their site
+examples they have on their site
+um but the way they do this is so they
+um but the way they do this is so they
+um but the way they do this is so they
+have like a lot of stages of training
+have like a lot of stages of training
+have like a lot of stages of training
+and the first thing they do is they
+and the first thing they do is they
+and the first thing they do is they
+learn a joint embedding space that
+learn a joint embedding space that
+learn a joint embedding space that
+basically they the goal is to learn a
+basically they the goal is to learn a
+basically they the goal is to learn a
+single embedding space um where all of
+single embedding space um where all of
+single embedding space um where all of
+these modalities um are aligned so one
+these modalities um are aligned so one
+these modalities um are aligned so one
+example of that is clip so clip is a
+example of that is clip so clip is a
+example of that is clip so clip is a
+text image model that learns a joint
+text image model that learns a joint
+text image model that learns a joint
+embedding space for text and images that
+embedding space for text and images that
+embedding space for text and images that
+is is like more or less aligned to be
+is is like more or less aligned to be
+is is like more or less aligned to be
+the
+the
+the
+same and almost sometimes like
+same and almost sometimes like
+same and almost sometimes like
+interchangeable to some extent um but in
+interchangeable to some extent um but in
+interchangeable to some extent um but in
+this case we want to learn one for
+this case we want to learn one for
+this case we want to learn one for
+multiple modalities and the way they
+multiple modalities and the way they
+multiple modalities and the way they
+this the way in this paper they did it
+this the way in this paper they did it
+this the way in this paper they did it
+was a pretty simple approach um that has
+was a pretty simple approach um that has
+was a pretty simple approach um that has
+some pros and cons but they just had
+some pros and cons but they just had
+some pros and cons but they just had
+everything bridged to text because it's
+everything bridged to text because it's
+everything bridged to text because it's
+moderately easy to find like X modality
+moderately easy to find like X modality
+moderately easy to find like X modality
+plus text so they have like text and
+plus text so they have like text and
+plus text so they have like text and
+video so they learn like a clip thing
+video so they learn like a clip thing
+video so they learn like a clip thing
+for text and video um I I think the
+for text and video um I I think the
+for text and video um I I think the
+training process was they basically just
+training process was they basically just
+training process was they basically just
+freeze the the or they they train the
+freeze the the or they they train the
+freeze the the or they they train the
+text encoder once and then they freeze
+text encoder once and then they freeze
+text encoder once and then they freeze
+it for all the other ones and then align
+it for all the other ones and then align
+it for all the other ones and then align
+to it um and then they use like text to
+to it um and then they use like text to
+to it um and then they use like text to
+image data to learn the image encoder
+image data to learn the image encoder
+image data to learn the image encoder
+text to audio data to learn um the audio
+text to audio data to learn um the audio
+text to audio data to learn um the audio
+encoder all of which basically image
+encoder all of which basically image
+encoder all of which basically image
+like these data sets kind of exist
+like these data sets kind of exist
+like these data sets kind of exist
+already so you can just download them
+already so you can just download them
+already so you can just download them
+and use them and and then they I guess
+and use them and and then they I guess
+and use them and and then they I guess
+like stage one part two is they then
+like stage one part two is they then
+like stage one part two is they then
+just train this um um they they train
+just train this um um they they train
+just train this um um they they train
+individual generation models so they
+individual generation models so they
+individual generation models so they
+train like a vision model condition on
+train like a vision model condition on
+train like a vision model condition on
+text an audio model condition on text um
+text an audio model condition on text um
+text an audio model condition on text um
+and so
+and so
+and so
+on and then stage two gets a little bit
+on and then stage two gets a little bit
+on and then stage two gets a little bit
+more complicated where basically because
+more complicated where basically because
+more complicated where basically because
+the goal is you want to be able to
+the goal is you want to be able to
+the goal is you want to be able to
+condition on not just text but also
+condition on not just text but also
+condition on not just text but also
+audio or video or something but it's a
+audio or video or something but it's a
+audio or video or something but it's a
+lot easier to manage now once you have
+lot easier to manage now once you have
+lot easier to manage now once you have
+like this aligned Lan space since all
+like this aligned Lan space since all
+like this aligned Lan space since all
+all of the representations are are are
+all of the representations are are are
+all of the representations are are are
+very similar to similar to each other
+very similar to similar to each other
+very similar to similar to each other
+when they like they have the same
+when they like they have the same
+when they like they have the same
+meaning
+meaning
+meaning
+so so so they basically essentially what
+so so so they basically essentially what
+so so so they basically essentially what
+they have here is I won't go too deep
+they have here is I won't go too deep
+they have here is I won't go too deep
+into it is that they they have some
+into it is that they they have some
+into it is that they they have some
+extra fine tuning in these models to
+extra fine tuning in these models to
+extra fine tuning in these models to
+incorporate the conditioning of the
+incorporate the conditioning of the
+incorporate the conditioning of the
+other modalities and then in this case
+other modalities and then in this case
+other modalities and then in this case
+there is like a predefined alignment
+there is like a predefined alignment
+there is like a predefined alignment
+here because in this case you can see
+here because in this case you can see
+here because in this case you can see
+it's like a frozen Vision encoder
+it's like a frozen Vision encoder
+it's like a frozen Vision encoder
+whereas before you used the Frozen text
+whereas before you used the Frozen text
+whereas before you used the Frozen text
+encoder but in this case since the
+encoder but in this case since the
+encoder but in this case since the
+vision and text are kind of aligned
+vision and text are kind of aligned
+vision and text are kind of aligned
+those vectors are kind of like
+those vectors are kind of like
+those vectors are kind of like
+interchangeable or you can interpolate
+interchangeable or you can interpolate
+interchangeable or you can interpolate
+between them and it will more or less
+between them and it will more or less
+between them and it will more or less
+it'll more or less work it's not like
+it'll more or less work it's not like
+it'll more or less work it's not like
+exactly align but they it's good enough
+exactly align but they it's good enough
+exactly align but they it's good enough
+that you can kind of just interchange
+that you can kind of just interchange
+that you can kind of just interchange
+them and then you can use this fact to
+them and then you can use this fact to
+them and then you can use this fact to
+be able to condition on multiple things
+be able to condition on multiple things
+be able to condition on multiple things
+when you
+generate okay um and then and then
+generate okay um and then and then
+generate okay um and then and then
+there's like another set of works that
+there's like another set of works that
+there's like another set of works that
+are is a little bit more simpler the
+are is a little bit more simpler the
+are is a little bit more simpler the
+these focus on mainly just
+these focus on mainly just
+these focus on mainly just
+image generation and um image captioning
+image generation and um image captioning
+image generation and um image captioning
+so you can do you can feed in text to
+so you can do you can feed in text to
+so you can do you can feed in text to
+generate image or you can feed an image
+generate image or you can feed an image
+generate image or you can feed an image
+to also answer questions
+to also answer questions
+to also answer questions
+about and the way they do this is
+about and the way they do this is
+about and the way they do this is
+similar to the different kinds of like
+similar to the different kinds of like
+similar to the different kinds of like
+multimod models we've seen before kind
+multimod models we've seen before kind
+multimod models we've seen before kind
+of like lava or mini gp4 where you have
+of like lava or mini gp4 where you have
+of like lava or mini gp4 where you have
+like your clip encoder of the image that
+like your clip encoder of the image that
+like your clip encoder of the image that
+you can feed in as tokens concatenate
+you can feed in as tokens concatenate
+you can feed in as tokens concatenate
+with text and then now in addition to
+with text and then now in addition to
+with text and then now in addition to
+the next token prediction of like the
+the next token prediction of like the
+the next token prediction of like the
+language what you have on the on the
+language what you have on the on the
+language what you have on the on the
+bottom there is you have essentially a
+bottom there is you have essentially a
+bottom there is you have essentially a
+regression so it will it will regress
+regression so it will it will regress
+regression so it will it will regress
+the uh the clip embeddings for the image
+the uh the clip embeddings for the image
+the uh the clip embeddings for the image
+that it wants to generate now the output
+that it wants to generate now the output
+that it wants to generate now the output
+of that when you do regression on like
+of that when you do regression on like
+of that when you do regression on like
+this kind of like very like on like like
+this kind of like very like on like like
+this kind of like very like on like like
+it's a very complex distribution in the
+it's a very complex distribution in the
+it's a very complex distribution in the
+end it'll kind of regress to the mean so
+end it'll kind of regress to the mean so
+end it'll kind of regress to the mean so
+it won't produce very good it won't like
+it won't produce very good it won't like
+it won't produce very good it won't like
+correspond to very good images uh so
+correspond to very good images uh so
+correspond to very good images uh so
+what they additionally fine-tune is like
+what they additionally fine-tune is like
+what they additionally fine-tune is like
+a fine-tune version of stable diffusion
+a fine-tune version of stable diffusion
+a fine-tune version of stable diffusion
+that will condition on on like the the
+that will condition on on like the the
+that will condition on on like the the
+output lat from the regression and then
+output lat from the regression and then
+output lat from the regression and then
+to generate like a more higher quality
+image and so that's what emu does the
+image and so that's what emu does the
+image and so that's what emu does the
+Lait the other one they instead of doing
+Lait the other one they instead of doing
+Lait the other one they instead of doing
+a regression they they they quantize the
+a regression they they they quantize the
+a regression they they they quantize the
+clip embeddings and then they do like a
+clip embeddings and then they do like a
+clip embeddings and then they do like a
+like an autoaggressive prediction and
+like an autoaggressive prediction and
+like an autoaggressive prediction and
+they they they still have because in
+they they they still have because in
+they they they still have because in
+this sense they're using the clip
+this sense they're using the clip
+this sense they're using the clip
+embeddings and the one the one thing
+embeddings and the one the one thing
+embeddings and the one the one thing
+about clip embeddings that not ideal for
+about clip embeddings that not ideal for
+about clip embeddings that not ideal for
+a generation is that clip is kind of
+a generation is that clip is kind of
+a generation is that clip is kind of
+like a lossy encoder so you you won't
+like a lossy encoder so you you won't
+like a lossy encoder so you you won't
+like you you won't be able to preser it
+like you you won't be able to preser it
+like you you won't be able to preser it
+doesn't preserve everything about the
+doesn't preserve everything about the
+doesn't preserve everything about the
+original image so for example if I took
+original image so for example if I took
+original image so for example if I took
+the the clip encoder I froze it and then
+the the clip encoder I froze it and then
+the the clip encoder I froze it and then
+I try I try to train a decoder on those
+I try I try to train a decoder on those
+I try I try to train a decoder on those
+clip embeddings to try to reconstruct
+clip embeddings to try to reconstruct
+clip embeddings to try to reconstruct
+the original image it it it won't be
+the original image it it it won't be
+the original image it it it won't be
+like perfect it it will look like the
+like perfect it it will look like the
+like perfect it it will look like the
+like maybe like a blurry version of the
+like maybe like a blurry version of the
+like maybe like a blurry version of the
+image but it won't be really high
+image but it won't be really high
+image but it won't be really high
+quality so they they still use like a
+quality so they they still use like a
+quality so they they still use like a
+like a stronger decoder to to model that
+like a stronger decoder to to model that
+like a stronger decoder to to model that
+Randomness in a sense to model the
+Randomness in a sense to model the
+Randomness in a sense to model the
+information that is lost from the clip
+encoder and oh yeah and and and these
+encoder and oh yeah and and and these
+encoder and oh yeah and and and these
+are the different tasks that they had so
+are the different tasks that they had so
+are the different tasks that they had so
+it can basically do any sort of like
+it can basically do any sort of like
+it can basically do any sort of like
+image to text or text to image task so
+image to text or text to image task so
+image to text or text to image task so
+doing some sort of like captioning you
+doing some sort of like captioning you
+doing some sort of like captioning you
+can do some sort of vqa stuff you can
+can do some sort of vqa stuff you can
+can do some sort of vqa stuff you can
+also in the end generate images and in
+also in the end generate images and in
+also in the end generate images and in
+the end you have this model that can do
+the end you have this model that can do
+the end you have this model that can do
+both of these things and then how you
+both of these things and then how you
+both of these things and then how you
+actually want to elicit these responses
+actually want to elicit these responses
+actually want to elicit these responses
+in terms of oh how does the model know
+in terms of oh how does the model know
+in terms of oh how does the model know
+when to generate images how does it know
+when to generate images how does it know
+when to generate images how does it know
+when to generate text that's all more or
+when to generate text that's all more or
+when to generate text that's all more or
+less just done through fine tuning of
+less just done through fine tuning of
+less just done through fine tuning of
+like the type of like the type of
+like the type of like the type of
+like the type of like the type of
+fine-tuning data you
+fine-tuning data you
+fine-tuning data you
+curate uh
+curate uh
+curate uh
+where you have like potentially like
+where you have like potentially like
+where you have like potentially like
+certain phrases or or it tries to learn
+certain phrases or or it tries to learn
+certain phrases or or it tries to learn
+from this fine tuning data when it
+from this fine tuning data when it
+from this fine tuning data when it
+should be generating image versus when
+should be generating image versus when
+should be generating image versus when
+it should be generating text
+this is the video version of
+this is the video version of
+this is the video version of
+Lait um very similar in structure where
+Lait um very similar in structure where
+Lait um very similar in structure where
+they have um they still concatenate
+they have um they still concatenate
+they have um they still concatenate
+Visual and text tokens together they
+Visual and text tokens together they
+Visual and text tokens together they
+just have a fancier Vision encoder they
+just have a fancier Vision encoder they
+just have a fancier Vision encoder they
+have like the the key frames from like
+have like the the key frames from like
+have like the the key frames from like
+an mp4 and then MP4 also has some motion
+an mp4 and then MP4 also has some motion
+an mp4 and then MP4 also has some motion
+Vector information kind of like Optical
+Vector information kind of like Optical
+Vector information kind of like Optical
+flow that then like
+flow that then like
+flow that then like
+quantize uh but the way you generate a
+quantize uh but the way you generate a
+quantize uh but the way you generate a
+video is still just like like
+video is still just like like
+video is still just like like
+autoaggressive next token prediction on
+autoaggressive next token prediction on
+autoaggressive next token prediction on
+these discret
+these discret
+these discret
+latents and then and then they also
+latents and then and then they also
+latents and then and then they also
+learn like another decoder on top of it
+learn like another decoder on top of it
+learn like another decoder on top of it
+fine tune from like stable video
+diffusion and this is some work that we
+diffusion and this is some work that we
+diffusion and this is some work that we
+did recently in our lab which is just a
+did recently in our lab which is just a
+did recently in our lab which is just a
+simpler Incarnation
+simpler Incarnation
+simpler Incarnation
+um essentially instead of using clip
+um essentially instead of using clip
+um essentially instead of using clip
+latents which are lossy we just use a VQ
+latents which are lossy we just use a VQ
+latents which are lossy we just use a VQ
+Gan and just concatenate image tokens
+Gan and just concatenate image tokens
+Gan and just concatenate image tokens
+together and then um and then during
+together and then um and then during
+together and then um and then during
+training if you have like a bunch of
+training if you have like a bunch of
+training if you have like a bunch of
+text image or text video data you can
+text image or text video data you can
+text image or text video data you can
+like swap the order of the text tokens
+like swap the order of the text tokens
+like swap the order of the text tokens
+and in and vision tokens because then
+and in and vision tokens because then
+and in and vision tokens because then
+sometimes it be doing image generation
+sometimes it be doing image generation
+sometimes it be doing image generation
+sometimes doing image captioning um and
+sometimes doing image captioning um and
+sometimes doing image captioning um and
+then during fine tuning for chat
+then during fine tuning for chat
+then during fine tuning for chat
+fine-tuning you can then basically
+fine-tuning you can then basically
+fine-tuning you can then basically
+design data around to encourage certain
+design data around to encourage certain
+design data around to encourage certain
+behaviors cool
+yeah I think um well I guess in the end
+yeah I think um well I guess in the end
+yeah I think um well I guess in the end
+the the ultimate challenge is is that a
+the the ultimate challenge is is that a
+the the ultimate challenge is is that a
+lot of these models still have issues in
+lot of these models still have issues in
+lot of these models still have issues in
+terms of they hallucinate they have like
+terms of they hallucinate they have like
+terms of they hallucinate they have like
+like there are errors in visual
+like there are errors in visual
+like there are errors in visual
+understanding especially video
+understanding especially video
+understanding especially video
+understanding stuff like that like video
+understanding stuff like that like video
+understanding stuff like that like video
+understanding there's like a lot of a
+understanding there's like a lot of a
+understanding there's like a lot of a
+lot more work to do in terms of
+lot more work to do in terms of
+lot more work to do in terms of
+understanding hierarchically how how a
+understanding hierarchically how how a
+understanding hierarchically how how a
+movie operates uh what's happening in
+movie operates uh what's happening in
+movie operates uh what's happening in
+this movie stuff like that that I think
+this movie stuff like that that I think
+this movie stuff like that that I think
+there's still a lot of work to do in in
+there's still a lot of work to do in in
+there's still a lot of work to do in in
+terms of like this kind of understanding
+terms of like this kind of understanding
+terms of like this kind of understanding
+um

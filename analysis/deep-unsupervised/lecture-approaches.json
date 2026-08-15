@@ -1,0 +1,268 @@
+[
+  {
+    "number": 1,
+    "approaches": [
+      {
+        "name": "Learn From The Data Itself",
+        "problem": "Most useful data does not arrive with hand-written answers, but it still has repeated structure.",
+        "how_it_works": "The model is trained on a task made from the data, such as predicting missing parts, reconstructing examples, assigning probability, or producing similar samples.",
+        "why_it_matters": "This turns large unlabeled collections into training signal instead of waiting for expensive human labels.",
+        "failure_mode": "The model can learn shortcuts that solve the training task without learning structure that helps later."
+      },
+      {
+        "name": "Separate Modeling Goals",
+        "problem": "A method can be good at likelihood, samples, compression, or features, and those are not the same goal.",
+        "how_it_works": "The course sorts methods by what they make easy: exact probability, fast sampling, hidden-code learning, sharp generation, or transferable representations.",
+        "why_it_matters": "It prevents comparing models by one score when they were built to solve different pressures.",
+        "failure_mode": "A method can look strong under one goal while being weak for the actual use case."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "approaches": [
+      {
+        "name": "Chain-Rule Likelihood",
+        "problem": "The full probability of a high-dimensional object is hard to model directly.",
+        "how_it_works": "Break the object into an order and write its probability as one conditional prediction after another, where each next piece depends on the pieces before it.",
+        "why_it_matters": "Training and scoring become exact because each conditional probability is a normal supervised prediction problem.",
+        "failure_mode": "Generation is slow and early sampled mistakes become part of the context for later predictions."
+      },
+      {
+        "name": "Teacher-Forced Training",
+        "problem": "During training the model needs clean context, but during generation it must use its own past outputs.",
+        "how_it_works": "Train each next-piece predictor using the true earlier pieces from the data, then sample by feeding generated pieces back into the model.",
+        "why_it_matters": "This makes large sequence models train efficiently on every position of every example.",
+        "failure_mode": "The model can be surprised by its own imperfect samples because training context was cleaner than sampling context."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "approaches": [
+      {
+        "name": "Normalizing Flow",
+        "problem": "We want exact probability and sampling, but flexible generators usually hide the probability of each output.",
+        "how_it_works": "Start with simple noise and pass it through an invertible map. Use the inverse map and the volume change to compute exact data likelihood.",
+        "why_it_matters": "It gives a rare combination: generated samples and exact likelihood from the same model.",
+        "failure_mode": "Every layer must be invertible and have a tractable volume term, which limits architecture choices."
+      },
+      {
+        "name": "Coupling Layers",
+        "problem": "A fully general invertible neural network can make the volume term too costly to compute.",
+        "how_it_works": "Hold part of the vector fixed while using it to transform the other part, so the inverse and determinant stay simple.",
+        "why_it_matters": "This makes deep invertible models practical instead of only mathematically possible.",
+        "failure_mode": "The split structure can reduce mixing unless many layers and permutations are stacked carefully."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "approaches": [
+      {
+        "name": "Variational Autoencoder",
+        "problem": "Data may be explained by hidden causes, but those causes are not observed.",
+        "how_it_works": "An encoder guesses a distribution over hidden codes for an input, and a decoder learns to rebuild or generate data from sampled codes.",
+        "why_it_matters": "It gives a trainable way to learn compressed hidden factors while keeping generation possible.",
+        "failure_mode": "The decoder can ignore the code, or the prior pressure can make the code too weak."
+      },
+      {
+        "name": "Reparameterized Sampling",
+        "problem": "Sampling a hidden code blocks ordinary gradient training if handled naively.",
+        "how_it_works": "Write the random code as a deterministic function of encoder outputs plus separate noise, so gradients can flow through the encoder.",
+        "why_it_matters": "This makes latent-variable models trainable with standard neural-network optimization.",
+        "failure_mode": "The gradient estimator works only for suitable continuous distributions and can still be noisy or poorly balanced."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "approaches": [
+      {
+        "name": "Adversarial Training",
+        "problem": "Some generators can make samples without giving a usable likelihood to optimize.",
+        "how_it_works": "Train a discriminator to separate real from fake samples, then train the generator to make fake samples the discriminator accepts as real.",
+        "why_it_matters": "It supplies a learned realism signal and can produce sharp samples without pixel-wise averaging.",
+        "failure_mode": "The target changes while training, so learning can oscillate, collapse, or stop giving useful gradients."
+      },
+      {
+        "name": "Discriminator As Learned Loss",
+        "problem": "Hand-written losses often reward blurry averages rather than realistic samples.",
+        "how_it_works": "Use the discriminator's judgment as the loss signal, so the generator is pushed toward properties that distinguish real data from fake data.",
+        "why_it_matters": "The loss adapts to the data instead of measuring only fixed pixel distance.",
+        "failure_mode": "The discriminator may focus on superficial clues and give feedback that does not match the desired notion of quality."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "approaches": [
+      {
+        "name": "Denoising Diffusion",
+        "problem": "Making a whole complex sample in one step is difficult and unstable.",
+        "how_it_works": "Add known noise to data over many steps, then train a network to predict the noise or clean direction at each noise level.",
+        "why_it_matters": "Generation becomes a chain of small repair problems, which is easier to train than a one-shot generator.",
+        "failure_mode": "Sampling can be slow because many reverse steps may be needed for high quality."
+      },
+      {
+        "name": "Guided Sampling",
+        "problem": "A generator must often obey a condition such as a class, text prompt, or desired property.",
+        "how_it_works": "During sampling, modify the denoising direction with an extra signal that points toward the condition while still following the learned data direction.",
+        "why_it_matters": "It turns an unconditional generator into a controlled generator without changing the whole training setup.",
+        "failure_mode": "Too much guidance can reduce diversity or create samples that satisfy the condition in brittle ways."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "approaches": [
+      {
+        "name": "Contrastive Learning",
+        "problem": "A model needs useful features without class labels.",
+        "how_it_works": "Create two changed views of the same example, pull their representations together, and push representations of different examples apart.",
+        "why_it_matters": "It teaches invariances, such as object identity surviving crop or color changes, from raw data.",
+        "failure_mode": "Bad augmentations can erase the very information the representation needs to keep."
+      },
+      {
+        "name": "Masked Prediction",
+        "problem": "The model needs a self-made task that forces it to understand context.",
+        "how_it_works": "Hide part of the input and train the model to predict the missing content from the visible parts.",
+        "why_it_matters": "This creates a dense training signal for text, images, and other structured data without labels.",
+        "failure_mode": "The model may learn local fill-in tricks instead of broader meaning if the mask task is too easy."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "approaches": [
+      {
+        "name": "Next-Token Pretraining",
+        "problem": "Language has no single label, but every text position supplies a next-piece prediction target.",
+        "how_it_works": "Train a model to predict the next token from previous tokens across massive text collections.",
+        "why_it_matters": "This simple objective teaches syntax, facts, style, code patterns, and some reasoning habits at scale.",
+        "failure_mode": "A good next-token predictor can still produce false, unsafe, or unhelpful answers."
+      },
+      {
+        "name": "Transformer Context Mixing",
+        "problem": "Each word or token must use information from far-away tokens, not only nearby ones.",
+        "how_it_works": "Attention lets each token compute which other tokens matter, copy information from them, and update its representation through stacked blocks.",
+        "why_it_matters": "It gives language models a scalable way to use long context while training on many positions in parallel.",
+        "failure_mode": "Cost grows with context length, and the model may still miss facts that require exact retrieval or calculation."
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "approaches": [
+      {
+        "name": "Latent Video Generation",
+        "problem": "Raw video is expensive because it has space, time, motion, and many redundant pixels.",
+        "how_it_works": "Compress frames into a smaller latent space and learn generation or denoising there while preserving the main visual and motion structure.",
+        "why_it_matters": "It makes video generation cheaper and lets the model spend capacity on motion and scene change instead of every pixel.",
+        "failure_mode": "Compression can lose fine details, and small temporal errors can accumulate across frames."
+      },
+      {
+        "name": "Temporal Consistency Modeling",
+        "problem": "A generated video can have good individual frames but bad motion or changing object identity.",
+        "how_it_works": "Condition generation on nearby frames, time embeddings, motion cues, or 3D-aware structure so outputs remain coherent over time.",
+        "why_it_matters": "Video quality depends on continuity, not just frame-level realism.",
+        "failure_mode": "Long actions, occlusion, and camera motion can still break object identity or physical consistency."
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "approaches": [
+      {
+        "name": "Pseudo-Labeling",
+        "problem": "There are many unlabeled examples and only a small labeled set.",
+        "how_it_works": "Train on labeled data, use the model to assign labels to unlabeled data, then train again on confident guessed labels.",
+        "why_it_matters": "It converts unlabeled data into extra practice when manual labels are scarce.",
+        "failure_mode": "Wrong confident guesses can reinforce the model's own mistakes."
+      },
+      {
+        "name": "Distribution Alignment",
+        "problem": "The labeled set and unlabeled set may have different class balance or feature statistics.",
+        "how_it_works": "Adjust predictions or representations so the model's output distribution on unlabeled data matches a desired prior or matches the labeled distribution.",
+        "why_it_matters": "It prevents the model from treating unlabeled data as if it came from a different problem.",
+        "failure_mode": "If the assumed distribution is wrong, alignment can force the model toward false labels."
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "approaches": [
+      {
+        "name": "Constraint-Guided Scientific Generation",
+        "problem": "Scientific objects such as proteins or molecules must obey structure, chemistry, and function constraints.",
+        "how_it_works": "Generate candidates while conditioning on known constraints, measured properties, or physical structure so samples stay plausible for the scientific domain.",
+        "why_it_matters": "It moves generative modeling from making natural-looking samples to proposing objects that can be tested in the real world.",
+        "failure_mode": "A model can exploit dataset patterns while violating hidden physical or experimental constraints."
+      },
+      {
+        "name": "Property-Conditioned Design",
+        "problem": "Scientists often want a new object with a target property, not just a random realistic object.",
+        "how_it_works": "Condition the generator on desired measurements, functions, or structures, then search or sample for candidates that satisfy them.",
+        "why_it_matters": "It turns generation into design, where the output is judged by usefulness rather than visual realism.",
+        "failure_mode": "The requested property may be outside the training data range, so the model's confidence can be misleading."
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "approaches": [
+      {
+        "name": "Neural Radiance Field",
+        "problem": "A set of photos shows a scene from some views, but we want to render new views.",
+        "how_it_works": "Train a neural function that maps 3D position and viewing direction to color and density, then render images by accumulating values along camera rays.",
+        "why_it_matters": "It represents a 3D scene without an explicit mesh and can synthesize realistic novel views.",
+        "failure_mode": "Training and rendering can be slow, and wrong camera poses or sparse views can create artifacts."
+      },
+      {
+        "name": "Volume Rendering",
+        "problem": "A camera ray passes through empty space, surfaces, and transparent regions before reaching a pixel color.",
+        "how_it_works": "Sample points along a ray, estimate density and color at each point, and combine them by how much light each point contributes.",
+        "why_it_matters": "It connects the learned 3D field to ordinary image supervision from photos.",
+        "failure_mode": "Poor sampling or ambiguous geometry can produce floaters, blurred surfaces, or wrong depth."
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "approaches": [
+      {
+        "name": "Contrastive Multimodal Alignment",
+        "problem": "Images, text, audio, and other signals use different forms but can refer to the same thing.",
+        "how_it_works": "Train matching pairs to have nearby representations and mismatched pairs to be farther apart in a shared space.",
+        "why_it_matters": "It lets one mode retrieve, guide, or explain another, such as text searching images or text steering generation.",
+        "failure_mode": "The shared space can capture dataset bias or shallow correlations instead of grounded meaning."
+      },
+      {
+        "name": "Cross-Attention Conditioning",
+        "problem": "A generator needs to use information from another mode while producing its own output.",
+        "how_it_works": "Let generated tokens or image features attend to conditioning tokens from text, image, audio, or other inputs at each update.",
+        "why_it_matters": "It gives the generator a direct path to use outside instructions or context during generation.",
+        "failure_mode": "The model can ignore the condition, overfit to it, or bind the wrong words to the wrong visual parts."
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "approaches": [
+      {
+        "name": "Data And Model Parallel Training",
+        "problem": "Modern models and datasets are too large for one device to train alone.",
+        "how_it_works": "Split batches across devices, split model weights across devices, or split layers across devices, then synchronize the needed values during training.",
+        "why_it_matters": "It makes large unsupervised and generative models trainable within practical time and memory limits.",
+        "failure_mode": "Communication can dominate compute, and a poor split can waste hardware."
+      },
+      {
+        "name": "Pipeline And Tensor Parallelism",
+        "problem": "Even one forward pass may not fit or run efficiently on a single accelerator.",
+        "how_it_works": "Pipeline parallelism assigns different layers to different devices, while tensor parallelism splits large matrix operations across devices.",
+        "why_it_matters": "These methods attack memory and speed bottlenecks inside very large models.",
+        "failure_mode": "Bubbles, synchronization cost, and uneven layer sizes can leave devices idle."
+      }
+    ]
+  }
+]

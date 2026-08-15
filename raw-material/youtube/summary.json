@@ -31,5 +31,16 @@
     "metadata_json": 8,
     "manifest": "raw-material/youtube/course-manifests/stanford-cme296-diffusion-large-vision-models-spring-2026.json",
     "playlist_manifest": "raw-material/youtube/playlists/stanford-cme296-diffusion-large-vision-models-spring-2026.json"
+  },
+  {
+    "slug": "berkeley-cs294-158-deep-unsupervised-learning-spring-2024",
+    "title": "UC Berkeley CS294-158 Deep Unsupervised Learning | Spring 2024",
+    "kind": "playlist",
+    "expected_videos": 14,
+    "raw_vtt": 28,
+    "clean_txt": 14,
+    "metadata_json": 14,
+    "manifest": "raw-material/youtube/course-manifests/berkeley-cs294-158-deep-unsupervised-learning-spring-2024.json",
+    "playlist_manifest": "raw-material/youtube/playlists/berkeley-cs294-158-deep-unsupervised-learning-spring-2024.json"
   }
 ]

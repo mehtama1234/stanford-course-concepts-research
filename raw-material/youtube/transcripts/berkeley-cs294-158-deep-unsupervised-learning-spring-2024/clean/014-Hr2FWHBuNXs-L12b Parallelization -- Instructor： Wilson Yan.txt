@@ -1,0 +1,2482 @@
+okay so this is the last part of lecture
+okay so this is the last part of lecture
+okay so this is the last part of lecture
+I think it's only maybe like half an
+I think it's only maybe like half an
+I think it's only maybe like half an
+hour or something um on just
+hour or something um on just
+hour or something um on just
+paralyzation and Transformers so kind of
+paralyzation and Transformers so kind of
+paralyzation and Transformers so kind of
+like different than the stuff we've
+like different than the stuff we've
+like different than the stuff we've
+covered before but stuff on how you
+covered before but stuff on how you
+covered before but stuff on how you
+actually uh can train these Transformers
+actually uh can train these Transformers
+actually uh can train these Transformers
+like gpt3 is like
+like gpt3 is like
+like gpt3 is like
+175 billion parameters you can't fit
+175 billion parameters you can't fit
+175 billion parameters you can't fit
+that on a single GPU that you need to
+that on a single GPU that you need to
+that on a single GPU that you need to
+train on more than one GPU hundreds or
+train on more than one GPU hundreds or
+train on more than one GPU hundreds or
+even thousands and how exactly do you do
+even thousands and how exactly do you do
+even thousands and how exactly do you do
+that and this is a brief summary of the
+that and this is a brief summary of the
+that and this is a brief summary of the
+predominant types of compute just tpus
+predominant types of compute just tpus
+predominant types of compute just tpus
+versus gpus um I'm not going to go into
+versus gpus um I'm not going to go into
+versus gpus um I'm not going to go into
+too much detail over the different
+too much detail over the different
+too much detail over the different
+aspects but there are some things to
+aspects but there are some things to
+aspects but there are some things to
+know about these types of Hardware in
+know about these types of Hardware in
+know about these types of Hardware in
+that
+that
+that
+um that you can kind of interpret them
+um that you can kind of interpret them
+um that you can kind of interpret them
+similarly in terms of like flops
+similarly in terms of like flops
+similarly in terms of like flops
+basically how many operations how many
+basically how many operations how many
+basically how many operations how many
+floating Point operations they can do
+floating Point operations they can do
+floating Point operations they can do
+per second the HPM size which is like
+per second the HPM size which is like
+per second the HPM size which is like
+the memory size so for A1 100s it's like
+the memory size so for A1 100s it's like
+the memory size so for A1 100s it's like
+80 gigs or 40 gigs for tpus it depends
+80 gigs or 40 gigs for tpus it depends
+80 gigs or 40 gigs for tpus it depends
+could be like 16 to 32 and another
+could be like 16 to 32 and another
+could be like 16 to 32 and another
+important thing which we'll kind of
+important thing which we'll kind of
+important thing which we'll kind of
+allude to throughout the rest of like
+allude to throughout the rest of like
+allude to throughout the rest of like
+this presentation is kind of the
+this presentation is kind of the
+this presentation is kind of the
+bandwidth um mostly the the bandwidth of
+bandwidth um mostly the the bandwidth of
+bandwidth um mostly the the bandwidth of
+the interconnect between different
+the interconnect between different
+the interconnect between different
+devices which would be very important
+devices which would be very important
+devices which would be very important
+because you're you're training things on
+because you're you're training things on
+because you're you're training things on
+like 16 different gpus and you need to
+like 16 different gpus and you need to
+like 16 different gpus and you need to
+do eventually some sort of communication
+do eventually some sort of communication
+do eventually some sort of communication
+across these devices and so the
+across these devices and so the
+across these devices and so the
+bandwidth of that is very important in
+bandwidth of that is very important in
+bandwidth of that is very important in
+terms of determining like how big of a
+terms of determining like how big of a
+terms of determining like how big of a
+model you train how much data you want
+model you train how much data you want
+model you train how much data you want
+to process stuff like that which which
+to process stuff like that which which
+to process stuff like that which which
+I'll kind of talk
+about and the fundamental building
+about and the fundamental building
+about and the fundamental building
+blocks of all of these at least most
+blocks of all of these at least most
+blocks of all of these at least most
+like almost all these models are
+like almost all these models are
+like almost all these models are
+basically Transformers and then
+basically Transformers and then
+basically Transformers and then
+Transformers um you can basically write
+Transformers um you can basically write
+Transformers um you can basically write
+write it it's just like 90% mat moles or
+write it it's just like 90% mat moles or
+write it it's just like 90% mat moles or
+like 99% mat moles um and this is
+like 99% mat moles um and this is
+like 99% mat moles um and this is
+exactly what these gpus and tpus can do
+exactly what these gpus and tpus can do
+exactly what these gpus and tpus can do
+they can just do Large Scale Matrix
+they can just do Large Scale Matrix
+they can just do Large Scale Matrix
+multiplications um just slightly
+multiplications um just slightly
+multiplications um just slightly
+different different ways GPU has many
+different different ways GPU has many
+different different ways GPU has many
+small
+small
+small
+like computational pieces um like 8x4
+like computational pieces um like 8x4
+like computational pieces um like 8x4
+by8 but like many more than tpus which
+by8 but like many more than tpus which
+by8 but like many more than tpus which
+um do process differently using a
+um do process differently using a
+um do process differently using a
+systolic array uh but in like larger
+systolic array uh but in like larger
+systolic array uh but in like larger
+larger chunks essentially but in the end
+larger chunks essentially but in the end
+larger chunks essentially but in the end
+the the end goal of these designs is
+the the end goal of these designs is
+the the end goal of these designs is
+that they can process Matrix
+that they can process Matrix
+that they can process Matrix
+multiplications like extremely
+multiplications like extremely
+multiplications like extremely
+quickly which is also kind of why
+quickly which is also kind of why
+quickly which is also kind of why
+we're I I guess it's like a a cycle like
+we're I I guess it's like a a cycle like
+we're I I guess it's like a a cycle like
+Transformers work and really well and
+Transformers work and really well and
+Transformers work and really well and
+our fast because a lot of they're
+our fast because a lot of they're
+our fast because a lot of they're
+primarily Matrix multiplications and
+primarily Matrix multiplications and
+primarily Matrix multiplications and
+they're easy to optimize which makes
+they're easy to optimize which makes
+they're easy to optimize which makes
+people develop Hardware that does matrix
+people develop Hardware that does matrix
+people develop Hardware that does matrix
+multiplications faster and faster uh and
+multiplications faster and faster uh and
+multiplications faster and faster uh and
+then people do like stick more to
+then people do like stick more to
+then people do like stick more to
+Transformers or like M Mo based
+Transformers or like M Mo based
+Transformers or like M Mo based
+computation because of that because
+computation because of that because
+computation because of that because
+otherwise if you do don't do that like
+otherwise if you do don't do that like
+otherwise if you do don't do that like
+for stat space models there's like less
+for stat space models there's like less
+for stat space models there's like less
+Matrix multiplications so they're
+Matrix multiplications so they're
+Matrix multiplications so they're
+sometimes just slower purely Hardware
+sometimes just slower purely Hardware
+sometimes just slower purely Hardware
+wise because of that even though in
+wise because of that even though in
+wise because of that even though in
+theory they should be faster yeah
+wait wait
+sorry this I I don't know
+yeah okay so now that so we know that
+yeah okay so now that so we know that
+yeah okay so now that so we know that
+Matrix multiplications is basically
+Matrix multiplications is basically
+Matrix multiplications is basically
+consisted of a bunch of mat moles right
+consisted of a bunch of mat moles right
+consisted of a bunch of mat moles right
+you have your qkv projection computation
+you have your qkv projection computation
+you have your qkv projection computation
+you have like your MLP with the uh
+you have like your MLP with the uh
+you have like your MLP with the uh
+project in project out you have like
+project in project out you have like
+project in project out you have like
+your your input dense layer your output
+your your input dense layer your output
+your your input dense layer your output
+logic layers it's all matrix
+logic layers it's all matrix
+logic layers it's all matrix
+multiplication so the fundamental
+multiplication so the fundamental
+multiplication so the fundamental
+building block of sharting a model
+building block of sharting a model
+building block of sharting a model
+across multiple devices let's say if we
+across multiple devices let's say if we
+across multiple devices let's say if we
+have like a th gpus and we're training
+have like a th gpus and we're training
+have like a th gpus and we're training
+one model how do we shart our model or
+one model how do we shart our model or
+one model how do we shart our model or
+how do we divide our training so that it
+how do we divide our training so that it
+how do we divide our training so that it
+can actually run on all these gpus and
+can actually run on all these gpus and
+can actually run on all these gpus and
+also efficiently
+also efficiently
+also efficiently
+and the the building block of this is
+and the the building block of this is
+and the the building block of this is
+just m sharting so if you want to
+just m sharting so if you want to
+just m sharting so if you want to
+multiply two matrices so Y is equal to X
+multiply two matrices so Y is equal to X
+multiply two matrices so Y is equal to X
+x a all of them are matrices they can be
+x a all of them are matrices they can be
+x a all of them are matrices they can be
+whatever shape let's say all squares for
+whatever shape let's say all squares for
+whatever shape let's say all squares for
+now um you can do different kinds of
+now um you can do different kinds of
+now um you can do different kinds of
+sharting so let's say if you do row
+sharting so let's say if you do row
+sharting so let's say if you do row
+Shing on a and column sharting on B so
+Shing on a and column sharting on B so
+Shing on a and column sharting on B so
+defined by the different
+colors then I this is just how matrix
+colors then I this is just how matrix
+colors then I this is just how matrix
+multiplication works is if you multiply
+multiplication works is if you multiply
+multiplication works is if you multiply
+it out that times that is a a part of
+it out that times that is a a part of
+it out that times that is a a part of
+the top
+the top
+the top
+left
+left
+left
+see so yeah so
+see so yeah so
+see so yeah so
+actually we just WR from here then so
+actually we just WR from here then so
+actually we just WR from here then so
+what happens if you multiply this chunk
+what happens if you multiply this chunk
+what happens if you multiply this chunk
+so this this first two column the first
+so this this first two column the first
+so this this first two column the first
+row of this two columns by the First
+row of this two columns by the First
+row of this two columns by the First
+Column of the two rows then you'll get
+Column of the two rows then you'll get
+Column of the two rows then you'll get
+basically a partial sum of the top left
+basically a partial sum of the top left
+basically a partial sum of the top left
+component because the full sum is easier
+component because the full sum is easier
+component because the full sum is easier
+I is like the full sum is is this times
+I is like the full sum is is this times
+I is like the full sum is is this times
+this but now we're doing only let's say
+this but now we're doing only let's say
+this but now we're doing only let's say
+half of it so this times
+half of it so this times
+half of it so this times
+this and so what that means is that um
+this and so what that means is that um
+this and so what that means is that um
+let's say if that partial sum is y1 then
+let's say if that partial sum is y1 then
+let's say if that partial sum is y1 then
+Y2 would be like this thing times this
+Y2 would be like this thing times this
+Y2 would be like this thing times this
+so this is like one way of charting the
+so this is like one way of charting the
+so this is like one way of charting the
+matrix multiplication because in this
+matrix multiplication because in this
+matrix multiplication because in this
+case you're sharting like the addition
+case you're sharting like the addition
+case you're sharting like the addition
+part of of that dot
+part of of that dot
+part of of that dot
+product and then what you can do is if
+product and then what you can do is if
+product and then what you can do is if
+you multiply let's say that first half
+you multiply let's say that first half
+you multiply let's say that first half
+row with all of the half columns then
+row with all of the half columns then
+row with all of the half columns then
+you can get the like the the partial sum
+you can get the like the the partial sum
+you can get the like the the partial sum
+of that entire
+of that entire
+of that entire
+row uh you can do this for the whole
+row uh you can do this for the whole
+row uh you can do this for the whole
+Matrix so basically if you multiply
+Matrix so basically if you multiply
+Matrix so basically if you multiply
+these two halves then you'll get
+these two halves then you'll get
+these two halves then you'll get
+basically a partial sum of like the
+basically a partial sum of like the
+basically a partial sum of like the
+entire Matrix so the the full result is
+entire Matrix so the the full result is
+entire Matrix so the the full result is
+the sum of these two so you're basically
+the sum of these two so you're basically
+the sum of these two so you're basically
+breaking up this computation you're
+breaking up this computation you're
+breaking up this computation you're
+you're breaking up this one Matrix
+you're breaking up this one Matrix
+you're breaking up this one Matrix
+multiply computation into two separate
+multiply computation into two separate
+multiply computation into two separate
+Matrix multiplications where it's the
+Matrix multiplications where it's the
+Matrix multiplications where it's the
+the the green Parts is on one device
+the the green Parts is on one device
+the the green Parts is on one device
+let's say and then the blue parts are
+let's say and then the blue parts are
+let's say and then the blue parts are
+stored on device two and the question is
+stored on device two and the question is
+stored on device two and the question is
+how can I compute this entire matrix
+how can I compute this entire matrix
+how can I compute this entire matrix
+multiplication result and you can do the
+multiplication result and you can do the
+multiplication result and you can do the
+the part
+the part
+the part
+on each of the devices separately and
+on each of the devices separately and
+on each of the devices separately and
+then after that you have to do like a
+then after that you have to do like a
+then after that you have to do like a
+reduction across the different devices
+reduction across the different devices
+reduction across the different devices
+um to sum them to actually result in
+um to sum them to actually result in
+um to sum them to actually result in
+like the original y result or the one
+like the original y result or the one
+like the original y result or the one
+the full output result you
+the full output result you
+the full output result you
+want any questions about
+want any questions about
+want any questions about
+this
+okay uh and this is a different way of
+okay uh and this is a different way of
+okay uh and this is a different way of
+sharting
+sharting
+sharting
+so let's say if you have your full X
+so let's say if you have your full X
+so let's say if you have your full X
+stored on on one device
+stored on on one device
+stored on on one device
+and then you have let's say the columns
+and then you have let's say the columns
+and then you have let's say the columns
+or half The Columns of a stored on like
+or half The Columns of a stored on like
+or half The Columns of a stored on like
+let's say the first two columns a stored
+let's say the first two columns a stored
+let's say the first two columns a stored
+on the first device then if you do a
+on the first device then if you do a
+on the first device then if you do a
+matrix multiplication then what you have
+matrix multiplication then what you have
+matrix multiplication then what you have
+is is not the partial sum is you just
+is is not the partial sum is you just
+is is not the partial sum is you just
+have a a section of the output now right
+have a a section of the output now right
+have a a section of the output now right
+and then let's say in device two is
+and then let's say in device two is
+and then let's say in device two is
+there another SL oh yeah in device two
+there another SL oh yeah in device two
+there another SL oh yeah in device two
+you would have you have you have like a
+you would have you have you have like a
+you would have you have you have like a
+replicated copy of X so X is the entire
+replicated copy of X so X is the entire
+replicated copy of X so X is the entire
+tensor X would be stored on device one
+tensor X would be stored on device one
+tensor X would be stored on device one
+and the entire Tor X would be stored on
+and the entire Tor X would be stored on
+and the entire Tor X would be stored on
+device two
+device two
+device two
+and then device one would carry part of
+and then device one would carry part of
+and then device one would carry part of
+would carry A1 device two would carry A2
+would carry A1 device two would carry A2
+would carry A1 device two would carry A2
+and they each compute the the matrix
+and they each compute the the matrix
+and they each compute the the matrix
+multiplication of like of its own like
+multiplication of like of its own like
+multiplication of like of its own like
+part of a and then so each device would
+part of a and then so each device would
+part of a and then so each device would
+have its own like half and then in the
+have its own like half and then in the
+have its own like half and then in the
+end if you want to communicate the the
+end if you want to communicate the the
+end if you want to communicate the the
+full result you can just do like a
+full result you can just do like a
+full result you can just do like a
+gather or you can communicate each half
+gather or you can communicate each half
+gather or you can communicate each half
+to each device to have the full
+to each device to have the full
+to each device to have the full
+result so let's kind of keep in mind
+result so let's kind of keep in mind
+result so let's kind of keep in mind
+that this is where like the
+that this is where like the
+that this is where like the
+communication part comes in in terms of
+communication part comes in in terms of
+communication part comes in in terms of
+like the bandwidth of like the faster
+like the bandwidth of like the faster
+like the bandwidth of like the faster
+the communication the less overhead
+the communication the less overhead
+the communication the less overhead
+because in this sense the communication
+because in this sense the communication
+because in this sense the communication
+does have a cost because you have to
+does have a cost because you have to
+does have a cost because you have to
+wait for the results to come in um if
+wait for the results to come in um if
+wait for the results to come in um if
+it's super fast you don't have to wait
+it's super fast you don't have to wait
+it's super fast you don't have to wait
+that long if it's really slow it may be
+that long if it's really slow it may be
+that long if it's really slow it may be
+like a major bottleneck in your
+like a major bottleneck in your
+like a major bottleneck in your
+network so this is how this is like a
+network so this is how this is like a
+network so this is how this is like a
+lot of information um but this is how
+lot of information um but this is how
+lot of information um but this is how
+the mat Mo
+the mat Mo
+the mat Mo
+sharding Works in in like different
+sharding Works in in like different
+sharding Works in in like different
+kinds of linear layers
+so let me see if there's a do I have
+so let me see if there's a do I have
+so let me see if there's a do I have
+another slide
+another slide
+another slide
+here
+um okay let's just talkop about this
+um okay let's just talkop about this
+um okay let's just talkop about this
+then okay so you have you have x x here
+then okay so you have you have x x here
+then okay so you have you have x x here
+so this is your
+so this is your
+so this is your
+input and then we're can ignore this for
+input and then we're can ignore this for
+input and then we're can ignore this for
+now so so what happens is that you you
+now so so what happens is that you you
+now so so what happens is that you you
+can sh X into two
+can sh X into two
+can sh X into two
+parts and then you can do your kind of
+parts and then you can do your kind of
+parts and then you can do your kind of
+like the partial sums as we kind of
+like the partial sums as we kind of
+like the partial sums as we kind of
+described and then this is basically
+described and then this is basically
+described and then this is basically
+what um what was in the the first set of
+what um what was in the the first set of
+what um what was in the the first set of
+slides we do where the the X and the A's
+slides we do where the the X and the A's
+slides we do where the the X and the A's
+are both sharted across and then if you
+are both sharted across and then if you
+are both sharted across and then if you
+want to compute the entire y you can do
+want to compute the entire y you can do
+want to compute the entire y you can do
+an all gather so so g g here is is an
+an all gather so so g g here is is an
+an all gather so so g g here is is an
+all gather or in this case what we call
+all gather or in this case what we call
+all gather or in this case what we call
+an all reduce basically an all reduce is
+an all reduce basically an all reduce is
+an all reduce basically an all reduce is
+it will uh take every device in in your
+it will uh take every device in in your
+it will uh take every device in in your
+in like your network and then it would
+in like your network and then it would
+in like your network and then it would
+sum up that same tensor across all the
+sum up that same tensor across all the
+sum up that same tensor across all the
+devices so in this case you have two
+devices so in this case you have two
+devices so in this case you have two
+devices so the all reduce would compute
+devices so the all reduce would compute
+devices so the all reduce would compute
+y1 plus Y2 for every device and in the
+y1 plus Y2 for every device and in the
+y1 plus Y2 for every device and in the
+end y y would be stored on every device
+end y y would be stored on every device
+end y y would be stored on every device
+if you had three devices it would be Y
+if you had three devices it would be Y
+if you had three devices it would be Y
+is equal to y1 plus Y2 Y3 or y1 plus Y2
+is equal to y1 plus Y2 Y3 or y1 plus Y2
+is equal to y1 plus Y2 Y3 or y1 plus Y2
+plus Y3
+plus Y3
+plus Y3
+um and then the part I did here is it's
+um and then the part I did here is it's
+um and then the part I did here is it's
+F
+F
+F
+here it's like so I guess F here is a is
+here it's like so I guess F here is a is
+here it's like so I guess F here is a is
+a split so X is split into X1 and X2
+a split so X is split into X1 and X2
+a split so X is split into X1 and X2
+similar to how we shown the diagram and
+similar to how we shown the diagram and
+similar to how we shown the diagram and
+then the way you do your backward pass
+then the way you do your backward pass
+then the way you do your backward pass
+which is kind of what what this here is
+which is kind of what what this here is
+which is kind of what what this here is
+for is that in here G is just identity
+for is that in here G is just identity
+for is that in here G is just identity
+backward pass and then here f is like an
+backward pass and then here f is like an
+backward pass and then here f is like an
+all Gather in your backward pass because
+all Gather in your backward pass because
+all Gather in your backward pass because
+one way to think about it is when you're
+one way to think about it is when you're
+one way to think about it is when you're
+back propagating now you have the the
+back propagating now you have the the
+back propagating now you have the the
+partial gradient of like dld dx1 and dld
+partial gradient of like dld dx1 and dld
+partial gradient of like dld dx1 and dld
+dx2 but now you need dld DX um and it's
+dx2 but now you need dld DX um and it's
+dx2 but now you need dld DX um and it's
+like basically the reverse of what our
+like basically the reverse of what our
+like basically the reverse of what our
+forward process was so instead of
+forward process was so instead of
+forward process was so instead of
+splitting we We Gather Instinct across
+splitting we We Gather Instinct across
+splitting we We Gather Instinct across
+devices and then column parallel is
+devices and then column parallel is
+devices and then column parallel is
+similar to the the second one that we
+similar to the the second one that we
+similar to the the second one that we
+described where in this case so f is
+described where in this case so f is
+described where in this case so f is
+identity in this case and X is
+identity in this case and X is
+identity in this case and X is
+replicated and then now a is a split
+replicated and then now a is a split
+replicated and then now a is a split
+over columns and then you can compute uh
+over columns and then you can compute uh
+over columns and then you can compute uh
+y1 Y2 and then you can do do it all
+y1 Y2 and then you can do do it all
+y1 Y2 and then you can do do it all
+gather um to get your full Y and the
+gather um to get your full Y and the
+gather um to get your full Y and the
+backward pass is in a similar fashion so
+backward pass is in a similar fashion so
+backward pass is in a similar fashion so
+since forward path was all gather now
+since forward path was all gather now
+since forward path was all gather now
+backward path here is we're splitting
+backward path here is we're splitting
+backward path here is we're splitting
+the gradients and then we back propagate
+the gradients and then we back propagate
+the gradients and then we back propagate
+and then
+and then
+and then
+um and then in that last part we
+um and then in that last part we
+um and then in that last part we
+essentially have gradients from each of
+essentially have gradients from each of
+essentially have gradients from each of
+the sections of a so you have to do in
+the sections of a so you have to do in
+the sections of a so you have to do in
+all reduce over um over your devices
+instead yes
+um the answer is a is like a a
+um the answer is a is like a a
+um the answer is a is like a a
+combination of these two I think which I
+combination of these two I think which I
+combination of these two I think which I
+talk
+talk
+talk
+about which let's see yeah it'll be the
+about which let's see yeah it'll be the
+about which let's see yeah it'll be the
+slide after I guess this I already just
+slide after I guess this I already just
+slide after I guess this I already just
+talked about so we can just skip this
+talked about so we can just skip this
+talked about so we can just skip this
+okay so this is how it's done in
+okay so this is how it's done in
+okay so this is how it's done in
+practice which is a little bit more
+practice which is a little bit more
+practice which is a little bit more
+efficient basically the idea is you want
+efficient basically the idea is you want
+efficient basically the idea is you want
+to reduce your communication as much as
+to reduce your communication as much as
+to reduce your communication as much as
+possible like communication is is a is
+possible like communication is is a is
+possible like communication is is a is
+an overhead you want to you want to like
+an overhead you want to you want to like
+an overhead you want to you want to like
+reduce
+reduce
+reduce
+and so the less communication operations
+and so the less communication operations
+and so the less communication operations
+you do um the better it usually
+you do um the better it usually
+you do um the better it usually
+is so this is an example of like the MLP
+is so this is an example of like the MLP
+is so this is an example of like the MLP
+so basically you have your input X and
+so basically you have your input X and
+so basically you have your input X and
+then you project out into like a higher
+then you project out into like a higher
+then you project out into like a higher
+hidden Dimension and then you project
+hidden Dimension and then you project
+hidden Dimension and then you project
+back down and the way this works is that
+back down and the way this works is that
+back down and the way this works is that
+you can basically do replicate and then
+you can basically do replicate and then
+you can basically do replicate and then
+column sharting here so this case X is
+column sharting here so this case X is
+column sharting here so this case X is
+not is not sharded and then only the
+not is not sharded and then only the
+not is not sharded and then only the
+your weight matrices here are sharded A1
+your weight matrices here are sharded A1
+your weight matrices here are sharded A1
+and A2
+and A2
+and A2
+and then and then so you compute that
+and then and then so you compute that
+and then and then so you compute that
+mat mole you compute your activation as
+mat mole you compute your activation as
+mat mole you compute your activation as
+usual in the MLP and then so you have y1
+usual in the MLP and then so you have y1
+usual in the MLP and then so you have y1
+Y2 and then usually here in the standard
+Y2 and then usually here in the standard
+Y2 and then usually here in the standard
+thing if you wanted y you'd have to do
+thing if you wanted y you'd have to do
+thing if you wanted y you'd have to do
+an all gather but because of the way
+an all gather but because of the way
+an all gather but because of the way
+this is constructed is that you can take
+this is constructed is that you can take
+this is constructed is that you can take
+advantage of that this thing is already
+advantage of that this thing is already
+advantage of that this thing is already
+sharted and then it's like the row
+sharted and then it's like the row
+sharted and then it's like the row
+sharted version now because because in
+sharted version now because because in
+sharted version now because because in
+the row sharted version we had to take
+the row sharted version we had to take
+the row sharted version we had to take
+your take let's say x and we had to
+your take let's say x and we had to
+your take let's say x and we had to
+split it into X1 X2 but here it's
+split it into X1 X2 but here it's
+split it into X1 X2 but here it's
+already split into y1 Y2 so then we can
+already split into y1 Y2 so then we can
+already split into y1 Y2 so then we can
+just feed it into like a row parallel
+just feed it into like a row parallel
+just feed it into like a row parallel
+version and then have the sharded B1 B2
+version and then have the sharded B1 B2
+version and then have the sharded B1 B2
+do the computation and then G there
+do the computation and then G there
+do the computation and then G there
+would be an all
+would be an all
+would be an all
+reduce um and then the backwards path
+reduce um and then the backwards path
+reduce um and then the backwards path
+would be kind of similar to what I
+would be kind of similar to what I
+would be kind of similar to what I
+described where uh where G would be
+described where uh where G would be
+described where uh where G would be
+identity and then F there would be like
+identity and then F there would be like
+identity and then F there would be like
+an all reduce in the backwards pass but
+an all reduce in the backwards pass but
+an all reduce in the backwards pass but
+this is like the fundamental building
+this is like the fundamental building
+this is like the fundamental building
+block of how like the MLP works and also
+block of how like the MLP works and also
+block of how like the MLP works and also
+very similar which I'll show is how the
+very similar which I'll show is how the
+very similar which I'll show is how the
+attention works as well
+attention works as well
+attention works as well
+yes what
+yes what
+yes what
+sorry B is the uh weight Matrix that
+sorry B is the uh weight Matrix that
+sorry B is the uh weight Matrix that
+will map from um so let's say for for
+will map from um so let's say for for
+will map from um so let's say for for
+the standard MLP a would be like uh like
+the standard MLP a would be like uh like
+the standard MLP a would be like uh like
+it would map from Dimension D to 4D and
+it would map from Dimension D to 4D and
+it would map from Dimension D to 4D and
+then B would be a matrix that maps from
+then B would be a matrix that maps from
+then B would be a matrix that maps from
+4D to
+4D to
+4D to
+D yeah any questions about this this is
+D yeah any questions about this this is
+D yeah any questions about this this is
+probably you're going to take away one
+probably you're going to take away one
+probably you're going to take away one
+thing should it should be this
+yeah yeah uh in this case they're
+yeah yeah uh in this case they're
+yeah yeah uh in this case they're
+already they're already pre-split like
+already they're already pre-split like
+already they're already pre-split like
+like like you um they are permanently
+like like you um they are permanently
+like like you um they are permanently
+stored on separate devices and they will
+stored on separate devices and they will
+stored on separate devices and they will
+never be communicated collectively if
+never be communicated collectively if
+never be communicated collectively if
+you just don't need
+you just don't need
+you just don't need
+to so it's like on the when you
+to so it's like on the when you
+to so it's like on the when you
+initialize it's already split yeah
+yeah exactly so if you have like another
+yeah exactly so if you have like another
+yeah exactly so if you have like another
+copy of it it'll just be the same uh
+copy of it it'll just be the same uh
+copy of it it'll just be the same uh
+like an exact copy of this so it it
+like an exact copy of this so it it
+like an exact copy of this so it it
+reduces this unnecessary communication
+reduces this unnecessary communication
+reduces this unnecessary communication
+in the middle
+basically cool anything else y
+I I would say yeah like like yeah this
+I I would say yeah like like yeah this
+I I would say yeah like like yeah this
+is like GPU one this is gpu2
+is like GPU one this is gpu2
+is like GPU one this is gpu2
+yeah
+yeah it it depends if if you're doing a
+yeah it it depends if if you're doing a
+yeah it it depends if if you're doing a
+pie torch it's explicitly
+pie torch it's explicitly
+pie torch it's explicitly
+coded yeah
+if you're doing in
+if you're doing in
+if you're doing in
+Jacks they can sometimes do it for you
+Jacks they can sometimes do it for you
+Jacks they can sometimes do it for you
+yeah um
+yeah um
+yeah um
+cool so attention is kind of the same
+cool so attention is kind of the same
+cool so attention is kind of the same
+way it's it's basically identical
+way it's it's basically identical
+way it's it's basically identical
+structure so you have X here it's it's
+structure so you have X here it's it's
+structure so you have X here it's it's
+replicated and then in this case um your
+replicated and then in this case um your
+replicated and then in this case um your
+qkv projection matrices are sharded and
+qkv projection matrices are sharded and
+qkv projection matrices are sharded and
+the nice thing about this is the way
+the nice thing about this is the way
+the nice thing about this is the way
+it's sharded is that it's sharded by
+it's sharded is that it's sharded by
+it's sharded is that it's sharded by
+heads so let's say if my attention layer
+heads so let's say if my attention layer
+heads so let's say if my attention layer
+has four heads and I have two devices
+has four heads and I have two devices
+has four heads and I have two devices
+then each device will in the end see two
+then each device will in the end see two
+then each device will in the end see two
+heads uh or or like store two separate
+heads uh or or like store two separate
+heads uh or or like store two separate
+heads and then the attention computation
+heads and then the attention computation
+heads and then the attention computation
+between heads is is like fully
+between heads is is like fully
+between heads is is like fully
+independent right you can do that
+independent right you can do that
+independent right you can do that
+separately so there's no like cross head
+separately so there's no like cross head
+separately so there's no like cross head
+interaction at least in the beginning so
+interaction at least in the beginning so
+interaction at least in the beginning so
+you can do your standard thing of doing
+you can do your standard thing of doing
+you can do your standard thing of doing
+um
+um
+um
+uh uh like um Computing your Q andk do
+uh uh like um Computing your Q andk do
+uh uh like um Computing your Q andk do
+products softmax you can do drop out and
+products softmax you can do drop out and
+products softmax you can do drop out and
+then times your times your value and
+then times your times your value and
+then times your times your value and
+then you get y1 uh and also Y2 so these
+then you get y1 uh and also Y2 so these
+then you get y1 uh and also Y2 so these
+are the results from the two different
+are the results from the two different
+are the results from the two different
+sections of the heads and then now it's
+sections of the heads and then now it's
+sections of the heads and then now it's
+it's like the similar thing where it's
+it's like the similar thing where it's
+it's like the similar thing where it's
+already split in y1 Y2 so then the
+already split in y1 Y2 so then the
+already split in y1 Y2 so then the
+output because it also attention has
+output because it also attention has
+output because it also attention has
+also the like an output projection that
+also the like an output projection that
+also the like an output projection that
+essentially mixes across heads so then
+essentially mixes across heads so then
+essentially mixes across heads so then
+uh you can do a similar thing where you
+uh you can do a similar thing where you
+uh you can do a similar thing where you
+Shard your your output dense layer into
+Shard your your output dense layer into
+Shard your your output dense layer into
+two parts do your multiplications and
+two parts do your multiplications and
+two parts do your multiplications and
+then G there is another all reduce it's
+then G there is another all reduce it's
+then G there is another all reduce it's
+like almost identical to the MLP style
+yeah
+yeah
+sorry sharding and parallel
+oh sharding is parallel wiing like like
+oh sharding is parallel wiing like like
+oh sharding is parallel wiing like like
+they're one and the
+they're one and the
+they're one and the
+same or they are the same
+same or they are the same
+same or they are the same
+yeah
+yeah it's it's
+yeah it's it's
+yeah it's it's
+parallelization I I need to compete one
+parallelization I I need to compete one
+parallelization I I need to compete one
+big map mole I can do it into two halves
+big map mole I can do it into two halves
+big map mole I can do it into two halves
+on two different machine on two
+on two different machine on two
+on two different machine on two
+different devices so you know optimally
+different devices so you know optimally
+different devices so you know optimally
+it'd be like two times faster
+so yeah there's time speed up and then
+so yeah there's time speed up and then
+so yeah there's time speed up and then
+there's also well I guess the the main
+there's also well I guess the the main
+there's also well I guess the the main
+the main main purpose would be well
+the main main purpose would be well
+the main main purpose would be well
+there is time speed up but the other
+there is time speed up but the other
+there is time speed up but the other
+benefit would be you're shorting your
+benefit would be you're shorting your
+benefit would be you're shorting your
+parameters so you're if you have a
+parameters so you're if you have a
+parameters so you're if you have a
+really really big model then you're
+really really big model then you're
+really really big model then you're
+dividing your parameters across
+dividing your parameters across
+dividing your parameters across
+different devices so it saves memory
+there yeah
+um why we're not sharting qkv
+or well in this case they're already
+or well in this case they're already
+or well in this case they're already
+they're already sharded because the the
+they're already sharded because the the
+they're already sharded because the the
+the projection matrices for qkv are
+the projection matrices for qkv are
+the projection matrices for qkv are
+sharded or I'm not sure if I fully
+sharded or I'm not sure if I fully
+sharded or I'm not sure if I fully
+understand question
+um well they will receive different
+um well they will receive different
+um well they will receive different
+updates I guess there's no purpose to to
+updates I guess there's no purpose to to
+updates I guess there's no purpose to to
+to like to sharing
+them
+them
+them
+okay um so that was like a general way
+okay um so that was like a general way
+okay um so that was like a general way
+of you can do charting and Transformers
+of you can do charting and Transformers
+of you can do charting and Transformers
+and now I'll be talking about explicitly
+and now I'll be talking about explicitly
+and now I'll be talking about explicitly
+how this charting is kind of used um in
+how this charting is kind of used um in
+how this charting is kind of used um in
+terms of different forms of parallelism
+terms of different forms of parallelism
+terms of different forms of parallelism
+they covering a few of them there's a
+they covering a few of them there's a
+they covering a few of them there's a
+lot of different kinds but but cover
+lot of different kinds but but cover
+lot of different kinds but but cover
+like a few main subsets the first one a
+like a few main subsets the first one a
+like a few main subsets the first one a
+lot of you could be familiar with is
+lot of you could be familiar with is
+lot of you could be familiar with is
+just data parallelism if you just train
+just data parallelism if you just train
+just data parallelism if you just train
+anything with pytor DDP or py toor data
+anything with pytor DDP or py toor data
+anything with pytor DDP or py toor data
+parallel or or any of that it's just
+parallel or or any of that it's just
+parallel or or any of that it's just
+data parallelism um where here you can
+data parallelism um where here you can
+data parallelism um where here you can
+basically treat let's say the way to
+basically treat let's say the way to
+basically treat let's say the way to
+understand this diagram is um is just
+understand this diagram is um is just
+understand this diagram is um is just
+some tensor and it's just the Y here is
+some tensor and it's just the Y here is
+some tensor and it's just the Y here is
+the batch Dimension where each each row
+the batch Dimension where each each row
+the batch Dimension where each each row
+is a separate batch element and then the
+is a separate batch element and then the
+is a separate batch element and then the
+x or the horizontal is uh your your your
+x or the horizontal is uh your your your
+x or the horizontal is uh your your your
+hidden Dimension or like your your
+hidden Dimension or like your your
+hidden Dimension or like your your
+representation some e e dimensional
+representation some e e dimensional
+representation some e e dimensional
+representation so it's like the shape of
+representation so it's like the shape of
+representation so it's like the shape of
+this is like batched by E okay and then
+this is like batched by E okay and then
+this is like batched by E okay and then
+the weights is let's say an e by E
+the weights is let's say an e by E
+the weights is let's say an e by E
+Matrix and the output is like also
+Matrix and the output is like also
+Matrix and the output is like also
+batched by E because we're multiplying
+batched by E because we're multiplying
+batched by E because we're multiplying
+an e by
+an e by
+an e by
+matrix and data parallelism is simple so
+matrix and data parallelism is simple so
+matrix and data parallelism is simple so
+this you can treat each color let's say
+this you can treat each color let's say
+this you can treat each color let's say
+green as one as device one blue as
+green as one as device one blue as
+green as one as device one blue as
+device two and then in this case e would
+device two and then in this case e would
+device two and then in this case e would
+be like it it's it's like replicated
+be like it it's it's like replicated
+be like it it's it's like replicated
+across both of them so that's why it's
+across both of them so that's why it's
+across both of them so that's why it's
+yellow I guess green and blue make
+yellow I guess green and blue make
+yellow I guess green and blue make
+yellow maybe forgot um but yeah but that
+yellow maybe forgot um but yeah but that
+yellow maybe forgot um but yeah but that
+but that's replicated so this is like
+but that's replicated so this is like
+but that's replicated so this is like
+something that most of you have probably
+something that most of you have probably
+something that most of you have probably
+done if you've trained anything on
+done if you've trained anything on
+done if you've trained anything on
+multiple gpus um where in this case it's
+multiple gpus um where in this case it's
+multiple gpus um where in this case it's
+like split across devices so you can see
+like split across devices so you can see
+like split across devices so you can see
+e there is replicated and then your your
+e there is replicated and then your your
+e there is replicated and then your your
+batch is split so let's say you have a
+batch is split so let's say you have a
+batch is split so let's say you have a
+global batch size of four you have two
+global batch size of four you have two
+global batch size of four you have two
+devices you can do a batch size of two
+devices you can do a batch size of two
+devices you can do a batch size of two
+per device so this can save you memory
+per device so this can save you memory
+per device so this can save you memory
+it can also save you time depending on
+it can also save you time depending on
+it can also save you time depending on
+what your main constraint
+is okay so that was Data parallelism
+is okay so that was Data parallelism
+is okay so that was Data parallelism
+there's another very popular parallelism
+there's another very popular parallelism
+there's another very popular parallelism
+method called fully sharded data
+method called fully sharded data
+method called fully sharded data
+parallel that is fairly easy it's very
+parallel that is fairly easy it's very
+parallel that is fairly easy it's very
+very useful and also pretty easy
+very useful and also pretty easy
+very useful and also pretty easy
+relatively to understand so it's still
+relatively to understand so it's still
+relatively to understand so it's still
+fully data parallel in the sense that
+fully data parallel in the sense that
+fully data parallel in the sense that
+each device will see its own batch so
+each device will see its own batch so
+each device will see its own batch so
+each device will see like two two
+each device will see like two two
+each device will see like two two
+different elements let's say and then
+different elements let's say and then
+different elements let's say and then
+before in data parallel you would
+before in data parallel you would
+before in data parallel you would
+replicate your weights across all the
+replicate your weights across all the
+replicate your weights across all the
+devices but now in this case let's say
+devices but now in this case let's say
+devices but now in this case let's say
+what happens if we shter them across all
+what happens if we shter them across all
+what happens if we shter them across all
+the devices so device one has uh half of
+the devices so device one has uh half of
+the devices so device one has uh half of
+this Matrix and device two has the other
+this Matrix and device two has the other
+this Matrix and device two has the other
+half and then we want to compute the
+half and then we want to compute the
+half and then we want to compute the
+output I haven't gone exactly into how
+output I haven't gone exactly into how
+output I haven't gone exactly into how
+the output is well I
+the output is well I
+the output is well I
+guess yeah actually the way it's charted
+guess yeah actually the way it's charted
+guess yeah actually the way it's charted
+here is that the way you compute the
+here is that the way you compute the
+here is that the way you compute the
+output is like so for device one you do
+output is like so for device one you do
+output is like so for device one you do
+your forward pass on the green blocks
+your forward pass on the green blocks
+your forward pass on the green blocks
+and then now to do your multiplication
+and then now to do your multiplication
+and then now to do your multiplication
+you you kind of need the full Matrix so
+you you kind of need the full Matrix so
+you you kind of need the full Matrix so
+you do you do an all gather so you all
+you do you do an all gather so you all
+you do you do an all gather so you all
+gather across all all your devices so
+gather across all all your devices so
+gather across all all your devices so
+basically after the all gather every
+basically after the all gather every
+basically after the all gather every
+device will see the entire e Matrix
+device will see the entire e Matrix
+device will see the entire e Matrix
+almost as if it was replicated you think
+almost as if it was replicated you think
+almost as if it was replicated you think
+that way which I'll kind of explain how
+that way which I'll kind of explain how
+that way which I'll kind of explain how
+this is actually useful later on but
+this is actually useful later on but
+this is actually useful later on but
+once you have the full Matrix you can
+once you have the full Matrix you can
+once you have the full Matrix you can
+then do your standard forward pass
+then do your standard forward pass
+then do your standard forward pass
+matrix multiplication and compu the
+matrix multiplication and compu the
+matrix multiplication and compu the
+batch but the nice thing which kind of
+batch but the nice thing which kind of
+batch but the nice thing which kind of
+stressed here is that you only need to
+stressed here is that you only need to
+stressed here is that you only need to
+do this one layer at a time because in
+do this one layer at a time because in
+do this one layer at a time because in
+fully in in in standard data parallelism
+fully in in in standard data parallelism
+fully in in in standard data parallelism
+you replicate your entire model across
+you replicate your entire model across
+you replicate your entire model across
+all the devices so every device at all
+all the devices so every device at all
+all the devices so every device at all
+times stores the entire parameter
+times stores the entire parameter
+times stores the entire parameter
+weights of your model which could be
+weights of your model which could be
+weights of your model which could be
+really big 7 175 billion is like uh
+really big 7 175 billion is like uh
+really big 7 175 billion is like uh
+seven 700 gigs or it could be like 350
+seven 700 gigs or it could be like 350
+seven 700 gigs or it could be like 350
+gigs depending on Precision
+gigs depending on Precision
+gigs depending on Precision
+um but the nice thing about FS fsdp I
+um but the nice thing about FS fsdp I
+um but the nice thing about FS fsdp I
+guess that's what it's called called it
+guess that's what it's called called it
+guess that's what it's called called it
+um as an acronym um is that you only
+um as an acronym um is that you only
+um as an acronym um is that you only
+need to do it one layer at a time so
+need to do it one layer at a time so
+need to do it one layer at a time so
+let's say uh while I'm Computing so so
+let's say uh while I'm Computing so so
+let's say uh while I'm Computing so so
+let's say at layer I minus one here I am
+let's say at layer I minus one here I am
+let's say at layer I minus one here I am
+I am I I've already all gathered my e so
+I am I I've already all gathered my e so
+I am I I've already all gathered my e so
+I have the full e by matrix and then I
+I have the full e by matrix and then I
+I have the full e by matrix and then I
+I'm doing that computation while I'm
+I'm doing that computation while I'm
+I'm doing that computation while I'm
+doing the computation I can AC ously
+doing the computation I can AC ously
+doing the computation I can AC ously
+communicate the layer after right so
+communicate the layer after right so
+communicate the layer after right so
+this is over so there's no there's no
+this is over so there's no there's no
+this is over so there's no there's no
+conflict here I the the device can do
+conflict here I the the device can do
+conflict here I the the device can do
+communication and it can do computation
+communication and it can do computation
+communication and it can do computation
+at the same time that's like kind of the
+at the same time that's like kind of the
+at the same time that's like kind of the
+key thing so so basically as long as um
+key thing so so basically as long as um
+key thing so so basically as long as um
+your com your your computation takes
+your com your your computation takes
+your com your your computation takes
+long enough such that by the time it
+long enough such that by the time it
+long enough such that by the time it
+finishes computation it reaches the next
+finishes computation it reaches the next
+finishes computation it reaches the next
+layer hopefully it's already been all
+layer hopefully it's already been all
+layer hopefully it's already been all
+gathered you can do the computation and
+gathered you can do the computation and
+gathered you can do the computation and
+then you can move on and then once
+then you can move on and then once
+then you can move on and then once
+you've done the computation you can then
+you've done the computation you can then
+you've done the computation you can then
+split the E back up and then like keep
+split the E back up and then like keep
+split the E back up and then like keep
+the The Shard of the specific device so
+the The Shard of the specific device so
+the The Shard of the specific device so
+that's like why it saves manory it it
+that's like why it saves manory it it
+that's like why it saves manory it it
+keeps the entire weight Matrix but only
+keeps the entire weight Matrix but only
+keeps the entire weight Matrix but only
+for like a single layer at a time which
+for like a single layer at a time which
+for like a single layer at a time which
+is much cheaper especially for like
+is much cheaper especially for like
+is much cheaper especially for like
+really really deep
+networks okay so one moderately like
+networks okay so one moderately like
+networks okay so one moderately like
+mathematical aspect of this is like the
+mathematical aspect of this is like the
+mathematical aspect of this is like the
+qu I kind of mentioned it's like as long
+qu I kind of mentioned it's like as long
+qu I kind of mentioned it's like as long
+as my computation time is long enough
+as my computation time is long enough
+as my computation time is long enough
+such that it's longer than the time it
+such that it's longer than the time it
+such that it's longer than the time it
+takes to all gather for the next layer
+takes to all gather for the next layer
+takes to all gather for the next layer
+there won't be any extra overhead so
+there won't be any extra overhead so
+there won't be any extra overhead so
+then the question is like what is the
+then the question is like what is the
+then the question is like what is the
+criteria like what what what criteria
+criteria like what what what criteria
+criteria like what what what criteria
+does my model size or my training size
+does my model size or my training size
+does my model size or my training size
+my training bat size need such that this
+my training bat size need such that this
+my training bat size need such that this
+is sufficient such that um I'm doing
+is sufficient such that um I'm doing
+is sufficient such that um I'm doing
+enough computation on a single GPU such
+enough computation on a single GPU such
+enough computation on a single GPU such
+that the when it's done the next layer
+that the when it's done the next layer
+that the when it's done the next layer
+is already all gathered and ready and
+is already all gathered and ready and
+is already all gathered and ready and
+the way this is done is kind of
+the way this is done is kind of
+the way this is done is kind of
+through some like computation of like
+through some like computation of like
+through some like computation of like
+arithmetic int arithmetic intensity and
+arithmetic int arithmetic intensity and
+arithmetic int arithmetic intensity and
+kind of like the bandwidth of like your
+kind of like the bandwidth of like your
+kind of like the bandwidth of like your
+network so the way it works is the first
+network so the way it works is the first
+network so the way it works is the first
+bullet point is we have our matrix
+bullet point is we have our matrix
+bullet point is we have our matrix
+multiplication so this is a a batch by E
+multiplication so this is a a batch by E
+multiplication so this is a a batch by E
+times a e by E Matrix so the flops is
+times a e by E Matrix so the flops is
+times a e by E Matrix so the flops is
+two times batch by e^
+two times batch by e^
+two times batch by e^
+squ
+squ
+squ
+um and all Gathering require and and
+um and all Gathering require and and
+um and all Gathering require and and
+then it's like so I have that many flops
+then it's like so I have that many flops
+then it's like so I have that many flops
+for the matrix multiplication and then
+for the matrix multiplication and then
+for the matrix multiplication and then
+if you want to all gather how many bytes
+if you want to all gather how many bytes
+if you want to all gather how many bytes
+do I need to communicate and that's like
+do I need to communicate and that's like
+do I need to communicate and that's like
+roughly 2 * e squ bytes if you assume
+roughly 2 * e squ bytes if you assume
+roughly 2 * e squ bytes if you assume
+half precision
+half precision
+half precision
+um because you just need to communicate
+um because you just need to communicate
+um because you just need to communicate
+the entire weight Matrix
+the entire weight Matrix
+the entire weight Matrix
+everywhere and and then arithmetic
+everywhere and and then arithmetic
+everywhere and and then arithmetic
+intensity so this is a metric that's
+intensity so this is a metric that's
+intensity so this is a metric that's
+pretty commonly used so this is
+pretty commonly used so this is
+pretty commonly used so this is
+essentially the ratio of the number of
+essentially the ratio of the number of
+essentially the ratio of the number of
+flops I'm doing the number of flops for
+flops I'm doing the number of flops for
+flops I'm doing the number of flops for
+my computation and the amount of
+my computation and the amount of
+my computation and the amount of
+communication I need to do so it's just
+communication I need to do so it's just
+communication I need to do so it's just
+the the first bullet point divided by
+the the first bullet point divided by
+the the first bullet point divided by
+the second bullet point so this turns
+the second bullet point so this turns
+the second bullet point so this turns
+out to be equal to just uh batch per
+out to be equal to just uh batch per
+out to be equal to just uh batch per
+chip flops divided by bite it's like B
+chip flops divided by bite it's like B
+chip flops divided by bite it's like B
+like B essentially
+like B essentially
+like B essentially
+and um and the second part or the last
+and um and the second part or the last
+and um and the second part or the last
+part so we know the aiic intensity of
+part so we know the aiic intensity of
+part so we know the aiic intensity of
+like how much how many how much how many
+like how much how many how much how many
+like how much how many how much how many
+flops it does per bite of computation or
+flops it does per bite of computation or
+flops it does per bite of computation or
+how much yeah how many flops it does per
+how much yeah how many flops it does per
+how much yeah how many flops it does per
+per bite and the the last part to figure
+per bite and the the last part to figure
+per bite and the the last part to figure
+out oh how how large my batch size
+out oh how how large my batch size
+out oh how how large my batch size
+actually needs to be depends on just the
+actually needs to be depends on just the
+actually needs to be depends on just the
+like the the bandwidth of like your your
+like the the bandwidth of like your your
+like the the bandwidth of like your your
+device so ICI is I believe interchip
+device so ICI is I believe interchip
+device so ICI is I believe interchip
+interconnect so it's the connection
+interconnect so it's the connection
+interconnect so it's the connection
+between
+between
+between
+multiple tpus or on gpus it would be the
+multiple tpus or on gpus it would be the
+multiple tpus or on gpus it would be the
+the bandwidth between multiple gpus and
+the bandwidth between multiple gpus and
+the bandwidth between multiple gpus and
+in this case the the time it takes to
+in this case the the time it takes to
+in this case the the time it takes to
+transfer data between devices is um the
+transfer data between devices is um the
+transfer data between devices is um the
+intensity is roughly 1,8 flops per bite
+intensity is roughly 1,8 flops per bite
+intensity is roughly 1,8 flops per bite
+so in order to make it so that our
+so in order to make it so that our
+so in order to make it so that our
+computation is at least our
+computation is at least our
+computation is at least our
+communication is that we would need at
+communication is that we would need at
+communication is that we would need at
+least batch per per chip flops or bite
+least batch per per chip flops or bite
+least batch per per chip flops or bite
+so that would basically mean we would
+so that would basically mean we would
+so that would basically mean we would
+want the batch per chip to be like
+want the batch per chip to be like
+want the batch per chip to be like
+larger than 1,000
+larger than 1,000
+larger than 1,000
+8 and at that point in in theory um
+8 and at that point in in theory um
+8 and at that point in in theory um
+there should be no overlap or there
+there should be no overlap or there
+there should be no overlap or there
+should be overlap
+yeah as long as your batch size is
+yeah as long as your batch size is
+yeah as long as your batch size is
+sufficiently large per device so in this
+sufficiently large per device so in this
+sufficiently large per device so in this
+case if you wanted to train on more
+case if you wanted to train on more
+case if you wanted to train on more
+devices you would be training on a
+devices you would be training on a
+devices you would be training on a
+larger batch size yeah which after a
+larger batch size yeah which after a
+larger batch size yeah which after a
+certain point is like
+yeah
+yeah
+yeah
+yeah yeah
+uh in this case no they they're kind of
+interchangeable
+yeah um
+yeah um
+yeah um
+you mean like how like an all reduce is
+you mean like how like an all reduce is
+you mean like how like an all reduce is
+done or or how these collectives are
+done or or how these collectives are
+done or or how these collectives are
+done I
+guess in this case it's like
+guess in this case it's like
+guess in this case it's like
+it's like kind of using the same clock
+it's like kind of using the same clock
+it's like kind of using the same clock
+in the sense that the way these codes
+in the sense that the way these codes
+in the sense that the way these codes
+will work is that let's say each device
+will work is that let's say each device
+will work is that let's say each device
+runs the exact same sequence of of code
+runs the exact same sequence of of code
+runs the exact same sequence of of code
+like exact same sequence of function
+like exact same sequence of function
+like exact same sequence of function
+calls so they will all call all reduce
+calls so they will all call all reduce
+calls so they will all call all reduce
+at the exact same time or or or or like
+at the exact same time or or or or like
+at the exact same time or or or or like
+they will all they will all call all
+they will all they will all call all
+they will all they will all call all
+reduce at at the same as like the M
+reduce at at the same as like the M
+reduce at at the same as like the M
+command they run so some devices could
+command they run so some devices could
+command they run so some devices could
+be behind but the the ones that are
+be behind but the the ones that are
+be behind but the the ones that are
+ahead will just be blocked until all the
+ahead will just be blocked until all the
+ahead will just be blocked until all the
+other ones call it yeah yeah we
+other ones call it yeah yeah we
+other ones call it yeah yeah we
+doation basically
+um precompute is hard it depends on
+um precompute is hard it depends on
+um precompute is hard it depends on
+normalization so most of these
+normalization so most of these
+normalization so most of these
+Transformers use layer Norm so in most
+Transformers use layer Norm so in most
+Transformers use layer Norm so in most
+cases you you won't Shard over the
+cases you you won't Shard over the
+cases you you won't Shard over the
+activation Dimension you only Shard over
+activation Dimension you only Shard over
+activation Dimension you only Shard over
+batch and for that layer Norm doesn't
+batch and for that layer Norm doesn't
+batch and for that layer Norm doesn't
+need any extra communication if you want
+need any extra communication if you want
+need any extra communication if you want
+to do batch Norm you do have to
+to do batch Norm you do have to
+to do batch Norm you do have to
+communicate like pytorch has like a sync
+communicate like pytorch has like a sync
+communicate like pytorch has like a sync
+batch Norm that will communicate the
+batch Norm that will communicate the
+batch Norm that will communicate the
+mean and standard deviation that and it
+mean and standard deviation that and it
+mean and standard deviation that and it
+does add some extra
+overhead okay this is um so we talked
+overhead okay this is um so we talked
+overhead okay this is um so we talked
+about fsdp and this is tensor
+about fsdp and this is tensor
+about fsdp and this is tensor
+parallelism so this is another way to
+parallelism so this is another way to
+parallelism so this is another way to
+Shard this is this is exactly what I
+Shard this is this is exactly what I
+Shard this is this is exactly what I
+described way before in like the the way
+described way before in like the the way
+described way before in like the the way
+the sharting for the the MLP and
+the sharting for the the MLP and
+the sharting for the the MLP and
+attention Works um
+uh with to some extent yeah um but in
+uh with to some extent yeah um but in
+uh with to some extent yeah um but in
+this case I guess one other way you can
+this case I guess one other way you can
+this case I guess one other way you can
+do it so I guess there's two ways with
+do it so I guess there's two ways with
+do it so I guess there's two ways with
+tensor parallelism there's there's uh
+tensor parallelism there's there's uh
+tensor parallelism there's there's uh
+you can Shard it like like here in which
+you can Shard it like like here in which
+you can Shard it like like here in which
+you you you don't Shard the actual batch
+you you you don't Shard the actual batch
+you you you don't Shard the actual batch
+uh but you only Shard the the weights of
+uh but you only Shard the the weights of
+uh but you only Shard the the weights of
+like the qkv and then like the output
+like the qkv and then like the output
+like the qkv and then like the output
+projection that's one way of doing
+projection that's one way of doing
+projection that's one way of doing
+tensor parallelism um which is like
+tensor parallelism um which is like
+tensor parallelism um which is like
+fairly standard one other way you could
+fairly standard one other way you could
+fairly standard one other way you could
+do it is that in addition to sharting
+do it is that in addition to sharting
+do it is that in addition to sharting
+the weights you can Shard over your
+the weights you can Shard over your
+the weights you can Shard over your
+activations
+activations
+activations
+here which I think is in Practical
+here which I think is in Practical
+here which I think is in Practical
+applications is a little bit less less
+applications is a little bit less less
+applications is a little bit less less
+explicitly coded um but it still could
+explicitly coded um but it still could
+explicitly coded um but it still could
+be used and this is very similar to the
+be used and this is very similar to the
+be used and this is very similar to the
+sharding mmal stuff that I talked about
+sharding mmal stuff that I talked about
+sharding mmal stuff that I talked about
+in the beginning is so now you have in
+in the beginning is so now you have in
+in the beginning is so now you have in
+this case you can you can do like your
+this case you can you can do like your
+this case you can you can do like your
+your part your partial multiplications
+your part your partial multiplications
+your part your partial multiplications
+and then now you have like partial sums
+and then now you have like partial sums
+and then now you have like partial sums
+and then you can uh in this case you can
+and then you can uh in this case you can
+and then you can uh in this case you can
+you can do a reduce scatter which which
+you can do a reduce scatter which which
+you can do a reduce scatter which which
+you can you can imagine as just like an
+you can you can imagine as just like an
+you can you can imagine as just like an
+all reduce to to compute the entire
+all reduce to to compute the entire
+all reduce to to compute the entire
+output and then you can then rehard
+output and then you can then rehard
+output and then you can then rehard
+which is kind of like the scatter
+which is kind of like the scatter
+which is kind of like the scatter
+operation so each device still only has
+operation so each device still only has
+operation so each device still only has
+its own
+portion uh and then you can combine
+portion uh and then you can combine
+portion uh and then you can combine
+these you just get more colors so you
+these you just get more colors so you
+these you just get more colors so you
+can do fsdp because they're not they're
+can do fsdp because they're not they're
+can do fsdp because they're not they're
+not conflicting in any way you would
+not conflicting in any way you would
+not conflicting in any way you would
+just need to change how you do your
+just need to change how you do your
+just need to change how you do your
+devices
+devices
+devices
+so the easiest way to think about this
+so the easiest way to think about this
+so the easiest way to think about this
+is let's say you have 64 uh 16 devices
+is let's say you have 64 uh 16 devices
+is let's say you have 64 uh 16 devices
+and then you want to figure out which
+and then you want to figure out which
+and then you want to figure out which
+devices you want to do tensor
+devices you want to do tensor
+devices you want to do tensor
+parallelism which devices you want to do
+parallelism which devices you want to do
+parallelism which devices you want to do
+fsdp then what this turns out to be is
+fsdp then what this turns out to be is
+fsdp then what this turns out to be is
+like a 2d grid so if I have like a fstp
+like a 2d grid so if I have like a fstp
+like a 2d grid so if I have like a fstp
+of like four and a TP of four that would
+of like four and a TP of four that would
+of like four and a TP of four that would
+be like 16 devices so basically each uh
+be like 16 devices so basically each uh
+be like 16 devices so basically each uh
+if I had like a batch size of like four
+if I had like a batch size of like four
+if I had like a batch size of like four
+then each each fsdp or each data
+then each each fsdp or each data
+then each each fsdp or each data
+parallel rank would get a batch size of
+parallel rank would get a batch size of
+parallel rank would get a batch size of
+one and then that would be fed through
+one and then that would be fed through
+one and then that would be fed through
+like a sequence of um
+like a sequence of um
+like a sequence of um
+of like four devices with tensor
+of like four devices with tensor
+of like four devices with tensor
+parallelism across it um and in the end
+parallelism across it um and in the end
+parallelism across it um and in the end
+you can do like some pretty complicated
+you can do like some pretty complicated
+you can do like some pretty complicated
+computations it just gets more I guess
+computations it just gets more I guess
+computations it just gets more I guess
+more annoy to
+more annoy to
+more annoy to
+code yeah
+yes no
+yes no
+yes no
+no
+no
+no
+uh
+uh
+uh
+uh
+so in terms of choosing the sharding
+so in terms of choosing the sharding
+so in terms of choosing the sharding
+that is definitely not that is manually
+that is definitely not that is manually
+that is definitely not that is manually
+done right now now but it it could be
+done right now now but it it could be
+done right now now but it it could be
+done in the future I think it's not too
+done in the future I think it's not too
+done in the future I think it's not too
+hard to optimize but even coding this
+hard to optimize but even coding this
+hard to optimize but even coding this
+parallelism like like pytorch it's like
+parallelism like like pytorch it's like
+parallelism like like pytorch it's like
+pretty complicated like fsdp is very
+pretty complicated like fsdp is very
+pretty complicated like fsdp is very
+complicated um especially if you want
+complicated um especially if you want
+complicated um especially if you want
+things to to overlap when it
+things to to overlap when it
+things to to overlap when it
+communicates and does computation um Jax
+communicates and does computation um Jax
+communicates and does computation um Jax
+is a lot easier I guess since it does
+is a lot easier I guess since it does
+is a lot easier I guess since it does
+that all implicitly if you use Jax um
+that all implicitly if you use Jax um
+that all implicitly if you use Jax um
+where you don't actually because what
+where you don't actually because what
+where you don't actually because what
+Jax does is it will like it will treat
+Jax does is it will like it will treat
+Jax does is it will like it will treat
+the let's say you have a thousand
+the let's say you have a thousand
+the let's say you have a thousand
+devices it'll treat all thousand devices
+devices it'll treat all thousand devices
+devices it'll treat all thousand devices
+as one single device and then Jax's job
+as one single device and then Jax's job
+as one single device and then Jax's job
+would then be to like you you can defi
+would then be to like you you can defi
+would then be to like you you can defi
+you can Define certain sharting
+you can Define certain sharting
+you can Define certain sharting
+constraints of how matrices are sharded
+constraints of how matrices are sharded
+constraints of how matrices are sharded
+but it will figure out when it compiles
+but it will figure out when it compiles
+but it will figure out when it compiles
+a graph it will figure out what
+a graph it will figure out what
+a graph it will figure out what
+collectives do I need to do to do this
+collectives do I need to do to do this
+collectives do I need to do to do this
+computation um versus for pytorch at
+computation um versus for pytorch at
+computation um versus for pytorch at
+least for for now you have to explicitly
+least for for now you have to explicitly
+least for for now you have to explicitly
+code every
+code every
+code every
+communication um yeah which is not ideal
+communication um yeah which is not ideal
+communication um yeah which is not ideal
+but it's also less prone to like like ja
+but it's also less prone to like like ja
+but it's also less prone to like like ja
+can do stupid things where like it will
+can do stupid things where like it will
+can do stupid things where like it will
+do collectives where you don't want it
+do collectives where you don't want it
+do collectives where you don't want it
+to um and it can slow things down a lot
+to um and it can slow things down a lot
+to um and it can slow things down a lot
+and it's hard to debug but when it does
+and it's hard to debug but when it does
+and it's hard to debug but when it does
+work it's very nice um where P toward is
+work it's very nice um where P toward is
+work it's very nice um where P toward is
+doing everything swissy is annoying but
+doing everything swissy is annoying but
+doing everything swissy is annoying but
+it could be less a
+it could be less a
+it could be less a
+prone but yeah to answer your question
+prone but yeah to answer your question
+prone but yeah to answer your question
+it's like it's still it's still like a
+it's like it's still it's still like a
+it's like it's still it's still like a
+non-trivial mod of
+non-trivial mod of
+non-trivial mod of
+work yeah
+um so the
+um so the
+um so the
+the the the easiest way to think about
+the the the easiest way to think about
+the the the easiest way to think about
+let's say between fsdp and TP the main
+let's say between fsdp and TP the main
+let's say between fsdp and TP the main
+difference between these two is there're
+difference between these two is there're
+difference between these two is there're
+both ways to sh your model in some sense
+both ways to sh your model in some sense
+both ways to sh your model in some sense
+um the main difference is that fstp
+um the main difference is that fstp
+um the main difference is that fstp
+still requires a batch size of one per
+still requires a batch size of one per
+still requires a batch size of one per
+device so if I have a thousand devices I
+device so if I have a thousand devices I
+device so if I have a thousand devices I
+need at least a thousand batch size
+need at least a thousand batch size
+need at least a thousand batch size
+versus for TP I can have a batch size of
+versus for TP I can have a batch size of
+versus for TP I can have a batch size of
+one across let's say four devices or
+one across let's say four devices or
+one across let's say four devices or
+eight devices so that also lets you like
+eight devices so that also lets you like
+eight devices so that also lets you like
+if you increase the the TP allocation
+if you increase the the TP allocation
+if you increase the the TP allocation
+for your device is you can train on like
+for your device is you can train on like
+for your device is you can train on like
+a lower batch size which um which may be
+a lower batch size which um which may be
+a lower batch size which um which may be
+something you want if a single batch
+something you want if a single batch
+something you want if a single batch
+doesn't fit in a single device if you're
+doesn't fit in a single device if you're
+doesn't fit in a single device if you're
+training on like a like a one like
+training on like a like a one like
+training on like a like a one like
+100,000 length sequences then that
+100,000 length sequences then that
+100,000 length sequences then that
+probably can't fit in a single batch so
+probably can't fit in a single batch so
+probably can't fit in a single batch so
+then you can uh parallelize it with TP
+then you can uh parallelize it with TP
+then you can uh parallelize it with TP
+um to fit that in memory but in general
+um to fit that in memory but in general
+um to fit that in memory but in general
+it's like as like as much fstp as
+it's like as like as much fstp as
+it's like as like as much fstp as
+possible that's like the general rule of
+possible that's like the general rule of
+possible that's like the general rule of
+them I follow
+um yeah You' probably need to
+um yeah You' probably need to
+um yeah You' probably need to
+use well that I'm not sure
+actually is not yeah right off the top
+actually is not yeah right off the top
+actually is not yeah right off the top
+of my head I don't know the answer to
+of my head I don't know the answer to
+of my head I don't know the answer to
+that okay
+that okay
+that okay
+um I
+um I
+um I
+think I think I already talked about
+think I think I already talked about
+think I think I already talked about
+this okay yeah cool yeah that's um
+this okay yeah cool yeah that's um
+this okay yeah cool yeah that's um
+pretty much it any other questions
+pretty much it any other questions
+pretty much it any other questions
+anything
+yep oh best is to maximize
+fsdp oh yeah but that's not that's not
+fsdp oh yeah but that's not that's not
+fsdp oh yeah but that's not that's not
+too hard I think that's not too hard
+yeah so at least with the current way
+yeah so at least with the current way
+yeah so at least with the current way
+some TPS are implemented is it's um it's
+some TPS are implemented is it's um it's
+some TPS are implemented is it's um it's
+like
+like
+like
+blocking or there are some things about
+blocking or there are some things about
+blocking or there are some things about
+memory but anyways like one aspect of it
+memory but anyways like one aspect of it
+memory but anyways like one aspect of it
+it is blocking so so G there is an all
+it is blocking so so G there is an all
+it is blocking so so G there is an all
+reduce you you can't really overlap that
+reduce you you can't really overlap that
+reduce you you can't really overlap that
+with anything because it has to compute
+with anything because it has to compute
+with anything because it has to compute
+the entire output and then it can feed
+the entire output and then it can feed
+the entire output and then it can feed
+It Forward versus let's say fsdp it can
+It Forward versus let's say fsdp it can
+It Forward versus let's say fsdp it can
+be fully
+be fully
+be fully
+overlapped um which will in the end
+overlapped um which will in the end
+overlapped um which will in the end
+result in no overhead so and and then
+result in no overhead so and and then
+result in no overhead so and and then
+there's some aspects of TP which is a
+there's some aspects of TP which is a
+there's some aspects of TP which is a
+little bit less memory efficient because
+little bit less memory efficient because
+little bit less memory efficient because
+like here it does like a replication
+like here it does like a replication
+like here it does like a replication
+which is not ideal um so it's like a
+which is not ideal um so it's like a
+which is not ideal um so it's like a
+little bit less memory efficient and it
+little bit less memory efficient and it
+little bit less memory efficient and it
+could be a little bit um it could be
+could be a little bit um it could be
+could be a little bit um it could be
+sometimes a little bit slower usually I
+sometimes a little bit slower usually I
+sometimes a little bit slower usually I
+just found that like if your bad size
+just found that like if your bad size
+just found that like if your bad size
+are large enough then do fsdp and it
+are large enough then do fsdp and it
+are large enough then do fsdp and it
+just is
+better yeah
+I
+I
+I
+would well if it's a hugging face model
+would well if it's a hugging face model
+would well if it's a hugging face model
+then um you just hope and pray someone's
+then um you just hope and pray someone's
+then um you just hope and pray someone's
+done it for you
+somewhere yeah that's that's hard that I
+somewhere yeah that's that's hard that I
+somewhere yeah that's that's hard that I
+also don't work that much with them if
+also don't work that much with them if
+also don't work that much with them if
+it's just implementing a Transformer
+it's just implementing a Transformer
+it's just implementing a Transformer
+sharding then I I just use I just
+sharding then I I just use I just
+sharding then I I just use I just
+recommend Jack or something um it's like
+recommend Jack or something um it's like
+recommend Jack or something um it's like
+significantly
+easier
+um in
+um in
+um in
+jacks or or if it's like a popular
+jacks or or if it's like a popular
+jacks or or if it's like a popular
+enough model let's say llama or
+enough model let's say llama or
+enough model let's say llama or
+something then yeah there are
+something then yeah there are
+something then yeah there are
+implementations with charart it
+implementations with charart it
+implementations with charart it
+there's no official implementations um
+there's no official implementations um
+there's no official implementations um
+but like there is like I I I I use like
+but like there is like I I I I use like
+but like there is like I I I I use like
+um what is it
+um what is it
+um what is it
+called I forgot what it's called it was
+called I forgot what it's called it was
+called I forgot what it's called it was
+some inference Library the the one from
+some inference Library the the one from
+some inference Library the the one from
+from rise or or
+from rise or or
+from rise or or
+now no um I don't know why I forgot but
+now no um I don't know why I forgot but
+now no um I don't know why I forgot but
+anyways those support like let's say
+anyways those support like let's say
+anyways those support like let's say
+like tensor parallelism I think is the
+like tensor parallelism I think is the
+like tensor parallelism I think is the
+main one that it supports um aside from
+main one that it supports um aside from
+main one that it supports um aside from
+that there isn't really anything
+that there isn't really anything
+that there isn't really anything
+else aside from implement yourself which
+else aside from implement yourself which
+else aside from implement yourself which
+is kind of
+annoying those are mutually exclusive
+annoying those are mutually exclusive
+annoying those are mutually exclusive
+you can do both of them because
+you can do both of them because
+you can do both of them because
+attention attention sharting I explained
+attention attention sharting I explained
+attention attention sharting I explained
+was over the heads and the ring
+was over the heads and the ring
+was over the heads and the ring
+attention is over sequence length so you
+attention is over sequence length so you
+attention is over sequence length so you
+can technically do both of
+them cool okay I think that's all the
+them cool okay I think that's all the
+them cool okay I think that's all the
+questions is that question okay cool
+questions is that question okay cool
+questions is that question okay cool
+yeah
+yeah
+yeah
+w
+w
+w
+[Applause]

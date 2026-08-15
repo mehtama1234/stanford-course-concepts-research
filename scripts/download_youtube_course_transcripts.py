@@ -76,6 +76,30 @@ COURSES: list[dict[str, Any]] = [
             ("oyLUvz9nR6E", "Lecture 8 - Trending Topics"),
         ],
     },
+    {
+        "slug": "berkeley-cs294-158-deep-unsupervised-learning-spring-2024",
+        "title": "UC Berkeley CS294-158 Deep Unsupervised Learning | Spring 2024",
+        "kind": "playlist",
+        "seed_url": "https://www.youtube.com/watch?v=tFR6Likf4VI&list=PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+        "playlist_url": "https://www.youtube.com/playlist?list=PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+        "source_note": "Playlist supplied by user for Deep Unsupervised Learning.",
+        "videos": [
+            ("tFR6Likf4VI", "L1 Introduction"),
+            ("2ojJUSMf-_g", "L2 Autoregressive Models"),
+            ("SkSDCzz41Vs", "L3 Flow Models"),
+            ("NlIqjtbjjRE", "L4 Latent Variable Models and Variational AutoEncoders"),
+            ("lFAHPJS2HHc", "L5 GANs"),
+            ("DsEDMjdxOv4", "L6 Diffusion Models"),
+            ("s6xh6oKq1C0", "L7 Self-Supervised Learning"),
+            ("tCgX48cvuw4", "L8 Large Language Models"),
+            ("8ibaG_DPly8", "L9 Energy-Based Models"),
+            ("HTtN7rO-jBI", "L10 Implicit Models"),
+            ("4dyf_SALtxM", "L11 Representation Learning"),
+            ("Z96YMktT_T4", "L12 Applications"),
+            ("A36T-MPihTo", "L13 Frontiers"),
+            ("Hr2FWHBuNXs", "L14 Course Wrap-Up"),
+        ],
+    },
 ]
 
 

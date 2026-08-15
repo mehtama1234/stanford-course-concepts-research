@@ -128,6 +128,7 @@ def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
         ("llms.html", "LLMs", "llms"),
         ("deep-rl.html", "Deep RL", "deep_rl"),
         ("diffusion.html", "Diffusion", "diffusion"),
+        ("deep-unsupervised.html", "Unsupervised", "deep_unsupervised"),
         ("concepts.html", "Concepts", "concepts"),
         ("themes.html", "Themes", "themes"),
         ("families.html", "Method Families", "families"),
@@ -362,6 +363,7 @@ def build_concepts(concepts: list[dict[str, Any]], evidence: list[dict[str, Any]
 DEEP_RL_COURSE = "stanford-cs224r-deep-rl-spring-2025"
 DIFFUSION_COURSE = "stanford-cme296-diffusion-large-vision-models-spring-2026"
 LLM_COURSE = "stanford-cme295-transformers-llms-autumn-2025"
+DEEP_UNSUPERVISED_COURSE = "berkeley-cs294-158-deep-unsupervised-learning-spring-2024"
 
 DEEP_RL_LECTURE_GUIDE: dict[int, dict[str, Any]] = {
     1: {
@@ -967,6 +969,95 @@ def build_diffusion(
     write(SITE / "diffusion.html", page("Diffusion Lecture Guide", body, "diffusion"))
 
 
+def deep_unsupervised_big_picture() -> str:
+    return """
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: most data has no answer key. A pile of images, text, video, molecules, or 3D views does not say what label each example deserves. But the data is not random. It has repeated parts, hidden causes, patterns over time, and rules about what can exist. Deep unsupervised learning asks how a model can use those regularities as its teacher.</p>
+  <p>The course keeps rebuilding one problem in different forms: choose what structure to learn, choose how to train from raw examples, choose how to generate or represent new examples, and then check whether the learned structure is useful rather than just memorized.</p>
+  <div class="principle-grid">
+    <article><h3>Raw Data Still Teaches</h3><p>Labels are missing, but every example contains relations among parts that can become a training signal.</p></article>
+    <article><h3>Probability Measures Fit</h3><p>Some methods ask whether the model assigns high probability to real data and low probability elsewhere.</p></article>
+    <article><h3>Generation Needs A Route</h3><p>Models make samples by predicting pieces, transforming noise, decoding hidden codes, competing with a judge, or denoising step by step.</p></article>
+    <article><h3>Hidden Codes Explain Causes</h3><p>Latent variables compress observations into factors that can help reconstruction, sampling, or downstream tasks.</p></article>
+    <article><h3>Good Features Drop Noise</h3><p>Self-supervised learning builds representations that keep stable meaning while ignoring changes that should not matter.</p></article>
+    <article><h3>Control Changes The Task</h3><p>Text, class labels, properties, views, or scientific constraints turn random generation into directed generation.</p></article>
+    <article><h3>Scale Changes Bottlenecks</h3><p>Large models make simple objectives powerful, but memory, communication, sampling speed, and evaluation become central.</p></article>
+    <article><h3>Scores Are Incomplete</h3><p>A model can have good likelihood, sharp samples, useful features, or scientific value; one number rarely captures all of that.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-3:</strong> set up unlabeled data, then study exact probability through ordered prediction and invertible transformations.</li>
+    <li><strong>Lectures 4-6:</strong> move through the main generative families: hidden-code models, adversarial generators, and diffusion models.</li>
+    <li><strong>Lectures 7-8:</strong> connect unsupervised objectives to representation learning and large language models.</li>
+    <li><strong>Lectures 9-10:</strong> extend the same ideas to video and semi-supervised learning, where time and limited labels add new constraints.</li>
+    <li><strong>Lectures 11-13:</strong> apply generative modeling to science, 3D scenes, and multimodal systems where outputs must obey outside structure.</li>
+    <li><strong>Lecture 14:</strong> explains the hardware and parallel training moves needed when the models become too large for one machine.</li>
+  </ol>
+</section>
+"""
+
+
+def build_deep_unsupervised(
+    transcript_index: list[dict[str, Any]],
+    concepts: list[dict[str, Any]],
+    evidence: list[dict[str, Any]],
+    lecture_guides: list[dict[str, Any]],
+    lecture_approaches: list[dict[str, Any]],
+) -> None:
+    lectures = [
+        record
+        for record in transcript_index
+        if record.get("course_slug") == DEEP_UNSUPERVISED_COURSE and record.get("transcript_status") == "available"
+    ]
+    lectures.sort(key=lambda record: int(record.get("course_index", 0)))
+    concept_by_id = {concept["id"]: concept for concept in concepts}
+    evidence_by_title = course_evidence_by_title(evidence, DEEP_UNSUPERVISED_COURSE)
+    guide_by_number = {int(guide["number"]): guide for guide in lecture_guides}
+    approaches_by_number = {
+        int(record["number"]): record.get("approaches", [])
+        for record in lecture_approaches
+    }
+    lecture_links = " ".join(
+        f'<a class="chip" href="#lecture-{lecture_number(lecture)}">{esc(lecture.get("expected_title", lecture.get("title", "")))}</a>'
+        for lecture in lectures
+    )
+    cards = []
+    for lecture in lectures:
+        number = lecture_number(lecture)
+        guide = guide_by_number.get(number)
+        if not guide:
+            continue
+        cards.append(
+            diffusion_lecture_card(
+                lecture,
+                guide,
+                approaches_by_number.get(number, []),
+                evidence_by_title.get(lecture["title"], []),
+                concept_by_id,
+            )
+        )
+    body = f"""
+<section class="page-head">
+  <p class="eyebrow">UC Berkeley CS294-158 Deep Unsupervised Learning</p>
+  <h1>Deep Unsupervised Learning Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Deep unsupervised learning studies how a model can learn from raw data when labels are missing, partial, expensive, or not the main point. The course keeps returning to six facts: data has hidden structure, probability can describe that structure, generation needs a route, representations must keep useful factors, control changes what counts as success, and scale creates new engineering limits.</p>
+  <p class="chips">{lecture_links}</p>
+</section>
+{deep_unsupervised_big_picture()}
+<section class="stack">
+  {''.join(cards)}
+</section>
+"""
+    write(SITE / "deep-unsupervised.html", page("Deep Unsupervised Learning Lecture Guide", body, "deep_unsupervised"))
+
+
 def llm_big_picture() -> str:
     return """
 <section class="wide-card">
@@ -1288,6 +1379,8 @@ def main() -> None:
     diffusion_approaches = load_json("analysis/diffusion/lecture-approaches.json")
     llm_guides = load_json("analysis/llms/lecture-guide.json")
     llm_approaches = load_json("analysis/llms/lecture-approaches.json")
+    deep_unsupervised_guides = load_json("analysis/deep-unsupervised/lecture-guide.json")
+    deep_unsupervised_approaches = load_json("analysis/deep-unsupervised/lecture-approaches.json")
     primitives = load_json("analysis/throughlines/primitives.json")
     families = load_json("analysis/throughlines/method-families.json")
     build_assets()
@@ -1295,6 +1388,13 @@ def main() -> None:
     build_llms(transcript_index, concepts, evidence, llm_guides, llm_approaches)
     build_deep_rl(transcript_index, concepts, evidence, lecture_guides, lecture_approaches)
     build_diffusion(transcript_index, concepts, evidence, diffusion_guides, diffusion_approaches)
+    build_deep_unsupervised(
+        transcript_index,
+        concepts,
+        evidence,
+        deep_unsupervised_guides,
+        deep_unsupervised_approaches,
+    )
     build_concepts(concepts, evidence)
     build_themes(themes, subthemes, concepts)
     build_families(families, evidence)

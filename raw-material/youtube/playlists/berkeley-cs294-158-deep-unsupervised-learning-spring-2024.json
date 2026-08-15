@@ -1,0 +1,596 @@
+{
+  "id": "PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+  "title": "Deep Unsupervised Learning -- Berkeley Spring 2024",
+  "availability": "public",
+  "channel_follower_count": null,
+  "description": "",
+  "tags": [],
+  "thumbnails": [
+    {
+      "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEWCKgBEF5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLAP3Y08EvBYkfdhCOzgsiqkH_jyfg",
+      "height": 94,
+      "width": 168,
+      "id": "0",
+      "resolution": "168x94"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEWCMQBEG5IWvKriqkDCQgBFQAAiEIYAQ==&rs=AOn4CLDzmn5yHLEEPHLDtdpCaZ3FDlggMw",
+      "height": 110,
+      "width": 196,
+      "id": "1",
+      "resolution": "196x110"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEXCPYBEIoBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBlpB_yLyWFFvSrsLK65oiL72E-gA",
+      "height": 138,
+      "width": 246,
+      "id": "2",
+      "resolution": "246x138"
+    },
+    {
+      "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEXCNACELwBSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLD_dfdyAY4i1KBVBPVLG70Qy7TPQg",
+      "height": 188,
+      "width": 336,
+      "id": "3",
+      "resolution": "336x188"
+    }
+  ],
+  "modified_date": "20240427",
+  "view_count": 49204,
+  "playlist_count": 14,
+  "channel": "Pieter Abbeel",
+  "channel_id": "UC88M-XNc4BlzJVJvOyiHZDQ",
+  "uploader_id": "@PieterAbbeel",
+  "uploader": "Pieter Abbeel",
+  "channel_url": "https://www.youtube.com/channel/UC88M-XNc4BlzJVJvOyiHZDQ",
+  "uploader_url": "https://www.youtube.com/@PieterAbbeel",
+  "_type": "playlist",
+  "entries": [
+    {
+      "title": "L1 Introduction -- CS294-158 SP24 Deep Unsupervised Learning -- UC Berkeley Spring 2024",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDCEzEzAV7IUVj2-PcrAyd7slMHcg",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDYrGZ7fVnP4EJRtR_I2y7T-ftVDw",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLB8Eg__A5Jg0QlrA4OYpk3dCCtjow",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tFR6Likf4VI/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLA8U76MV6b5T2quUyhMW51Fwnn3cg",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 4751,
+      "view_count": 35000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "tFR6Likf4VI",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=tFR6Likf4VI",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L2 Autoregressive Models -- CS294-158 SP24 Deep Unsupervised Learning -- UC Berkeley Spring 2024",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/2ojJUSMf-_g/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLAl7g-8iy2lfxmvAwrY2wd56UI57w",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/2ojJUSMf-_g/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLBTa2yaX183XhbdQ7dDexg0OQH5aw",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/2ojJUSMf-_g/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLCUYhzcml6D2JDkbqS3kHFRkkeZXg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/2ojJUSMf-_g/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLCwTArJtxl0CLsmY3yinWfyGIFh9A",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 7869,
+      "view_count": 20000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "2ojJUSMf-_g",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=2ojJUSMf-_g",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L3 Flow Models",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/SkSDCzz41Vs/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AG-B4AC0AWKAgwIABABGFcgXShlMA8=&rs=AOn4CLCh_-vTx1fK5kjgG8oy2x4XB8GzZA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/SkSDCzz41Vs/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AG-B4AC0AWKAgwIABABGFcgXShlMA8=&rs=AOn4CLAQB7i23beGuyBHeACn_iQl9olVIQ",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/SkSDCzz41Vs/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBvgeAAtAFigIMCAAQARhXIF0oZTAP&rs=AOn4CLDYuqahNEEtiANs-8UQ8TbOFRd1DQ",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/SkSDCzz41Vs/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBvgeAAtAFigIMCAAQARhXIF0oZTAP&rs=AOn4CLCQjYbgtdBXQ14aGc7Gy5JNDx7nfQ",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 8371,
+      "view_count": 11000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "SkSDCzz41Vs",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=SkSDCzz41Vs",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L4 Latent Variable Models and Variational AutoEncoders -- CS294-158 SP24 Deep Unsupervised Learning",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/NlIqjtbjjRE/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFogXyhlMA8=&rs=AOn4CLCKZN_4D_RL1FH5AMqE6xng0dh-Nw",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/NlIqjtbjjRE/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFogXyhlMA8=&rs=AOn4CLD_6LYjiVfqwjIo_cw4EHgAOItdFg",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/NlIqjtbjjRE/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhaIF8oZTAP&rs=AOn4CLBUmkYA562UU-H5vdEi-gb38i7VsA",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/NlIqjtbjjRE/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhaIF8oZTAP&rs=AOn4CLA6qfSoW1spY8L7_1YEZYcTHBQZxQ",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 7716,
+      "view_count": 10000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "NlIqjtbjjRE",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=NlIqjtbjjRE",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L5 GANs -- CS294-158 SP24 Deep Unsupervised Learning -- UC Berkeley",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/lFAHPJS2HHc/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFggVShlMA8=&rs=AOn4CLA4lnaXV8Y04SZYYWw_aLUkhrDGNA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/lFAHPJS2HHc/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFggVShlMA8=&rs=AOn4CLDuLZm9QeIHZk1lNW6aPqxZo6Rn9A",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/lFAHPJS2HHc/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhYIFUoZTAP&rs=AOn4CLCZ2mNyOq2zi_7nN_ztyqY0AQSMsw",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/lFAHPJS2HHc/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhYIFUoZTAP&rs=AOn4CLAsFtf7LBjMsYPHE_Uqxn6f5Gf31w",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 9144,
+      "view_count": 5800,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "lFAHPJS2HHc",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=lFAHPJS2HHc",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L6 Diffusion Models (SP24)",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/DsEDMjdxOv4/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDS5v5pJ6B1PwWP8GGUIJHurppKSg",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/DsEDMjdxOv4/hqdefault.jpg?sqp=-oaymwEbCMQBEG5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDxSB1GQSoVXRzrbhNIO9PNZYsJpA",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/DsEDMjdxOv4/hqdefault.jpg?sqp=-oaymwEcCPYBEIoBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAI0N3Lzts87gM7bC_SaMX5Ky3sdg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/DsEDMjdxOv4/hqdefault.jpg?sqp=-oaymwEcCNACELwBSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLAeiB6vMEdthAAtN3kTGAlxPQniFA",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 8544,
+      "view_count": 31000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "DsEDMjdxOv4",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=DsEDMjdxOv4",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L7 Self-Supervised Learning (Spring 2024, UC Berkeley) -- Pieter Abbeel & Philipp Wu",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/s6xh6oKq1C0/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFggVyhlMA8=&rs=AOn4CLAwO117ZIfo3qOjLhZlsz-k9G4Kdw",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/s6xh6oKq1C0/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFggVyhlMA8=&rs=AOn4CLAa8KP_13XcSKafx1AJxlo0J7Yxpg",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/s6xh6oKq1C0/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhYIFcoZTAP&rs=AOn4CLAOQXjWhegq02oGYybeFlZJeWn7fg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/s6xh6oKq1C0/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhYIFcoZTAP&rs=AOn4CLB0LSK_sm84rWIVJhT8hBMej8TRSw",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 9115,
+      "view_count": 12000,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "s6xh6oKq1C0",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=s6xh6oKq1C0",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L8 Large Language Models (LLMs) --- Guest Instructor Hao Liu",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/tCgX48cvuw4/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AG2CIAC0AWKAgwIABABGH8gEyhVMA8=&rs=AOn4CLBRmjNeVOu6WilloiMUeUvMMZyROA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tCgX48cvuw4/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AG2CIAC0AWKAgwIABABGH8gEyhVMA8=&rs=AOn4CLDSIxxK_824iAvfGA9JxNfExcS2FA",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tCgX48cvuw4/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBtgiAAtAFigIMCAAQARh_IBMoVTAP&rs=AOn4CLA81-gFapMFci8XwR9-RQ5cyy1XdA",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/tCgX48cvuw4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgBtgiAAtAFigIMCAAQARh_IBMoVTAP&rs=AOn4CLBeEGTuTyWZbf_TcESnrqbPlnfBgw",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 8096,
+      "view_count": 4400,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "tCgX48cvuw4",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=tCgX48cvuw4",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L9 Generative Video -- UC Berkeley, Spring 2024 -- Wilson Yan",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/8ibaG_DPly8/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLDaKg0s6rwhzrBI01bNTyInHYjBxQ",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/8ibaG_DPly8/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLBWm5AgsnJIqZnUGcq0X4kNS6gsdQ",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/8ibaG_DPly8/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDkAKZye-wdG9aPdOlDybW8SyABsg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/8ibaG_DPly8/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLCkhoNd9y3jOqz0th2HN8xUdNCxhg",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 4434,
+      "view_count": 3700,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "8ibaG_DPly8",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=8ibaG_DPly8",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L10 Semisupervised Learning and Unsupervised Distribution Alignment -- UC Berkeley Sprint 2024",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/HTtN7rO-jBI/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLDxE6PdHSFZlLMZVBghQ87tMZG2MQ",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/HTtN7rO-jBI/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLALAQWlHFg9ixvMDMuEG0O6sep5Zg",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/HTtN7rO-jBI/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLAbJOuw-9KuDheLwApq-FK_eVA0JA",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/HTtN7rO-jBI/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLAuSvDPwl7taY-udsipc6c06ccbQg",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 5245,
+      "view_count": 2900,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "HTtN7rO-jBI",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=HTtN7rO-jBI",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L13a Generative Modeling for Science -- Guest Lecturer John Ingraham",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/4dyf_SALtxM/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFsgWyhbMA8=&rs=AOn4CLBUIsXH4isrP27td1JI3zx7LLmFMA",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/4dyf_SALtxM/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFsgWyhbMA8=&rs=AOn4CLAq_ZHHtbMdxKN-f4ldFmHrQTslSw",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/4dyf_SALtxM/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhbIFsoWzAP&rs=AOn4CLBPQ5BXtzrRPMjAavs46nrJgzPzZg",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/4dyf_SALtxM/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhbIFsoWzAP&rs=AOn4CLCgjtD-B7kJBBnBnHRMX0Ms0aVm3Q",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 4801,
+      "view_count": 3300,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "4dyf_SALtxM",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=4dyf_SALtxM",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L13b Neural Radiance Fields  -- Guest Lecturer Ben Mildenhall",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/Z96YMktT_T4/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CIAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLDJ1QXlcGuJNSK14MNwS3Yt65ZYew",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Z96YMktT_T4/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CIAC0AWKAgwIABABGGUgZShlMA8=&rs=AOn4CLBGYEaT7uSuocFRQWWwgO-_dlES1g",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Z96YMktT_T4/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_giAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLD-FgGQSCkURf0RC3FOJFGFxvgNkw",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Z96YMktT_T4/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_giAAtAFigIMCAAQARhlIGUoZTAP&rs=AOn4CLDf33HxjU47A2mVk1--JKxqN1FAuw",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 3864,
+      "view_count": 4800,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "Z96YMktT_T4",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=Z96YMktT_T4",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L12a Multimodal Models  -- Instructor: Wilson Yan",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/A36T-MPihTo/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFQgVihlMA8=&rs=AOn4CLCY7a6UsgSQpOMueP5B2zFnBL9_8w",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/A36T-MPihTo/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGFQgVihlMA8=&rs=AOn4CLCK6Q6VxwZfXjbfLtoMXf6NLNnZJw",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/A36T-MPihTo/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhUIFYoZTAP&rs=AOn4CLDkeqa1rshU_Si-lAWklB2A3cEJXA",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/A36T-MPihTo/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhUIFYoZTAP&rs=AOn4CLD_B4gvl_ZMXfq25XW5nFrrGe9qFw",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 3180,
+      "view_count": 3700,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "A36T-MPihTo",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=A36T-MPihTo",
+      "__x_forwarded_for_ip": null
+    },
+    {
+      "title": "L12b Parallelization -- Instructor: Wilson Yan",
+      "thumbnails": [
+        {
+          "url": "https://i.ytimg.com/vi/Hr2FWHBuNXs/hqdefault.jpg?sqp=-oaymwE1CKgBEF5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgWSg-MA8=&rs=AOn4CLBPGsbK10sNYXit7SzYXdaQgCKWIQ",
+          "height": 94,
+          "width": 168
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Hr2FWHBuNXs/hqdefault.jpg?sqp=-oaymwE1CMQBEG5IVfKriqkDKAgBFQAAiEIYAXABwAEG8AEB-AH-CYAC0AWKAgwIABABGGUgWSg-MA8=&rs=AOn4CLBVm-HWwDYTAiqbJCauxLEJPn1LbA",
+          "height": 110,
+          "width": 196
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Hr2FWHBuNXs/hqdefault.jpg?sqp=-oaymwE2CPYBEIoBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFkoPjAP&rs=AOn4CLDjsAl5Q0tokRVAv2rWi2ShMbxBuw",
+          "height": 138,
+          "width": 246
+        },
+        {
+          "url": "https://i.ytimg.com/vi/Hr2FWHBuNXs/hqdefault.jpg?sqp=-oaymwE2CNACELwBSFXyq4qpAygIARUAAIhCGAFwAcABBvABAfgB_gmAAtAFigIMCAAQARhlIFkoPjAP&rs=AOn4CLAf5-t2iOTxoeCpYAtDJzD_Eg_Llw",
+          "height": 188,
+          "width": 336
+        }
+      ],
+      "duration": 2372,
+      "view_count": 3900,
+      "timestamp": null,
+      "live_status": null,
+      "availability": null,
+      "channel_url": null,
+      "uploader_url": null,
+      "creators": null,
+      "ie_key": "Youtube",
+      "id": "Hr2FWHBuNXs",
+      "_type": "url",
+      "url": "https://www.youtube.com/watch?v=Hr2FWHBuNXs",
+      "__x_forwarded_for_ip": null
+    }
+  ],
+  "extractor_key": "YoutubeTab",
+  "extractor": "youtube:tab",
+  "webpage_url": "https://www.youtube.com/playlist?list=PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+  "original_url": "https://www.youtube.com/playlist?list=PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+  "webpage_url_basename": "playlist",
+  "webpage_url_domain": "youtube.com",
+  "release_year": null,
+  "__files_to_move": {},
+  "_version": {
+    "version": "2026.07.04",
+    "current_git_head": null,
+    "release_git_head": "997fa140840a08df3938b40da470c78049fef1f6",
+    "repository": "yt-dlp/yt-dlp"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "slug": "berkeley-cs294-158-deep-unsupervised-learning-spring-2024",
+  "title": "UC Berkeley CS294-158 Deep Unsupervised Learning | Spring 2024",
+  "kind": "playlist",
+  "seed_url": "https://www.youtube.com/watch?v=tFR6Likf4VI&list=PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+  "playlist_url": "https://www.youtube.com/playlist?list=PLwRJQ4m4UJjPIvv4kgBkvu_uygrV3ut_U",
+  "source_note": "Playlist supplied by user for Deep Unsupervised Learning.",
+  "videos": [
+    {
+      "index": 1,
+      "id": "tFR6Likf4VI",
+      "expected_title": "L1 Introduction",
+      "url": "https://www.youtube.com/watch?v=tFR6Likf4VI"
+    },
+    {
+      "index": 2,
+      "id": "2ojJUSMf-_g",
+      "expected_title": "L2 Autoregressive Models",
+      "url": "https://www.youtube.com/watch?v=2ojJUSMf-_g"
+    },
+    {
+      "index": 3,
+      "id": "SkSDCzz41Vs",
+      "expected_title": "L3 Flow Models",
+      "url": "https://www.youtube.com/watch?v=SkSDCzz41Vs"
+    },
+    {
+      "index": 4,
+      "id": "NlIqjtbjjRE",
+      "expected_title": "L4 Latent Variable Models and Variational AutoEncoders",
+      "url": "https://www.youtube.com/watch?v=NlIqjtbjjRE"
+    },
+    {
+      "index": 5,
+      "id": "lFAHPJS2HHc",
+      "expected_title": "L5 GANs",
+      "url": "https://www.youtube.com/watch?v=lFAHPJS2HHc"
+    },
+    {
+      "index": 6,
+      "id": "DsEDMjdxOv4",
+      "expected_title": "L6 Diffusion Models",
+      "url": "https://www.youtube.com/watch?v=DsEDMjdxOv4"
+    },
+    {
+      "index": 7,
+      "id": "s6xh6oKq1C0",
+      "expected_title": "L7 Self-Supervised Learning",
+      "url": "https://www.youtube.com/watch?v=s6xh6oKq1C0"
+    },
+    {
+      "index": 8,
+      "id": "tCgX48cvuw4",
+      "expected_title": "L8 Large Language Models",
+      "url": "https://www.youtube.com/watch?v=tCgX48cvuw4"
+    },
+    {
+      "index": 9,
+      "id": "8ibaG_DPly8",
+      "expected_title": "L9 Energy-Based Models",
+      "url": "https://www.youtube.com/watch?v=8ibaG_DPly8"
+    },
+    {
+      "index": 10,
+      "id": "HTtN7rO-jBI",
+      "expected_title": "L10 Implicit Models",
+      "url": "https://www.youtube.com/watch?v=HTtN7rO-jBI"
+    },
+    {
+      "index": 11,
+      "id": "4dyf_SALtxM",
+      "expected_title": "L11 Representation Learning",
+      "url": "https://www.youtube.com/watch?v=4dyf_SALtxM"
+    },
+    {
+      "index": 12,
+      "id": "Z96YMktT_T4",
+      "expected_title": "L12 Applications",
+      "url": "https://www.youtube.com/watch?v=Z96YMktT_T4"
+    },
+    {
+      "index": 13,
+      "id": "A36T-MPihTo",
+      "expected_title": "L13 Frontiers",
+      "url": "https://www.youtube.com/watch?v=A36T-MPihTo"
+    },
+    {
+      "index": 14,
+      "id": "Hr2FWHBuNXs",
+      "expected_title": "L14 Course Wrap-Up",
+      "url": "https://www.youtube.com/watch?v=Hr2FWHBuNXs"
+    }
+  ]
+}

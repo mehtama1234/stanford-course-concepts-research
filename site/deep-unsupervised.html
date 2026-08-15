@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deep Unsupervised Learning Lecture Guide · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="llms.html">LLMs</a>
+<a class="" href="deep-rl.html">Deep RL</a>
+<a class="" href="diffusion.html">Diffusion</a>
+<a class="active" href="deep-unsupervised.html">Unsupervised</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">UC Berkeley CS294-158 Deep Unsupervised Learning</p>
+  <h1>Deep Unsupervised Learning Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Deep unsupervised learning studies how a model can learn from raw data when labels are missing, partial, expensive, or not the main point. The course keeps returning to six facts: data has hidden structure, probability can describe that structure, generation needs a route, representations must keep useful factors, control changes what counts as success, and scale creates new engineering limits.</p>
+  <p class="chips"><a class="chip" href="#lecture-1">L1 Introduction</a> <a class="chip" href="#lecture-2">L2 Autoregressive Models</a> <a class="chip" href="#lecture-3">L3 Flow Models</a> <a class="chip" href="#lecture-4">L4 Latent Variable Models and Variational AutoEncoders</a> <a class="chip" href="#lecture-5">L5 GANs</a> <a class="chip" href="#lecture-6">L6 Diffusion Models</a> <a class="chip" href="#lecture-7">L7 Self-Supervised Learning</a> <a class="chip" href="#lecture-8">L8 Large Language Models</a> <a class="chip" href="#lecture-9">L9 Energy-Based Models</a> <a class="chip" href="#lecture-10">L10 Implicit Models</a> <a class="chip" href="#lecture-11">L11 Representation Learning</a> <a class="chip" href="#lecture-12">L12 Applications</a> <a class="chip" href="#lecture-13">L13 Frontiers</a> <a class="chip" href="#lecture-14">L14 Course Wrap-Up</a></p>
+</section>
+
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: most data has no answer key. A pile of images, text, video, molecules, or 3D views does not say what label each example deserves. But the data is not random. It has repeated parts, hidden causes, patterns over time, and rules about what can exist. Deep unsupervised learning asks how a model can use those regularities as its teacher.</p>
+  <p>The course keeps rebuilding one problem in different forms: choose what structure to learn, choose how to train from raw examples, choose how to generate or represent new examples, and then check whether the learned structure is useful rather than just memorized.</p>
+  <div class="principle-grid">
+    <article><h3>Raw Data Still Teaches</h3><p>Labels are missing, but every example contains relations among parts that can become a training signal.</p></article>
+    <article><h3>Probability Measures Fit</h3><p>Some methods ask whether the model assigns high probability to real data and low probability elsewhere.</p></article>
+    <article><h3>Generation Needs A Route</h3><p>Models make samples by predicting pieces, transforming noise, decoding hidden codes, competing with a judge, or denoising step by step.</p></article>
+    <article><h3>Hidden Codes Explain Causes</h3><p>Latent variables compress observations into factors that can help reconstruction, sampling, or downstream tasks.</p></article>
+    <article><h3>Good Features Drop Noise</h3><p>Self-supervised learning builds representations that keep stable meaning while ignoring changes that should not matter.</p></article>
+    <article><h3>Control Changes The Task</h3><p>Text, class labels, properties, views, or scientific constraints turn random generation into directed generation.</p></article>
+    <article><h3>Scale Changes Bottlenecks</h3><p>Large models make simple objectives powerful, but memory, communication, sampling speed, and evaluation become central.</p></article>
+    <article><h3>Scores Are Incomplete</h3><p>A model can have good likelihood, sharp samples, useful features, or scientific value; one number rarely captures all of that.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-3:</strong> set up unlabeled data, then study exact probability through ordered prediction and invertible transformations.</li>
+    <li><strong>Lectures 4-6:</strong> move through the main generative families: hidden-code models, adversarial generators, and diffusion models.</li>
+    <li><strong>Lectures 7-8:</strong> connect unsupervised objectives to representation learning and large language models.</li>
+    <li><strong>Lectures 9-10:</strong> extend the same ideas to video and semi-supervised learning, where time and limited labels add new constraints.</li>
+    <li><strong>Lectures 11-13:</strong> apply generative modeling to science, 3D scenes, and multimodal systems where outputs must obey outside structure.</li>
+    <li><strong>Lecture 14:</strong> explains the hardware and parallel training moves needed when the models become too large for one machine.</li>
+  </ol>
+</section>
+
+<section class="stack">
+
+<article class="lecture-card" id="lecture-1">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 1</p>
+      <h2>L1 Introduction</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=tFR6Likf4VI">Open video</a>
+  </div>
+  <p class="meta">1h 19m · 42686 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Unsupervised learning asks how a model can learn structure from data without being handed the desired answer for each example. The central difficulty is deciding what the learner should treat as evidence when nobody tells it the right category, action, caption, or property.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain deep unsupervised learning as learning structure from raw data when labels are missing or incomplete.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Deep unsupervised learning starts from a simple pressure: most data has no clean label, but it still contains structure. Images contain repeated shapes, text contains grammar, video contains motion, and scientific data contains physical regularities. The learner must use the data itself as the teacher. Instead of mapping inputs to provided labels, it builds a model of how data is arranged, how examples can be generated, or what representation makes future tasks easier. A useful way to think about the whole course is this: labels are only one kind of information. Repetition, co-occurrence, smooth change, missing-part prediction, and the ability to reproduce examples are also information. A model can learn from those signals if the training objective forces it to keep the real structure and discard accidental noise.</p>
+    <p>The course introduces families of answers to this pressure. Likelihood models try to assign probability to data. Latent variable models explain observations through hidden causes. GANs learn by comparison with a critic. Diffusion models learn by corrupting and repairing data. Self-supervised methods create their own prediction tasks. The shared first principle is compression with use: learn the hidden regularities that make data predictable, generatable, or useful for another task. This introduction matters because it gives a map for later choices. Autoregressive models make ordered predictions. Flows preserve information through invertible maps. VAEs use hidden codes. GANs use a learned judge. Diffusion uses repair after corruption. Self-supervised learning creates prediction tasks from the input itself. Each family is a different answer to the same question: what signal can raw data provide?</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Unsupervised learning uses raw data as the main source of supervision.</li><li>Generative models learn how data could be produced, not only how to classify it.</li><li>Representations are useful when they keep important factors and discard noise.</li><li>Different model families trade tractable likelihood, sample quality, stability, and usable features.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Learn From The Data Itself</h4>
+  <dl>
+    <dt>Problem</dt><dd>Most useful data does not arrive with hand-written answers, but it still has repeated structure.</dd>
+    <dt>How It Works</dt><dd>The model is trained on a task made from the data, such as predicting missing parts, reconstructing examples, assigning probability, or producing similar samples.</dd>
+    <dt>Why It Matters</dt><dd>This turns large unlabeled collections into training signal instead of waiting for expensive human labels.</dd>
+    <dt>Where It Breaks</dt><dd>The model can learn shortcuts that solve the training task without learning structure that helps later.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Separate Modeling Goals</h4>
+  <dl>
+    <dt>Problem</dt><dd>A method can be good at likelihood, samples, compression, or features, and those are not the same goal.</dd>
+    <dt>How It Works</dt><dd>The course sorts methods by what they make easy: exact probability, fast sampling, hidden-code learning, sharp generation, or transferable representations.</dd>
+    <dt>Why It Matters</dt><dd>It prevents comparing models by one score when they were built to solve different pressures.</dd>
+    <dt>Where It Breaks</dt><dd>A method can look strong under one goal while being weak for the actual use case.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A pile of unlabeled images still contains edges, objects, lighting, and scene types.</li><li>A text corpus teaches grammar and style even without manual labels.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Choose a modeling goal: likelihood, sample generation, representation, or downstream transfer.</li><li>Define the observed data x and possible hidden variables z.</li><li>Train by maximizing likelihood, minimizing reconstruction error, matching distributions, or solving a self-supervised task.</li><li>Evaluate by sample quality, likelihood, representation usefulness, or task transfer.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain deep unsupervised learning as learning structure from raw data when labels are missing or incomplete.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/001-tFR6Likf4VI-L1 Introduction -- CS294-158 SP24 Deep Unsupervised Learning -- UC Berkeley Spring 2024.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-2">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 2</p>
+      <h2>L2 Autoregressive Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=2ojJUSMf-_g">Open video</a>
+  </div>
+  <p class="meta">2h 11m · 67323 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A complex example can be modeled by breaking it into an ordered sequence of smaller conditional predictions.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain autoregressive modeling as exact probability modeling by predicting one ordered piece at a time.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Autoregressive modeling turns generation into a chain rule. Instead of producing the whole image, audio clip, or sentence at once, the model predicts one piece at a time given previous pieces. This makes likelihood exact because the probability of the full object becomes a product of conditional probabilities. The model learns the next pixel, token, or sample from the context already generated. The method is simple in principle but powerful in scale. If a sentence has ten tokens, the model learns token two from token one, token three from tokens one and two, and so on. For images, the same idea can use pixels or patches. For audio, it can use waveform samples or codes. The order creates a training target at every position, so one example gives many prediction problems.</p>
+    <p>The strength is clarity: training and evaluation use the same conditional prediction objective, and probabilities are tractable. The weakness is ordering and speed. The model must choose an order, and generation is often sequential because later pieces depend on earlier pieces. If early choices are bad, later predictions must live with them. Autoregressive models are powerful because they replace one huge joint problem with many smaller prediction problems. The lecture also makes clear why this family became central for language. Text already has a natural order, and next-token prediction uses that order directly. But the same idea is less natural for unordered data, because the chosen order can make nearby structure look far away. The model is exact as a probability model only because it commits to a factorization.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>The chain rule converts a joint probability into ordered conditional probabilities.</li><li>Training can use teacher forcing because the true previous pieces are known.</li><li>Sampling is usually sequential and can be slow.</li><li>Ordering choices shape what context is available at each prediction.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Chain-Rule Likelihood</h4>
+  <dl>
+    <dt>Problem</dt><dd>The full probability of a high-dimensional object is hard to model directly.</dd>
+    <dt>How It Works</dt><dd>Break the object into an order and write its probability as one conditional prediction after another, where each next piece depends on the pieces before it.</dd>
+    <dt>Why It Matters</dt><dd>Training and scoring become exact because each conditional probability is a normal supervised prediction problem.</dd>
+    <dt>Where It Breaks</dt><dd>Generation is slow and early sampled mistakes become part of the context for later predictions.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Teacher-Forced Training</h4>
+  <dl>
+    <dt>Problem</dt><dd>During training the model needs clean context, but during generation it must use its own past outputs.</dd>
+    <dt>How It Works</dt><dd>Train each next-piece predictor using the true earlier pieces from the data, then sample by feeding generated pieces back into the model.</dd>
+    <dt>Why It Matters</dt><dd>This makes large sequence models train efficiently on every position of every example.</dd>
+    <dt>Where It Breaks</dt><dd>The model can be surprised by its own imperfect samples because training context was cleaner than sampling context.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>Next-token language modeling predicts the next token from previous tokens.</li><li>PixelCNN-style image models predict pixels in raster order.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Factor p(x) as product_i p(x_i | x_&lt;i).</li><li>Use cross-entropy or negative log likelihood for each conditional prediction.</li><li>During training, condition on true earlier pieces.</li><li>During sampling, feed back generated earlier pieces.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain autoregressive modeling as exact probability modeling by predicting one ordered piece at a time.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/002-2ojJUSMf-_g-L2 Autoregressive Models -- CS294-158 SP24 Deep Unsupervised Learning -- UC Berkeley Spring 2024.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-3">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 3</p>
+      <h2>L3 Flow Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=SkSDCzz41Vs">Open video</a>
+  </div>
+  <p class="meta">2h 19m · 64331 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A model may need exact likelihood and fast sampling, but that requires transformations whose volume change can be computed. The method must keep every bit of information needed to go backward, while still bending a simple distribution into the shape of real data.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain flows as invertible transformations that keep exact probability computation possible.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Flow models start with a simple distribution such as a Gaussian and learn an invertible transformation to the data distribution. Because the transformation can be run both ways, the model can map data to noise for likelihood and noise to data for sampling. The key constraint is invertibility: the transformation must not destroy information, because the inverse must exist. Think of a flow as a reversible machine. One direction turns simple noise into a data-like sample. The other direction turns a real example back into simple noise. Because nothing is thrown away, the model can say exactly how surprising a data point is under the base noise after accounting for how the machine stretches space.</p>
+    <p>The central math handle is change of variables. If the model knows how volume changes under the transformation, it can compute the probability of the transformed point. This gives exact likelihood, but it restricts architecture design. Layers must be invertible and have tractable Jacobian determinants. Flow models show the tradeoff between mathematical cleanliness and expressive flexibility. This is why the Jacobian determinant matters. If a map expands a small region, probability density drops; if it compresses a region, density rises. The determinant measures that volume change. Flow layers are therefore judged by two demands at once: can they express complex transformations, and can their inverse and determinant be computed cheaply enough to train?</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Flows learn invertible maps between simple noise and data.</li><li>Exact likelihood comes from the change-of-variables formula.</li><li>The Jacobian determinant measures how the map stretches or shrinks volume.</li><li>Architecture is constrained because every layer must be invertible or tractable.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Normalizing Flow</h4>
+  <dl>
+    <dt>Problem</dt><dd>We want exact probability and sampling, but flexible generators usually hide the probability of each output.</dd>
+    <dt>How It Works</dt><dd>Start with simple noise and pass it through an invertible map. Use the inverse map and the volume change to compute exact data likelihood.</dd>
+    <dt>Why It Matters</dt><dd>It gives a rare combination: generated samples and exact likelihood from the same model.</dd>
+    <dt>Where It Breaks</dt><dd>Every layer must be invertible and have a tractable volume term, which limits architecture choices.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Coupling Layers</h4>
+  <dl>
+    <dt>Problem</dt><dd>A fully general invertible neural network can make the volume term too costly to compute.</dd>
+    <dt>How It Works</dt><dd>Hold part of the vector fixed while using it to transform the other part, so the inverse and determinant stay simple.</dd>
+    <dt>Why It Matters</dt><dd>This makes deep invertible models practical instead of only mathematically possible.</dd>
+    <dt>Where It Breaks</dt><dd>The split structure can reduce mixing unless many layers and permutations are stacked carefully.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A warped grid shows how simple noise can be bent into a complex data shape.</li><li>RealNVP-style coupling layers update part of a vector while keeping inversion easy.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Sample z from a simple base p(z).</li><li>Map x = f_theta(z) for generation.</li><li>Map z = f_theta^{-1}(x) for likelihood.</li><li>Compute log p(x)=log p(z)+log|det dz/dx|.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain flows as invertible transformations that keep exact probability computation possible.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/003-SkSDCzz41Vs-L3 Flow Models.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-4">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 4</p>
+      <h2>L4 Latent Variable Models and Variational AutoEncoders</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=NlIqjtbjjRE">Open video</a>
+  </div>
+  <p class="meta">2h 8m · 62140 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Observed data often has hidden causes, but those causes are not directly labeled. A model needs a way to explain an observation through hidden factors even though those factors are never directly written in the dataset.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain a VAE as learning hidden codes that reconstruct data while staying sampleable from a simple prior.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Latent variable models explain an observation through hidden variables. An image might be caused by object identity, pose, lighting, background, and style. A VAE turns this idea into a trainable model with two parts: an encoder that guesses a distribution over hidden causes from data, and a decoder that reconstructs or generates data from a sampled hidden code. The VAE view starts from a common-sense idea: what we see is often produced by causes we do not see. A face image comes from identity, pose, lighting, expression, camera, and background. The model invents a hidden code for those causes. The encoder maps an image to a distribution over possible codes, because many hidden explanations could fit the same observation.</p>
+    <p>The hard part is that exact posterior inference over hidden causes is usually intractable. VAEs use an approximate posterior and optimize a lower bound. The reconstruction term asks the decoder to explain the data. The KL term keeps the hidden-code distribution close to a simple prior so sampling works. This creates a tradeoff: too much pressure on the prior can make codes uninformative; too little can make generation messy. The decoder then asks whether a sampled code can explain the data. Training balances two forces. Reconstruction asks the code to carry enough information to rebuild the example. The prior penalty asks the codes to live in a clean, sampleable space. If reconstruction dominates, sampling from the prior may fail. If the prior dominates, the code may stop carrying useful information.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Latent variables represent hidden causes or compressed factors behind observations.</li><li>The encoder approximates hidden causes from data.</li><li>The decoder generates or reconstructs data from hidden codes.</li><li>The VAE objective balances reconstruction against a prior-matching penalty.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Variational Autoencoder</h4>
+  <dl>
+    <dt>Problem</dt><dd>Data may be explained by hidden causes, but those causes are not observed.</dd>
+    <dt>How It Works</dt><dd>An encoder guesses a distribution over hidden codes for an input, and a decoder learns to rebuild or generate data from sampled codes.</dd>
+    <dt>Why It Matters</dt><dd>It gives a trainable way to learn compressed hidden factors while keeping generation possible.</dd>
+    <dt>Where It Breaks</dt><dd>The decoder can ignore the code, or the prior pressure can make the code too weak.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Reparameterized Sampling</h4>
+  <dl>
+    <dt>Problem</dt><dd>Sampling a hidden code blocks ordinary gradient training if handled naively.</dd>
+    <dt>How It Works</dt><dd>Write the random code as a deterministic function of encoder outputs plus separate noise, so gradients can flow through the encoder.</dd>
+    <dt>Why It Matters</dt><dd>This makes latent-variable models trainable with standard neural-network optimization.</dd>
+    <dt>Where It Breaks</dt><dd>The gradient estimator works only for suitable continuous distributions and can still be noisy or poorly balanced.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A face image can be explained by latent factors such as pose, identity, and lighting.</li><li>A handwritten digit can be encoded into a small vector and decoded back into pixels.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Choose prior p(z), decoder p_theta(x|z), and encoder q_phi(z|x).</li><li>Sample z through the reparameterization trick.</li><li>Optimize reconstruction likelihood plus KL regularization.</li><li>Generate by sampling z from the prior and decoding.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain a VAE as learning hidden codes that reconstruct data while staying sampleable from a simple prior.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/004-NlIqjtbjjRE-L4 Latent Variable Models and Variational AutoEncoders -- CS294-158 SP24 Deep Unsupervised Learning.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-5">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 5</p>
+      <h2>L5 GANs</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=lFAHPJS2HHc">Open video</a>
+  </div>
+  <p class="meta">2h 32m · 72039 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Likelihood can be hard to write down, so a generator can instead learn from a judge that compares real and fake samples.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain GANs as generator-versus-judge training, with sharp samples but unstable optimization.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>GANs set up a contest. The generator tries to produce samples that look real. The discriminator tries to tell real samples from generated samples. The generator improves by finding ways to fool the discriminator. This avoids writing an explicit likelihood and can produce sharp samples because the feedback comes from whether samples look realistic rather than from pixel-by-pixel averaging. GANs replace a hand-written probability with a learned comparison game. The generator does not need to say how likely an image is. It only needs to produce an image that the discriminator cannot separate from real data. The discriminator becomes a moving measurement of what looks fake. This is useful when realism is hard to capture with a fixed formula.</p>
+    <p>The price is instability. The generator and discriminator learn together, so the target keeps moving. If the discriminator is too strong, the generator gets weak feedback. If the generator finds a narrow trick, it may produce limited kinds of samples, called mode collapse. GANs are important because they made implicit generation powerful, but they also show why adversarial training is hard to control. The contest is also the source of the trouble. The generator is not chasing a fixed target; it is chasing a discriminator that changes after every update. The discriminator can become too good and give little useful gradient, or the generator can find a narrow way to fool it. That narrow behavior is mode collapse: many inputs produce a small range of outputs.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>GANs learn an implicit generator without requiring a tractable likelihood.</li><li>The discriminator supplies a learned training signal by comparing real and fake samples.</li><li>Sharp samples can emerge because realism is judged distributionally.</li><li>Training can be unstable because both sides change during learning.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Adversarial Training</h4>
+  <dl>
+    <dt>Problem</dt><dd>Some generators can make samples without giving a usable likelihood to optimize.</dd>
+    <dt>How It Works</dt><dd>Train a discriminator to separate real from fake samples, then train the generator to make fake samples the discriminator accepts as real.</dd>
+    <dt>Why It Matters</dt><dd>It supplies a learned realism signal and can produce sharp samples without pixel-wise averaging.</dd>
+    <dt>Where It Breaks</dt><dd>The target changes while training, so learning can oscillate, collapse, or stop giving useful gradients.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Discriminator As Learned Loss</h4>
+  <dl>
+    <dt>Problem</dt><dd>Hand-written losses often reward blurry averages rather than realistic samples.</dd>
+    <dt>How It Works</dt><dd>Use the discriminator&#x27;s judgment as the loss signal, so the generator is pushed toward properties that distinguish real data from fake data.</dd>
+    <dt>Why It Matters</dt><dd>The loss adapts to the data instead of measuring only fixed pixel distance.</dd>
+    <dt>Where It Breaks</dt><dd>The discriminator may focus on superficial clues and give feedback that does not match the desired notion of quality.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A fake-image detector gives feedback to an image generator.</li><li>Mode collapse occurs when many random inputs produce similar-looking outputs.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Sample noise z and generate G(z).</li><li>Train D(x) high for real data and low for generated data.</li><li>Train G to make D(G(z)) high.</li><li>Monitor diversity and discriminator-generator balance.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain GANs as generator-versus-judge training, with sharp samples but unstable optimization.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/005-lFAHPJS2HHc-L5 GANs -- CS294-158 SP24 Deep Unsupervised Learning -- UC Berkeley.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-6">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 6</p>
+      <h2>L6 Diffusion Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=DsEDMjdxOv4">Open video</a>
+  </div>
+  <p class="meta">2h 22m · 72846 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A model can avoid one-shot generation by learning to reverse a gradual corruption process. Generation is hard when done in one jump, so the method turns it into many small corrections from noise toward data.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain diffusion as learning to undo known noise corruption step by step.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Diffusion models learn generation by first making destruction easy. Add noise to real data step by step until it becomes almost pure noise. Then train a model to reverse the process one step at a time. At generation time, start from noise and repeatedly clean it. This turns a huge generation jump into many smaller denoising decisions. Diffusion uses a training trick that gives the model a clear answer key. Start with a real example, choose a noise level, add known noise, and ask the network to predict the noise or the clean direction. Because the corruption is made by us, the target is known. The model practices repair at many noise levels, from nearly clean data to almost pure noise.</p>
+    <p>The training target is clear because the added noise is known. The model learns how to estimate or remove noise at different noise levels. Early steps decide broad structure; later steps refine details. Diffusion is stable compared with adversarial training, but sampling can be slow because many reverse steps are needed. Guidance and distillation are common ways to improve control or speed. At sampling time the direction reverses. Start from random noise and repeatedly apply the learned repair rule. The time or noise-level input tells the network what kind of repair is needed. High-noise steps decide broad layout because little detail remains. Low-noise steps refine texture and small structure. This makes training stable, but it creates a compute cost during sampling.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Forward diffusion corrupts data with known noise.</li><li>Reverse diffusion learns many small denoising updates.</li><li>Noise level or time is an input because each stage needs different behavior.</li><li>Sampling trades compute for quality and control.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Denoising Diffusion</h4>
+  <dl>
+    <dt>Problem</dt><dd>Making a whole complex sample in one step is difficult and unstable.</dd>
+    <dt>How It Works</dt><dd>Add known noise to data over many steps, then train a network to predict the noise or clean direction at each noise level.</dd>
+    <dt>Why It Matters</dt><dd>Generation becomes a chain of small repair problems, which is easier to train than a one-shot generator.</dd>
+    <dt>Where It Breaks</dt><dd>Sampling can be slow because many reverse steps may be needed for high quality.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Guided Sampling</h4>
+  <dl>
+    <dt>Problem</dt><dd>A generator must often obey a condition such as a class, text prompt, or desired property.</dd>
+    <dt>How It Works</dt><dd>During sampling, modify the denoising direction with an extra signal that points toward the condition while still following the learned data direction.</dd>
+    <dt>Why It Matters</dt><dd>It turns an unconditional generator into a controlled generator without changing the whole training setup.</dd>
+    <dt>Where It Breaks</dt><dd>Too much guidance can reduce diversity or create samples that satisfy the condition in brittle ways.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>An image slowly becomes static during the forward process.</li><li>Static becomes a coherent image through repeated reverse cleanup.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Sample clean x_0, time t, and noise epsilon.</li><li>Construct noisy x_t.</li><li>Train epsilon_theta(x_t,t) to predict epsilon.</li><li>Sample by iterating from x_T noise toward x_0.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain diffusion as learning to undo known noise corruption step by step.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/006-DsEDMjdxOv4-L6 Diffusion Models (SP24).txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-7">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 7</p>
+      <h2>L7 Self-Supervised Learning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=s6xh6oKq1C0">Open video</a>
+  </div>
+  <p class="meta">2h 31m · 73469 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A model can learn useful representations by creating prediction tasks from unlabeled data itself. The model needs useful features from unlabeled examples, so the training task must be created from the input itself.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain self-supervised learning as making useful training signals from the data itself.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Self-supervised learning makes labels out of structure already present in data. Instead of asking humans to label every image or sentence, the method hides, transforms, compares, or predicts parts of the input. The model learns representations because solving the pretext task requires understanding meaningful structure. For images, it may compare augmented views. For language, it may predict missing or next tokens. For video, it may use time and motion. Self-supervised learning asks the data to create its own questions. In contrastive learning, two views of the same item should lead to nearby representations. In masked prediction, the visible part should predict the hidden part. In both cases, the model is forced to represent something stable about the example because surface-level copying is made difficult.</p>
+    <p>The goal is not always generation. Often the goal is a representation that transfers to later tasks with few labels. Contrastive learning pulls related views together and pushes unrelated views apart. Masked prediction asks the model to fill missing content. The failure mode is shortcut learning: the model may solve the artificial task using superficial cues that do not help downstream. The design of the task decides what the representation keeps. If crop, color, or noise changes are treated as irrelevant, the model learns to ignore them. That helps when those changes do not matter for later tasks. It hurts when the ignored detail is actually important. Self-supervision is therefore not label-free magic; it is a choice about which differences should count.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Self-supervision creates training targets from unlabeled data.</li><li>Representations are judged by transfer, not only by pretext-task accuracy.</li><li>Contrastive learning compares positive and negative pairs.</li><li>Masked prediction forces the model to infer missing structure from context.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Contrastive Learning</h4>
+  <dl>
+    <dt>Problem</dt><dd>A model needs useful features without class labels.</dd>
+    <dt>How It Works</dt><dd>Create two changed views of the same example, pull their representations together, and push representations of different examples apart.</dd>
+    <dt>Why It Matters</dt><dd>It teaches invariances, such as object identity surviving crop or color changes, from raw data.</dd>
+    <dt>Where It Breaks</dt><dd>Bad augmentations can erase the very information the representation needs to keep.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Masked Prediction</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model needs a self-made task that forces it to understand context.</dd>
+    <dt>How It Works</dt><dd>Hide part of the input and train the model to predict the missing content from the visible parts.</dd>
+    <dt>Why It Matters</dt><dd>This creates a dense training signal for text, images, and other structured data without labels.</dd>
+    <dt>Where It Breaks</dt><dd>The model may learn local fill-in tricks instead of broader meaning if the mask task is too easy.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>Two crops of the same image form a positive pair in contrastive learning.</li><li>A masked word or image patch must be predicted from context.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Choose an augmentation, mask, or prediction rule.</li><li>Encode inputs into representation vectors.</li><li>Optimize contrastive, reconstruction, or prediction loss.</li><li>Evaluate representations on downstream tasks.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain self-supervised learning as making useful training signals from the data itself.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/007-s6xh6oKq1C0-L7 Self-Supervised Learning (Spring 2024, UC Berkeley) -- Pieter Abbeel &amp; Philipp Wu.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-8">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 8</p>
+      <h2>L8 Large Language Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=tCgX48cvuw4">Open video</a>
+  </div>
+  <p class="meta">2h 14m · 41135 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Language modeling is a self-supervised task scaled up with transformers, data, and compute. Language models show how a simple unsupervised-style prediction task can become powerful when scaled across huge text data.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain LLMs as very large self-supervised sequence models trained by next-token prediction.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Large language models fit naturally into deep unsupervised learning because next-token prediction creates labels from raw text. The model sees previous tokens and predicts the next token. At huge scale, this teaches grammar, facts, style, code patterns, and task formats. The same transformer machinery from supervised NLP becomes a broad generative model when trained on enough text. Large language models fit naturally into this course because next-token prediction is a self-made target. Text supplies its own supervision: every prefix asks for the next token. The transformer supplies the machinery for using context. Attention lets each token gather information from other tokens, and stacked blocks repeatedly refine the representation before the next-token distribution is produced.</p>
+    <p>The first-principles point is that prediction compresses structure. To predict well, the model must represent what the context means and what continuations are plausible. But likelihood over text is not the same as truth or usefulness. A model can produce fluent wrong text. Post-training, retrieval, tools, and evaluation are needed because self-supervised pretraining alone does not define desired behavior. The lecture connects objective, architecture, and scale. The objective is simple, but the data is broad and the model is large enough to absorb many patterns. That produces useful behavior, but the training goal is still prediction, not truth or helpfulness. Post-training and evaluation are needed because a predictor can continue a pattern that is fluent while being wrong or unsafe.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Next-token prediction is self-supervised because the next token is already in the text.</li><li>Scale turns a simple prediction task into broad capability.</li><li>The output is a probability distribution over tokens, not a truth guarantee.</li><li>Post-training is needed to shape behavior beyond raw text prediction.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Next-Token Pretraining</h4>
+  <dl>
+    <dt>Problem</dt><dd>Language has no single label, but every text position supplies a next-piece prediction target.</dd>
+    <dt>How It Works</dt><dd>Train a model to predict the next token from previous tokens across massive text collections.</dd>
+    <dt>Why It Matters</dt><dd>This simple objective teaches syntax, facts, style, code patterns, and some reasoning habits at scale.</dd>
+    <dt>Where It Breaks</dt><dd>A good next-token predictor can still produce false, unsafe, or unhelpful answers.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Transformer Context Mixing</h4>
+  <dl>
+    <dt>Problem</dt><dd>Each word or token must use information from far-away tokens, not only nearby ones.</dd>
+    <dt>How It Works</dt><dd>Attention lets each token compute which other tokens matter, copy information from them, and update its representation through stacked blocks.</dd>
+    <dt>Why It Matters</dt><dd>It gives language models a scalable way to use long context while training on many positions in parallel.</dd>
+    <dt>Where It Breaks</dt><dd>Cost grows with context length, and the model may still miss facts that require exact retrieval or calculation.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A web text corpus supplies billions of next-token examples without manual labels.</li><li>A code model learns syntax and common APIs by predicting code tokens.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Tokenize text into ids.</li><li>Use transformer blocks to process context.</li><li>Predict next-token logits.</li><li>Train with cross-entropy over raw text.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain LLMs as very large self-supervised sequence models trained by next-token prediction.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/008-tCgX48cvuw4-L8 Large Language Models (LLMs) --- Guest Instructor Hao Liu.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-9">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 9</p>
+      <h2>L9 Energy-Based Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=8ibaG_DPly8">Open video</a>
+  </div>
+  <p class="meta">1h 13m · 38182 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Video generation must model both appearance and time, so each frame must look good and agree with nearby frames.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain generative video as image generation plus the extra burden of time consistency.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Generative video adds a time problem to image generation. A single image can be plausible on its own, but video requires consistency: objects must keep identity, motion must be smooth, and the scene must obey time. Models can extend diffusion, autoregressive, or latent methods so they generate across frames instead of only pixels in one image. Video generation extends image generation by adding time. The model must produce frames that look realistic by themselves and also agree across time. A person, object, or room cannot randomly change identity from one frame to the next. Motion must be plausible, camera movement must be handled, and long-range events must remain connected.</p>
+    <p>The hard part is that errors compound through time. If the model changes an object identity, camera path, or physical relation, the video feels broken even if individual frames are sharp. The model must represent temporal context and often use latent video spaces to keep compute manageable. Evaluation is also harder because quality includes frame realism, motion realism, prompt following, and temporal consistency. The lecture’s core pressure is cost and coherence. Raw video is much larger than a single image, so many systems work in latent spaces or use compressed video tokens. But compression does not remove the need for temporal reasoning. The generator must decide what stays fixed, what moves, what appears, what disappears, and how uncertainty should unfold across future frames.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Video generation adds temporal consistency to visual sample quality.</li><li>Models must represent motion, identity, and scene state across frames.</li><li>Latent spaces help reduce the cost of generating many frames.</li><li>Evaluation must check flicker, object persistence, and prompt-conditioned motion.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Latent Video Generation</h4>
+  <dl>
+    <dt>Problem</dt><dd>Raw video is expensive because it has space, time, motion, and many redundant pixels.</dd>
+    <dt>How It Works</dt><dd>Compress frames into a smaller latent space and learn generation or denoising there while preserving the main visual and motion structure.</dd>
+    <dt>Why It Matters</dt><dd>It makes video generation cheaper and lets the model spend capacity on motion and scene change instead of every pixel.</dd>
+    <dt>Where It Breaks</dt><dd>Compression can lose fine details, and small temporal errors can accumulate across frames.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Temporal Consistency Modeling</h4>
+  <dl>
+    <dt>Problem</dt><dd>A generated video can have good individual frames but bad motion or changing object identity.</dd>
+    <dt>How It Works</dt><dd>Condition generation on nearby frames, time embeddings, motion cues, or 3D-aware structure so outputs remain coherent over time.</dd>
+    <dt>Why It Matters</dt><dd>Video quality depends on continuity, not just frame-level realism.</dd>
+    <dt>Where It Breaks</dt><dd>Long actions, occlusion, and camera motion can still break object identity or physical consistency.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A generated person should not change face identity between frames.</li><li>A moving object should follow a coherent path rather than jump randomly.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Represent video as frames or latent tokens over time.</li><li>Condition generation on text, previous frames, or motion controls.</li><li>Use temporal attention, 3D convolutions, or sequential sampling.</li><li>Evaluate realism, motion, consistency, and alignment.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain generative video as image generation plus the extra burden of time consistency.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/009-8ibaG_DPly8-L9 Generative Video -- UC Berkeley, Spring 2024 -- Wilson Yan.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-10">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 10</p>
+      <h2>L10 Implicit Models</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=HTtN7rO-jBI">Open video</a>
+  </div>
+  <p class="meta">1h 27m · 41453 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Small labeled sets can be amplified with unlabeled data, but only if the unlabeled structure matches the task.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain semi-supervised learning as using unlabeled data to support a small labeled task without blindly trusting it.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Semi-supervised learning combines a few labels with many unlabeled examples. The model uses labels to anchor the task and unlabeled data to learn the shape of the input distribution. Distribution alignment asks how to make predictions or representations behave consistently across related data sources, such as domains with different style, lighting, or sensor properties. Semi-supervised learning sits between supervised and unsupervised learning. A small labeled set says what the task means. A large unlabeled set shows more of the data distribution. The method tries to use both: labels anchor the meaning of classes, while unlabeled examples teach where the real examples lie and how decision boundaries should pass through the space.</p>
+    <p>The first principle is that unlabeled data is useful when its structure says something about the labels or target behavior. Pseudo-labeling, consistency regularization, and alignment losses all assume that nearby or transformed examples should have compatible predictions. The danger is confirmation error: wrong pseudo-labels can reinforce themselves, and alignment can erase real differences that matter. Distribution alignment adds another pressure. If the model predicts too many examples as one class, or if unlabeled data has a different balance than labeled data, training can drift. Alignment and consistency methods try to keep predictions stable under small changes and keep the output distribution reasonable. These methods help only when their assumptions match the data.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Semi-supervised learning uses labeled and unlabeled data together.</li><li>Pseudo-labeling turns confident model predictions into temporary labels.</li><li>Consistency regularization asks predictions to survive harmless changes.</li><li>Distribution alignment tries to reduce harmful shifts between domains.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Pseudo-Labeling</h4>
+  <dl>
+    <dt>Problem</dt><dd>There are many unlabeled examples and only a small labeled set.</dd>
+    <dt>How It Works</dt><dd>Train on labeled data, use the model to assign labels to unlabeled data, then train again on confident guessed labels.</dd>
+    <dt>Why It Matters</dt><dd>It converts unlabeled data into extra practice when manual labels are scarce.</dd>
+    <dt>Where It Breaks</dt><dd>Wrong confident guesses can reinforce the model&#x27;s own mistakes.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Distribution Alignment</h4>
+  <dl>
+    <dt>Problem</dt><dd>The labeled set and unlabeled set may have different class balance or feature statistics.</dd>
+    <dt>How It Works</dt><dd>Adjust predictions or representations so the model&#x27;s output distribution on unlabeled data matches a desired prior or matches the labeled distribution.</dd>
+    <dt>Why It Matters</dt><dd>It prevents the model from treating unlabeled data as if it came from a different problem.</dd>
+    <dt>Where It Breaks</dt><dd>If the assumed distribution is wrong, alignment can force the model toward false labels.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A classifier trained on a few labeled images can use many unlabeled images from the same domain.</li><li>A model trained on synthetic images may need alignment before working on real camera images.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Train on supervised loss for labeled examples.</li><li>Generate pseudo-labels for confident unlabeled examples.</li><li>Apply consistency loss across augmentations.</li><li>Add alignment loss between source and target distributions.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain semi-supervised learning as using unlabeled data to support a small labeled task without blindly trusting it.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/010-HTtN7rO-jBI-L10 Semisupervised Learning and Unsupervised Distribution Alignment -- UC Berkeley Sprint 2024.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-11">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 11</p>
+      <h2>L11 Representation Learning</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=4dyf_SALtxM">Open video</a>
+  </div>
+  <p class="meta">1h 20m · 45758 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Scientific generation must obey domain constraints, not only produce plausible-looking samples. Scientific generation must create objects that are not only data-like but also valid under physical, chemical, biological, or experimental constraints.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain scientific generative modeling as generation under real-world constraints and costly evaluation.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Generative modeling for science uses the same model families for molecules, proteins, materials, and physical systems. The goal is not just a pretty sample; the output must satisfy constraints from chemistry, geometry, energy, function, or experiment. A protein sequence or structure, for example, must fold, bind, remain stable, and serve a purpose. Generative modeling for science changes the meaning of success. A natural image model can be judged by realism. A protein, molecule, or material must satisfy constraints that come from the world. Shape, energy, binding, stability, and function matter. The data may be sparse, expensive, biased, or produced by measurement pipelines rather than ordinary web collection.</p>
+    <p>The first-principles issue is that scientific data has hidden rules. Many generated samples can look syntactically valid but fail physically or biologically. Generative models need domain representations, constraints, simulators, or scoring functions. The useful question is what makes a sample valid and testable in the real world. Evaluation often requires expensive computation or experiments, so uncertainty and filtering matter. This pushes models toward conditioning and constraint handling. The generator may need to respect a target property, a known structure, a sequence, or a physical rule. It may also need to propose candidates for real experiments, where failure costs time and money. The model is useful only if its samples survive checks outside the training loss.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Scientific generative models must respect physical, chemical, or biological constraints.</li><li>Representations such as sequences, graphs, and 3D coordinates shape what can be generated.</li><li>A useful sample must be testable, stable, and functional, not only likely under data.</li><li>Evaluation is expensive, so filtering and uncertainty matter.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Constraint-Guided Scientific Generation</h4>
+  <dl>
+    <dt>Problem</dt><dd>Scientific objects such as proteins or molecules must obey structure, chemistry, and function constraints.</dd>
+    <dt>How It Works</dt><dd>Generate candidates while conditioning on known constraints, measured properties, or physical structure so samples stay plausible for the scientific domain.</dd>
+    <dt>Why It Matters</dt><dd>It moves generative modeling from making natural-looking samples to proposing objects that can be tested in the real world.</dd>
+    <dt>Where It Breaks</dt><dd>A model can exploit dataset patterns while violating hidden physical or experimental constraints.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Property-Conditioned Design</h4>
+  <dl>
+    <dt>Problem</dt><dd>Scientists often want a new object with a target property, not just a random realistic object.</dd>
+    <dt>How It Works</dt><dd>Condition the generator on desired measurements, functions, or structures, then search or sample for candidates that satisfy them.</dd>
+    <dt>Why It Matters</dt><dd>It turns generation into design, where the output is judged by usefulness rather than visual realism.</dd>
+    <dt>Where It Breaks</dt><dd>The requested property may be outside the training data range, so the model&#x27;s confidence can be misleading.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>Protein design must consider sequence, structure, folding, and binding.</li><li>Molecule generation must satisfy valence and property constraints.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Choose a representation such as sequence, graph, or coordinates.</li><li>Train a generative model over known examples.</li><li>Condition or guide generation toward desired properties.</li><li>Filter with physics, learned scores, or experimental proxies.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain scientific generative modeling as generation under real-world constraints and costly evaluation.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/011-4dyf_SALtxM-L13a Generative Modeling for Science -- Guest Lecturer John Ingraham.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-12">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 12</p>
+      <h2>L12 Applications</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=Z96YMktT_T4">Open video</a>
+  </div>
+  <p class="meta">1h 4m · 40652 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A 3D scene must explain many 2D views consistently, not just produce one image. A model must infer a 3D scene from 2D photos, then render views that were not directly observed.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain NeRF as learning a continuous 3D scene that can render many camera views consistently.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Neural radiance fields model a scene as a continuous function. Given a 3D location and viewing direction, the function predicts density and color. Rendering a camera view means tracing rays through that field and accumulating color along each ray. The model is trained so rendered views match observed images from different cameras. Neural radiance fields start from the fact that a photo is a 2D record of light from a 3D scene. If we know camera poses, each pixel corresponds to a ray through space. The model learns a function over 3D locations and viewing directions. For each point, it predicts density and color, which are combined along rays to match training images.</p>
+    <p>The core idea is inverse rendering. The model is not handed the full 3D scene; it finds a scene representation that would explain the photos. This requires consistency across views. If one view shows an object at a location, other views must agree. NeRFs are powerful because they store a scene continuously, but they can be slow, need enough views, and struggle when lighting, motion, or geometry assumptions break. The method is unsupervised in the sense that the supervision is ordinary posed images, not hand-labeled 3D geometry. Geometry is recovered because the same scene must explain many views. If a point is truly part of a surface, many camera rays should agree about it. Sparse views, bad poses, or reflective surfaces make that agreement weak and can produce artifacts.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>A NeRF represents a scene as a continuous function over 3D position and view direction.</li><li>Volume rendering turns the field into predicted camera images.</li><li>Training matches rendered images to observed views.</li><li>Multi-view consistency is the key constraint that makes 3D recoverable.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Neural Radiance Field</h4>
+  <dl>
+    <dt>Problem</dt><dd>A set of photos shows a scene from some views, but we want to render new views.</dd>
+    <dt>How It Works</dt><dd>Train a neural function that maps 3D position and viewing direction to color and density, then render images by accumulating values along camera rays.</dd>
+    <dt>Why It Matters</dt><dd>It represents a 3D scene without an explicit mesh and can synthesize realistic novel views.</dd>
+    <dt>Where It Breaks</dt><dd>Training and rendering can be slow, and wrong camera poses or sparse views can create artifacts.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Volume Rendering</h4>
+  <dl>
+    <dt>Problem</dt><dd>A camera ray passes through empty space, surfaces, and transparent regions before reaching a pixel color.</dd>
+    <dt>How It Works</dt><dd>Sample points along a ray, estimate density and color at each point, and combine them by how much light each point contributes.</dd>
+    <dt>Why It Matters</dt><dd>It connects the learned 3D field to ordinary image supervision from photos.</dd>
+    <dt>Where It Breaks</dt><dd>Poor sampling or ambiguous geometry can produce floaters, blurred surfaces, or wrong depth.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A set of photos of a room can train a field that renders a new camera angle.</li><li>A ray through empty space accumulates little density before hitting a surface.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Input 3D point x and view direction d to a neural field.</li><li>Predict density sigma and color c.</li><li>Sample points along camera rays.</li><li>Integrate colors and densities to render pixels.</li><li>Optimize rendered pixels against real images.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain NeRF as learning a continuous 3D scene that can render many camera views consistently.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/012-Z96YMktT_T4-L13b Neural Radiance Fields  -- Guest Lecturer Ben Mildenhall.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-13">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 13</p>
+      <h2>L13 Frontiers</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=A36T-MPihTo">Open video</a>
+  </div>
+  <p class="meta">53m 0s · 26475 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Different data types must be connected in a shared system without losing what makes each type different.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain multimodal learning as aligning different data forms so they can condition, retrieve, or explain each other.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Multimodal models connect text, images, audio, video, or actions. The problem is that each modality has its own structure: text is token order, images are spatial grids, audio is time signals, and video is space plus time. A multimodal model must encode each form and then align them so a text prompt can refer to an image, an image can be captioned, or a video can be queried. Multimodal models ask how different kinds of data can share meaning. A caption and an image are not the same object, but they can refer to the same scene. Audio and video can describe the same event. A model needs a bridge so that information from one form can guide understanding or generation in another form.</p>
+    <p>The first-principles operation is alignment across representations. Contrastive learning can pull matching image-text pairs together. Cross-attention can let text guide image features or image features guide text. Generative multimodal systems can condition one modality on another. The failure mode is shallow matching: the model may learn common captions and visual shortcuts without grounding relations, counts, or detailed scene structure. Two main moves appear. Alignment puts paired items near each other in a shared representation space. Conditioning lets one modality directly steer another during generation, often through cross-attention. Both moves are powerful because they make text, images, audio, and other signals usable together. They also inherit bias from pairings in the data and can bind the wrong parts together.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Each modality needs a representation suited to its structure.</li><li>Alignment connects related items across modalities.</li><li>Contrastive losses and cross-attention are common alignment tools.</li><li>A multimodal model can retrieve, caption, answer, or generate across data types.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Contrastive Multimodal Alignment</h4>
+  <dl>
+    <dt>Problem</dt><dd>Images, text, audio, and other signals use different forms but can refer to the same thing.</dd>
+    <dt>How It Works</dt><dd>Train matching pairs to have nearby representations and mismatched pairs to be farther apart in a shared space.</dd>
+    <dt>Why It Matters</dt><dd>It lets one mode retrieve, guide, or explain another, such as text searching images or text steering generation.</dd>
+    <dt>Where It Breaks</dt><dd>The shared space can capture dataset bias or shallow correlations instead of grounded meaning.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Cross-Attention Conditioning</h4>
+  <dl>
+    <dt>Problem</dt><dd>A generator needs to use information from another mode while producing its own output.</dd>
+    <dt>How It Works</dt><dd>Let generated tokens or image features attend to conditioning tokens from text, image, audio, or other inputs at each update.</dd>
+    <dt>Why It Matters</dt><dd>It gives the generator a direct path to use outside instructions or context during generation.</dd>
+    <dt>Where It Breaks</dt><dd>The model can ignore the condition, overfit to it, or bind the wrong words to the wrong visual parts.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>An image and its caption should land near each other in representation space.</li><li>A text prompt can condition an image or video generator.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Encode image patches, text tokens, or audio frames.</li><li>Project modality features into a shared space.</li><li>Use contrastive loss on matched and mismatched pairs.</li><li>Use cross-attention for conditional reasoning or generation.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain multimodal learning as aligning different data forms so they can condition, retrieve, or explain each other.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/013-A36T-MPihTo-L12a Multimodal Models  -- Instructor： Wilson Yan.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-14">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 14</p>
+      <h2>L14 Course Wrap-Up</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=Hr2FWHBuNXs">Open video</a>
+  </div>
+  <p class="meta">39m 31s · 17385 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Modern generative models need computation arranged so training and inference fit hardware limits. Very large unsupervised and generative models cannot be trained by one device, so the computation itself must be split carefully.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain parallelization as arranging model computation around dependency limits and hardware cost.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Parallelization asks how to make large models run fast enough. Some model families are naturally sequential, like autoregressive generation where token i depends on earlier tokens. Transformers allow more parallel training because all positions in a sequence can be processed together under a mask. Hardware efficiency depends on batching, memory movement, attention cost, and how computation is split across devices. Parallelization is part of the learning story because scale changes what methods are possible. A model may have too many parameters for one accelerator, a batch may be too large, or the training run may take too long. Splitting work across devices sounds simple, but every split creates communication: devices must exchange gradients, activations, weights, or partial matrix products.</p>
+    <p>The first-principles issue is dependency. If one computation truly needs the result of another, it cannot be fully parallelized. If the dependencies can be masked, batched, or rearranged, hardware can do more work at once. This affects which generative models are practical. A mathematically good model may be too slow if it cannot use hardware well. Parallelization is therefore part of the method, not just implementation detail. The lecture separates different bottlenecks. Data parallelism copies the model and splits examples. Model parallelism splits weights or layers. Tensor parallelism splits large operations. Pipeline parallelism sends different microbatches through different layer stages. The right choice depends on memory, bandwidth, compute balance, and whether devices spend time working or waiting.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Parallelism is limited by real dependencies in the computation graph.</li><li>Transformer training can process many sequence positions at once with causal masks.</li><li>Autoregressive sampling remains sequential at generation time.</li><li>Memory bandwidth and device communication can dominate runtime.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Data And Model Parallel Training</h4>
+  <dl>
+    <dt>Problem</dt><dd>Modern models and datasets are too large for one device to train alone.</dd>
+    <dt>How It Works</dt><dd>Split batches across devices, split model weights across devices, or split layers across devices, then synchronize the needed values during training.</dd>
+    <dt>Why It Matters</dt><dd>It makes large unsupervised and generative models trainable within practical time and memory limits.</dd>
+    <dt>Where It Breaks</dt><dd>Communication can dominate compute, and a poor split can waste hardware.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Pipeline And Tensor Parallelism</h4>
+  <dl>
+    <dt>Problem</dt><dd>Even one forward pass may not fit or run efficiently on a single accelerator.</dd>
+    <dt>How It Works</dt><dd>Pipeline parallelism assigns different layers to different devices, while tensor parallelism splits large matrix operations across devices.</dd>
+    <dt>Why It Matters</dt><dd>These methods attack memory and speed bottlenecks inside very large models.</dd>
+    <dt>Where It Breaks</dt><dd>Bubbles, synchronization cost, and uneven layer sizes can leave devices idle.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>Training a transformer can compute losses for many positions in one pass.</li><li>Generating text one token at a time cannot fully parallelize across future tokens.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Represent computation as a dependency graph.</li><li>Batch independent examples and positions where possible.</li><li>Use masking to preserve causal correctness.</li><li>Split tensors or batches across devices when models are too large.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain parallelization as arranging model computation around dependency limits and hardware cost.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/embeddings.html">Embeddings</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/berkeley-cs294-158-deep-unsupervised-learning-spring-2024/clean/014-Hr2FWHBuNXs-L12b Parallelization -- Instructor： Wilson Yan.txt</code></p>
+  </section>
+</article>
+
+</section>
+</main>
+</body>
+</html>
