@@ -46,6 +46,8 @@ BLOCKED_VISIBLE_PHRASES = [
     "The topic stresses",
     "The lecture explains",
     "The lecture's",
+    "The lecture ",
+    "the lecture ",
     "The lecture&#x27;s",
     "This lecture explains",
     "The instructor explains",
@@ -116,12 +118,18 @@ def main() -> int:
                     errors.append(f"lecture {lecture['number']} approach missing {field}")
             if words(approach.get("how_it_works", "")) < 12:
                 errors.append(f"lecture {lecture['number']} approach {approach.get('name')} has thin how_it_works")
+            if words(approach.get("how_it_works", "")) < 30:
+                errors.append(f"lecture {lecture['number']} approach {approach.get('name')} needs a more detailed mechanism")
         if words(lecture["core_problem"]) < 16:
             errors.append(f"lecture {lecture['number']} core_problem is too thin")
         if words(lecture["topic_explanation"]) < 75:
             errors.append(f"lecture {lecture['number']} topic_explanation is too thin")
+        if words(lecture["topic_explanation"]) < 140:
+            errors.append(f"lecture {lecture['number']} topic_explanation needs first-principles depth")
         if words(lecture["detail_explanation"]) < 65:
             errors.append(f"lecture {lecture['number']} detail_explanation is too thin")
+        if words(lecture["detail_explanation"]) < 140:
+            errors.append(f"lecture {lecture['number']} detail_explanation needs mechanism depth")
         if len(lecture["core_ideas"]) < 4:
             errors.append(f"lecture {lecture['number']} needs at least 4 core ideas")
         if len(lecture["discussion_flow"]) < 6:
@@ -130,6 +138,8 @@ def main() -> int:
             errors.append(f"lecture {lecture['number']} needs at least 2 concrete examples")
         if len(lecture["math_algorithm"]) < 4:
             errors.append(f"lecture {lecture['number']} needs at least 4 math_algorithm items")
+        if words(" ".join(lecture["math_algorithm"])) < 120:
+            errors.append(f"lecture {lecture['number']} math_algorithm needs more concrete equations or algorithm moves")
         if words(lecture["plain_checkpoint"]) < 15:
             errors.append(f"lecture {lecture['number']} plain_checkpoint is too thin")
         joined = " ".join(
@@ -147,6 +157,17 @@ def main() -> int:
         for phrase in VAGUE_PHRASES:
             if phrase in joined:
                 errors.append(f"lecture {lecture['number']} contains vague phrase: {phrase}")
+        for phrase in [
+            "the lecture ",
+            "the instructor ",
+            "what the lecture covers",
+            "how the lecture develops",
+            "the topic explains",
+            "the topic discusses",
+            "the topic stresses",
+        ]:
+            if phrase in joined:
+                errors.append(f"lecture {lecture['number']} contains lecture-report wording: {phrase}")
 
     if seen != expected:
         errors.append(f"diffusion guide must contain exactly lectures 1-8, got {sorted(seen)}")

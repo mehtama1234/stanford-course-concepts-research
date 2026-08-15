@@ -115,6 +115,13 @@ def topic_copy(value: Any) -> str:
     for phrase in removable:
         pattern = rf"(^|(?<=[.!?])\s+){re.escape(phrase)}"
         text = re.sub(pattern, lambda match: match.group(1), text)
+    text = text.replace("frames the lecture", "frames the method")
+    text = text.replace("frame the lecture", "frame the method")
+    text = re.sub(
+        r"(^|(?<=[.!?])\s+)The [A-Za-z0-9|: &-]+ lecture (opens by|introduces|frames|covers|explains|discusses) ",
+        lambda match: match.group(1),
+        text,
+    )
     for old, new in direct_rewrites:
         text = text.replace(old, new)
     text = re.sub(r"(^|(?<=[.!?])\s+)([a-z])", lambda match: match.group(1) + match.group(2).upper(), text)
@@ -687,7 +694,7 @@ def deep_rl_lecture_card(
         evidence_html = "".join(
             f'<li><a href="evidence.html#{esc(ev["id"])}">{esc(ev["id"])}</a> '
             f'<span class="time">{esc(ev.get("timestamp_start") or "time unavailable")}</span>: '
-            f'{esc(ev.get("lecture_argument", ev.get("paraphrased_claim", "")))}</li>'
+            f'{esc(topic_copy(ev.get("lecture_argument", ev.get("paraphrased_claim", ""))))}</li>'
             for ev in evidence_rows
         )
     else:
@@ -860,7 +867,7 @@ def diffusion_lecture_card(
         evidence_html = "".join(
             f'<li><a href="evidence.html#{esc(ev["id"])}">{esc(ev["id"])}</a> '
             f'<span class="time">{esc(ev.get("timestamp_start") or "time unavailable")}</span>: '
-            f'{esc(ev.get("lecture_argument", ev.get("paraphrased_claim", "")))}</li>'
+            f'{esc(topic_copy(ev.get("lecture_argument", ev.get("paraphrased_claim", ""))))}</li>'
             for ev in evidence_rows
         )
     else:

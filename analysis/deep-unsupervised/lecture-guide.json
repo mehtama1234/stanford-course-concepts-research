@@ -132,7 +132,9 @@
       "Use change of variables: log p_x(x) = log p_z(z) + log |det(d f_theta^{-1}(x) / dx)|.",
       "For a coupling layer, split x into x_a and x_b, keep y_a=x_a, and set y_b=x_b * exp(s(x_a)) + t(x_a).",
       "The inverse is x_b=(y_b - t(y_a))*exp(-s(y_a)), so sampling and likelihood both remain practical.",
-      "The log determinant for that coupling layer is sum s(x_a), avoiding a full expensive determinant."
+      "The log determinant for that coupling layer is sum s(x_a), avoiding a full expensive determinant.",
+      "For an invertible map x=f_theta(z), likelihood uses log p_x(x)=log p_z(f_theta^{-1}(x)) + log absolute determinant of d f_theta^{-1}/dx.",
+      "A coupling layer keeps part of the vector fixed and uses it to scale or shift the rest, making both inverse computation and determinant computation cheap."
     ],
     "plain_checkpoint": "You should be able to explain flows as invertible transformations that keep exact probability computation possible.",
     "concepts": [
@@ -181,7 +183,9 @@
       "Use z = mu_phi(x) + sigma_phi(x) * epsilon, epsilon ~ N(0,I), so gradients pass through mu and sigma.",
       "For a Gaussian encoder, compute KL to N(0,I) analytically from mu and sigma.",
       "Train by maximizing ELBO or minimizing reconstruction loss plus KL penalty.",
-      "Generate by sampling z ~ p(z) and decoding x ~ p_theta(x|z)."
+      "Generate by sampling z ~ p(z) and decoding x ~ p_theta(x|z).",
+      "The ELBO can be read as reconstruction reward minus KL cost: E_q[log p_theta(x|z)] - KL(q_phi(z|x) || p(z)).",
+      "Posterior collapse happens when the decoder explains x without using z, making q_phi(z|x) close to the prior and leaving the latent code nearly empty."
     ],
     "plain_checkpoint": "You should be able to explain a VAE as learning hidden codes that reconstruct data while staying sampleable from a simple prior.",
     "concepts": [
@@ -230,7 +234,9 @@
       "Train D_psi to maximize log D_psi(x_real) + log(1 - D_psi(G_theta(z))).",
       "Train G_theta to make D_psi(G_theta(z)) large, often using the non-saturating loss -log D_psi(G_theta(z)).",
       "Alternate discriminator and generator updates so neither side outruns the other too far.",
-      "Monitor both fidelity and diversity because discriminator loss alone can hide mode collapse."
+      "Monitor both fidelity and diversity because discriminator loss alone can hide mode collapse.",
+      "At the ideal Nash equilibrium, p_g(x) matches p_data(x), so the best discriminator outputs 1/2 everywhere because real and fake are indistinguishable.",
+      "Mode collapse means many z values map to the same narrow set of x values, so sample quality can look high while distribution coverage is poor."
     ],
     "plain_checkpoint": "You should be able to explain GANs as generator-versus-judge training, with sharp samples but unstable optimization.",
     "concepts": [
@@ -279,7 +285,9 @@
       "Construct x_t = sqrt(alpha_bar_t) x_0 + sqrt(1-alpha_bar_t) epsilon.",
       "Train epsilon_theta(x_t,t) with mean squared error ||epsilon - epsilon_theta(x_t,t)||^2.",
       "Estimate clean data during sampling using x0_hat = (x_t - sqrt(1-alpha_bar_t) epsilon_theta(x_t,t)) / sqrt(alpha_bar_t).",
-      "Iterate reverse updates from x_T ~ N(0,I) toward x_0, using a DDPM, DDIM, or other sampler."
+      "Iterate reverse updates from x_T ~ N(0,I) toward x_0, using a DDPM, DDIM, or other sampler.",
+      "The score view predicts a direction proportional to grad_x log p_t(x), which points noisy samples toward regions with higher data probability at that noise level.",
+      "Classifier-free guidance combines conditional and unconditional predictions: pred = pred_uncond + s * (pred_cond - pred_uncond), where s controls condition strength against diversity."
     ],
     "plain_checkpoint": "You should be able to explain diffusion as learning to undo known noise corruption step by step.",
     "concepts": [
@@ -292,7 +300,7 @@
   {
     "number": 7,
     "core_problem": "A model can learn useful representations by creating prediction tasks from unlabeled data itself. The model needs useful features from unlabeled examples, so the training task must be created from the input itself. The training task must make the model keep stable meaning while ignoring changes that should not matter for later use.",
-    "topic_explanation": "Self-supervised learning makes labels out of structure already present in data. Instead of asking humans to label every image or sentence, the method hides, transforms, compares, or predicts parts of the input. The model learns representations because solving the pretext task requires understanding meaningful structure. For images, it may compare augmented views. For language, it may predict missing or next tokens. For video, it may use time and motion. Self-supervised learning asks the data to create its own questions. In contrastive learning, two views of the same item should lead to nearby representations. In masked prediction, the visible part should predict the hidden part. In both cases, the model is forced to represent something stable about the example because surface-level copying is made difficult. Self-supervised learning is not simply \u201cno labels.\u201d It creates labels from the data transformation itself. In contrastive learning, the label is that two views came from the same original example. In masked prediction, the label is the hidden part. In temporal prediction, the label may be what comes next. The design choice is what invariances the task teaches: crop invariance, color invariance, order sensitivity, local detail, or global semantics.",
+    "topic_explanation": "Self-supervised learning makes labels out of structure already present in data. Instead of asking humans to label every image or sentence, the method hides, transforms, compares, or predicts parts of the input. The model learns representations because solving the pretext task requires understanding meaningful structure. For images, it may compare augmented views. For language, it may predict missing or next tokens. For video, it may use time and motion. Self-supervised learning asks the data to create its own questions. In contrastive learning, two views of the same item should lead to nearby representations. In masked prediction, the visible part should predict the hidden part. In both cases, the model is forced to represent something stable about the example because surface-level copying is made difficult. Self-supervised learning is not simply “no labels.” It creates labels from the data transformation itself. In contrastive learning, the label is that two views came from the same original example. In masked prediction, the label is the hidden part. In temporal prediction, the label may be what comes next. The design choice is what invariances the task teaches: crop invariance, color invariance, order sensitivity, local detail, or global semantics.",
     "detail_explanation": "The goal is not always generation. Often the goal is a representation that transfers to later tasks with few labels. Contrastive learning pulls related views together and pushes unrelated views apart. Masked prediction asks the model to fill missing content. The failure mode is shortcut learning: the model may solve the artificial task using superficial cues that do not help downstream. The design of the task decides what the representation keeps. If crop, color, or noise changes are treated as irrelevant, the model learns to ignore them. That helps when those changes do not matter for later tasks. It hurts when the ignored detail is actually important. Self-supervision is therefore not label-free magic; it is a choice about which differences should count. Contrastive learning depends on positives, negatives, and a similarity score. The positive pair should share meaning; negatives should usually not share the same instance. Masked prediction depends on hiding enough content that context is needed, but not so much that the task becomes impossible. Both methods can fail if shortcuts solve the pretext task: for example, using image border artifacts, color statistics, or token frequency instead of semantic structure.",
     "core_ideas": [
       "Self-supervision creates training targets from unlabeled data.",
@@ -328,7 +336,9 @@
       "Use a contrastive loss such as InfoNCE: -log exp(sim(h1,h2)/tau) divided by the sum over positive and negative similarities.",
       "For masked prediction, replace selected input parts with mask tokens or noise and predict the original hidden parts.",
       "Evaluate representation quality with frozen features, linear probes, fine-tuning, or transfer tasks.",
-      "Audit shortcuts by changing augmentations, negatives, mask rates, and downstream tasks."
+      "Audit shortcuts by changing augmentations, negatives, mask rates, and downstream tasks.",
+      "InfoNCE forms a softmax over one positive pair and many negative pairs; the loss is low only when the positive similarity is larger than the distractor similarities.",
+      "For masked prediction, choose a mask set M, hide those parts from the input, and minimize reconstruction loss only on M so the model must use surrounding context."
     ],
     "plain_checkpoint": "You should be able to explain self-supervised learning as making useful training signals from the data itself.",
     "concepts": [
@@ -377,7 +387,9 @@
       "Project h_i to logits over the vocabulary and apply softmax to get p_theta(t_{i+1}|t_<=i).",
       "Minimize cross-entropy -log p_theta(true next token) over all positions and batches.",
       "Generate by repeatedly sampling a token, appending it to context, and recomputing or caching transformer states.",
-      "Use post-training or retrieval when the desired behavior is not fully specified by next-token likelihood."
+      "Use post-training or retrieval when the desired behavior is not fully specified by next-token likelihood.",
+      "Causal masking sets attention to future tokens to minus infinity before softmax, so position i cannot read token i+1 while training.",
+      "Perplexity is exp(average cross-entropy); lower perplexity means the model assigned higher probability to the actual next tokens."
     ],
     "plain_checkpoint": "You should be able to explain LLMs as very large self-supervised sequence models trained by next-token prediction.",
     "concepts": [
@@ -475,7 +487,9 @@
       "Apply augmentations a(x_u) and require p_theta(y|x_u) to match p_theta(y|a(x_u)) through a consistency loss.",
       "Combine supervised loss and unsupervised loss with a weight lambda.",
       "For distribution alignment, rescale batch predictions so their average matches a target class prior.",
-      "Monitor confirmation bias by checking whether pseudo-label errors increase over training."
+      "Monitor confirmation bias by checking whether pseudo-label errors increase over training.",
+      "A typical objective is L = L_supervised + lambda_u * L_unlabeled + lambda_align * L_alignment, with weights controlling how much unlabeled data influences training.",
+      "Entropy minimization pushes predictions on unlabeled examples toward confident class choices, but it is dangerous when the model is confidently wrong."
     ],
     "plain_checkpoint": "You should be able to explain semi-supervised learning as using unlabeled data to support a small labeled task without blindly trusting it.",
     "concepts": [
@@ -524,7 +538,9 @@
       "Train likelihood, diffusion, flow, or autoregressive objectives on scientific data while preserving domain constraints.",
       "Use equivariant architectures when rotations and translations should not change the underlying object.",
       "Filter generated candidates with property predictors, physics simulators, docking, or laboratory assays.",
-      "Track uncertainty and out-of-distribution distance because generated candidates may leave the reliable training region."
+      "Track uncertainty and out-of-distribution distance because generated candidates may leave the reliable training region.",
+      "For molecules, graph generation often predicts nodes, edges, and coordinates while enforcing valence, symmetry, or geometric constraints so outputs remain chemically possible.",
+      "A guided search can rank samples by score(x,c) = model_plausibility(x) + beta * property_score(x,c) - penalty(invalidity), making the target property explicit instead of hoping likelihood alone finds it."
     ],
     "plain_checkpoint": "You should be able to explain scientific generative modeling as generation under real-world constraints and costly evaluation.",
     "concepts": [
@@ -610,7 +626,7 @@
     "examples": [
       "An image and its caption should land near each other in representation space.",
       "A text prompt can condition an image or video generator.",
-      "A caption saying \u201cred cup on a blue table\u201d requires binding red to cup and blue to table.",
+      "A caption saying “red cup on a blue table” requires binding red to cup and blue to table.",
       "An image-text retrieval model should put the matching caption closer than unrelated captions."
     ],
     "math_algorithm": [

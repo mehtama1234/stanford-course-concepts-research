@@ -138,7 +138,7 @@ def main() -> int:
             errors.append(f"lecture {lecture['number']} needs at least 2 concrete examples")
         if len(lecture["math_algorithm"]) < 4:
             errors.append(f"lecture {lecture['number']} needs at least 4 math_algorithm items")
-        if words(" ".join(lecture["math_algorithm"])) < 90:
+        if words(" ".join(lecture["math_algorithm"])) < 120:
             errors.append(f"lecture {lecture['number']} math_algorithm needs more concrete equations or algorithm moves")
         if words(lecture["plain_checkpoint"]) < 15:
             errors.append(f"lecture {lecture['number']} plain_checkpoint is too thin")
@@ -157,6 +157,17 @@ def main() -> int:
         for phrase in VAGUE_PHRASES:
             if phrase in joined:
                 errors.append(f"lecture {lecture['number']} contains vague phrase: {phrase}")
+        for phrase in [
+            "the lecture ",
+            "the instructor ",
+            "what the lecture covers",
+            "how the lecture develops",
+            "the topic explains",
+            "the topic discusses",
+            "the topic stresses",
+        ]:
+            if phrase in joined:
+                errors.append(f"lecture {lecture['number']} contains lecture-report wording: {phrase}")
 
     if seen != expected:
         errors.append(f"deep unsupervised guide must contain exactly lectures 1-14, got {sorted(seen)}")
