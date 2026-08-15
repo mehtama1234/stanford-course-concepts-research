@@ -1,0 +1,154 @@
+[
+  {
+    "number": 1,
+    "approaches": [
+      {
+        "name": "DDPM-style denoising",
+        "problem": "Directly turning random noise into a clean image is too hard as one step.",
+        "how_it_works": "Add known noise to real images during training, then train a model to predict and remove that noise at many noise levels.",
+        "why_it_matters": "It turns generation into many small supervised cleanup problems with clear targets.",
+        "failure_mode": "Sampling can be slow, and errors at early high-noise steps can shape the whole output badly."
+      },
+      {
+        "name": "Noise scheduling",
+        "problem": "The model needs to learn every stage between clean data and pure noise.",
+        "how_it_works": "Choose how much noise is added at each time step so training covers light, medium, and heavy corruption.",
+        "why_it_matters": "The schedule decides which denoising stages the model practices and how hard each stage is.",
+        "failure_mode": "A poor schedule can make some stages too easy, too hard, or undertrained."
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "approaches": [
+      {
+        "name": "Score matching",
+        "problem": "The full data probability is hard to know, but local directions toward data can be learned.",
+        "how_it_works": "Train a model to predict the gradient of log probability, which points toward more data-like regions.",
+        "why_it_matters": "It lets sampling move by following local directions instead of evaluating the whole distribution.",
+        "failure_mode": "Wrong local directions can accumulate during sampling and push samples into bad regions."
+      },
+      {
+        "name": "Denoising score matching",
+        "problem": "The score of clean data is hard to supervise directly.",
+        "how_it_works": "Add known noise to clean data and train the model to point from noisy samples back toward the clean-data structure.",
+        "why_it_matters": "It converts an abstract probability-gradient idea into a practical training loss.",
+        "failure_mode": "If the denoising setup does not cover the right noise levels, the sampler lacks reliable directions."
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "approaches": [
+      {
+        "name": "Flow matching",
+        "problem": "Generation needs a smooth route from a simple distribution to the data distribution.",
+        "how_it_works": "Train a model to predict a velocity field that tells each sample where to move at each time.",
+        "why_it_matters": "It frames generation as following learned arrows, often with a simple squared-error loss.",
+        "failure_mode": "Bad path choices or rough velocity fields can make sampling unstable or low quality."
+      },
+      {
+        "name": "ODE sampling",
+        "problem": "A learned velocity field must be turned into an actual sample.",
+        "how_it_works": "Start from noise and numerically integrate the equation dx/dt = v_theta(x,t) with small time steps.",
+        "why_it_matters": "It gives a direct procedure for using the learned field to generate data.",
+        "failure_mode": "Too few solver steps can be fast but inaccurate; too many steps can be expensive."
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "approaches": [
+      {
+        "name": "Latent diffusion",
+        "problem": "Running diffusion in full pixel space is expensive.",
+        "how_it_works": "Compress images into latent codes, run generation in that smaller space, then decode the result back to pixels.",
+        "why_it_matters": "It reduces compute while keeping enough structure for high-quality images.",
+        "failure_mode": "Compression can discard details or create decoder artifacts that generation cannot recover."
+      },
+      {
+        "name": "Classifier-free guidance",
+        "problem": "The model must make outputs that match a condition, not only outputs that look realistic.",
+        "how_it_works": "Compare conditional and unconditional predictions, then push the sampling update more strongly toward the condition.",
+        "why_it_matters": "It gives a simple control knob for prompt following and conditional generation.",
+        "failure_mode": "High guidance can reduce diversity, exaggerate features, or create unnatural artifacts."
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "approaches": [
+      {
+        "name": "U-Net denoising architecture",
+        "problem": "The model must combine local image detail with broad context during denoising.",
+        "how_it_works": "Use an encoder-decoder image network with skip connections that carry fine spatial detail across scales.",
+        "why_it_matters": "It preserves detail while still allowing the model to reason about larger structure.",
+        "failure_mode": "It can struggle with global relationships and can become heavy at large image sizes."
+      },
+      {
+        "name": "Diffusion transformer",
+        "problem": "Large visual generators need global mixing and flexible conditioning.",
+        "how_it_works": "Represent images or latents as patches and use attention blocks conditioned on time and prompts.",
+        "why_it_matters": "Attention lets distant regions and text conditions interact during each update.",
+        "failure_mode": "Memory and compute can grow quickly, and weak conditioning design can make the prompt ignored."
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "approaches": [
+      {
+        "name": "Time-sampled training",
+        "problem": "The model must learn corrections for all stages of generation.",
+        "how_it_works": "Randomly sample a time or noise level for each training example and train the model on that stage.",
+        "why_it_matters": "It spreads training across early rough-structure steps and later detail-refinement steps.",
+        "failure_mode": "Uneven time sampling can leave important parts of the generation path weak."
+      },
+      {
+        "name": "Sampler distillation",
+        "problem": "Many-step sampling is too slow for some uses.",
+        "how_it_works": "Train a new model or sampler to imitate the result of many cleanup steps using fewer larger steps.",
+        "why_it_matters": "It can make generation faster enough for interactive products or large-scale use.",
+        "failure_mode": "Fewer steps can lose detail, diversity, or prompt accuracy if the large moves are not reliable."
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "approaches": [
+      {
+        "name": "Distribution-level evaluation",
+        "problem": "A generator should match the broad statistics of real data, not only produce one good example.",
+        "how_it_works": "Compare generated and real samples using feature statistics or similar aggregate measurements.",
+        "why_it_matters": "It gives a scalable signal for overall realism and coverage.",
+        "failure_mode": "Aggregate scores can hide prompt failures, safety failures, and bad rare cases."
+      },
+      {
+        "name": "Prompt-alignment evaluation",
+        "problem": "A realistic image is still wrong if it does not obey the request.",
+        "how_it_works": "Check whether objects, counts, relations, styles, and constraints from the prompt appear in the output.",
+        "why_it_matters": "It measures whether the model is controllable, not just visually plausible.",
+        "failure_mode": "Automatic alignment checks can miss subtle errors or reward superficial keyword matching."
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "approaches": [
+      {
+        "name": "Fast generation methods",
+        "problem": "High-quality diffusion and flow models can require too many sampling steps.",
+        "how_it_works": "Change the solver, train a distilled model, or use consistency-style objectives so fewer updates are needed.",
+        "why_it_matters": "Speed decides whether the model can be used interactively or at large scale.",
+        "failure_mode": "Speedups can trade away detail, diversity, stability, or prompt following."
+      },
+      {
+        "name": "Video and 3D generative extensions",
+        "problem": "Images alone do not handle time, motion, geometry, or viewpoint consistency.",
+        "how_it_works": "Extend the generation path so samples remain coherent across frames, camera views, or 3D structure.",
+        "why_it_matters": "It moves the same generation principles into richer outputs people actually want.",
+        "failure_mode": "Each new dimension adds consistency failures: flicker in video, broken geometry in 3D, or unstable identity across views."
+      }
+    ]
+  }
+]

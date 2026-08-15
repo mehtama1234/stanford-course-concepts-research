@@ -126,6 +126,7 @@ def page(title: str, body: str, active: str = "", depth: int = 0) -> str:
     nav = [
         ("index.html", "Overview", "overview"),
         ("deep-rl.html", "Deep RL", "deep_rl"),
+        ("diffusion.html", "Diffusion", "diffusion"),
         ("concepts.html", "Concepts", "concepts"),
         ("themes.html", "Themes", "themes"),
         ("families.html", "Method Families", "families"),
@@ -358,6 +359,7 @@ def build_concepts(concepts: list[dict[str, Any]], evidence: list[dict[str, Any]
 
 
 DEEP_RL_COURSE = "stanford-cs224r-deep-rl-spring-2025"
+DIFFUSION_COURSE = "stanford-cme296-diffusion-large-vision-models-spring-2026"
 
 DEEP_RL_LECTURE_GUIDE: dict[int, dict[str, Any]] = {
     1: {
@@ -600,6 +602,14 @@ def deep_rl_evidence_by_title(evidence: list[dict[str, Any]]) -> dict[str, list[
     return by_title
 
 
+def course_evidence_by_title(evidence: list[dict[str, Any]], course_slug: str) -> dict[str, list[dict[str, Any]]]:
+    by_title: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for ev in evidence:
+        if ev.get("course") == course_slug:
+            by_title[ev["video_title"]].append(ev)
+    return by_title
+
+
 def concept_links(concept_ids: list[str], concept_by_id: dict[str, dict[str, Any]]) -> str:
     links = []
     for concept_id in concept_ids:
@@ -783,6 +793,176 @@ def build_deep_rl(
 </section>
 """
     write(SITE / "deep-rl.html", page("Deep RL Lecture Guide", body, "deep_rl"))
+
+
+def diffusion_big_picture() -> str:
+    return """
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: a realistic image is too many choices to make all at once. The model needs a path. Diffusion, score matching, flow matching, latent spaces, guidance, architectures, training, and evaluation are different answers to the same pressure: how do we move from something easy, like random noise, into something structured, like a useful image?</p>
+  <p>The course keeps rebuilding one loop. Pick a representation, choose a path through that representation, learn the local direction of improvement, follow that direction to make samples, and then check whether the result is realistic, controlled, diverse, and useful.</p>
+  <div class="principle-grid">
+    <article><h3>Generation Needs A Path</h3><p>Noise is easy to sample and images are hard to sample. The core problem is learning a reliable route between them.</p></article>
+    <article><h3>Small Moves Beat One Leap</h3><p>Diffusion breaks image generation into many cleanup steps, each easier to learn than the full image at once.</p></article>
+    <article><h3>Direction Can Replace Probability</h3><p>Score matching learns which way a noisy point should move without writing down the full data probability.</p></article>
+    <article><h3>Flow Means Learned Motion</h3><p>Flow matching learns arrows that carry simple samples toward data-like samples.</p></article>
+    <article><h3>Compression Saves Work</h3><p>Latent spaces let the model work in a smaller code where important structure remains but raw pixel cost drops.</p></article>
+    <article><h3>Guidance Adds Control</h3><p>A generated image must often obey a prompt or condition, so the sampling direction needs a steering signal.</p></article>
+    <article><h3>Architecture Carries Information</h3><p>The network must combine local detail, global layout, time, and conditions at every update.</p></article>
+    <article><h3>Evaluation Has Many Axes</h3><p>A sample can look good, ignore the prompt, copy data, or fail rare cases, so one score is not enough.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-3:</strong> build the three main generation views: denoise step by step, follow score directions, and follow a learned flow.</li>
+    <li><strong>Lecture 4:</strong> adds practical control and cheaper computation through latent spaces and guidance.</li>
+    <li><strong>Lectures 5-6:</strong> turn the ideas into trainable systems: architecture, time inputs, conditioning, losses, schedules, and scale.</li>
+    <li><strong>Lecture 7:</strong> asks how to judge outputs when realism, prompt following, safety, diversity, and usefulness disagree.</li>
+    <li><strong>Lecture 8:</strong> frames new papers by the bottleneck they attack: speed, video, 3D, control, consistency, or evaluation.</li>
+  </ol>
+</section>
+"""
+
+
+def diffusion_lecture_card(
+    lecture: dict[str, Any],
+    guide: dict[str, Any],
+    approaches: list[dict[str, Any]],
+    evidence_rows: list[dict[str, Any]],
+    concept_by_id: dict[str, dict[str, Any]],
+) -> str:
+    number = lecture_number(lecture)
+    title = lecture.get("expected_title") or lecture.get("title")
+    guide_concepts = guide.get("concepts", [])
+    core_ideas_html = "".join(f"<li>{esc(topic_copy(item))}</li>" for item in guide.get("core_ideas", []))
+    approaches_html = "".join(
+        f"""
+<article class="approach-card">
+  <h4>{esc(approach['name'])}</h4>
+  <dl>
+    <dt>Problem</dt><dd>{esc(approach['problem'])}</dd>
+    <dt>How It Works</dt><dd>{esc(approach['how_it_works'])}</dd>
+    <dt>Why It Matters</dt><dd>{esc(approach['why_it_matters'])}</dd>
+    <dt>Where It Breaks</dt><dd>{esc(approach['failure_mode'])}</dd>
+  </dl>
+</article>
+"""
+        for approach in approaches
+    )
+    examples_html = "".join(f"<li>{esc(item)}</li>" for item in guide.get("examples", []))
+    math_html = "".join(f"<li>{esc(item)}</li>" for item in guide.get("math_algorithm", []))
+    if evidence_rows:
+        evidence_html = "".join(
+            f'<li><a href="evidence.html#{esc(ev["id"])}">{esc(ev["id"])}</a> '
+            f'<span class="time">{esc(ev.get("timestamp_start") or "time unavailable")}</span>: '
+            f'{esc(ev.get("lecture_argument", ev.get("paraphrased_claim", "")))}</li>'
+            for ev in evidence_rows
+        )
+    else:
+        evidence_html = "<li>No reviewed evidence span is attached yet, but the local transcript is available.</li>"
+    return f"""
+<article class="lecture-card" id="lecture-{number}">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture {number}</p>
+      <h2>{esc(title)}</h2>
+    </div>
+    <a class="button" href="{esc(lecture['url'])}">Open video</a>
+  </div>
+  <p class="meta">{esc(format_duration(lecture.get('duration')))} · {esc(lecture.get('word_count', 'unknown'))} transcript words</p>
+  {flow_diagram(
+      "Study Path",
+      [
+          ("Problem", topic_copy(guide["core_problem"])),
+          ("Core Idea", "Start with the detailed topic explanation below, then use the approaches and examples."),
+          ("Math", "Use the equation and algorithm notes as the minimum technical spine."),
+          ("Check", guide["plain_checkpoint"]),
+      ],
+      "lecture-flow",
+  )}
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>{esc(topic_copy(guide.get("topic_explanation", "")))}</p>
+    <p>{esc(topic_copy(guide.get("detail_explanation", "")))}</p>
+    <h3>Core Ideas</h3>
+    <ul>{core_ideas_html}</ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">{approaches_html}</div>
+    <h3>Examples Used</h3>
+    <ul>{examples_html}</ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul>{math_html}</ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>{esc(guide["plain_checkpoint"])}</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips">{concept_links(guide_concepts, concept_by_id)}</p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list">{evidence_html}</ul>
+    <p><code>{esc(lecture["clean_txt"])}</code></p>
+  </section>
+</article>
+"""
+
+
+def build_diffusion(
+    transcript_index: list[dict[str, Any]],
+    concepts: list[dict[str, Any]],
+    evidence: list[dict[str, Any]],
+    lecture_guides: list[dict[str, Any]],
+    lecture_approaches: list[dict[str, Any]],
+) -> None:
+    lectures = [
+        record
+        for record in transcript_index
+        if record.get("course_slug") == DIFFUSION_COURSE and record.get("transcript_status") == "available"
+    ]
+    lectures.sort(key=lambda record: int(record.get("course_index", 0)))
+    concept_by_id = {concept["id"]: concept for concept in concepts}
+    evidence_by_title = course_evidence_by_title(evidence, DIFFUSION_COURSE)
+    guide_by_number = {int(guide["number"]): guide for guide in lecture_guides}
+    approaches_by_number = {
+        int(record["number"]): record.get("approaches", [])
+        for record in lecture_approaches
+    }
+    lecture_links = " ".join(
+        f'<a class="chip" href="#lecture-{lecture_number(lecture)}">{esc(lecture.get("expected_title", lecture.get("title", "")))}</a>'
+        for lecture in lectures
+    )
+    cards = []
+    for lecture in lectures:
+        number = lecture_number(lecture)
+        guide = guide_by_number.get(number)
+        if not guide:
+            continue
+        cards.append(
+            diffusion_lecture_card(
+                lecture,
+                guide,
+                approaches_by_number.get(number, []),
+                evidence_by_title.get(lecture["title"], []),
+                concept_by_id,
+            )
+        )
+    body = f"""
+<section class="page-head">
+  <p class="eyebrow">Stanford CME296 Diffusion And Large Vision Models</p>
+  <h1>Diffusion Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Diffusion and flow models study how to generate structured visual data by moving from something simple to something complex. The course keeps returning to six facts: direct generation is too hard, local directions are learnable, representation changes cost, guidance changes control, architecture changes what information can be used, and evaluation must check several kinds of failure.</p>
+  <p class="chips">{lecture_links}</p>
+</section>
+{diffusion_big_picture()}
+<section class="stack">
+  {''.join(cards)}
+</section>
+"""
+    write(SITE / "diffusion.html", page("Diffusion Lecture Guide", body, "diffusion"))
 
 
 def evidence_row(ev: dict[str, Any], link_prefix: str = "") -> str:
@@ -1014,11 +1194,14 @@ def main() -> None:
     transcript_index = load_json("raw-material/youtube/transcript-index.json")
     lecture_guides = load_json("analysis/deep-rl/lecture-guide.json")
     lecture_approaches = load_json("analysis/deep-rl/lecture-approaches.json")
+    diffusion_guides = load_json("analysis/diffusion/lecture-guide.json")
+    diffusion_approaches = load_json("analysis/diffusion/lecture-approaches.json")
     primitives = load_json("analysis/throughlines/primitives.json")
     families = load_json("analysis/throughlines/method-families.json")
     build_assets()
     build_index(concepts, themes, evidence)
     build_deep_rl(transcript_index, concepts, evidence, lecture_guides, lecture_approaches)
+    build_diffusion(transcript_index, concepts, evidence, diffusion_guides, diffusion_approaches)
     build_concepts(concepts, evidence)
     build_themes(themes, subthemes, concepts)
     build_families(families, evidence)

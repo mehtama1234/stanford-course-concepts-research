@@ -1,0 +1,274 @@
+[
+  {
+    "number": 1,
+    "core_problem": "A realistic image has millions of linked choices, so direct generation is too large a jump from random numbers to a clean picture.",
+    "topic_explanation": "Diffusion starts with a plain trick: make the hard direction easy by first doing the opposite. Take a clean image and add a little noise. Add more noise. Keep going until the image becomes almost pure static. That forward path is easy because we choose the noise. The learning problem is the reverse path: given a noisy image and the current noise level, predict how to clean it a little. Generation then starts from random noise and repeats many small cleanup steps until structure appears.",
+    "detail_explanation": "The reason this works is not magic. A model does not have to invent the whole image at once. At each step it only answers a smaller question: what part of this current picture looks like noise, and what should be kept as signal? Early steps recover rough layout because only broad structure can be trusted. Later steps sharpen edges, texture, and local detail. The price is speed, because many steps are needed. The gain is stable training, because the model gets a clear supervised target: the exact noise that was added.",
+    "core_ideas": [
+      "The forward process corrupts real data with known noise, so training examples can be made without human labels.",
+      "The reverse process learns many small denoising moves instead of one giant generation jump.",
+      "A time or noise-level input matters because cleaning a nearly random image is different from cleaning a nearly finished image.",
+      "Sampling is an iterative loop: start from noise, predict noise, remove some of it, and repeat."
+    ],
+    "discussion_flow": [
+      "Start with the problem of sampling from an unknown image distribution.",
+      "Define a simple forward corruption process that gradually destroys a clean image.",
+      "Train a neural network to predict the noise present at a chosen corruption level.",
+      "Use the trained network backwards, beginning from random noise.",
+      "Repeat small reverse updates instead of drawing the whole image at once.",
+      "Connect DDPM-style diffusion to later score, flow, latent, guidance, architecture, and training choices."
+    ],
+    "examples": [
+      "A clean image of a face slowly becomes static when Gaussian noise is repeatedly mixed into the pixels.",
+      "At generation time, static slowly becomes a face, an object, or a scene because each step removes a predicted piece of noise.",
+      "The same idea can apply outside images whenever data can be corrupted and then gradually repaired."
+    ],
+    "math_algorithm": [
+      "Choose a noise schedule beta_t that says how much noise is added at each step.",
+      "Sample a clean data point x_0, a time t, and random noise epsilon.",
+      "Construct x_t, the noisy version of x_0 at time t.",
+      "Train epsilon_theta(x_t, t) to predict the noise epsilon with a squared-error loss.",
+      "At sampling time, start from x_T sampled from noise and repeatedly estimate x_{t-1} from x_t and the predicted noise."
+    ],
+    "plain_checkpoint": "You should be able to explain diffusion as learning to undo a known corruption process one small step at a time, rather than producing a whole image in one leap.",
+    "concepts": ["diffusion", "score_matching", "guidance", "latent_space"]
+  },
+  {
+    "number": 2,
+    "core_problem": "Predicting the exact data distribution is hard, but local directions toward more likely data can be easier to learn.",
+    "topic_explanation": "Score matching changes the question. Instead of asking for the probability of an image, it asks for the direction that would make a noisy point more data-like. Think of standing on a foggy landscape where high ground means high data probability. You may not know the height of every point, but you can learn which way is uphill. The score is that uphill direction: the gradient of log probability. A score model learns this direction at many noise levels.",
+    "detail_explanation": "This matters because generation can be framed as following directions. If a noisy image is in a low-probability region, the score tells the model how to move it toward regions where real images live. Denoising score matching makes the abstract score trainable: add known noise to clean data, then train the model to point back toward the clean data. The model is not memorizing images. It is learning local directions in the space of possible images. The danger is that local directions can be wrong far from the training distribution, and small errors can accumulate during sampling.",
+    "core_ideas": [
+      "The score is a direction field, not a probability table.",
+      "Denoising turns score learning into a supervised problem with known noisy-clean pairs.",
+      "Different noise levels need different score estimates because the data shape changes as noise increases.",
+      "Sampling follows the learned directions, often with extra noise or an ODE/SDE-style update."
+    ],
+    "discussion_flow": [
+      "Begin from the same generation problem as diffusion: produce samples from an unknown data distribution.",
+      "Replace direct probability estimation with a local direction: the gradient of log probability.",
+      "Use noisy data so the score can be learned at many levels of blur and corruption.",
+      "Show how denoising score matching supplies a practical training target.",
+      "Connect the score view back to diffusion denoising.",
+      "Prepare the path-based view used later by flow matching."
+    ],
+    "examples": [
+      "A blurry or noisy image can be nudged toward a cleaner image by following local directions.",
+      "A point cloud shaped like a ring can be sampled by learning arrows that point back toward the ring.",
+      "A probability landscape can be navigated by slope even if its absolute height is unknown."
+    ],
+    "math_algorithm": [
+      "Define the score as grad_x log p_t(x), the direction in x that increases log probability at noise level t.",
+      "Corrupt clean samples with known Gaussian noise to obtain x_t.",
+      "Train s_theta(x_t, t) to match the denoising direction implied by the corruption process.",
+      "Use Langevin, reverse SDE, or probability-flow updates to move samples according to the learned score.",
+      "Treat diffusion noise prediction and score prediction as closely related parameterizations."
+    ],
+    "plain_checkpoint": "You should be able to say that score matching learns which way to move a noisy sample so it becomes more like real data, without needing to know the full probability value.",
+    "concepts": ["score_matching", "diffusion", "flow_matching", "latent_space"]
+  },
+  {
+    "number": 3,
+    "core_problem": "Generation needs a route from simple noise to real data; flow matching learns the motion along that route directly.",
+    "topic_explanation": "Flow matching treats generation as movement. Start with a simple distribution, such as Gaussian noise. End with the data distribution, such as real images. Now imagine a path between them. At every time and every location on the path, the model learns an arrow: move this way at this speed. That arrow is a velocity field. Sampling means starting from noise and following the learned arrows until the sample reaches the data side. The model is therefore not mainly guessing pixels; it is learning motion instructions for points in a high-dimensional space.",
+    "detail_explanation": "The advantage is that the training target can be direct. If you choose how to pair or interpolate between noise and data, you know the desired velocity along that path. The model can be trained with an ordinary squared-error loss to predict that velocity. This makes flow matching feel cleaner than thinking only in terms of adding and removing noise. The risk is that the chosen path matters. A path that is easy to train may not give the best samples, and numerical solvers can introduce error if the learned field is rough or if too few steps are used.",
+    "core_ideas": [
+      "A velocity field is a map of arrows telling a sample where to move next.",
+      "Flow matching learns the path from a simple starting distribution to the data distribution.",
+      "The training loss can be a direct regression loss on velocities.",
+      "Sampling solves an ordinary differential equation by repeatedly stepping along the learned arrows."
+    ],
+    "discussion_flow": [
+      "Start from diffusion and score matching as earlier ways to describe generation.",
+      "Reframe generation as transport from noise to data.",
+      "Define a time-dependent velocity field.",
+      "Train the model to match target velocities along chosen paths.",
+      "Generate by solving the learned motion equation from start to finish.",
+      "Compare path choices, solver choices, and the relationship to diffusion."
+    ],
+    "examples": [
+      "A cloud of random points can be moved into the shape of a two-dimensional data curve by following learned arrows.",
+      "An image sample can begin as noise and be transported into an image-like latent or pixel state.",
+      "A navigation map with arrows at each location gives the everyday picture of a vector field."
+    ],
+    "math_algorithm": [
+      "Choose a path x_t between a simple sample x_0 and a data sample x_1.",
+      "Compute or define the target velocity u_t for that path.",
+      "Train v_theta(x_t, t) to match u_t with an L2 loss.",
+      "Generate by starting from x_0 and integrating dx/dt = v_theta(x, t).",
+      "Trade sample quality, compute, and stability through solver step count and path design."
+    ],
+    "plain_checkpoint": "You should be able to explain flow matching as learning arrows that carry noise into data, then generating by following those arrows.",
+    "concepts": ["flow_matching", "diffusion", "score_matching", "latent_space"]
+  },
+  {
+    "number": 4,
+    "core_problem": "Pixel-space generation can be expensive, and unconditional generation is not enough when a user wants a specific image.",
+    "topic_explanation": "Latent-space generation and guidance solve two practical problems. Latent space is a compressed working space. Instead of denoising every pixel directly, an encoder turns an image into a smaller code, the generator works on that code, and a decoder turns the code back into an image. Guidance solves the steering problem. A user may ask for a red car, a medical image with a certain property, or a picture matching text. The model must not only make something realistic; it must make the requested thing.",
+    "detail_explanation": "The first principle is separation of jobs. Compression handles cost: generate in a smaller space where important structure remains but redundant pixel detail is reduced. Guidance handles control: change the sampling direction so the path is pulled toward the condition. Classifier-free guidance does this by comparing a conditional prediction with a less-conditioned prediction and pushing more strongly toward the condition. The failure modes are also plain. Too much compression loses detail. Too much guidance can overfit the prompt, create artifacts, reduce variety, or make images look forced.",
+    "core_ideas": [
+      "Latent space makes generation cheaper by working on compact codes instead of raw pixels.",
+      "Guidance changes the sampling direction so the output follows a condition.",
+      "Classifier-free guidance uses the difference between conditional and unconditional predictions as a steering signal.",
+      "Control and realism are separate goals, and improving one can hurt the other."
+    ],
+    "discussion_flow": [
+      "Begin with the cost of pixel-space diffusion and flow methods.",
+      "Introduce encoders and decoders as a way to work in compressed latent space.",
+      "Define conditional generation as the problem of producing outputs that match an instruction or input.",
+      "Explain guidance as changing the denoising or velocity direction.",
+      "Use classifier-free guidance as the main practical mechanism.",
+      "Show the tradeoff between prompt strength, sample quality, diversity, and artifacts."
+    ],
+    "examples": [
+      "Text-to-image generation uses a text prompt as the condition.",
+      "Latent diffusion generates inside a compressed image code before decoding to pixels.",
+      "Increasing guidance weight can make an image match the prompt more strongly while making it less natural."
+    ],
+    "math_algorithm": [
+      "Encode an image x into a latent code z, generate or denoise z, then decode z back into x.",
+      "Train or run a conditional model that receives both the noisy sample and the condition c.",
+      "For classifier-free guidance, combine conditional and unconditional predictions.",
+      "Use a guidance scale to control how strongly the condition changes the update direction.",
+      "Evaluate both instruction-following and visual quality because they can diverge."
+    ],
+    "plain_checkpoint": "You should be able to say that latent space reduces the cost of generation, while guidance steers the sample toward a requested condition.",
+    "concepts": ["latent_space", "guidance", "diffusion", "flow_matching", "evaluation"]
+  },
+  {
+    "number": 5,
+    "core_problem": "A generative model needs a neural architecture that can read noisy visual states, time, and conditions while preserving spatial structure.",
+    "topic_explanation": "Architecture is the body that carries the diffusion or flow idea. The training objective may say predict noise or velocity, but a real model still needs layers that can process images, time steps, text, and conditioning signals. U-Nets became useful because they combine local image processing with skip connections that preserve detail. Diffusion transformers become useful because attention can compare many parts of the image or latent grid and mix information globally. The architecture decides what the model can see when it predicts the next correction.",
+    "detail_explanation": "The first-principles question is what information must be available at each update. A denoising step needs local texture, larger object layout, the current noise level, and the prompt or condition. Convolutions are good at nearby structure. Attention is good at long-range relationships and conditioning. Time embeddings tell the network what stage of cleanup it is in. Cross-attention lets text or other conditions influence visual features. Architecture fails when it cannot carry the right information: details wash out, global layout breaks, conditioning is ignored, or memory cost becomes too high.",
+    "core_ideas": [
+      "The loss defines what to predict, but the architecture defines what information can be used to make that prediction.",
+      "U-Net skip connections help preserve fine detail while still allowing broad context.",
+      "Transformer blocks and attention let distant image regions and conditioning tokens interact.",
+      "Time and condition embeddings are necessary because the same noisy image can need different updates at different stages or prompts."
+    ],
+    "discussion_flow": [
+      "Start from the prediction target used by diffusion or flow models.",
+      "Ask what image, time, and condition information the network must combine.",
+      "Introduce U-Net style designs for multi-scale spatial processing.",
+      "Introduce attention and diffusion transformers for global mixing.",
+      "Explain conditioning channels such as text, class labels, or other images.",
+      "Connect architecture choices to memory, speed, sample quality, and prompt following."
+    ],
+    "examples": [
+      "A U-Net can preserve edge detail by passing high-resolution features around the bottleneck.",
+      "A diffusion transformer can let one image patch attend to another distant patch.",
+      "Text conditioning can enter through cross-attention so visual features know which words matter."
+    ],
+    "math_algorithm": [
+      "Represent the noisy image or latent as spatial features or patches.",
+      "Embed the time step t and inject it into the network layers.",
+      "Use convolution, attention, or transformer blocks to compute the noise or velocity prediction.",
+      "Use cross-attention or conditioning embeddings to inject text or other controls.",
+      "Balance model size, memory, receptive field, and sampling cost."
+    ],
+    "plain_checkpoint": "You should be able to explain that diffusion architecture is not decorative: it determines whether the model can combine local detail, global layout, time, and conditioning.",
+    "concepts": ["vision_transformers", "diffusion", "guidance", "latent_space", "attention"]
+  },
+  {
+    "number": 6,
+    "core_problem": "Training large vision generators requires turning the generation idea into stable data pipelines, losses, schedules, and compute choices.",
+    "topic_explanation": "Model training is where the clean idea meets engineering reality. The model needs many image-condition examples, a corruption or path rule, a prediction target, and a loss. Each training step samples data, samples a time or noise level, constructs the corrupted state, asks the model for a prediction, measures the error, and updates the weights. This simple loop hides important choices: data quality, caption quality, noise schedule, batch size, optimizer, precision, architecture scale, and whether the target is noise, clean data, score, or velocity.",
+    "detail_explanation": "The first-principles issue is that the model only learns from the errors we show it. If the data is low quality, the model learns low-quality patterns. If captions are weak, text control is weak. If some noise levels are undertrained, sampling breaks at those stages. If the loss rewards an easy average answer, fine detail may suffer. Training also connects to sampling speed: distillation and consistency-style ideas try to reduce the number of steps needed at generation time by training a model to make larger reliable moves.",
+    "core_ideas": [
+      "Training repeatedly creates noisy or intermediate states from real data and asks the model to predict the right correction.",
+      "The prediction target can be noise, clean data, score, velocity, or another equivalent parameterization.",
+      "Data and conditioning quality directly limit what the model can learn.",
+      "Fast sampling methods try to train models that need fewer reverse steps."
+    ],
+    "discussion_flow": [
+      "Define the training loop for diffusion and flow-style models.",
+      "Discuss data, captions, augmentations, and batching as sources of the learning signal.",
+      "Compare possible prediction targets and losses.",
+      "Explain noise schedules or time sampling as coverage over generation stages.",
+      "Connect architecture scale and compute to model quality.",
+      "Introduce speedup and distillation ideas that reduce sampling steps."
+    ],
+    "examples": [
+      "A captioned image pair teaches the model both visual structure and text control.",
+      "A model trained poorly at high noise levels may never recover good global structure.",
+      "A distilled sampler tries to replace many small cleanup steps with fewer larger ones."
+    ],
+    "math_algorithm": [
+      "Sample a data item and condition c from the training set.",
+      "Sample a time t and construct x_t using the chosen corruption or path rule.",
+      "Run the model f_theta(x_t, t, c).",
+      "Compute a loss against the chosen target, such as epsilon, x_0, score, or velocity.",
+      "Update theta with gradient descent and monitor validation behavior across time levels."
+    ],
+    "plain_checkpoint": "You should be able to describe training as repeatedly making a known corrupted state and teaching the model the correction it should predict.",
+    "concepts": ["pretraining", "diffusion", "flow_matching", "score_matching", "evaluation"]
+  },
+  {
+    "number": 7,
+    "core_problem": "A generated image can look good, match the prompt poorly, copy training data, contain artifacts, or fail in ways a single score misses.",
+    "topic_explanation": "Evaluation asks what it means for a generator to be good. A model can make sharp images that ignore the prompt. It can follow the prompt but look unnatural. It can score well on a metric while failing for people. It can work on common requests and fail on rare ones. So evaluation needs several checks: visual quality, diversity, prompt alignment, factual or spatial correctness, safety, bias, memorization, and task-specific usefulness. The key point is that an image generator is not one skill; it is a bundle of skills that can improve or fail separately.",
+    "detail_explanation": "The first-principles point is that generation has many goals at once. There is no single number that fully measures an image generator. Distribution metrics ask whether generated samples resemble real samples in aggregate. Human preference asks whether people like or trust the outputs. Prompt-alignment tests ask whether the requested objects, relations, counts, and styles appear. Stress tests ask where the model breaks. Evaluation fails when the metric becomes the target: the model can improve the number while getting worse at the actual use case.",
+    "core_ideas": [
+      "Visual quality and instruction following are different measurements.",
+      "Distribution-level scores can miss individual failures that matter to users.",
+      "Human preference is useful but noisy, costly, and sensitive to the evaluation setup.",
+      "Good evaluation includes failure slices, not only average scores."
+    ],
+    "discussion_flow": [
+      "Separate image quality from prompt adherence.",
+      "Review automatic metrics that compare generated and real sample distributions.",
+      "Discuss human evaluation and preference data.",
+      "Identify common failure modes: artifacts, bad counts, wrong spatial relations, bias, memorization, and unsafe outputs.",
+      "Explain why benchmark averages can hide important weaknesses.",
+      "Connect evaluation back to training choices and deployment risk."
+    ],
+    "examples": [
+      "A prompt asks for two dogs and one red ball, but the image contains one dog and two balls.",
+      "An image looks realistic at first glance but has broken hands, text, or object relations.",
+      "A model can produce diverse images overall while failing badly for a specific user group or domain."
+    ],
+    "math_algorithm": [
+      "Use distribution metrics such as FID-style scores to compare generated and real feature statistics.",
+      "Use alignment metrics or human checks for prompt following.",
+      "Slice evaluation by object type, count, relation, style, demographic attribute, and safety category.",
+      "Check diversity and memorization separately from image quality.",
+      "Treat metrics as evidence, not as the definition of success."
+    ],
+    "plain_checkpoint": "You should be able to explain why evaluating image generators requires several tests, because realism, prompt following, diversity, safety, and usefulness can disagree.",
+    "concepts": ["evaluation", "guidance", "diffusion", "generalization"]
+  },
+  {
+    "number": 8,
+    "core_problem": "The field keeps changing because the basic generation loop is being adapted for faster sampling, video, 3D, controllability, and new model families.",
+    "topic_explanation": "Trending topics are not random add-ons. They are attempts to fix the main limits of diffusion and flow systems. Sampling can be slow, so researchers build faster solvers, distillation methods, and consistency-style models. Images are not enough, so the same ideas move into video, 3D, robotics, and multimodal generation. User control is still imperfect, so new conditioning and guidance methods try to make outputs obey structure, layout, motion, identity, and style. The best way to read new work is to ask which bottleneck it attacks and what it gives up to do that.",
+    "detail_explanation": "The first-principles map stays the same: start from a simple state, move through a learned path, and end with structured data. New work changes one part of that map. Some papers change the path so fewer steps are needed. Some change the data type from image to video or 3D. Some change the condition signal so the user can control layout, camera, motion, or identity. Some change evaluation because new outputs introduce new failure modes. The danger is hype: a method may be faster but worse, more controllable but less diverse, or impressive in demos but weak under systematic tests.",
+    "core_ideas": [
+      "Most new diffusion and flow work changes speed, control, data type, architecture, or evaluation.",
+      "Video and 3D generation add consistency problems across time, view, geometry, and motion.",
+      "Distillation and consistency methods try to reduce the number of sampling steps.",
+      "Better control often trades against diversity, realism, or compute cost."
+    ],
+    "discussion_flow": [
+      "Recap the main generation paradigms: diffusion, score matching, flow matching, latent generation, and guidance.",
+      "Identify the practical bottlenecks: speed, control, temporal consistency, 3D consistency, and evaluation.",
+      "Discuss faster samplers and distilled models.",
+      "Discuss movement from images to video, 3D, and multimodal outputs.",
+      "Discuss stronger conditioning and controllability.",
+      "Frame new papers by asking which bottleneck they change and what tradeoff they create."
+    ],
+    "examples": [
+      "A video generator must keep the same object identity across frames, not just make each frame look good.",
+      "A 3D generator must make views agree about shape, not only render one plausible picture.",
+      "A fast sampler may generate in a few steps but lose detail or diversity compared with a slower sampler."
+    ],
+    "math_algorithm": [
+      "Classify a new method by the part it changes: path, solver, architecture, condition, data type, or metric.",
+      "For speed methods, compare step count against quality and alignment.",
+      "For video or 3D methods, add consistency checks across time or viewpoint.",
+      "For control methods, measure both obedience to the condition and damage to realism or diversity.",
+      "Use the original diffusion and flow loops as the baseline for understanding each extension."
+    ],
+    "plain_checkpoint": "You should be able to read a new diffusion or flow paper by asking which part of the generation loop it changes and what tradeoff that creates.",
+    "concepts": ["diffusion", "flow_matching", "guidance", "latent_space", "evaluation", "vision_transformers"]
+  }
+]

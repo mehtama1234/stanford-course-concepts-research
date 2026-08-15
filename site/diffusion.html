@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diffusion Lecture Guide · Stanford AI Concept Lab</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html">Stanford AI Concept Lab</a>
+    <nav><a class="" href="index.html">Overview</a>
+<a class="" href="deep-rl.html">Deep RL</a>
+<a class="active" href="diffusion.html">Diffusion</a>
+<a class="" href="concepts.html">Concepts</a>
+<a class="" href="themes.html">Themes</a>
+<a class="" href="families.html">Method Families</a>
+<a class="" href="primitives.html">Primitives</a>
+<a class="" href="evidence.html">Evidence</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">Stanford CME296 Diffusion And Large Vision Models</p>
+  <h1>Diffusion Lecture Guide</h1>
+  <p>This page reads the course lecture by lecture from the local transcripts. Each section teaches the problem, method, examples, and math moves directly, without lecture-summary filler.</p>
+</section>
+<section>
+  <h2>Course Spine</h2>
+  <p>Diffusion and flow models study how to generate structured visual data by moving from something simple to something complex. The course keeps returning to six facts: direct generation is too hard, local directions are learnable, representation changes cost, guidance changes control, architecture changes what information can be used, and evaluation must check several kinds of failure.</p>
+  <p class="chips"><a class="chip" href="#lecture-1">Lecture 1 - Diffusion</a> <a class="chip" href="#lecture-2">Lecture 2 - Score matching</a> <a class="chip" href="#lecture-3">Lecture 3 - Flow matching</a> <a class="chip" href="#lecture-4">Lecture 4 - Latent Space &amp; Guidance</a> <a class="chip" href="#lecture-5">Lecture 5 - Architectures</a> <a class="chip" href="#lecture-6">Lecture 6 - Model Training</a> <a class="chip" href="#lecture-7">Lecture 7 - Evaluation</a> <a class="chip" href="#lecture-8">Lecture 8 - Trending Topics</a></p>
+</section>
+
+<section class="wide-card">
+  <h2>Big Picture From First Principles</h2>
+  <p>Start with one ordinary fact: a realistic image is too many choices to make all at once. The model needs a path. Diffusion, score matching, flow matching, latent spaces, guidance, architectures, training, and evaluation are different answers to the same pressure: how do we move from something easy, like random noise, into something structured, like a useful image?</p>
+  <p>The course keeps rebuilding one loop. Pick a representation, choose a path through that representation, learn the local direction of improvement, follow that direction to make samples, and then check whether the result is realistic, controlled, diverse, and useful.</p>
+  <div class="principle-grid">
+    <article><h3>Generation Needs A Path</h3><p>Noise is easy to sample and images are hard to sample. The core problem is learning a reliable route between them.</p></article>
+    <article><h3>Small Moves Beat One Leap</h3><p>Diffusion breaks image generation into many cleanup steps, each easier to learn than the full image at once.</p></article>
+    <article><h3>Direction Can Replace Probability</h3><p>Score matching learns which way a noisy point should move without writing down the full data probability.</p></article>
+    <article><h3>Flow Means Learned Motion</h3><p>Flow matching learns arrows that carry simple samples toward data-like samples.</p></article>
+    <article><h3>Compression Saves Work</h3><p>Latent spaces let the model work in a smaller code where important structure remains but raw pixel cost drops.</p></article>
+    <article><h3>Guidance Adds Control</h3><p>A generated image must often obey a prompt or condition, so the sampling direction needs a steering signal.</p></article>
+    <article><h3>Architecture Carries Information</h3><p>The network must combine local detail, global layout, time, and conditions at every update.</p></article>
+    <article><h3>Evaluation Has Many Axes</h3><p>A sample can look good, ignore the prompt, copy data, or fail rare cases, so one score is not enough.</p></article>
+  </div>
+</section>
+<section class="wide-card">
+  <h2>How The Ideas Build</h2>
+  <ol>
+    <li><strong>Lectures 1-3:</strong> build the three main generation views: denoise step by step, follow score directions, and follow a learned flow.</li>
+    <li><strong>Lecture 4:</strong> adds practical control and cheaper computation through latent spaces and guidance.</li>
+    <li><strong>Lectures 5-6:</strong> turn the ideas into trainable systems: architecture, time inputs, conditioning, losses, schedules, and scale.</li>
+    <li><strong>Lecture 7:</strong> asks how to judge outputs when realism, prompt following, safety, diversity, and usefulness disagree.</li>
+    <li><strong>Lecture 8:</strong> frames new papers by the bottleneck they attack: speed, video, 3D, control, consistency, or evaluation.</li>
+  </ol>
+</section>
+
+<section class="stack">
+
+<article class="lecture-card" id="lecture-1">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 1</p>
+      <h2>Lecture 1 - Diffusion</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=tr-CUpw--ck">Open video</a>
+  </div>
+  <p class="meta">1h 46m · 12646 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A realistic image has millions of linked choices, so direct generation is too large a jump from random numbers to a clean picture.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain diffusion as learning to undo a known corruption process one small step at a time, rather than producing a whole image in one leap.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Diffusion starts with a plain trick: make the hard direction easy by first doing the opposite. Take a clean image and add a little noise. Add more noise. Keep going until the image becomes almost pure static. That forward path is easy because we choose the noise. The learning problem is the reverse path: given a noisy image and the current noise level, predict how to clean it a little. Generation then starts from random noise and repeats many small cleanup steps until structure appears.</p>
+    <p>The reason this works is not magic. A model does not have to invent the whole image at once. At each step it only answers a smaller question: what part of this current picture looks like noise, and what should be kept as signal? Early steps recover rough layout because only broad structure can be trusted. Later steps sharpen edges, texture, and local detail. The price is speed, because many steps are needed. The gain is stable training, because the model gets a clear supervised target: the exact noise that was added.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>The forward process corrupts real data with known noise, so training examples can be made without human labels.</li><li>The reverse process learns many small denoising moves instead of one giant generation jump.</li><li>A time or noise-level input matters because cleaning a nearly random image is different from cleaning a nearly finished image.</li><li>Sampling is an iterative loop: start from noise, predict noise, remove some of it, and repeat.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>DDPM-style denoising</h4>
+  <dl>
+    <dt>Problem</dt><dd>Directly turning random noise into a clean image is too hard as one step.</dd>
+    <dt>How It Works</dt><dd>Add known noise to real images during training, then train a model to predict and remove that noise at many noise levels.</dd>
+    <dt>Why It Matters</dt><dd>It turns generation into many small supervised cleanup problems with clear targets.</dd>
+    <dt>Where It Breaks</dt><dd>Sampling can be slow, and errors at early high-noise steps can shape the whole output badly.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Noise scheduling</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model needs to learn every stage between clean data and pure noise.</dd>
+    <dt>How It Works</dt><dd>Choose how much noise is added at each time step so training covers light, medium, and heavy corruption.</dd>
+    <dt>Why It Matters</dt><dd>The schedule decides which denoising stages the model practices and how hard each stage is.</dd>
+    <dt>Where It Breaks</dt><dd>A poor schedule can make some stages too easy, too hard, or undertrained.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A clean image of a face slowly becomes static when Gaussian noise is repeatedly mixed into the pixels.</li><li>At generation time, static slowly becomes a face, an object, or a scene because each step removes a predicted piece of noise.</li><li>The same idea can apply outside images whenever data can be corrupted and then gradually repaired.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Choose a noise schedule beta_t that says how much noise is added at each step.</li><li>Sample a clean data point x_0, a time t, and random noise epsilon.</li><li>Construct x_t, the noisy version of x_0 at time t.</li><li>Train epsilon_theta(x_t, t) to predict the noise epsilon with a squared-error loss.</li><li>At sampling time, start from x_T sampled from noise and repeatedly estimate x_{t-1} from x_t and the predicted noise.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain diffusion as learning to undo a known corruption process one small step at a time, rather than producing a whole image in one leap.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/score_matching.html">Score Matching</a> <a class="chip" href="concepts/guidance.html">Guidance</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li>No reviewed evidence span is attached yet, but the local transcript is available.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/001-tr-CUpw--ck-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 1 - Diffusion.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-2">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 2</p>
+      <h2>Lecture 2 - Score matching</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=_WaR2fjZpEQ">Open video</a>
+  </div>
+  <p class="meta">1h 48m · 12725 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Predicting the exact data distribution is hard, but local directions toward more likely data can be easier to learn.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to say that score matching learns which way to move a noisy sample so it becomes more like real data, without needing to know the full probability value.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Score matching changes the question. Instead of asking for the probability of an image, it asks for the direction that would make a noisy point more data-like. Think of standing on a foggy landscape where high ground means high data probability. You may not know the height of every point, but you can learn which way is uphill. The score is that uphill direction: the gradient of log probability. A score model learns this direction at many noise levels.</p>
+    <p>This matters because generation can be framed as following directions. If a noisy image is in a low-probability region, the score tells the model how to move it toward regions where real images live. Denoising score matching makes the abstract score trainable: add known noise to clean data, then train the model to point back toward the clean data. The model is not memorizing images. It is learning local directions in the space of possible images. The danger is that local directions can be wrong far from the training distribution, and small errors can accumulate during sampling.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>The score is a direction field, not a probability table.</li><li>Denoising turns score learning into a supervised problem with known noisy-clean pairs.</li><li>Different noise levels need different score estimates because the data shape changes as noise increases.</li><li>Sampling follows the learned directions, often with extra noise or an ODE/SDE-style update.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Score matching</h4>
+  <dl>
+    <dt>Problem</dt><dd>The full data probability is hard to know, but local directions toward data can be learned.</dd>
+    <dt>How It Works</dt><dd>Train a model to predict the gradient of log probability, which points toward more data-like regions.</dd>
+    <dt>Why It Matters</dt><dd>It lets sampling move by following local directions instead of evaluating the whole distribution.</dd>
+    <dt>Where It Breaks</dt><dd>Wrong local directions can accumulate during sampling and push samples into bad regions.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Denoising score matching</h4>
+  <dl>
+    <dt>Problem</dt><dd>The score of clean data is hard to supervise directly.</dd>
+    <dt>How It Works</dt><dd>Add known noise to clean data and train the model to point from noisy samples back toward the clean-data structure.</dd>
+    <dt>Why It Matters</dt><dd>It converts an abstract probability-gradient idea into a practical training loss.</dd>
+    <dt>Where It Breaks</dt><dd>If the denoising setup does not cover the right noise levels, the sampler lacks reliable directions.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A blurry or noisy image can be nudged toward a cleaner image by following local directions.</li><li>A point cloud shaped like a ring can be sampled by learning arrows that point back toward the ring.</li><li>A probability landscape can be navigated by slope even if its absolute height is unknown.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Define the score as grad_x log p_t(x), the direction in x that increases log probability at noise level t.</li><li>Corrupt clean samples with known Gaussian noise to obtain x_t.</li><li>Train s_theta(x_t, t) to match the denoising direction implied by the corruption process.</li><li>Use Langevin, reverse SDE, or probability-flow updates to move samples according to the learned score.</li><li>Treat diffusion noise prediction and score prediction as closely related parameterizations.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to say that score matching learns which way to move a noisy sample so it becomes more like real data, without needing to know the full probability value.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/score_matching.html">Score Matching</a> <a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-01">ev-diffusion-01</a> <span class="time">00:00:26.360</span>: The CME296 score-matching lecture begins by recalling the previous diffusion lecture: the course is trying to generate samples from an unknown, complicated data distribution, first through DDPM-style diffusion and then through score matching as a related generation paradigm.</li><li><a href="evidence.html#ev-score_matching-01">ev-score_matching-01</a> <span class="time">00:00:18.000</span>: The CME296 score-matching lecture introduces score matching as a new generation paradigm after DDPM diffusion, with the same motivating problem: generate new samples from an unknown and complicated data distribution.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/002-_WaR2fjZpEQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 2 - Score matching.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-3">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 3</p>
+      <h2>Lecture 3 - Flow matching</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=agN3AlfGFrk">Open video</a>
+  </div>
+  <p class="meta">1h 47m · 12595 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Generation needs a route from simple noise to real data; flow matching learns the motion along that route directly.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain flow matching as learning arrows that carry noise into data, then generating by following those arrows.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Flow matching treats generation as movement. Start with a simple distribution, such as Gaussian noise. End with the data distribution, such as real images. Now imagine a path between them. At every time and every location on the path, the model learns an arrow: move this way at this speed. That arrow is a velocity field. Sampling means starting from noise and following the learned arrows until the sample reaches the data side. The model is therefore not mainly guessing pixels; it is learning motion instructions for points in a high-dimensional space.</p>
+    <p>The advantage is that the training target can be direct. If you choose how to pair or interpolate between noise and data, you know the desired velocity along that path. The model can be trained with an ordinary squared-error loss to predict that velocity. This makes flow matching feel cleaner than thinking only in terms of adding and removing noise. The risk is that the chosen path matters. A path that is easy to train may not give the best samples, and numerical solvers can introduce error if the learned field is rough or if too few steps are used.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>A velocity field is a map of arrows telling a sample where to move next.</li><li>Flow matching learns the path from a simple starting distribution to the data distribution.</li><li>The training loss can be a direct regression loss on velocities.</li><li>Sampling solves an ordinary differential equation by repeatedly stepping along the learned arrows.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Flow matching</h4>
+  <dl>
+    <dt>Problem</dt><dd>Generation needs a smooth route from a simple distribution to the data distribution.</dd>
+    <dt>How It Works</dt><dd>Train a model to predict a velocity field that tells each sample where to move at each time.</dd>
+    <dt>Why It Matters</dt><dd>It frames generation as following learned arrows, often with a simple squared-error loss.</dd>
+    <dt>Where It Breaks</dt><dd>Bad path choices or rough velocity fields can make sampling unstable or low quality.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>ODE sampling</h4>
+  <dl>
+    <dt>Problem</dt><dd>A learned velocity field must be turned into an actual sample.</dd>
+    <dt>How It Works</dt><dd>Start from noise and numerically integrate the equation dx/dt = v_theta(x,t) with small time steps.</dd>
+    <dt>Why It Matters</dt><dd>It gives a direct procedure for using the learned field to generate data.</dd>
+    <dt>Where It Breaks</dt><dd>Too few solver steps can be fast but inaccurate; too many steps can be expensive.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A cloud of random points can be moved into the shape of a two-dimensional data curve by following learned arrows.</li><li>An image sample can begin as noise and be transported into an image-like latent or pixel state.</li><li>A navigation map with arrows at each location gives the everyday picture of a vector field.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Choose a path x_t between a simple sample x_0 and a data sample x_1.</li><li>Compute or define the target velocity u_t for that path.</li><li>Train v_theta(x_t, t) to match u_t with an L2 loss.</li><li>Generate by starting from x_0 and integrating dx/dt = v_theta(x, t).</li><li>Trade sample quality, compute, and stability through solver step count and path design.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain flow matching as learning arrows that carry noise into data, then generating by following those arrows.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/score_matching.html">Score Matching</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-score_matching-02">ev-score_matching-02</a> <span class="time">00:00:35.440</span>: The CME296 flow-matching lecture opens by placing score matching between diffusion and flow matching as one of the generation paradigms already covered.</li><li><a href="evidence.html#ev-flow_matching-01">ev-flow_matching-01</a> <span class="time">00:00:15.600</span>: The CME296 flow-matching lecture introduces flow matching as a trendy generation paradigm after diffusion and score matching, then frames the lecture around its mindset and relationship to those earlier paradigms.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/003-agN3AlfGFrk-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 3 - Flow matching.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-4">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 4</p>
+      <h2>Lecture 4 - Latent Space &amp; Guidance</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=WUUq6TVAu8U">Open video</a>
+  </div>
+  <p class="meta">1h 40m · 12358 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Pixel-space generation can be expensive, and unconditional generation is not enough when a user wants a specific image.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to say that latent space reduces the cost of generation, while guidance steers the sample toward a requested condition.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Latent-space generation and guidance solve two practical problems. Latent space is a compressed working space. Instead of denoising every pixel directly, an encoder turns an image into a smaller code, the generator works on that code, and a decoder turns the code back into an image. Guidance solves the steering problem. A user may ask for a red car, a medical image with a certain property, or a picture matching text. The model must not only make something realistic; it must make the requested thing.</p>
+    <p>The first principle is separation of jobs. Compression handles cost: generate in a smaller space where important structure remains but redundant pixel detail is reduced. Guidance handles control: change the sampling direction so the path is pulled toward the condition. Classifier-free guidance does this by comparing a conditional prediction with a less-conditioned prediction and pushing more strongly toward the condition. The failure modes are also plain. Too much compression loses detail. Too much guidance can overfit the prompt, create artifacts, reduce variety, or make images look forced.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Latent space makes generation cheaper by working on compact codes instead of raw pixels.</li><li>Guidance changes the sampling direction so the output follows a condition.</li><li>Classifier-free guidance uses the difference between conditional and unconditional predictions as a steering signal.</li><li>Control and realism are separate goals, and improving one can hurt the other.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Latent diffusion</h4>
+  <dl>
+    <dt>Problem</dt><dd>Running diffusion in full pixel space is expensive.</dd>
+    <dt>How It Works</dt><dd>Compress images into latent codes, run generation in that smaller space, then decode the result back to pixels.</dd>
+    <dt>Why It Matters</dt><dd>It reduces compute while keeping enough structure for high-quality images.</dd>
+    <dt>Where It Breaks</dt><dd>Compression can discard details or create decoder artifacts that generation cannot recover.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Classifier-free guidance</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model must make outputs that match a condition, not only outputs that look realistic.</dd>
+    <dt>How It Works</dt><dd>Compare conditional and unconditional predictions, then push the sampling update more strongly toward the condition.</dd>
+    <dt>Why It Matters</dt><dd>It gives a simple control knob for prompt following and conditional generation.</dd>
+    <dt>Where It Breaks</dt><dd>High guidance can reduce diversity, exaggerate features, or create unnatural artifacts.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>Text-to-image generation uses a text prompt as the condition.</li><li>Latent diffusion generates inside a compressed image code before decoding to pixels.</li><li>Increasing guidance weight can make an image match the prompt more strongly while making it less natural.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Encode an image x into a latent code z, generate or denoise z, then decode z back into x.</li><li>Train or run a conditional model that receives both the noisy sample and the condition c.</li><li>For classifier-free guidance, combine conditional and unconditional predictions.</li><li>Use a guidance scale to control how strongly the condition changes the update direction.</li><li>Evaluate both instruction-following and visual quality because they can diverge.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to say that latent space reduces the cost of generation, while guidance steers the sample toward a requested condition.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/guidance.html">Guidance</a> <a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-05">ev-diffusion-05</a> <span class="time">00:01:35.550</span>: The CME296 latent-space and guidance lecture recaps DDPM diffusion as taking clean images and using that paradigm as the first major route for image generation.</li><li><a href="evidence.html#ev-score_matching-03">ev-score_matching-03</a> <span class="time">00:03:01.750</span>: The CME296 latent-space and guidance lecture recalls score matching as a second way of seeing generation and compares it with the diffusion view.</li><li><a href="evidence.html#ev-flow_matching-05">ev-flow_matching-05</a> <span class="time">00:04:56.470</span>: The CME296 latent-space and guidance lecture recaps flow matching by saying the model predicts a vector field, also described as velocity, denoted by a learned function.</li><li><a href="evidence.html#ev-guidance-02">ev-guidance-02</a> <span class="time">00:00:58.640</span>: The CME296 latent-space and guidance lecture introduces conditional generation as generating images from a condition such as a user prompt, input text, or input image.</li><li><a href="evidence.html#ev-latent_space-01">ev-latent_space-01</a> <span class="time">00:15:08.170</span>: The CME296 latent-space lecture motivates a lower-dimensional representation by distinguishing pixel-level detail from perceptual similarity, then introduces an encoder-decoder autoencoder setup.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/004-WUUq6TVAu8U-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 4 - Latent Space &amp; Guidance.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-5">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 5</p>
+      <h2>Lecture 5 - Architectures</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=HpFdSlMeXzQ">Open video</a>
+  </div>
+  <p class="meta">1h 46m · 13529 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A generative model needs a neural architecture that can read noisy visual states, time, and conditions while preserving spatial structure.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain that diffusion architecture is not decorative: it determines whether the model can combine local detail, global layout, time, and conditioning.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Architecture is the body that carries the diffusion or flow idea. The training objective may say predict noise or velocity, but a real model still needs layers that can process images, time steps, text, and conditioning signals. U-Nets became useful because they combine local image processing with skip connections that preserve detail. Diffusion transformers become useful because attention can compare many parts of the image or latent grid and mix information globally. The architecture decides what the model can see when it predicts the next correction.</p>
+    <p>The first-principles question is what information must be available at each update. A denoising step needs local texture, larger object layout, the current noise level, and the prompt or condition. Convolutions are good at nearby structure. Attention is good at long-range relationships and conditioning. Time embeddings tell the network what stage of cleanup it is in. Cross-attention lets text or other conditions influence visual features. Architecture fails when it cannot carry the right information: details wash out, global layout breaks, conditioning is ignored, or memory cost becomes too high.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>The loss defines what to predict, but the architecture defines what information can be used to make that prediction.</li><li>U-Net skip connections help preserve fine detail while still allowing broad context.</li><li>Transformer blocks and attention let distant image regions and conditioning tokens interact.</li><li>Time and condition embeddings are necessary because the same noisy image can need different updates at different stages or prompts.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>U-Net denoising architecture</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model must combine local image detail with broad context during denoising.</dd>
+    <dt>How It Works</dt><dd>Use an encoder-decoder image network with skip connections that carry fine spatial detail across scales.</dd>
+    <dt>Why It Matters</dt><dd>It preserves detail while still allowing the model to reason about larger structure.</dd>
+    <dt>Where It Breaks</dt><dd>It can struggle with global relationships and can become heavy at large image sizes.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Diffusion transformer</h4>
+  <dl>
+    <dt>Problem</dt><dd>Large visual generators need global mixing and flexible conditioning.</dd>
+    <dt>How It Works</dt><dd>Represent images or latents as patches and use attention blocks conditioned on time and prompts.</dd>
+    <dt>Why It Matters</dt><dd>Attention lets distant regions and text conditions interact during each update.</dd>
+    <dt>Where It Breaks</dt><dd>Memory and compute can grow quickly, and weak conditioning design can make the prompt ignored.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A U-Net can preserve edge detail by passing high-resolution features around the bottleneck.</li><li>A diffusion transformer can let one image patch attend to another distant patch.</li><li>Text conditioning can enter through cross-attention so visual features know which words matter.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Represent the noisy image or latent as spatial features or patches.</li><li>Embed the time step t and inject it into the network layers.</li><li>Use convolution, attention, or transformer blocks to compute the noise or velocity prediction.</li><li>Use cross-attention or conditioning embeddings to inject text or other controls.</li><li>Balance model size, memory, receptive field, and sampling cost.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain that diffusion architecture is not decorative: it determines whether the model can combine local detail, global layout, time, and conditioning.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/vision_transformers.html">Vision Transformers</a> <a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/guidance.html">Guidance</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/attention.html">Attention</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-tokenization-supp-01">ev-tokenization-supp-01</a> <span class="time">00:41:21.510</span>: The CME296 architectures lecture uses ViT patchification to generalize tokenization beyond words. The lecturer explains that an image is cut into patches, then those patches are considered tokens in the same spirit as word tokens before transformer-style processing.</li><li><a href="evidence.html#ev-positional_encoding-02">ev-positional_encoding-02</a> <span class="time">01:05:31.720</span>: The CME296 architectures lecture explains the same first-principles position problem for attention-based vision models: direct links between inputs remove the old sequential signal, so the model must be told where each input sits.</li><li><a href="evidence.html#ev-attention-02">ev-attention-02</a> <span class="time">00:32:55.100</span>: The CME296 architectures lecture previews cross-attention as one of the operations used inside modern vision-generation architectures.</li><li><a href="evidence.html#ev-diffusion-06">ev-diffusion-06</a> <span class="time">00:01:34.050</span>: The CME296 architectures lecture recaps diffusion with DDPM as corrupting a clean image, placing noising and denoising at the start of the architecture discussion.</li><li><a href="evidence.html#ev-flow_matching-06">ev-flow_matching-06</a> <span class="time">00:02:41.110</span>: The CME296 architectures lecture says the loss can be based on velocity, also called the vector field, and expressed as an L2 regression loss.</li><li><a href="evidence.html#ev-guidance-05">ev-guidance-05</a> <span class="time">00:04:43.140</span>: The CME296 architectures lecture recalls classifier-free guidance as a method that emphasizes the prompt during generation.</li><li><a href="evidence.html#ev-latent_space-03">ev-latent_space-03</a> <span class="time">00:03:27.420</span>: The CME296 architectures lecture says image dimensionality is too high and introduces latent space as the place where images are represented for the model.</li><li><a href="evidence.html#ev-vision_transformers-supp-01">ev-vision_transformers-supp-01</a> <span class="time">00:35:17.550</span>: The CME296 architectures lecture presents ViT as the transfer of transformer machinery into image understanding. The key move is not to read the whole image as one blob, but to divide it into patches, turn those patches into tokens, and let the transformer process their relationships.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/005-HpFdSlMeXzQ-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 5 - Architectures.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-6">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 6</p>
+      <h2>Lecture 6 - Model Training</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=IvXTl3yj-4Y">Open video</a>
+  </div>
+  <p class="meta">1h 40m · 12382 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>Training large vision generators requires turning the generation idea into stable data pipelines, losses, schedules, and compute choices.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to describe training as repeatedly making a known corrupted state and teaching the model the correction it should predict.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Model training is where the clean idea meets engineering reality. The model needs many image-condition examples, a corruption or path rule, a prediction target, and a loss. Each training step samples data, samples a time or noise level, constructs the corrupted state, asks the model for a prediction, measures the error, and updates the weights. This simple loop hides important choices: data quality, caption quality, noise schedule, batch size, optimizer, precision, architecture scale, and whether the target is noise, clean data, score, or velocity.</p>
+    <p>The first-principles issue is that the model only learns from the errors we show it. If the data is low quality, the model learns low-quality patterns. If captions are weak, text control is weak. If some noise levels are undertrained, sampling breaks at those stages. If the loss rewards an easy average answer, fine detail may suffer. Training also connects to sampling speed: distillation and consistency-style ideas try to reduce the number of steps needed at generation time by training a model to make larger reliable moves.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Training repeatedly creates noisy or intermediate states from real data and asks the model to predict the right correction.</li><li>The prediction target can be noise, clean data, score, velocity, or another equivalent parameterization.</li><li>Data and conditioning quality directly limit what the model can learn.</li><li>Fast sampling methods try to train models that need fewer reverse steps.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Time-sampled training</h4>
+  <dl>
+    <dt>Problem</dt><dd>The model must learn corrections for all stages of generation.</dd>
+    <dt>How It Works</dt><dd>Randomly sample a time or noise level for each training example and train the model on that stage.</dd>
+    <dt>Why It Matters</dt><dd>It spreads training across early rough-structure steps and later detail-refinement steps.</dd>
+    <dt>Where It Breaks</dt><dd>Uneven time sampling can leave important parts of the generation path weak.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Sampler distillation</h4>
+  <dl>
+    <dt>Problem</dt><dd>Many-step sampling is too slow for some uses.</dd>
+    <dt>How It Works</dt><dd>Train a new model or sampler to imitate the result of many cleanup steps using fewer larger steps.</dd>
+    <dt>Why It Matters</dt><dd>It can make generation faster enough for interactive products or large-scale use.</dd>
+    <dt>Where It Breaks</dt><dd>Fewer steps can lose detail, diversity, or prompt accuracy if the large moves are not reliable.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A captioned image pair teaches the model both visual structure and text control.</li><li>A model trained poorly at high noise levels may never recover good global structure.</li><li>A distilled sampler tries to replace many small cleanup steps with fewer larger ones.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Sample a data item and condition c from the training set.</li><li>Sample a time t and construct x_t using the chosen corruption or path rule.</li><li>Run the model f_theta(x_t, t, c).</li><li>Compute a loss against the chosen target, such as epsilon, x_0, score, or velocity.</li><li>Update theta with gradient descent and monitor validation behavior across time levels.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to describe training as repeatedly making a known corrupted state and teaching the model the correction it should predict.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/pretraining.html">Pretraining</a> <a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/score_matching.html">Score Matching</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-pretraining-02">ev-pretraining-02</a> <span class="time">00:10:36.420</span>: The CME296 model-training lecture opens by focusing on the loss used for training, making the same point as LLM pretraining in another domain: learning begins with a measurable prediction or reconstruction objective.</li><li><a href="evidence.html#ev-diffusion-04">ev-diffusion-04</a> <span class="time">00:03:37.280</span>: The CME296 model-training lecture motivates the diffusion transformer architecture as a later architecture built on the diffusion concept.</li><li><a href="evidence.html#ev-flow_matching-04">ev-flow_matching-04</a> <span class="time">00:10:01.900</span>: The CME296 model-training lecture says generation starts with initial noise, obtains a vector field, and then iterates many times.</li><li><a href="evidence.html#ev-latent_space-04">ev-latent_space-04</a> <span class="time">00:01:57.770</span>: The CME296 model-training lecture describes a noisy latent input passing through downsampling and convolution operations, placing latent representations inside the training architecture.</li><li><a href="evidence.html#ev-generalization-04">ev-generalization-04</a> <span class="time">01:13:19.220</span>: The CME296 model-training lecture mentions preventing overfitting during training, directly tying model training choices to whether behavior transfers beyond the examples being fit.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/006-IvXTl3yj-4Y-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 6 - Model Training.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-7">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 7</p>
+      <h2>Lecture 7 - Evaluation</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=iNaRBp4T57Q">Open video</a>
+  </div>
+  <p class="meta">1h 41m · 12691 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>A generated image can look good, match the prompt poorly, copy training data, contain artifacts, or fail in ways a single score misses.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to explain why evaluating image generators requires several tests, because realism, prompt following, diversity, safety, and usefulness can disagree.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Evaluation asks what it means for a generator to be good. A model can make sharp images that ignore the prompt. It can follow the prompt but look unnatural. It can score well on a metric while failing for people. It can work on common requests and fail on rare ones. So evaluation needs several checks: visual quality, diversity, prompt alignment, factual or spatial correctness, safety, bias, memorization, and task-specific usefulness. The key point is that an image generator is not one skill; it is a bundle of skills that can improve or fail separately.</p>
+    <p>The first-principles point is that generation has many goals at once. There is no single number that fully measures an image generator. Distribution metrics ask whether generated samples resemble real samples in aggregate. Human preference asks whether people like or trust the outputs. Prompt-alignment tests ask whether the requested objects, relations, counts, and styles appear. Stress tests ask where the model breaks. Evaluation fails when the metric becomes the target: the model can improve the number while getting worse at the actual use case.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Visual quality and instruction following are different measurements.</li><li>Distribution-level scores can miss individual failures that matter to users.</li><li>Human preference is useful but noisy, costly, and sensitive to the evaluation setup.</li><li>Good evaluation includes failure slices, not only average scores.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Distribution-level evaluation</h4>
+  <dl>
+    <dt>Problem</dt><dd>A generator should match the broad statistics of real data, not only produce one good example.</dd>
+    <dt>How It Works</dt><dd>Compare generated and real samples using feature statistics or similar aggregate measurements.</dd>
+    <dt>Why It Matters</dt><dd>It gives a scalable signal for overall realism and coverage.</dd>
+    <dt>Where It Breaks</dt><dd>Aggregate scores can hide prompt failures, safety failures, and bad rare cases.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Prompt-alignment evaluation</h4>
+  <dl>
+    <dt>Problem</dt><dd>A realistic image is still wrong if it does not obey the request.</dd>
+    <dt>How It Works</dt><dd>Check whether objects, counts, relations, styles, and constraints from the prompt appear in the output.</dd>
+    <dt>Why It Matters</dt><dd>It measures whether the model is controllable, not just visually plausible.</dd>
+    <dt>Where It Breaks</dt><dd>Automatic alignment checks can miss subtle errors or reward superficial keyword matching.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A prompt asks for two dogs and one red ball, but the image contains one dog and two balls.</li><li>An image looks realistic at first glance but has broken hands, text, or object relations.</li><li>A model can produce diverse images overall while failing badly for a specific user group or domain.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Use distribution metrics such as FID-style scores to compare generated and real feature statistics.</li><li>Use alignment metrics or human checks for prompt following.</li><li>Slice evaluation by object type, count, relation, style, demographic attribute, and safety category.</li><li>Check diversity and memorization separately from image quality.</li><li>Treat metrics as evidence, not as the definition of success.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to explain why evaluating image generators requires several tests, because realism, prompt following, diversity, safety, and usefulness can disagree.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/guidance.html">Guidance</a> <a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/generalization.html">Generalization</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-attention-04">ev-attention-04</a> <span class="time">01:08:17.450</span>: The CME296 evaluation lecture describes a decoder that uses text tokens and cross-attention so textual information can interact with encoded images.</li><li><a href="evidence.html#ev-evaluation-02">ev-evaluation-02</a> <span class="time">00:05:22.240</span>: The CME296 evaluation lecture explicitly shifts from generation methods to evaluation, saying the class will focus on how to judge the outputs after covering diffusion, score matching, flow matching, and distillation.</li><li><a href="evidence.html#ev-guidance-01">ev-guidance-01</a> <span class="time">00:05:58.240</span>: The CME296 evaluation lecture motivates prompt adherence by showing that an image can be aesthetically poor or can look good while failing to represent the prompt. The prompt is a teddy bear reading a book, and the class distinguishes visual quality from following the requested content.</li><li><a href="evidence.html#ev-latent_space-05">ev-latent_space-05</a> <span class="time">00:29:20.990</span>: The CME296 evaluation lecture recalls methods for representing images in latent space, connecting latent representations to how image models are later assessed.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/007-iNaRBp4T57Q-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 7 - Evaluation.txt</code></p>
+  </section>
+</article>
+
+<article class="lecture-card" id="lecture-8">
+  <div class="lecture-heading">
+    <div>
+      <p class="eyebrow">Lecture 8</p>
+      <h2>Lecture 8 - Trending Topics</h2>
+    </div>
+    <a class="button" href="https://www.youtube.com/watch?v=oyLUvz9nR6E">Open video</a>
+  </div>
+  <p class="meta">1h 49m · 14092 transcript words</p>
+  <figure class="learning-diagram lecture-flow">
+  <figcaption>Study Path</figcaption>
+  <div class="flow-steps"><div class="flow-step">
+  <span>Problem</span>
+  <p>The field keeps changing because the basic generation loop is being adapted for faster sampling, video, 3D, controllability, and new model families.</p>
+</div><div class="flow-step">
+  <span>Core Idea</span>
+  <p>Start with the detailed topic explanation below, then use the approaches and examples.</p>
+</div><div class="flow-step">
+  <span>Math</span>
+  <p>Use the equation and algorithm notes as the minimum technical spine.</p>
+</div><div class="flow-step">
+  <span>Check</span>
+  <p>You should be able to read a new diffusion or flow paper by asking which part of the generation loop it changes and what tradeoff that creates.</p>
+</div></div>
+</figure>
+  <section class="lecture-notes">
+    <h3>Detailed Topic Explanation</h3>
+    <p>Trending topics are not random add-ons. They are attempts to fix the main limits of diffusion and flow systems. Sampling can be slow, so researchers build faster solvers, distillation methods, and consistency-style models. Images are not enough, so the same ideas move into video, 3D, robotics, and multimodal generation. User control is still imperfect, so new conditioning and guidance methods try to make outputs obey structure, layout, motion, identity, and style. The best way to read new work is to ask which bottleneck it attacks and what it gives up to do that.</p>
+    <p>The first-principles map stays the same: start from a simple state, move through a learned path, and end with structured data. New work changes one part of that map. Some papers change the path so fewer steps are needed. Some change the data type from image to video or 3D. Some change the condition signal so the user can control layout, camera, motion, or identity. Some change evaluation because new outputs introduce new failure modes. The danger is hype: a method may be faster but worse, more controllable but less diverse, or impressive in demos but weak under systematic tests.</p>
+    <h3>Core Ideas</h3>
+    <ul><li>Most new diffusion and flow work changes speed, control, data type, architecture, or evaluation.</li><li>Video and 3D generation add consistency problems across time, view, geometry, and motion.</li><li>Distillation and consistency methods try to reduce the number of sampling steps.</li><li>Better control often trades against diversity, realism, or compute cost.</li></ul>
+    <h3>Approaches Taught</h3>
+    <div class="approach-stack">
+<article class="approach-card">
+  <h4>Fast generation methods</h4>
+  <dl>
+    <dt>Problem</dt><dd>High-quality diffusion and flow models can require too many sampling steps.</dd>
+    <dt>How It Works</dt><dd>Change the solver, train a distilled model, or use consistency-style objectives so fewer updates are needed.</dd>
+    <dt>Why It Matters</dt><dd>Speed decides whether the model can be used interactively or at large scale.</dd>
+    <dt>Where It Breaks</dt><dd>Speedups can trade away detail, diversity, stability, or prompt following.</dd>
+  </dl>
+</article>
+
+<article class="approach-card">
+  <h4>Video and 3D generative extensions</h4>
+  <dl>
+    <dt>Problem</dt><dd>Images alone do not handle time, motion, geometry, or viewpoint consistency.</dd>
+    <dt>How It Works</dt><dd>Extend the generation path so samples remain coherent across frames, camera views, or 3D structure.</dd>
+    <dt>Why It Matters</dt><dd>It moves the same generation principles into richer outputs people actually want.</dd>
+    <dt>Where It Breaks</dt><dd>Each new dimension adds consistency failures: flicker in video, broken geometry in 3D, or unstable identity across views.</dd>
+  </dl>
+</article>
+</div>
+    <h3>Examples Used</h3>
+    <ul><li>A video generator must keep the same object identity across frames, not just make each frame look good.</li><li>A 3D generator must make views agree about shape, not only render one plausible picture.</li><li>A fast sampler may generate in a few steps but lose detail or diversity compared with a slower sampler.</li></ul>
+    <h3>Equations And Algorithm Moves</h3>
+    <ul><li>Classify a new method by the part it changes: path, solver, architecture, condition, data type, or metric.</li><li>For speed methods, compare step count against quality and alignment.</li><li>For video or 3D methods, add consistency checks across time or viewpoint.</li><li>For control methods, measure both obedience to the condition and damage to realism or diversity.</li><li>Use the original diffusion and flow loops as the baseline for understanding each extension.</li></ul>
+    <h3>What You Should Be Able To Say</h3>
+    <p>You should be able to read a new diffusion or flow paper by asking which part of the generation loop it changes and what tradeoff that creates.</p>
+  </section>
+  <section class="lecture-links">
+    <h3>Linked Concepts</h3>
+    <p class="chips"><a class="chip" href="concepts/diffusion.html">Diffusion</a> <a class="chip" href="concepts/flow_matching.html">Flow Matching</a> <a class="chip" href="concepts/guidance.html">Guidance</a> <a class="chip" href="concepts/latent_space.html">Latent Space</a> <a class="chip" href="concepts/evaluation.html">Evaluation</a> <a class="chip" href="concepts/vision_transformers.html">Vision Transformers</a></p>
+    <h3>Transcript Evidence</h3>
+    <ul class="evidence-list"><li><a href="evidence.html#ev-diffusion-03">ev-diffusion-03</a> <span class="time">00:01:53.150</span>: The CME296 trending-topics lecture recalls the first lecture as diffusion, where the course learned to generate images using the diffusion paradigm.</li><li><a href="evidence.html#ev-score_matching-04">ev-score_matching-04</a> <span class="time">00:09:05.060</span>: The CME296 trending-topics lecture recalls the denoising score-matching loss as the mechanism that allowed the course to estimate score information from data.</li><li><a href="evidence.html#ev-flow_matching-02">ev-flow_matching-02</a> <span class="time">00:13:10.110</span>: The CME296 trending-topics lecture says flow matching framed the generation problem in a different way after diffusion and score matching.</li><li><a href="evidence.html#ev-guidance-04">ev-guidance-04</a> <span class="time">00:01:10.430</span>: The CME296 trending-topics lecture frames prompt-aligned image generation as a central goal: given an input prompt, generate an image aligned with it.</li></ul>
+    <p><code>raw-material/youtube/transcripts/stanford-cme296-diffusion-large-vision-models-spring-2026/clean/008-oyLUvz9nR6E-Stanford CME296 Diffusion &amp; Large Vision Models ｜ Spring 2026 ｜ Lecture 8 - Trending Topics.txt</code></p>
+  </section>
+</article>
+
+</section>
+</main>
+</body>
+</html>
