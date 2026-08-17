@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agents and Tools (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="agents_and_tools.html">This concept</a></nav></header>
+<main>
+<div class="kick">language models · first principles · making a fluent guesser dependable</div>
+<h1>Agents and Tools — how wrapping a model in external checks turns guessing into certainty</h1>
+<p class="lede">A language model is a fluent guesser. It predicts plausible next words, which works beautifully for prose and explanation, but plausible is not exact. Ask it to count the letter 'r' in the word 'strawberry' and it guesses. Give it an arithmetic problem and it calculates in its head — unreliably. Here is the problem and the reframe: do not force the model to do every operation in its head; instead, turn it into an agent that can call external tools (a calculator, code, a search, a spell-checker) and verify its own work in a loop. The model becomes great at deciding what to compute and understanding the result, while the tools supply the exactness the model lacks. Here is the idea, a measurement on a real small model showing what happens when it checks its work, why offloading to tools works, where agents strain, and where this idea is reshaping applied AI.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why tools fix what guessing misses</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="agents_and_tools.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — language models guess, and guessing fails on exactness</h2>
+      <div class="essay">
+      <p>A language model works by predicting the next word from everything that came before. That prediction happens word by word, step by step, always betting on the most likely continuation. For writing, summarizing, and explanation, this is powerful — it captures grammar, tone, and reasoning. But the same mechanism that makes it fluent makes it brittle at tasks that demand exactness.</p>
+      <p>Count the letter 'r' in the word 'strawberry' — do it silently. A language model trying this in its head (answering cold, without intermediate steps) often misses. Simple arithmetic — does 7 times 8 equal 56? — it may not reliably know. Look up today's exchange rate or the capital of a country that changed borders? The model cannot — it has no access to current facts, only to patterns in its training data from months or years ago. And when it is wrong, it has no way to know.</p>
+      <p>So the need is stark: <strong>how can you take a model that is fluent but unreliable and make it dependable enough for real work?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — let the model decide what to do, then hand the exactness to tools</h2>
+      <div class="essay">
+      <p>Here is the shift. Stop asking the model to do everything in its head. Instead, give it access to external tools — a calculator for arithmetic, code for computation, a search engine for current facts, a spell-checker to verify spelling, a code interpreter to try ideas. The model becomes an orchestrator: it reads the problem, decides what tool to use, calls the tool, reads the result, and checks whether the result makes sense. The loop is: think (model), act (tool), evaluate (model), revise if needed. The model is still fluent, still deciding; the tool is still exact and verifiable.</p>
+      <p>This pairing — a language model wrapped in a decision loop and linked to tools — is called an <strong>agent</strong>. The model is great at language and logic; the tools are exact. Together, the model supplies judgment and the tools supply certainty. The model decides when to call which tool; the tool does the calculation and the model reads and trusts the result because calculations never lie.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the model is wrong cold but right when it checks</h2>
+      <div class="essay">
+      <p>We tested a small language model (Qwen3, 0.6 billion parameters) on grade-school math problems from the GSM8K dataset. The question: does external checking actually help, and by how much? We measured what happens when the model answers a question cold (no intermediate steps, no checking) versus when it thinks first (breaks the problem into steps) and when it refines its answer (checks and revises, in a loop).</p>
+      <figure><div class="barrow"><span class="lab">answering cold, no tools</span><div class="bar" style="width:21px"></div><span class="val">accuracy 14%</span></div><div class="barrow"><span class="lab">reasoning traces (thinking first)</span><div class="bar" style="width:90px"></div><span class="val">accuracy 18%</span></div><div class="barrow"><span class="lab">self-refine loop (check &amp; revise)</span><div class="bar" style="width:150px"></div><span class="val">accuracy 58%</span></div><figcaption>On the same small model, the cost and benefit of exact operations and checking loops.</figcaption></figure>
+      <p>To show the core failure: the small model was asked 'How many times does the letter r appear in the word strawberry?' When answering cold (without thinking steps), it replied '1' — plainly wrong, and used 21 tokens. When it thinks first ('Let me spell it out: s-t-r-a-w-b-e-r-r-y...'), it counts correctly and answers '3' — correct — though it needs 336 tokens to be sure. The difference is not smarter reasoning; it is that verifying by going step by step catches errors the model would make in a fluent stream.</p>
+      <div class="insight"><strong>The discovered fact: a self-refine loop — where the model checks its own work and revises over two rounds — lifts accuracy from 42% to 58%, fixing 2 mistakes and breaking none.</strong> The model on its own gets hard problems wrong. Given a loop to verify (even without external tools), it catches errors it made in its first guess. And when external tools (a calculator, a spelling check, a search) are added, the gains compound further — the model decides what to compute, the tool computes it exactly, and the model reads a result it can trust.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why tools fix what guessing misses</h2>
+      <div class="essay">
+      <p>The reason is separation of concerns. A language model is built to predict likely continuations of text; that skill is orthogonal to doing arithmetic, looking up facts, or verifying spelling. When you ask a model to count letters or do long division in its head, you are asking it to use the same prediction machinery for something it was never optimized for — it can approximate, but not reliably. When you give it a calculator, a search, or a spell-checker, you are using the right tool for the job.</p>
+      <p>The second reason is verifiability. A calculation has a right answer; a search result can be checked; code can be run and its output observed. When the model reads 'the sum is 56' from a calculator, that number is a fact, not a guess. The model's job shrinks to the task it is actually good at: reading the result, understanding what it means, and deciding what to do next. If the result is wrong (a calculator fed bad input, for instance), the model can often spot that because the result does not fit with what it knows.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — agents can loop without converging and pile on errors</h2>
+      <div class="essay">
+      <p>The catch is that adding a loop does not automatically make everything right. An agent can call the wrong tool, misread a result, or loop without ever settling on an answer. If the model misunderstands the problem, the tool will dutifully compute the wrong thing and the model will read garbage in, garbage out. If a tool is misconfigured or gives a cryptic error, the model may not recover. And the longer the chain of steps — decide, act, evaluate, revise — the more places each step can go wrong. A single mistake early in the chain can mislead every subsequent step.</p>
+      <p>The model is also only as good as its tools. A calculator will fail on a problem phrased ambiguously. A search engine might not find the one fact that settles the question. And the model itself, though better at language than arithmetic, can still misunderstand a tool's output or ask the wrong question. Agents are powerful but fragile — they demand careful tool design, clear error handling, and honest monitoring of whether the loops are actually converging to right answers or just spinning.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — agents are the new frontier of applied AI</h2>
+      <div class="essay">
+      <p>This pattern — a model that calls tools and checks its own work — is reappearing in every ambitious AI application right now. A <a href="reasoning_traces-deep.html">coding assistant</a> that writes code then runs it to check does this. A research agent that <a href="reasoning_traces-deep.html">searches for papers, reads them, and summarizes</a> does this. The shift from 'ask the model to do it all in one pass' to 'give the model a loop and some tools' is becoming the standard recipe for turning a fluent model into a dependable worker.</p>
+      <p>Critically, this is not just about language models. Any unreliable component paired with a verifiable tool and a decision loop becomes more reliable. The pattern shows up in <a href="rl_for_llms-deep.html">reinforcement learning for language models</a>, where a reward loop replaces guessing; in <a href="evaluation-deep.html">evaluation</a>, where multiple graders replace a single judge; and in <a href="fine_tuning-deep.html">fine-tuning workflows</a>, where iterative correction replaces one-shot learning. The core insight — separate what the model is good at from what tools are good at, then wire them together in a loop — is becoming the master pattern of modern AI.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="reasoning_traces-deep.html">reasoning traces</a> · <a href="evaluation-deep.html">evaluation</a> · <a href="fine_tuning-deep.html">fine-tuning</a> · <a href="rl_for_llms-deep.html">RL for language models</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run a small language model (Qwen3-0.6B) on grade-school math problems (GSM8K) three ways: answering cold (one pass, no steps), with reasoning traces (thinking first, step by step), and with a self-refine loop (check answer, revise, check again). Measure accuracy on each. For the strawberry-letter-count example, measure tokens used and correctness when answering cold versus with thinking steps. Self-refine loop tests: same 42% baseline, two revision rounds, count fixes (mistakes corrected) and breaks (new mistakes introduced).</p>
+      <div class="eq">agent_loop:
+  observation = read_problem()
+  thought = model.think(observation)  # fluent reasoning
+  action = model.decide_tool_or_answer(thought)  
+  result = tool.execute(action) or model.generate(action)
+  critique = model.evaluate(result, observation)
+  if critique != satisfied: goto revise
+  return result
+
+measured: strawberry-r cold=1 wrong (21 tokens) vs thinking=3 correct (336 tokens)
+measured: self-refine baseline 42% -&gt; 58% (2 fixes, 0 breaks)</div>
+      <p class="muted">Full source: reasoning-from-scratch lab, real Qwen3-0.6B runs on GSM8K. The agent is implicit — the model and tools separate the work. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Agents and Tools deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generalization (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="generalization.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · learning the rules, not the strings</div>
+<h1>Generalization — why a model that learned something new handles things it never saw</h1>
+<p class="lede">A model could ace every sentence in its training data by pure memorization and still fail on anything new. Generalization is the opposite: a model that truly learned language grasps the underlying rules well enough to handle new sentences it never saw before. Here is the problem it solves, why a single experiment proves it matters, where it breaks down, and why understanding this gap between memorization and learning drives almost everything in modern machine learning.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the gap is the whole game</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="generalization.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — memorizing strings is not enough</h2>
+      <div class="essay">
+      <p>A model could theoretically memorize every sentence it saw during training and produce them back perfectly. But what if it sees a novel sentence, one that was never in the training data? If all it did was memorize, it would be lost. And here lies the hard question: <strong>how can you tell whether a model has actually learned the underlying rules of language, or whether it has just memorized a bunch of strings?</strong> A model that memorizes cannot generalize; a model that generalizes has understood the pattern.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — test it on things it never saw</h2>
+      <div class="essay">
+      <p>The experiment is simple in principle: take a model trained on a large dataset, and give it two kinds of new input it has never seen before. First, a sentence that is grammatically correct and uses real words, but is a novel combination — something the rules of language make sensible, even though this exact sentence did not appear in training. Second, a string that is just random noise: tokens jumbled with no grammar, no meaning, just chaos. If the model has learned the rules, the grammatical sentence should feel easy (the rules apply, so it should make sense), and the random noise should feel hard (no rules to lean on, so it should be lost). Mathematically, we measure this as 'loss' — how surprised the model is by each token. Lower loss means the model finds it expected; higher loss means it is shocked. <strong>The model that learned real rules will show a big gap between the loss on grammatical text and the loss on noise.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — learned rules beat memorized strings</h2>
+      <div class="essay">
+      <p>We ran the actual GPT-2, a language model with 124 million learned numbers, on two kinds of sentences it had never seen. One was a novel but grammatically correct sentence. The other was a string of random tokens. We measured how surprised the model was (loss) by each.</p>
+      <figure><div class="barrow"><span class="lab">novel grammatical sentence</span><div class="bar" style="width:68px"></div><span class="val">6.24</span></div><div class="barrow"><span class="lab">random token string</span><div class="bar" style="width:150px"></div><span class="val">13.71</span></div><figcaption>Loss on a novel grammatical sentence vs. random tokens. Lower loss means less surprised. Numbers are the run's output.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: on a novel grammatical sentence, the loss is 6.24; on random tokens, the loss jumps to 13.71.</strong> That is more than twice as high. The gap is enormous. If GPT-2 had merely memorized training strings and not learned anything, it would be equally lost on both. Instead, the novel sentence — which follows the rules of language — feels almost natural to it, while random noise is bewildering.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why the gap is the whole game</h2>
+      <div class="essay">
+      <p>The gap proves generalization. The novel sentence obeys the rules the model learned during training — grammar, word order, syntax, the patterns that repeat across millions of examples. Because the model captured those rules, a new sentence built from them feels reasonable, even though it is a new combination. Random tokens have no rules; they are pure noise. The model cannot apply what it learned because there is nothing to apply; every token is a surprise. The larger the gap between learned-rule loss and noise loss, the more the model generalized rather than memorized. A model that memorized would treat them the same. A model that learned treats rules as easy and chaos as hard.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — generalization is bounded, and the line is blurry</h2>
+      <div class="essay">
+      <p>Generalization has real limits. Models still fail on inputs far outside their training distribution — highly technical jargon they never saw, other languages, or adversarial inputs designed to break them. And the boundary between generalization and memorization is not clean. A model can memorize rare specifics (a particular person's biography) while also generalizing (grammar, syntax). The phenomenon of 'grokking' — where a model suddenly jumps from memorizing to generalizing after many steps of training — shows that the line between the two is context-dependent and can shift. Generalization is real and measurable, but it is not all-or-nothing; models live on a spectrum.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this gap is the whole foundation of machine learning</h2>
+      <div class="essay">
+      <p>Understanding train-versus-test loss — the gap between performance on data the model saw and data it did not — is the central concern of machine learning. It drives <a href="pretraining-deep.html">pretraining</a> (why we train on oceans of text, to let the model discover generalizable patterns), <a href="scaling_laws-deep.html">scaling laws</a> (bigger models generalize better), <a href="fine_tuning-deep.html">fine-tuning</a> (tuning a model that already generalized, rather than starting from scratch), and the entire field of regularization (techniques like dropout and weight decay that deliberately constrain a model to prevent memorization and force it to find the general rule). The same gap appears in every domain: vision models on new images, recommender systems on new users, drug discovery on new molecules. When people say 'the model learned,' what they mean is 'it generalized' — the thing that makes the model useful for anything beyond the training set. Measure the gap, and you know whether you have learned anything at all.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="pretraining-deep.html">pretraining</a> · <a href="scaling_laws-deep.html">scaling laws</a> · <a href="fine_tuning-deep.html">fine-tuning</a> · <a href="transformer_block-deep.html">transformer block</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run the real pretrained GPT-2 (124M) on two held-out sentences it never saw in training: one grammatically correct and novel, one a random string of tokens. For each, measure the average loss (per-token surprise) across the entire sequence. A generalized model shows far higher loss on noise than on meaningful text.</p>
+      <div class="eq">loss_per_token = -log P(token | previous_tokens)
+novel_grammatical_sentence: mean loss = 6.24
+random_tokens: mean loss = 13.71
+ratio = 13.71 / 6.24 = 2.19× higher on noise</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_generalization), the actual GPT-2 weights. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Generalization deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

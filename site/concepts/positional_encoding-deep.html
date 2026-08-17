@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Positional Encoding (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="positional_encoding.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · where is each word in the sentence</div>
+<h1>Positional Encoding — why words need to know their place</h1>
+<p class="lede">Imagine reading a sentence where someone scrambled the word order: 'dog the man bites' instead of 'the man bites dog'. Attention (the mechanism that decides which words matter) compares words by their meaning alone, so it sees no difference between these two — they contain the same words, and to attention, that is all that exists. But meaning depends on order: 'dog bites man' and 'man bites dog' are opposites. Positional encoding solves this by giving each word an extra signal — its own learned vector — that changes based on where it sits in the sentence. Now the word 'bites' at position 2 is literally different from 'bites' at position 3. Here is the idea, the real cost of order when measured on GPT-2, why adding position works, where it hits limits, and why the search for better position schemes became a whole research field.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why adding position rescues meaning</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="positional_encoding.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — attention is blind to order</h2>
+      <div class="essay">
+      <p>Attention weighs words by their meaning: is this word relevant to that one? But meaning lives in order. If you shuffle the words in a sentence, the meaning often flips entirely — 'the bank denied the loan' vs 'the loan denied the bank' are near opposites. Yet to attention, which knows only how words relate to each other, a shuffled sentence looks identical to the original — the same words, the same meanings, are all present. The mechanism that decides <em>what to read</em> is blind to <em>where</em> to read it.</p>
+      <p>So the need is sharp: <strong>the model must be told not just what each word means, but where each word sits in the sequence.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — attach a learned vector to each position and add it to the word</h2>
+      <div class="essay">
+      <p>Here is the move. Before attention even runs, the model learns a separate vector (a short list of numbers, same length as each word's vector) for each position in the sequence. Position 1 gets its own vector, position 2 its own, and so on. Now, add this position vector directly to the word vector. So the word 'dog' at position 2 is now the sum of 'dog's meaning plus 'position 2's signal'. The word 'dog' at position 9 is the sum of 'dog's meaning plus 'position 9's signal'. They are now geometrically different, even though the word itself is the same.</p>
+      <p>When attention compares them, it sees distinct vectors and can tell them apart. Better yet, these learned position vectors come to embody something about relative distance — positions that sit close in the text develop similar vectors, so attention can learn to prefer nearby or distant words as the task demands. Nobody writes the pattern of position vectors; the model learns it. This is called <strong>positional encoding</strong>: each position gets its own learned signal, and the signal is added to the word.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — order is worth nearly a factor of two in loss</h2>
+      <div class="essay">
+      <p>We ran the actual GPT-2 on a test set and measured how well it predicted the next word in two cases: words in their true order, and the same words shuffled randomly. The measure is loss — how surprised the model is by the right answer. Lower loss means the model was less confused; higher loss means it flailed.</p>
+      <figure><div class="barrow"><span class="lab">True order (unshuffled)</span><div class="bar" style="width:75px"></div><span class="val">3.98</span></div><div class="barrow"><span class="lab">Same words shuffled</span><div class="bar" style="width:150px"></div><span class="val">8.00</span></div><figcaption>Same ten words, true order vs shuffled. We ran GPT-2 on both; loss measures surprise. The gap shows the cost of erasing order.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the same ten words in correct order yield loss 3.98, but shuffled they yield loss 8.00 — twice as bad.</strong> This gap measures how much meaning order carries. Without position, the model is nearly lost; with position telling it where each word is, it recovers most of the ground.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why adding position rescues meaning</h2>
+      <div class="essay">
+      <p>The learned position vectors embody a key insight: neighbouring positions should be related. Look at GPT-2's learned position vectors — the cosine of neighbouring positions (the measure of how similar two vectors are) is 1.00, nearly identical. Positions far apart have cosine 0.39, much more distinct. This pattern is learned, not hand-written. It means 'next to each other in the text' is encoded as 'very similar vectors', so attention can learn rules like 'a noun often matters more to the adjective right next to it than to words ten places back'. The extra signal lets attention discover relative distance and use it. When order is erased, this signal vanishes and the model is left guessing from words alone — hence the collapse in performance.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — fixed positions cap how long an input can be</h2>
+      <div class="essay">
+      <p>The position vectors are learned only for positions 1, 2, 3, and so on up to some fixed maximum (in GPT-2, position 1024). If the input is longer than that, there is no vector for position 1025, and the model has never learned what to do. This is a hard ceiling on input length. Moreover, a model trained on sequences of length 1024 often generalizes poorly to longer sequences at test time — the position vectors for position 900 are not a reliable guide to position 1,500. This limitation drove a whole research field seeking better position schemes: relative positional attention (only the distance between words matters, not their absolute position), rotary encodings (positions are encoded as rotations in high-dimensional space, and longer sequences follow the same pattern), and learnable relative biases. Each scheme trades off different costs. But the core problem remains: the model must somehow know, at inference time, how to handle sequences longer than any it trained on.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the search for better positions is reshaping how long models can be</h2>
+      <div class="essay">
+      <p>Every transformer needs positional encoding; it is not optional. But because the learned scheme in vanilla transformers caps input length and generalizes poorly, the hunt for better schemes is a high-stakes problem. Relative positional encodings, rotary position embeddings (RoPE), and alibi (attention with linear biases) all relax the length limit. Some models now handle context windows of 100,000 or even 1 million tokens — not because the core mechanism changed, but because researchers found ways to encode position that scale smoothly with distance and need not be learned for every position in advance. The vision transformer applies positional encoding to image patches instead of words; retrieval and search systems layer relative position on top of absolute, for the same reason: every system that joins many items in a sequence must solve the problem of 'how does position matter'. Position is not a minor detail; it is a central tension that drives how long a model can reach and how well it generalizes.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="attention-deep.html">attention</a> · <a href="embeddings-deep.html">embeddings</a> · <a href="transformer_block-deep.html">the transformer block</a> · <a href="scaling_laws-deep.html">scaling laws</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run the real pretrained GPT-2 (124M) on a test set. Measure loss (cross-entropy, lower = less surprised) for a ten-word sentence in true order, then for the same ten words shuffled randomly. Also measure cosine similarity between GPT-2's learned position vectors for neighbouring positions (e.g., position 1 and 2) and for distant positions (e.g., position 1 and 50).</p>
+      <div class="eq">positional_encoding: position_vector(pos) is learned
+word_with_position = embedding(word) + position_vector(pos)
+loss_ordered = 3.98
+loss_shuffled = 8.00
+cosine(pos[i], pos[i+1]) ≈ 1.00  (neighbours)
+cosine(pos[i], pos[i+k_distant]) ≈ 0.39  (far)</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_positional_encoding), the actual GPT-2 weights. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Positional Encoding deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

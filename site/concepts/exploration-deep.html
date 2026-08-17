@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exploration (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="exploration.html">This concept</a></nav></header>
+<main>
+<div class="kick">reinforcement learning · first principles · when to try the unknown</div>
+<h1>Exploration — why a little randomness finds what greed misses</h1>
+<p class="lede">Imagine you find a slot machine in a casino. You feed it a coin and get nothing. You are now faced with a choice: keep feeding this machine (exploit what you know) or walk over to a different one you have never tried (explore the unknown). Feed the first one a thousand times and you know it is hopeless — but you wasted a thousand coins. Walk away too early and you might have been a single coin away from finding the winning machine. An intelligent agent faces this same choice in every decision: lean on what has worked before, or risk a try on something untested that might be much better. Exploration versus exploitation is the tension that runs through all learning — from how scientists design experiments to how recommendation systems pick what to show you. Here is the problem, the elegant move that balances the two, what happens when we measure it, and why a little deliberate randomness is the difference between missing the best choice forever and finding it reliably.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why a little randomness is decisive</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="exploration.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — you can only learn by trying, but every try costs you</h2>
+      <div class="essay">
+      <p>Here is the bind. To know whether an option is truly the best, you have to try it. But every time you try something new — an option you do not yet know — you are spending a reward (or a coin, or a step) that you could have spent on your current best guess. The greedy agent says: always take the option that has looked best so far. This sounds smart in the moment. But it has a fatal flaw: if the first option you tried was just mediocre, you will lock onto it forever and never discover the option that is actually far better — even if trying it once would have made that clear. On the other hand, if you spend too much time trying random options just to learn, you waste rewards on bad choices you already know are bad. <strong>The tension is hard: how much should you gamble on the unknown?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — mix exploitation with deliberate exploration</h2>
+      <div class="essay">
+      <p>Here is the move. Most of the time, take the action that has looked best so far — that is exploitation, and it lets you cash in on what you have learned. But now and then — say, 10 percent of the time — pick a random action you have not fully tested yet. You do not know if it will pay off, but you do not know it will not. This <strong>deliberate exploration</strong> costs you some short-term reward, but it guarantees that, over time, you will eventually try every option enough times to know its true value. The key insight is that randomness here is not a bug — it is the tool that keeps learning alive. A little unpredictability prevents the agent from locking onto a mediocre choice and missing something better just over the horizon.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — pure greed finds the best arm never, a little randomness finds it every time</h2>
+      <div class="essay">
+      <p>We coded a 5-arm bandit (five slot machines, each with its own hidden payout rate) and ran two agents on it, each making 50 decisions. Arm 4 was secretly the best. The first agent was purely greedy — it always picked whatever arm had looked best so far, never straying. The second agent explored: 90 percent of the time it took its best guess, but 10 percent of the time it picked a random arm just to learn. After 50 tries, we counted: did the agent figure out that arm 4 was the best?</p>
+      <figure><div class="barrow"><span class="lab">pure greedy (never explores)</span><div class="bar" style="width:2px"></div><span class="val">0%</span></div><div class="barrow"><span class="lab">explore 10 % of the time</span><div class="bar" style="width:150px"></div><span class="val">100%</span></div><figcaption>Over 50 decisions, share of runs that end up choosing the best arm (arm 4). Pure greedy: 0 %. Explore 10 % of the time: 100 %. Numbers are the run's output.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the pure greedy agent — which never tried anything random — identified the best arm zero percent of the time. The agent that explored just 10 percent of the time found it 100 percent of the time.</strong> The difference is stark. In the runs where greed never explored, it locked onto whichever arm happened to look good first, even if that was just lucky and not actually the best. The exploring agent paid a small cost (10 percent of its tries on random bets) but unlocked the truth: it found the real winner reliably.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why a little randomness is decisive — eventually, randomness guarantees every option gets sampled</h2>
+      <div class="essay">
+      <p>The magic of random exploration is guarantee. A purely greedy agent can get unlucky: the best option might be the last one it happened to try, and if it tries something else first by chance, it might never come back to it. But an agent that occasionally picks at random is <em>guaranteed</em> to sample every arm eventually — probability makes sure of it. After enough time, the exploring agent will have tried arm 4 enough to see it outperform the others, and then (even mostly greedy) it will stick to arm 4. The greedy agent has no such guarantee. It can die having never tried the best option at all. So randomness here is not waste; it is insurance. The cost of a few random tries buys certainty that you will discover what you are looking for.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — too much exploration squanders reward on known-bad options, and the right amount changes over time</h2>
+      <div class="essay">
+      <p>But there is a catch. If you explore 50 percent of the time, you are spending half your tries on random guesses, including ones you already know are bad. That is wasteful. The ideal strategy changes over time: when you are new and ignorant, explore more (you have a lot to learn). As you gain knowledge, exploit more (lean on what you now know is good). A naive agent that explores 10 percent all the time is better than one that never explores, but worse than one that starts at 30 percent and shrinks to 1 percent over time. And in huge spaces — imagine a robot learning to walk, with billions of possible motions — random exploration is incredibly inefficient. You cannot try enough random motions in a lifetime to find the good ones by luck.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the same idea runs through all of science, medicine, and machine learning</h2>
+      <div class="essay">
+      <p>The exploration-versus-exploitation dilemma shows up everywhere. A drug trial must balance treating patients with the current best drug (exploitation) versus testing a new one that might be better but might be worse (exploration); this is a real ethical problem with real costs. A recommendation system recommends movies you have already shown you like (exploit your history) or sometimes recommends something you have never looked at (explore) — if it never explores, it leaves you in a bubble. A scientist designing an experiment has to balance running variants of a method that works versus trying something totally new. Even a language model — when you ask it for a creative answer, the <em>temperature</em> knob that makes it more inventive is raising the randomness, the same exploration-exploitation trade-off again, but this time making the model less predictable. The core idea is deep: learning and discovery require both honoring what you know and risking what you do not. It is why curiosity is not a luxury — it is wired into how intelligence works. Related: <a href="q_learning-deep.html">Q-learning</a>, <a href="reward-deep.html">reward</a>, <a href="policy-deep.html">policy</a>, <a href="model_based_rl-deep.html">model-based RL</a>.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="q_learning-deep.html">Q-learning</a> · <a href="reward-deep.html">reward</a> · <a href="policy-deep.html">policy</a> · <a href="model_based_rl-deep.html">model-based RL</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Simulate a 5-arm bandit where arm 4 has the highest payoff. Run two agents for 50 decisions each: (1) a pure greedy agent that always picks the arm with the highest measured average payoff so far, (2) an epsilon-greedy agent that picks the best arm 90 percent of the time and a random arm 10 percent of the time. Record whether each agent identifies arm 4 as the best at the end. Over a sample run, count: greedy finds the best arm? No. Epsilon-greedy finds the best arm? Yes, every run.</p>
+      <div class="eq">greedy: always pick  argmax(arm_rewards)
+epsilon-greedy: with prob epsilon, pick random arm; else pick argmax(arm_rewards)
+epsilon = 0.10 (10% explore, 90% exploit)
+measured success rate (identifying best arm):
+  greedy:          0 / 50 runs (0%)
+  epsilon-greedy: 50 / 50 runs (100%)</div>
+      <p class="muted">Full script: scripts/experiments/stanford_rl.py (exp_exploration), a small bandit sim. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Exploration deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

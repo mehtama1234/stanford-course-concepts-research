@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Offline Reinforcement Learning (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="offline_rl.html">This concept</a></nav></header>
+<main>
+<div class="kick">reinforcement learning · real-world deployment · learning from fixed logs without trial and error</div>
+<h1>Offline RL — learning from a fixed dataset when you cannot experiment</h1>
+<p class="lede">In medicine, autonomous driving, or any costly domain, you cannot let an agent experiment freely. You have a log — maybe years of past human decisions, past treatment outcomes, past driving videos — and you need to learn a good policy from that alone, with no new interaction. That is the offline reinforcement learning problem. Here is the core challenge: standard learning methods assume you can try anything and learn from mistakes, but a fixed log shows you only a slice of the world. Some situations and actions never appear in the log. An optimistic learner will hallucinate high values for those unseen actions and chase them into disaster. Here is how the trap works, a real run showing naive learning fail where a conservative method succeeds, why the unseen is the fatal flaw, the real ceiling you hit, and where this exact setting reappears in modern AI.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the unseen is a trap</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="offline_rl.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — the log is biased and incomplete</h2>
+      <div class="essay">
+      <p>In the real world, you rarely get to experiment freely. In a hospital, giving a new drug to a patient and watching what happens is costly and risky. In a self-driving car, trial-and-error crashes are unacceptable. In business, you have historical data — logs of decisions made by people or old systems — and you must learn from it. The log is what it is: it shows you some situations and some actions, maybe heavy in one region of the world and sparse in another, maybe skewed toward safer or easier choices. It does not show you what happens if you try something no one in the log ever tried. And yet you need to build a policy — a rule that decides what to do — that is better, or at least as good, as the behavior that generated the log.</p>
+      <p>The trap is this: <strong>the log is both your only teacher and your only source of truth, yet it is guaranteed to be incomplete.</strong> Some combinations of situation and action never occur. A naive learning method — one that works fine when you can experiment — will make up confident guesses about what would happen in those unseen cases. It will chase those guesses. And it will fail, often catastrophically.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — stay within the log, or pay the price</h2>
+      <div class="essay">
+      <p>Here is the key shift in thinking. When you have a live world and can experiment, you learn by trying things and observing the results. When you have only a log, you must flip the problem: <strong>treat the log as a dataset, like you would train a classifier on labeled photos. But recognize that your dataset is not a random sample of the world — it is heavily biased toward whatever behavior generated it. Anywhere the log is silent, your estimates are hallucinations.</strong></p>
+      <p>The safest response is to stay close to the log. If an action never appeared in a given situation, do not trust any value estimate for it — or, better, never even consider it. If you only saw three of ten possible actions in a situation, focus on those three. A method that respects this boundary, staying within the support of the data, will never chase imaginary values into disaster. It might not discover anything better than the log's original behavior — there is a real ceiling — but it will not crash through it either.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — naive optimism fails, conservative learning finds the goal</h2>
+      <div class="essay">
+      <p>We trained a small gridworld with a 6 by 6 grid, a goal at one corner, and a cost of 1 for each step. The optimal path is 10 steps. We then created a biased log by running a random agent that preferentially took certain actions — in total, only 65 of the possible 144 state-action pairs ever appeared in the log. Now we had a fixed dataset: incomplete and skewed, just like a real human driving log or medical dataset.</p>
+      <p>We then trained two learners on that fixed log, with no new interaction. The first was a copy of standard online Q-learning — a method that works well when you can try new things. The second was a conservative method designed for offline settings, one that stays within the actions and state-action pairs the log showed.</p>
+      <div class="tw"><table><tr><th>method</th><th>did it reach the goal?</th><th>path length if it did</th></tr><tr><td>naive Q-learning (optimistic, trusts unseen actions)</td><td>no — never reaches the goal</td><td>—</td></tr><tr><td>conservative offline method (stays within the logged data)</td><td>yes</td><td>10 steps (optimal)</td></tr></table></div><figcaption>Trained only on a fixed log of 65 out of 144 state-action pairs. Naive Q-learning chases values for unseen actions and fails; the conservative method respects the log's boundaries and finds the optimal path. Numbers are the run's output.</figcaption>
+      <div class="insight"><strong>The discovered fact: with only 65 of 144 state-action pairs ever logged, naive Q-learning never reaches the goal, while a conservative method that stays within the logged actions finds the optimal 10-step path.</strong> The naive method learned optimistic value estimates for the 79 unseen state-action pairs. It treated them as high-value moves. It committed to them. It crashed. The conservative method said: I only trust what I see. It stayed on the 65 state-action islands in the log, and from those stepping stones alone it navigated to the goal.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why the unseen is a trap — standard learning trusts what it has not seen</h2>
+      <div class="essay">
+      <p></p>
+      <p>That optimism is the engine of exploration in a live world — it drives the agent to try new things and discover better policies than the log. But in offline learning, there is no live world. A state-action pair you have never seen is not an unexplored opportunity; it is blind spot. You have zero evidence about what it does. Standard Q-learning will nonetheless assign it an optimistic value, often very high, because you have not seen a failure. The agent acts on that hallucination. It commits to an unseen path. And because the log never showed what happens there, you have no mechanism to correct the mistake.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — you cannot exceed the log's ceiling</h2>
+      <div class="essay">
+      <p>The conservative solution — stay within the data — solves the hallucination problem completely. You will not crash into imaginary cliffs. But there is a hard trade-off: you cannot discover anything better than the behavior that generated the log. If the log was collected by a mediocre or biased agent, you are stuck improving a mediocre policy. You cannot invent new actions or combinations the log never tried. The best you can hope for is to extract every ounce of value from the logged behavior and avoid its mistakes. In medicine, you might decide: the doctors in my log were pretty good; let me learn their policy exactly and apply it consistently. But you will never discover a novel treatment no doctor in the log ever prescribed. In driving, you can learn from human trajectories, but you cannot discover driving moves humans never recorded. The ceiling is real.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is exactly the setting of RLHF, the way modern AI models learn from humans</h2>
+      <div class="essay">
+      <p></p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="q_learning-deep.html">Q-learning</a> · <a href="policy-deep.html">policy</a> · <a href="model_based_rl-deep.html">model-based RL</a> · <a href="rl_for_llms-deep.html">reinforcement learning for language models</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">On a 6x6 gridworld (-1 per step, +10 at goal), generate a biased log by running a random agent with skewed action probabilities. Only 65 of the 144 possible state-action pairs appear. Train a naive Q-learning copy on that fixed log without new interaction. Also train a conservative offline method (one that masks out unseen state-action pairs and clips value estimates). Measure whether each reaches the goal and, if so, the path length.</p>
+      <div class="eq">naive Q-learning:  Q(s,a) = R(s,a) + gamma * max_a Q(s', a)   [optimistic about unseen (s,a)]
+conservative offline: Q(s,a) = R(s,a) + gamma * max_a Q(s', a) if (s,a) in log, else -inf
+
+Results on log with 65/144 state-action pairs:
+naive Q-learning → never reaches goal
+conservative offline → finds 10-step optimal path</div>
+      <p class="muted">Full script: scripts/experiments/stanford_rl.py (exp_offline_rl). Numbers are the run's output verbatim. Gridworld: 6x6, -1 per step, +10 at goal, optimal path = 10 steps.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Offline Reinforcement Learning deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

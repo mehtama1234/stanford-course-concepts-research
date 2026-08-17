@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diffusion (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="diffusion.html">This concept</a></nav></header>
+<main>
+<div class="kick">generative models · first principles · how to create new realistic data from scratch</div>
+<h1>Diffusion — learning to reverse noise to create new data</h1>
+<p class="lede">To generate a brand-new, realistic image or shape, you need to produce something the model has never seen before. The space of all possible images is astronomically large — how do you learn which ones are good? Diffusion is a radical reframing: instead of learning to build good samples from scratch, destroy a real image with noise step by step until it is pure random static, then learn to undo that process. Train a network to take one small step backward through noise, then run it in reverse from pure noise to create. Here is the idea, a measurement on a real toy showing it works, why undoing small steps is cleverer than building whole samples at once, where it stumbles, and how this idea powers the image generators behind every modern AI art tool.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why denoising creates new data</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="diffusion.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — generating new realistic data is astronomically hard</h2>
+      <div class="essay">
+      <p>When you want to create a new image or shape or piece of text, you are choosing from a space so enormous that most random guesses are garbage. If you tried to build an image pixel by pixel, the odds of landing on something realistic are essentially zero — the space is too big, the rules too intricate. A model that learned to make good samples needs to have found the tiny sliver of space where realistic things live, then learned to sample from only there. That is an extraordinarily hard problem stated forward.</p>
+      <p>So the need is sharp: <strong>is there a way to reframe generation as a simpler problem — one a neural network can actually learn?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — destroy structure, then learn to restore it</h2>
+      <div class="essay">
+      <p>Here is the radical move. Take a real image or shape. Add noise to it — a little random static sprinkled across it. Then add more noise. Keep going until after 50 steps or 1,000 steps, all the structure is gone: it is pure random garbage, indistinguishable from static. That forward process — adding noise step by step — is trivial. Anybody can do it. It requires no learning.</p>
+      <p>Now flip it. Train a neural network to do the reverse: given a noisy image partway through that noise-adding process, predict what noise was just added, and <em>subtract</em> it. If the network learns this one-step backwards move well, you can run it in reverse from the end: start with pure noise, have the network remove one step of noise, then remove one more step, and so on. After 50 iterations, pure random static has been shaped into a realistic sample. The hard problem of 'make a good image from scratch' becomes a chain of tiny, tractable steps: 'guess and remove the noise I just added.'</p>
+      <p>That is <strong>diffusion</strong>. The magic is that each small step is easy to learn — predicting noise added in one step is within reach of a neural network. Chaining many of them together accomplishes something that looked impossible: creating brand-new, realistic data from pure randomness.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — noise goes from zero success to 97 percent on target</h2>
+      <div class="essay">
+      <p>We built a simple toy: a 2-dimensional space with 8 Gaussian blobs arranged on a ring. The question: can pure noise land on one of those blobs by chance? Can a network learn to denoise noise back onto them? We trained a network to reverse a 50-step noising process and compared.</p>
+      <figure><div class="barrow"><span class="lab">Pure noise, no learning</span><div class="bar" style="width:2px"></div><span class="val">0%</span></div><div class="barrow"><span class="lab">After learning to reverse 50 steps</span><div class="bar" style="width:146px"></div><span class="val">97%</span></div><figcaption>Samples landing on the target shape (8 Gaussians on a ring). Pure noise, then after learning to reverse 50 steps of noise.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: pure noise lands on the target shape zero percent of the time. After training a network to reverse the 50-step noise process, generated samples land on it 97 percent of the time.</strong> The same network, given noise and asked to denoise, reliably steers random static into a shape the model has learned.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why learning to undo noise teaches a model to generate</h2>
+      <div class="essay">
+      <p>The insight is that denoising is a direct window into the data distribution. When you learn to undo one step of noise at every point in space, you are learning: where does the data sit? Which direction is toward realistic data? By removing noise repeatedly, the network makes thousands of tiny nudges, and those nudges accumulate. Each one is a small step toward the high-density regions where real data lives.</p>
+      <p>This works because noise is a smooth process. A single step of noise is not too different from the previous state — the network can see both in its input (the noisy image and the noise added) and learn the pattern. But collectively, 50 or 1,000 steps of denoising act like a learnable map from the outside (pure randomness) to the inside (realistic data). No hand-written rule describes what 'good data' looks like; the network infers it from the denoising task alone.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — generation needs many sequential steps</h2>
+      <div class="essay">
+      <p>The catch is speed. To generate a single image, you must run the network 50, 100, or even 1,000 times, once per denoising step. Each run costs compute. For real applications this is slow — it can take tens of seconds or minutes to generate a single image, where a discriminative model (one that only recognizes) runs in milliseconds. That sequential cost is why a whole research industry has emerged around faster alternatives: flow matching (learning a smooth path from noise to data in fewer steps) and distillation (training a smaller network to mimic a trained diffusion model in just 4 steps) both attack this bottleneck.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this powers image generators used by millions</h2>
+      <div class="essay">
+      <p>This simple idea — destroy structure, learn to restore it — when scaled to millions of images and billions of learned numbers, becomes the engine of Stable Diffusion, DALL-E, and every modern AI image generator. The same logic applies to audio and video: you can corrupt a sound with noise, learn to denoise it, and sample new audio by running the reverse process. The trick of breaking a hard problem into many easy steps, stacked in sequence, is now central to generative AI. Cousin ideas like <a href="score_matching-deep.html">score matching</a> (learn the direction toward data) and <a href="flow_matching-deep.html">flow matching</a> (learn a smooth path) refine the strategy. And <a href="guidance-deep.html">guidance</a> adds a steering mechanism: nudge the denoising toward a specific class or description. This single reframing — that generation is denoising — made AI art possible.</p>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="score_matching-deep.html">score matching</a> · <a href="flow_matching-deep.html">flow matching</a> · <a href="guidance-deep.html">guidance</a> · <a href="latent_space-deep.html">latent space</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run a toy diffusion model on 8 Gaussians arranged on a 2D ring. First, measure what fraction of pure noise samples land within a small radius of any blob (0%). Train a network to predict and subtract noise at each of 50 steps, reversing a forward noise process. Then, sample by starting from pure noise and running the learned denoising network 50 times. Measure what fraction of generated samples land on the target shape (97%).</p>
+      <div class="eq">forward:   x_t = sqrt(alpha_t) * x_0  +  sqrt(1 - alpha_t) * epsilon
+reverse:  x_{t-1} = (1/sqrt(alpha_t)) * (x_t - sqrt(1 - alpha_t) * pred_noise)
+generate: start with x_T ~ N(0, I),  iterate reverse for t = T, T-1, ..., 1
+measured purity:   noise-only 0%,   learned denoising 97%</div>
+      <p class="muted">Full script: scripts/experiments/stanford_diffusion.py (exp_diffusion), the toy 8-Gaussian target. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Diffusion deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>
