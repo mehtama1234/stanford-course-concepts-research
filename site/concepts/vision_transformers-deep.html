@@ -30,7 +30,7 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
 <div class="kick">large language models · first principles · the same attention that reads words can see images</div>
 <h1>Vision Transformers — how cutting an image into patches lets attention see</h1>
 <p class="lede">A transformer built for text reads by moving its attention over a sequence of words — asking 'which words matter most right now?' and blending them together. But an image is not a sentence; it is a grid of pixels. How can the same machinery that conquered language see a picture? The answer is simple: chop the image into small rectangular patches, flatten each patch into a vector, and treat the sequence of patches exactly like a sentence of words. Here is the idea, a real measurement showing it works, why grouping patches like words is so powerful, where it struggles, and how this one unification became a foundation for models that read and see together.</p>
-<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why patches work like words</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="vision_transformers.html">Atlas card</a></div>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why patches work like words</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="vision_transformers.html">Atlas card</a></div>
 
     <section class="fp" id="problem">
       <h2>1 · The problem — transformers conquered language but images are not sequences</h2>
@@ -42,7 +42,8 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
     <section class="fp" id="reframe">
       <h2>2 · The reframe — cut the image into patches and read them like words</h2>
       <div class="essay">
-      <p>Here is the move. Take the image and slice it up into a grid of small square patches — say, a picture of a cat split into, say, 16 small rectangles, each roughly the size of a cat's nose or ear. Flatten each patch into a single vector (a row of numbers), just as a word is a vector. Now you have a sequence of patches in a fixed order, exactly like a sentence of words. Feed that sequence into a transformer — the same attention and stacking you use for language — and let it learn. That is a <strong>vision transformer</strong> (ViT for short). One machine, language and vision both, by treating a picture as a <em>sentence of patches</em>.</p>
+      <p>The move. Take the image and slice it up into a grid of small square patches — say, a picture of a cat split into, say, 16 small rectangles, each roughly the size of a cat's nose or ear. Flatten each patch into a single vector (a row of numbers), just as a word is a vector. Now you have a sequence of patches in a fixed order, exactly like a sentence of words. Feed that sequence into a transformer — the same attention and stacking you use for language — and let it learn. That is a <strong>vision transformer</strong> (ViT for short). One machine, language and vision both, by treating a picture as a <em>sentence of patches</em>.</p>
+      <p>The hidden quantity is which patches of the image attend to which others — the same learned focus used for words, now deciding which regions of a picture should inform each other.</p>
       </div>
     </section>
     <section class="fp" id="run">
@@ -69,6 +70,14 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
       <h2>6 · The surprise — one architecture sees text, images, audio, and video</h2>
       <div class="essay">
       <p>The unity is profound. The same transformer block — the 'attend then blend' step — stacked into layers, works on any sequence. Words are sequences in time; image patches are sequences in space; audio spectrograms are sequences in time and frequency; video is a sequence of frames, each a sequence of patches. By treating each as a flat sequence of tokens, one architecture handles them all. This is why the big models today are <em>multimodal</em>: they embed text and images into the same space using variants of <a href="attention-deep.html">attention</a>, so a model can reason about both a photo and a caption at once. <a href="embeddings-deep.html">Embeddings</a> turn meaning into geometry, and <a href="positional_encoding-deep.html">positional encoding</a> supplies the order; both apply to patches just as they do to words. The result is a single machine for sensing and reasoning across modalities — a consequence of realizing that vision and language are both just pattern-finding in sequences, and attention is the universal pattern-finder.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Treat image patches as word tokens for unified vision and language</h2>
+      <div class="essay">
+      <p>Vision transformers are used in image classification, object detection, and visual question answering systems across industry and research. Multimodal models like those that process both images and text use vision transformers to encode images, allowing a single architecture to reason about vision and language together. Medical imaging systems use vision transformers for disease detection and diagnostic support.</p>
+      <p>An image is divided into a grid of small square patches—for example, a photograph might be cut into a grid of rectangular regions. Each patch is converted to a vector (a sequence of numbers) and treated exactly like a word token in a language model. The same transformer blocks that process word sequences process patch sequences: attention allows each patch to see and relate to all other patches in the image, regardless of distance. Early blocks learn to identify textures and edges; later blocks recognize parts and objects.</p>
+      <div class="insight">Patches sacrifice fine detail for computational efficiency and the ability to use the same architecture for images and text, but they require much more training data than convolutional networks because they lack the built-in spatial inductive bias that convolution provides.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="attention-deep.html">attention</a> · <a href="embeddings-deep.html">embeddings</a> · <a href="positional_encoding-deep.html">positional encoding</a> · <a href="transformer_block-deep.html">transformer block</a></p></section>

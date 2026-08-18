@@ -30,7 +30,7 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
 <div class="kick">reinforcement learning · real-world deployment · learning from fixed logs without trial and error</div>
 <h1>Offline RL — learning from a fixed dataset when you cannot experiment</h1>
 <p class="lede">In medicine, autonomous driving, or any costly domain, you cannot let an agent experiment freely. You have a log — maybe years of past human decisions, past treatment outcomes, past driving videos — and you need to learn a good policy from that alone, with no new interaction. That is the offline reinforcement learning problem. Here is the core challenge: standard learning methods assume you can try anything and learn from mistakes, but a fixed log shows you only a slice of the world. Some situations and actions never appear in the log. An optimistic learner will hallucinate high values for those unseen actions and chase them into disaster. Here is how the trap works, a real run showing naive learning fail where a conservative method succeeds, why the unseen is the fatal flaw, the real ceiling you hit, and where this exact setting reappears in modern AI.</p>
-<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the unseen is a trap</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="offline_rl.html">Atlas card</a></div>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the unseen is a trap</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="offline_rl.html">Atlas card</a></div>
 
     <section class="fp" id="problem">
       <h2>1 · The problem — the log is biased and incomplete</h2>
@@ -42,7 +42,7 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
     <section class="fp" id="reframe">
       <h2>2 · The reframe — stay within the log, or pay the price</h2>
       <div class="essay">
-      <p>Here is the key shift in thinking. When you have a live world and can experiment, you learn by trying things and observing the results. When you have only a log, you must flip the problem: <strong>treat the log as a dataset, like you would train a classifier on labeled photos. But recognize that your dataset is not a random sample of the world — it is heavily biased toward whatever behavior generated it. Anywhere the log is silent, your estimates are hallucinations.</strong></p>
+      <p>The key shift in thinking. When you have a live world and can experiment, you learn by trying things and observing the results. When you have only a log, you must flip the problem: <strong>treat the log as a dataset, like you would train a classifier on labeled photos. But recognize that your dataset is not a random sample of the world — it is heavily biased toward whatever behavior generated it. Anywhere the log is silent, your estimates are hallucinations.</strong></p>
       <p>The safest response is to stay close to the log. If an action never appeared in a given situation, do not trust any value estimate for it — or, better, never even consider it. If you only saw three of ten possible actions in a situation, focus on those three. A method that respects this boundary, staying within the support of the data, will never chase imaginary values into disaster. It might not discover anything better than the log's original behavior — there is a real ceiling — but it will not crash through it either.</p>
       </div>
     </section>
@@ -60,6 +60,7 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
       <div class="essay">
       <p></p>
       <p>That optimism is the engine of exploration in a live world — it drives the agent to try new things and discover better policies than the log. But in offline learning, there is no live world. A state-action pair you have never seen is not an unexplored opportunity; it is blind spot. You have zero evidence about what it does. Standard Q-learning will nonetheless assign it an optimistic value, often very high, because you have not seen a failure. The agent acts on that hallucination. It commits to an unseen path. And because the log never showed what happens there, you have no mechanism to correct the mistake.</p>
+      <p>The hidden quantity is the optimism bias — how much the learned values overrate actions the fixed dataset never contains, since there is no real experience to correct those guesses.</p>
       </div>
     </section>
     <section class="fp" id="weakness">
@@ -72,6 +73,14 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
       <h2>6 · The surprise — this is exactly the setting of RLHF, the way modern AI models learn from humans</h2>
       <div class="essay">
       <p></p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Learning from fixed logs without new interaction</h2>
+      <div class="essay">
+      <p>Offline reinforcement learning is used in hospitals when training systems to recommend treatments from past patient records, in self-driving car development where engineers learn from historical driving logs instead of crashing test vehicles, and in robotics labs where robots learn manipulation tasks from video footage of humans doing the task. In each case, the system has a fixed batch of past observations and no way to ask the world 'what if I try something nobody ever tried.'</p>
+      <p>The model's job is to extract a policy from the log by treating action choices as decisions to be scored. It learns which moves produced good outcomes in the past, but it must stay conservative: if an action never appeared in a given situation, the system does not invent a value for it and chase it. Instead, the learning process stays within the boundaries of what the log actually showed. The data plays the role of both teacher and world — there is no interaction loop.</p>
+      <div class="insight">The core trade-off is inescapable: you cannot crash by hallucinating actions outside the log, but you also cannot discover anything better than whatever behavior generated the log in the first place.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="q_learning-deep.html">Q-learning</a> · <a href="policy-deep.html">policy</a> · <a href="model_based_rl-deep.html">model-based RL</a> · <a href="rl_for_llms-deep.html">reinforcement learning for language models</a></p></section>

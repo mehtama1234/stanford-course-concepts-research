@@ -4,35 +4,187 @@
   "kick": "reinforcement learning · first principles · learning by raising the odds of winning moves",
   "title": "Policy Gradient — make good moves more likely, bad ones less so",
   "lede": "When you learn to play a game, you might study the value of each position—how good it is to be there. But sometimes you do not want to know which spot is best; you want to learn what to *do* — which action to pick. Policy gradient skips the value table entirely and learns the action probabilities straight from experience. If you just won, nudge up the odds of the moves you just made. If you lost, nudge them down. Over many trials, moves that tend to come before reward get reinforced and the policy reshapes itself, concentrating probability on the winner. Here is how it works, a real gridworld run showing the shift from a coin-flip to confident action, why raising the odds of good moves does steer learning, and where this idea reappears in the largest modern language models.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why raising the odds works"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — values tell you where to be, not what to do","blocks":[
-      {"t":"para","html":"In Q-learning, you learn the value — how good is it to be in state S and take action A? Once you know the values, acting is easy: for each state, pick the action with the highest value. But this path has a gap: you learn one thing (values) and then use it to decide another thing (actions). And for some problems, this split does not fit. If actions are continuous — like steering a robot smoothly, not just 'turn left or right' — values become hard to define. And if you want a policy that is naturally noisy — a learner that explores by randomness built into its decisions — Q-learning forces you to add noise as an add-on, not as part of the core rule."},
-      {"t":"para","html":"The need is different: <strong>can you learn the action probabilities directly — not as a side effect of values, but as the main thing you optimize?</strong>"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — the policy is a set of tunable probabilities you nudge up or down","blocks":[
-      {"t":"para","html":"Here is the move. Represent your policy not as values but as probabilities: what is the probability of taking action A in state S? Start with something simple — coin-flips, or a neutral guess. Now, run one trial: simulate forward, pick actions by rolling these probabilities, and see what you get. Did you win? The moves in that winning path are keepers; nudge their probabilities up. Did you lose or get low reward? Nudge those moves' probabilities down. Do this over and over. After many episodes, moves that statistically precede good outcomes get reinforced, and moves that precede bad outcomes fade. The policy tightens: high-reward moves come out with high probability, low-reward moves with low probability."},
-      {"t":"para","html":"Mathematically (the collapse only): this is gradient ascent on expected reward. You measure the gradient — how much a small change in the policy parameters changes your expected return — and step uphill. In practice, you do not need the full math: pick a move, watch what happens next, and raise or lower its probability proportional to how much reward came back. This is <strong>policy gradient</strong>."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — the probability shifts from coin-flip to confident move","blocks":[
-      {"t":"para","html":"We ran a policy-gradient learner on a 4x4 gridworld. The goal is in one corner; from the start, moving closer to it will be one of two actions (move right or down, depending on where the start is). At the very beginning, the policy is untrained — all four directions are equally likely, a coin-flip, so the two goal-ward moves together hold exactly 0.50 of the probability. After training by trial and error over many episodes, the policy reinforces the goal-ward actions and the probability on those two moves climbs to 0.86. Meanwhile, the average reward per episode rises from negative 15 (lots of step penalties, slow wandering) to negative 8 (fewer wasted steps, faster reaching the goal)."},
-      {"t":"bars","caption":"Policy gradient on a 4x4 grid: goal-ward move probability (starting untrained, ending confident), and average episode reward (climbing from many penalties to near-optimal).","rows":[["goal-ward probability (start)","0.50","50% untrained"],["goal-ward probability (after training)","0.86","86% confident"],["average return (start)","(-15 + 0) / 2","−15 high penalty"],["average return (after training)","(-8 + 0) / 2","−8 improved"]]},
-      {"t":"insight","html":"<strong>The discovered fact: the policy-gradient learner raised the probability of goal-ward moves from 0.50 to 0.86 and improved average return from negative 15 to negative 8.</strong> Without any value table, by simply pushing up the odds of moves that led to reward and down the ones that did not, the learner concentrated its action probabilities on the winners and cut the path length (lower penalty = fewer steps = higher return). The policy reshaped itself to reflect what works."}
-    ]},
-    {"id":"why","h2":"4 · Why raising the odds of good moves works","blocks":[
-      {"t":"para","html":"The key insight is statistical reinforcement. In any one episode, you get one sequence of states and actions and one return at the end. That return is noisy — sometimes you get lucky, sometimes unlucky. But over many episodes, the law of large numbers takes over. Moves that *statistically* tend to come before high reward will, on average across many trials, have their probabilities nudged up more often than down. Moves that tend to come before low reward will be nudged down more often. Over time, probability mass drains from the loser moves and pools in the winner moves. The policy is not learning a table; it is learning a direction — which moves should be rare and which should be common — and moving that direction, averaged over experience. This is why the coin-flip (0.50 on goal-ward) can shift to a strong preference (0.86): the randomness in the trials averages out, and the reinforcement compounds."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — high variance and a noisy climb","blocks":[
-      {"t":"para","html":"The core weakness is variance. A single unlucky episode can shift the probability estimates badly. Worse, the signal is sparse: if an episode is 20 steps long and only the last one gets reward, all 20 moves get nudged, even though only the last one directly caused the reward. Early moves were not the problem; they just happened to be there. This means learning is slow and can get stuck on a plateau. Look at our run: after training, the goal-ward probability reaches 0.86 and the return is negative 8, but the optimal policy would get the probability to 1.0 and return to negative 5 or better (shorter path, fewer steps). Policy gradient alone stalled there — the high variance and sparse credit assignment let the learning curve flatten before hitting the true optimum. This is why the raw method is rarely used alone in practice."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — this is how ChatGPT is tuned from human feedback","blocks":[
-      {"t":"para","html":"Policy gradient was invented in the nineties for robot control, but it had a second life: it is the backbone of how modern language models like ChatGPT are trained from human feedback. The model itself becomes the policy — the probability of emitting each next token. You sample generations, grade them (good response or bad), and run policy-gradient updates: nudge the model's weights to make good generations more likely and bad ones less likely. The method is so important that a variant called PPO (Proximal Policy Optimization) is the standard. And because language models spit out probabilities natively, the method fits perfectly. On a smaller scale, this is exactly what happened in our gridworld: move probabilities up for winning paths, down for losing ones. Applied to a 70-billion-parameter model generating text instead of actions, the same idea reshapes the entire model to align with what humans find valuable."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why raising the odds works"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["policy-deep.html","policy"],["q_learning-deep.html","Q-learning"],["actor_critic-deep.html","actor-critic"],["rl_for_llms-deep.html","RL for language models"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — values tell you where to be, not what to do",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In Q-learning, you learn the value — how good is it to be in state S and take action A? Once you know the values, acting is easy: for each state, pick the action with the highest value. But this path has a gap: you learn one thing (values) and then use it to decide another thing (actions). And for some problems, this split does not fit. If actions are continuous — like steering a robot smoothly, not just 'turn left or right' — values become hard to define. And if you want a policy that is naturally noisy — a learner that explores by randomness built into its decisions — Q-learning forces you to add noise as an add-on, not as part of the core rule."
+        },
+        {
+          "t": "para",
+          "html": "The need is different: <strong>can you learn the action probabilities directly — not as a side effect of values, but as the main thing you optimize?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — the policy is a set of tunable probabilities you nudge up or down",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The move. Represent your policy not as values but as probabilities: what is the probability of taking action A in state S? Start with something simple — coin-flips, or a neutral guess. Now, run one trial: simulate forward, pick actions by rolling these probabilities, and see what you get. Did you win? The moves in that winning path are keepers; nudge their probabilities up. Did you lose or get low reward? Nudge those moves' probabilities down. Do this over and over. After many episodes, moves that statistically precede good outcomes get reinforced, and moves that precede bad outcomes fade. The policy tightens: high-reward moves come out with high probability, low-reward moves with low probability."
+        },
+        {
+          "t": "para",
+          "html": "Mathematically (the collapse only): this is gradient ascent on expected reward. You measure the gradient — how much a small change in the policy parameters changes your expected return — and step uphill. In practice, you do not need the full math: pick a move, watch what happens next, and raise or lower its probability proportional to how much reward came back. This is <strong>policy gradient</strong>."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the probability shifts from coin-flip to confident move",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran a policy-gradient learner on a 4x4 gridworld. The goal is in one corner; from the start, moving closer to it will be one of two actions (move right or down, depending on where the start is). At the very beginning, the policy is untrained — all four directions are equally likely, a coin-flip, so the two goal-ward moves together hold exactly 0.50 of the probability. After training by trial and error over many episodes, the policy reinforces the goal-ward actions and the probability on those two moves climbs to 0.86. Meanwhile, the average reward per episode rises from negative 15 (lots of step penalties, slow wandering) to negative 8 (fewer wasted steps, faster reaching the goal)."
+        },
+        {
+          "t": "bars",
+          "caption": "Policy gradient on a 4x4 grid: goal-ward move probability (starting untrained, ending confident), and average episode reward (climbing from many penalties to near-optimal).",
+          "rows": [
+            [
+              "goal-ward probability (start)",
+              "0.50",
+              "50% untrained"
+            ],
+            [
+              "goal-ward probability (after training)",
+              "0.86",
+              "86% confident"
+            ],
+            [
+              "average return (start)",
+              "(-15 + 0) / 2",
+              "−15 high penalty"
+            ],
+            [
+              "average return (after training)",
+              "(-8 + 0) / 2",
+              "−8 improved"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the policy-gradient learner raised the probability of goal-ward moves from 0.50 to 0.86 and improved average return from negative 15 to negative 8.</strong> Without any value table, by simply pushing up the odds of moves that led to reward and down the ones that did not, the learner concentrated its action probabilities on the winners and cut the path length (lower penalty = fewer steps = higher return). The policy reshaped itself to reflect what works."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why raising the odds of good moves works",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The key insight is statistical reinforcement. In any one episode, you get one sequence of states and actions and one return at the end. That return is noisy — sometimes you get lucky, sometimes unlucky. But over many episodes, the law of large numbers takes over. Moves that *statistically* tend to come before high reward will, on average across many trials, have their probabilities nudged up more often than down. Moves that tend to come before low reward will be nudged down more often. Over time, probability mass drains from the loser moves and pools in the winner moves. The policy is not learning a table; it is learning a direction — which moves should be rare and which should be common — and moving that direction, averaged over experience. This is why the coin-flip (0.50 on goal-ward) can shift to a strong preference (0.86): the randomness in the trials averages out, and the reinforcement compounds."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is the advantage of each tried action — whether it did better or worse than the average outcome, which is the sign and size of the push applied to that action's probability."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — high variance and a noisy climb",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The core weakness is variance. A single unlucky episode can shift the probability estimates badly. Worse, the signal is sparse: if an episode is 20 steps long and only the last one gets reward, all 20 moves get nudged, even though only the last one directly caused the reward. Early moves were not the problem; they just happened to be there. This means learning is slow and can get stuck on a plateau. Look at our run: after training, the goal-ward probability reaches 0.86 and the return is negative 8, but the optimal policy would get the probability to 1.0 and return to negative 5 or better (shorter path, fewer steps). Policy gradient alone stalled there — the high variance and sparse credit assignment let the learning curve flatten before hitting the true optimum. This is why the raw method is rarely used alone in practice."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is how ChatGPT is tuned from human feedback",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Policy gradient was invented in the nineties for robot control, but it had a second life: it is the backbone of how modern language models like ChatGPT are trained from human feedback. The model itself becomes the policy — the probability of emitting each next token. You sample generations, grade them (good response or bad), and run policy-gradient updates: nudge the model's weights to make good generations more likely and bad ones less likely. The method is so important that a variant called PPO (Proximal Policy Optimization) is the standard. And because language models spit out probabilities natively, the method fits perfectly. On a smaller scale, this is exactly what happened in our gridworld: move probabilities up for winning paths, down for losing ones. Applied to a 70-billion-parameter model generating text instead of actions, the same idea reshapes the entire model to align with what humans find valuable."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Make good moves more likely, bad ones less so",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Policy gradient is used in robotics to train agents that learn movement from trial and error without ever building a value table, in game-playing systems that learn strategies by reinforcement over thousands of matches, and in modern language models like ChatGPT where the technique (called PPO) nudges the model to emit good responses and away from bad ones based on human feedback. Every time the approach works, it is because the system benefits from learning action probabilities directly rather than computing values first."
+        },
+        {
+          "t": "para",
+          "html": "The process works by running many episodes or rollouts and watching what happens. If an episode produces high reward, the system nudges up the probabilities of the actions that led to it. If low reward, it nudges them down. Over many trials, moves that statistically precede reward concentrate probability mass on themselves. The policy itself becomes the learned artifact; actions play the role of words or moves, outcomes play the role of reward, and the parameter updates nudge probability distributions directly upward or downward."
+        },
+        {
+          "t": "insight",
+          "html": "The strength is that you learn action probabilities without needing to estimate values, but the weakness is high variance — a single unlucky episode can corrupt the signal and learning can stall before finding the true optimum."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "policy-deep.html",
+      "policy"
+    ],
+    [
+      "q_learning-deep.html",
+      "Q-learning"
+    ],
+    [
+      "actor_critic-deep.html",
+      "actor-critic"
+    ],
+    [
+      "rl_for_llms-deep.html",
+      "RL for language models"
+    ]
+  ],
   "recipe": {
     "summary": "Run policy gradient on a 4x4 gridworld (goal at one corner, start at another, move rewards -1 per step, +10 at goal). Initialize a policy as uniform probabilities over four cardinal directions. For each episode: sample actions under the current policy, accumulate the trajectory and return, then update the policy by raising the log-probability of each action proportional to its return (and the discount factor for credit assignment). Repeat for many episodes. Measure (a) the probability mass on the two goal-ward moves at initialization and after convergence, and (b) the mean return per episode at each stage.",
     "eq": "policy_gradient update: theta := theta + alpha * gradient_log_prob(action | state; theta) * return\nreturn = sum of discounted rewards from this step onward\nInitial goal-ward probability = 0.50  (uniform over 4 actions, 2 goal-ward)\nFinal goal-ward probability = 0.86\nInitial average return = -15\nFinal average return = -8",
     "note": "Full script: scripts/experiments/stanford_rl.py (exp_policy_gradient). Environment: 4x4 gridworld with start in one corner, goal in opposite, -1 per step, +10 at goal. Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "cs329a",
+      "id": "train-time-scaling-rl",
+      "label": "train-time RL scaling",
+      "note": "The policy-gradient update is the machinery RL scaling uses to bake reasoning into the weights."
+    }
+  ]
 }

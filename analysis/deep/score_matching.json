@@ -4,37 +4,178 @@
   "kick": "diffusion · generative models · learning to follow the slope toward data",
   "title": "Score Matching — learning which way is uphill toward the data",
   "lede": "Generating new data is hard because you do not know where the data lives in a high-dimensional space. If you could compute the probability of every possible point, you could sample from it — but that computation requires a normalizing constant that involves summing over an infinite space, which is impossible. Score matching sidesteps this dead end: instead of learning the probability density itself, learn the score — a vector field pointing in the direction of increasing density at every location. Once you know which way is uphill everywhere, you can carry random points uphill by a guided random walk. Here is the idea, a measurement on a real 2D toy showing samples settling onto the target shape, why learning the slope alone is enough, the cost that emerges, and how this old idea reappeared as the foundation of modern diffusion.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why the slope is enough"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — you cannot compute the normalizing constant","blocks":[
-      {"t":"para","html":"To generate data, you want to sample from the probability distribution that produced your training data. But a probability distribution in high dimensions has a density everywhere — a number that says 'how likely is this point?' — and those numbers must add up to one when you sum over the entire space. In principle, if you knew the density everywhere, you could sample from it. In practice, computing that sum is hopeless. It requires summing over all possible values of thousands or millions of dimensions — a sum so vast it is impossible to compute or even approximate well."},
-      {"t":"para","html":"So the wall is concrete: <strong>you want to sample from data, but computing the probability density requires a normalizing constant you can never calculate.</strong> Most ways of learning a distribution run into this brick wall."}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — learn the slope, not the height","blocks":[
-      {"t":"para","html":"Here is the escape. You do not need to know the probability itself. You only need to know, at every point in space, which direction points toward higher probability — the slope uphill. Imagine a landscape where high probability is a tall mountain and low probability is a valley. You do not need a topographic map of the exact heights everywhere; you only need a compass at each location pointing uphill."},
-      {"t":"para","html":"This direction is called the <em>score</em>, and it is the gradient of the log-probability. Learning the score sidesteps the normalizing constant entirely — the gradient does not depend on it. Once you know the score at every location, you can walk uphill: start from random noise, and at each step move a little in the direction the score points, plus a small random jiggle to explore. This is called <em>Langevin dynamics</em>. Random points, guided by the learned uphill directions, will drift toward where the data lives."},
-      {"t":"para","html":"The mechanism is called <strong>score matching</strong> because training works by matching the model's predicted score to the true score — and because the true score also escapes the normalizing constant (it is the gradient of the log-density, which has the constant in the denominator but that cancels when you take the derivative)."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — samples climb toward the 8-blob target","blocks":[
-      {"t":"para","html":"We trained a score-matching model on an 8-blob target (eight Gaussians arranged on a ring in 2D space) and tested how well it could generate new samples by walking uphill. Starting from pure noise, each sample took a guided random walk guided by the learned score field — a step in the direction the model said was uphill, plus a small random step. After the walk settled, we counted how many samples landed near one of the eight blobs."},
-      {"t":"bars","caption":"Samples landing on the target shape (a 'success' is landing within a small radius of one of the 8 Gaussians). Numbers are the run's output.","rows":[["starting from pure noise, before any learning","0.00","0%"],["after learning the score and walking uphill","0.79","79%"]]},
-      {"t":"insight","html":"<strong>The discovered fact: before training, random noise samples have zero chance of landing on the target — the score field is unlearned. After learning to predict the score and following it by a guided random walk (Langevin dynamics), 79% of the samples settle onto one of the eight blobs.</strong> The learned directions to uphill suffice to carry most random points into the data region."}
-    ]},
-    {"id":"why","h2":"4 · Why the slope is enough to find the data","blocks":[
-      {"t":"para","html":"The key insight is that you do not need to know the exact height of the mountain — only that you are climbing one. At each location, the gradient points uphill, and climbing uphill for long enough gets you to high-probability regions no matter where you start. Because the score is a direction, not a magnitude, it avoids the normalizing constant: the constant cancels in the derivative."},
-      {"t":"para","html":"Why add the random jiggle? If you just followed the gradient deterministically, you would slide into the nearest local mode and stick there — you would generate one type of sample every time. The random walk with noise, called Langevin dynamics, explores the landscape. The randomness lets samples wander out of shallow valleys and discover the tall peaks — multiple distinct modes, not just one."},
-      {"t":"para","html":"Mathematically, this satisfies a balance: noise is added, and the score cancels it out on average in the right direction, leaving samples to drift uphill and explore all the modes where the data clusters."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — the score is unreliable where data is rare","blocks":[
-      {"t":"para","html":"The learned score works well where the training data is dense — near the data blobs. But far from data, in empty regions, the score is unreliable. Random samples start in the low-probability tails where the model has no good examples. The very place where you need the most guidance is where the learned score is least accurate."},
-      {"t":"para","html":"The practical fix is <em>annealing over noise levels</em>: start with a noisier version of the target distribution, train the score for that version, then gradually reduce the noise and retrain. Early, noisier versions have much broader modes — samples start close to data even when noise is high. As noise shrinks, the modes sharpen and move toward the true target, but samples never stray far into empty space. This slowness — you must train multiple noise levels and sampling is many steps — is the main cost of score matching as a generation method."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — score matching and diffusion are two views of the same idea","blocks":[
-      {"t":"para","html":"Score matching is an old idea (going back to 2005), but it did not become famous until it was realized that modern diffusion models are doing exactly this. A diffusion model trains a neural network to predict the noise added to data, and that network's output is proportional to the score — the gradient of the log-probability. Predicting the noise and estimating the score are mathematically equivalent. This connection unified decades of separate research: score matching, denoising, diffusion, and modern generative models are all the same idea seen from different angles."},
-      {"t":"para","html":"The next step after diffusion is <a href=\"flow_matching-deep.html\">flow matching</a>, which learns a velocity field that flows noise straight to data along deterministic paths. Flow matching is faster because it is deterministic — no random jiggle needed — but it builds on the same foundation: learn a direction (in this case, a deterministic flow) and follow it to generate data. Score matching's insight — that you can sidestep the impossible normalizing constant by learning the slope of log-probability — is the bedrock on which all three rest. <a href=\"guidance-deep.html\">Guidance</a>, steering generative models toward specific outcomes, adds a second score direction on top, steering samples toward what you asked for."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why the slope is enough"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["diffusion-deep.html","diffusion"],["flow_matching-deep.html","flow matching"],["guidance-deep.html","guidance"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — you cannot compute the normalizing constant",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "To generate data, you want to sample from the probability distribution that produced your training data. But a probability distribution in high dimensions has a density everywhere — a number that says 'how likely is this point?' — and those numbers must add up to one when you sum over the entire space. In principle, if you knew the density everywhere, you could sample from it. In practice, computing that sum is hopeless. It requires summing over all possible values of thousands or millions of dimensions — a sum so vast it is impossible to compute or even approximate well."
+        },
+        {
+          "t": "para",
+          "html": "So the wall is concrete: <strong>you want to sample from data, but computing the probability density requires a normalizing constant you can never calculate.</strong> Most ways of learning a distribution run into this brick wall."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — learn the slope, not the height",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The escape. You do not need to know the probability itself. You only need to know, at every point in space, which direction points toward higher probability — the slope uphill. Consider a landscape where high probability is a tall mountain and low probability is a valley. You do not need a topographic map of the exact heights everywhere; you only need a compass at each location pointing uphill."
+        },
+        {
+          "t": "para",
+          "html": "This direction is called the <em>score</em>, and it is the gradient of the log-probability. Learning the score sidesteps the normalizing constant entirely — the gradient does not depend on it. Once you know the score at every location, you can walk uphill: start from random noise, and at each step move a little in the direction the score points, plus a small random jiggle to explore. This is called <em>Langevin dynamics</em>. Random points, guided by the learned uphill directions, will drift toward where the data lives."
+        },
+        {
+          "t": "para",
+          "html": "The mechanism is called <strong>score matching</strong> because training works by matching the model's predicted score to the true score — and because the true score also escapes the normalizing constant (it is the gradient of the log-density, which has the constant in the denominator but that cancels when you take the derivative)."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — samples climb toward the 8-blob target",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We trained a score-matching model on an 8-blob target (eight Gaussians arranged on a ring in 2D space) and tested how well it could generate new samples by walking uphill. Starting from pure noise, each sample took a guided random walk guided by the learned score field — a step in the direction the model said was uphill, plus a small random step. After the walk settled, we counted how many samples landed near one of the eight blobs."
+        },
+        {
+          "t": "bars",
+          "caption": "Samples landing on the target shape (a 'success' is landing within a small radius of one of the 8 Gaussians). Numbers are the run's output.",
+          "rows": [
+            [
+              "starting from pure noise, before any learning",
+              "0.00",
+              "0%"
+            ],
+            [
+              "after learning the score and walking uphill",
+              "0.79",
+              "79%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: before training, random noise samples have zero chance of landing on the target — the score field is unlearned. After learning to predict the score and following it by a guided random walk (Langevin dynamics), 79% of the samples settle onto one of the eight blobs.</strong> The learned directions to uphill suffice to carry most random points into the data region."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why the slope is enough to find the data",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The key insight is that you do not need to know the exact height of the mountain — only that you are climbing one. At each location, the gradient points uphill, and climbing uphill for long enough gets you to high-probability regions no matter where you start. Because the score is a direction, not a magnitude, it avoids the normalizing constant: the constant cancels in the derivative."
+        },
+        {
+          "t": "para",
+          "html": "Why add the random jiggle? If you just followed the gradient deterministically, you would slide into the nearest local mode and stick there — you would generate one type of sample every time. The random walk with noise, called Langevin dynamics, explores the landscape. The randomness lets samples wander out of shallow valleys and discover the tall peaks — multiple distinct modes, not just one."
+        },
+        {
+          "t": "para",
+          "html": "Mathematically, this satisfies a balance: noise is added, and the score cancels it out on average in the right direction, leaving samples to drift uphill and explore all the modes where the data clusters."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — the score is unreliable where data is rare",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The learned score works well where the training data is dense — near the data blobs. But far from data, in empty regions, the score is unreliable. Random samples start in the low-probability tails where the model has no good examples. The very place where you need the most guidance is where the learned score is least accurate."
+        },
+        {
+          "t": "para",
+          "html": "The practical fix is <em>annealing over noise levels</em>: start with a noisier version of the target distribution, train the score for that version, then gradually reduce the noise and retrain. Early, noisier versions have much broader modes — samples start close to data even when noise is high. As noise shrinks, the modes sharpen and move toward the true target, but samples never stray far into empty space. This slowness — you must train multiple noise levels and sampling is many steps — is the main cost of score matching as a generation method."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — score matching and diffusion are two views of the same idea",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Score matching is an old idea (going back to 2005), but it did not become famous until it was realized that modern diffusion models are doing exactly this. A diffusion model trains a neural network to predict the noise added to data, and that network's output is proportional to the score — the gradient of the log-probability. Predicting the noise and estimating the score are mathematically equivalent. This connection unified decades of separate research: score matching, denoising, diffusion, and modern generative models are all the same idea seen from different angles."
+        },
+        {
+          "t": "para",
+          "html": "The next step after diffusion is <a href=\"flow_matching-deep.html\">flow matching</a>, which learns a velocity field that flows noise straight to data along deterministic paths. Flow matching is faster because it is deterministic — no random jiggle needed — but it builds on the same foundation: learn a direction (in this case, a deterministic flow) and follow it to generate data. Score matching's insight — that you can sidestep the impossible normalizing constant by learning the slope of log-probability — is the bedrock on which all three rest. <a href=\"guidance-deep.html\">Guidance</a>, steering generative models toward specific outcomes, adds a second score direction on top, steering samples toward what you asked for."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Learn the gradient, follow it to generate data",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Score matching underpins modern image generation systems including those used for creative tools and image editing. The diffusion models used in text-to-image systems train using score matching principles to learn how to generate images from noise. Medical imaging uses score-based methods to generate synthetic data for training diagnostic systems."
+        },
+        {
+          "t": "para",
+          "html": "A neural network is trained to predict the gradient of the data distribution—which direction, at any point in the space, points toward higher probability. Once trained, generation works by Langevin dynamics: start from random noise, at each step move slightly in the direction the network predicts is toward data, plus a small random perturbation. The network guides random samples uphill toward regions where real data clusters, avoiding the need to compute a normalizing constant that would be computationally impossible."
+        },
+        {
+          "t": "insight",
+          "html": "The learned score is unreliable in low-probability regions far from training data, which is addressed in practice by training on progressively less-noisy versions of the data, allowing samples to begin in regions where the score is more accurate."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "diffusion-deep.html",
+      "diffusion"
+    ],
+    [
+      "flow_matching-deep.html",
+      "flow matching"
+    ],
+    [
+      "guidance-deep.html",
+      "guidance"
+    ]
+  ],
   "recipe": {
     "summary": "Train a neural network to predict the score (gradient of log-probability) on the 8-blob target using score-matching loss. Sample by Langevin dynamics: initialize random noise, then repeatedly step in the direction the model predicts is uphill plus a random step, for many iterations. Count how many final samples land within a small radius of one of the 8 Gaussians (success = within-blob). Report the success percentage.",
     "eq": "score(x) = gradient_x log p(x)\nLangevin sampler: x_{t+1} = x_t + (1/2) * score(x_t) * dt + sqrt(dt) * random_noise\nsuccess_rate = fraction of samples landing within-blob after walk\nmeasured success rate = 0.79 (79%)",

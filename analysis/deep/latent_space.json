@@ -4,31 +4,171 @@
   "kick": "large language models · first principles · how meaning lives inside the model",
   "title": "Latent space — context reshapes what every word means",
   "lede": "When a model reads the word 'bank', it produces a vector of numbers—one number for each dimension—that represents what it thinks the word means. But here is the catch: that vector is not fixed. In the sentence 'I sat by the river bank', the vector is one thing; in 'I went to the bank to cash a check', it is something else entirely. The model does not carry one frozen meaning per word. Instead, as each word flows through the layers of the model, the meaning is reshaped by context—by the words around it, by what has been read so far. This reshaping happens in the latent space, a high-dimensional space inside the model where meaning is not fixed but crafted, where context is worked in, and where later layers read to make their predictions. Here is why the model does not stop at the input, what context does to the word 'bank' when we measure it, where this idea reappears in generation and control, and the one big challenge in reading meaning out of it.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why context is baked into the representation"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — a fixed vector cannot carry context-dependent meaning","blocks":[
-      {"t":"para","html":"Every word could have many meanings. The word 'bank' is a slope of earth beside a river; it is also a financial institution. A model needs to handle both. If the model just looked up a single, fixed vector for the word 'bank'—the same every time—it would lose the context. The sentence would tell us which meaning is intended, but the word's starting vector would be identical in both cases. Later layers would have to figure out what the context says and then somehow correct the fixed vector, adding extra work and throwing away information that was already there in the sentence."},
-      {"t":"para","html":"So the need is real: <strong>a word's meaning must be tied to the words around it, built into the very representation the model uses, not patched in later.</strong>"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — let context reshape the representation as it flows through layers","blocks":[
-      {"t":"para","html":"The model does not fix meaning at the start. Instead, the word 'bank' enters as a learned starting vector—the same every time—but then it is mixed with all the other words through attention and neural network layers. As each layer processes the word, attention pulls in context from neighbouring words. If 'river' is nearby, that word's vector gets blended in. If 'money' or 'account' is nearby, those blend in instead. After many layers, the vector for 'bank' is no longer the starting vector; it is something new, shaped by the context that surrounded it. This transformed vector is what later layers read from—and that is why they can tell the two meanings apart. The <strong>latent space</strong> is this internal representation: the vector a word becomes after context has reshaped it, the point in a high-dimensional space where meaning is worked out before the final prediction."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — context pulls the two meanings of 'bank' apart","blocks":[
-      {"t":"para","html":"We ran the actual GPT-2 language model (124 million learned numbers) on two sentences: 'I sat by the river bank' and 'I went to the bank to deposit money.' We tracked the vector for the word 'bank' as it passed through each layer. At the very start—at the input—both 'bank' tokens have the same vector because they are the same word. We measured how close the two vectors are using cosine similarity, a number from 0 to 1 where 1 means identical and 0 means completely opposite. At layer 0 (before any context mixing), the two versions of 'bank' have a cosine of 0.98—nearly identical, as expected. But then, as the word flows through the model's 12 layers and context gets mixed in via attention, the vectors diverge."},
-      {"t":"table","headers":["layer","cosine similarity of two 'bank' vectors","interpretation"],"rows":[["input (layer 0)","0.98","nearly identical: same token, no context yet"],["after 12 layers","0.51","pulled apart: context has reshaped them into different meanings"]],"caption":"Cosine similarity of the word 'bank' in two contexts (river vs. financial) as it flows through the real GPT-2. Numbers are the run's output."},
-      {"t":"insight","html":"<strong>The discovered fact: at the input, 'bank' is 0.98 identical in both contexts. After 12 layers of context mixing through attention, the cosine drops to 0.51—the two meanings have been pulled apart into different regions of the latent space.</strong> The model did not memorize two different vectors for 'bank'; it started with one and let context reshape it as it flowed through the layers. By the time the final prediction layer reads from it, the two vectors are meaningfully different, carrying different meaning."}
-    ]},
-    {"id":"why","h2":"4 · Why context-dependent representation is powerful","blocks":[
-      {"t":"para","html":"The power is that all the information about which meaning is right—the surrounding words, the sentence structure—is already there in the sentence. Rather than treating the word's vector as fixed and asking later layers to infer meaning from the context, embedding context into the vector itself gives every downstream layer the right information, right there. The attention mechanism does this: when 'bank' is processed, attention looks back at all the earlier words and their current vectors. If the word 'river' is present, attention pulls in its vector. If the words 'money' and 'account' are present, it pulls those in. These pulls are weighted by how relevant each word is to 'bank' at that moment, in that layer. So the reshaping is not random—it is learned, focused, and targeted to the actual meaning the context demands. By the time the word reaches the final prediction, its vector is not just a word token; it is a word-in-context, ready for the final output layers to read and use."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — latent spaces are hard to read and control","blocks":[
-      {"t":"para","html":"The catch is opacity. A latent space with hundreds of dimensions is not something a human can understand by looking at it. The vector for 'bank' after 12 layers is a list of, say, 768 numbers. Which numbers encode which aspects of meaning? Why did those particular dimensions move? If we wanted to steer the model—to make it interpret 'bank' one way or another—how would we do it? We can measure cosine similarity and see that the two meanings have been pulled apart, but we cannot easily read what the model actually learned. Interpreting latent spaces is an open research problem. The space is also tangled: many different concepts influence every dimension, so changing one number might affect many aspects of meaning at once, or might do nothing visible. This is why understanding and steering language models remains hard even though we can run them and see their outputs."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — latent spaces are the hub of generation, control, and learning","blocks":[
-      {"t":"para","html":"This same latent space idea appears across nearly all of modern AI. In <a href=\"diffusion-deep.html\">diffusion models</a> for image generation, the latent space is where noise is gradually converted to a picture; the model learns to steer through this space step by step. In <a href=\"embeddings-deep.html\">embeddings</a>, meaning is literally geometry—positions in a latent space. When you do <a href=\"fine_tuning-deep.html\">fine-tuning</a>, you are reshaping how the latent space responds to different inputs. In <a href=\"rl_for_llms-deep.html\">reinforcement learning for language models</a>, you are teaching the model to navigate the latent space toward outputs that get reward. In <a href=\"attention-deep.html\">attention</a>, the query, key, and value are all projections into learned latent spaces. If you want to build a tool to steer a language model—to make it more helpful or safer—you are trying to shape its latent space. Understanding and manipulating latent representations is where interpretability, model editing, and controlled generation all meet. The meaning does not live in the tokens on the page or in the final words the model outputs. It lives in the middle, in the latent space, where context and computation happen."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why context is baked into the representation"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["embeddings-deep.html","embeddings"],["attention-deep.html","attention"],["transformer_block-deep.html","transformer block"],["diffusion-deep.html","diffusion"],["fine_tuning-deep.html","fine-tuning"],["rl_for_llms-deep.html","reinforcement learning for language models"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a fixed vector cannot carry context-dependent meaning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every word could have many meanings. The word 'bank' is a slope of earth beside a river; it is also a financial institution. A model needs to handle both. If the model just looked up a single, fixed vector for the word 'bank'—the same every time—it would lose the context. The sentence would tell us which meaning is intended, but the word's starting vector would be identical in both cases. Later layers would have to figure out what the context says and then somehow correct the fixed vector, adding extra work and throwing away information that was already there in the sentence."
+        },
+        {
+          "t": "para",
+          "html": "So the need is real: <strong>a word's meaning must be tied to the words around it, built into the very representation the model uses, not patched in later.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — let context reshape the representation as it flows through layers",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The model does not fix meaning at the start. Instead, the word 'bank' enters as a learned starting vector—the same every time—but then it is mixed with all the other words through attention and neural network layers. As each layer processes the word, attention pulls in context from neighbouring words. If 'river' is nearby, that word's vector gets blended in. If 'money' or 'account' is nearby, those blend in instead. After many layers, the vector for 'bank' is no longer the starting vector; it is something new, shaped by the context that surrounded it. This transformed vector is what later layers read from—and that is why they can tell the two meanings apart. The <strong>latent space</strong> is this internal representation: the vector a word becomes after context has reshaped it, the point in a high-dimensional space where meaning is worked out before the final prediction."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — context pulls the two meanings of 'bank' apart",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran the actual GPT-2 language model (124 million learned numbers) on two sentences: 'I sat by the river bank' and 'I went to the bank to deposit money.' We tracked the vector for the word 'bank' as it passed through each layer. At the very start—at the input—both 'bank' tokens have the same vector because they are the same word. We measured how close the two vectors are using cosine similarity, a number from 0 to 1 where 1 means identical and 0 means completely opposite. At layer 0 (before any context mixing), the two versions of 'bank' have a cosine of 0.98—nearly identical, as expected. But then, as the word flows through the model's 12 layers and context gets mixed in via attention, the vectors diverge."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "layer",
+            "cosine similarity of two 'bank' vectors",
+            "interpretation"
+          ],
+          "rows": [
+            [
+              "input (layer 0)",
+              "0.98",
+              "nearly identical: same token, no context yet"
+            ],
+            [
+              "after 12 layers",
+              "0.51",
+              "pulled apart: context has reshaped them into different meanings"
+            ]
+          ],
+          "caption": "Cosine similarity of the word 'bank' in two contexts (river vs. financial) as it flows through the real GPT-2. Numbers are the run's output."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: at the input, 'bank' is 0.98 identical in both contexts. After 12 layers of context mixing through attention, the cosine drops to 0.51—the two meanings have been pulled apart into different regions of the latent space.</strong> The model did not memorize two different vectors for 'bank'; it started with one and let context reshape it as it flowed through the layers. By the time the final prediction layer reads from it, the two vectors are meaningfully different, carrying different meaning."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why context-dependent representation is powerful",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The power is that all the information about which meaning is right—the surrounding words, the sentence structure—is already there in the sentence. Rather than treating the word's vector as fixed and asking later layers to infer meaning from the context, embedding context into the vector itself gives every downstream layer the right information, right there. The attention mechanism does this: when 'bank' is processed, attention looks back at all the earlier words and their current vectors. If the word 'river' is present, attention pulls in its vector. If the words 'money' and 'account' are present, it pulls those in. These pulls are weighted by how relevant each word is to 'bank' at that moment, in that layer. So the reshaping is not random—it is learned, focused, and targeted to the actual meaning the context demands. By the time the word reaches the final prediction, its vector is not just a word token; it is a word-in-context, ready for the final output layers to read and use."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — latent spaces are hard to read and control",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The catch is opacity. A latent space with hundreds of dimensions is not something a human can understand by looking at it. The vector for 'bank' after 12 layers is a list of, say, 768 numbers. Which numbers encode which aspects of meaning? Why did those particular dimensions move? If we wanted to steer the model—to make it interpret 'bank' one way or another—how would we do it? We can measure cosine similarity and see that the two meanings have been pulled apart, but we cannot easily read what the model actually learned. Interpreting latent spaces is an open research problem. The space is also tangled: many different concepts influence every dimension, so changing one number might affect many aspects of meaning at once, or might do nothing visible. This is why understanding and steering language models remains hard even though we can run them and see their outputs."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — latent spaces are the hub of generation, control, and learning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This same latent space idea appears across nearly all of modern AI. In <a href=\"diffusion-deep.html\">diffusion models</a> for image generation, the latent space is where noise is gradually converted to a picture; the model learns to steer through this space step by step. In <a href=\"embeddings-deep.html\">embeddings</a>, meaning is literally geometry—positions in a latent space. When you do <a href=\"fine_tuning-deep.html\">fine-tuning</a>, you are reshaping how the latent space responds to different inputs. In <a href=\"rl_for_llms-deep.html\">reinforcement learning for language models</a>, you are teaching the model to navigate the latent space toward outputs that get reward. In <a href=\"attention-deep.html\">attention</a>, the query, key, and value are all projections into learned latent spaces. If you want to build a tool to steer a language model—to make it more helpful or safer—you are trying to shape its latent space. Understanding and manipulating latent representations is where interpretability, model editing, and controlled generation all meet. The meaning does not live in the tokens on the page or in the final words the model outputs. It lives in the middle, in the latent space, where context and computation happen."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — meaning lives inside the model",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In language models, words shift meaning based on context—the word 'bank' carries a different representation in 'river bank' than in 'savings bank.' Image generators work in a compressed latent space where similar concepts cluster together, allowing smooth transitions between styles and subjects. Recommendation systems map users and items into a shared latent space where proximity means compatibility. Variational autoencoders learn a latent space where each axis captures a disentangled feature (texture, color, pose) that can be interpolated."
+        },
+        {
+          "t": "para",
+          "html": "As input flows through the model's layers, early representations are generic (a token is just a token). Attention and neural network layers then mix in context, pulling in meanings from nearby words or related information. By mid-network, the representation is reshaped by everything surrounding it. Later layers read these context-dependent representations, not the original input, so predictions are grounded in what the model has learned the context means."
+        },
+        {
+          "t": "insight",
+          "html": "The latent space is where the model's learned understanding lives; manipulating it is how you steer the model's behavior."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "embeddings-deep.html",
+      "embeddings"
+    ],
+    [
+      "attention-deep.html",
+      "attention"
+    ],
+    [
+      "transformer_block-deep.html",
+      "transformer block"
+    ],
+    [
+      "diffusion-deep.html",
+      "diffusion"
+    ],
+    [
+      "fine_tuning-deep.html",
+      "fine-tuning"
+    ],
+    [
+      "rl_for_llms-deep.html",
+      "reinforcement learning for language models"
+    ]
+  ],
   "recipe": {
     "summary": "Run the real pretrained GPT-2 (124M) on two sentences: 'I sat by the river bank' and 'I went to the bank to deposit money.' Extract the vector for the word 'bank' (same token ID in both) as it passes through each layer (layer 0 through layer 12). Measure cosine similarity between the two 'bank' vectors at each layer. Compare input (layer 0) to final (layer 12).",
     "eq": "cosine(v1, v2) = (v1 · v2) / (||v1|| * ||v2||)   # ranges from 0 to 1; 1 = identical\nmeasured cosine at layer 0   = 0.98   (same token, no context)\nmeasured cosine at layer 12  = 0.51   (context-reshaped, pulled apart)\nlatent_vector = output of layer i for the word 'bank', shaped by context via attention",

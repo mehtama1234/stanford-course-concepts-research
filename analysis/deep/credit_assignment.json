@@ -4,33 +4,174 @@
   "kick": "reinforcement learning · long-horizon tasks · the hard part of learning from delayed rewards",
   "title": "Credit Assignment — figuring out which past moves deserve the credit",
   "lede": "Imagine you win a game after 40 moves. A reward arrives: you won. But which of those 40 moves actually mattered? The reward came at the end, so it does not tell you which decisions were good and which were lucky or irrelevant. You need to send the credit backward through time — but how much credit does the first move deserve, and how much the second, and how does that credit flow back through a long chain? Credit assignment is the problem of figuring out, from a delayed reward, which earlier actions earned it. Here is the core idea, a real measurement showing a faster way to spread credit through time, why it works, where it breaks, and why this same problem reappears in nearly every learning task, from games to language models.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why spreading credit is faster"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — a reward at the end says nothing about the steps before it","blocks":[
-      {"t":"para","html":"In most learning tasks, you take many steps before you find out how well you did. In a maze, you wander around, make turns, go up and down corridors, and only at the end do you find the exit and get a reward. In a game, you make a move, your opponent responds, you respond again—dozens of turns pass—and then the game ends and you score. The problem is simple: <strong>a reward that arrives after many steps only says 'the end result was good', but it does not say which of your earlier moves were wise and which were wasted or harmful.</strong>"},
-      {"t":"para","html":"One possibility is to give the same credit to every step: if you won, every move must have helped equally. But that is clearly wrong — some moves were genius, others were desperate luck or even mistakes that almost ruined you. The reward is real, but the path to it had both winners and losers. So how does the model know which steps to strengthen?"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — give each step a fading memory of what came before","blocks":[
-      {"t":"para","html":"Here is the key insight: you do not have to wait for the end. Instead, as you take each step, write it down in a fading memory — an eligibility trace. Each step you take gets marked as 'recently visited'; as you take more steps, those old marks fade. Then, when a reward finally arrives, instead of giving all the credit to the last step alone, you spread it backward to all the steps in your memory, weighted by how recently you visited them."},
-      {"t":"para","html":"Think of it like a trail you leave behind you. Each time you enter a room, you drop a marker. As you wander further, those markers fade. When you finally reach the goal and get a reward, you send the credit back along your trail — stronger credit to the most recent rooms, weaker to the distant ones. Every room gets some credit, but the fading weight means the steps closest to the reward get more learning pressure than the ones far back. The result is <strong>eligibility traces: a simple way to let each step in a long chain share in the credit without waiting to see the end.</strong>"}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — credit propagates to the start 3 times faster with traces","blocks":[
-      {"t":"para","html":"We built a small 6-by-6 gridworld maze with a goal at one corner and a starting point at the other. The optimal path takes 10 steps. We trained an agent two ways. In the first, after each episode we only updated the last step (one-step credit); in the second, we used eligibility traces (spread credit along the whole path). The question: how many episodes does it take for the reward signal to propagate backward and reach the very first step?"},
-      {"t":"bars","caption":"Episodes until the far-off reward signal reaches the start state (median of 9 runs). Numbers are the run's output.","rows":[["one-step credit (traces off)",0.75,"6 episodes"],["eligibility traces (spread credit along path)",0.25,"2 episodes"]]},
-      {"t":"insight","html":"<strong>The discovered fact: with one-step credit it takes 6 episodes for the reward at the goal to influence the very first move; with eligibility traces, it takes only 2 episodes.</strong> The reward reaches the start 3 times as fast. Why? Because one-step credit moves the reward's influence backward one step per episode — the reward lands at step 10, then step 9, then 8, and so on, reaching step 1 after 9 episodes of waiting. With traces, the reward immediately sends credit to all 10 steps at once (weighted by recency), so learning at the start happens in episode 2."}
-    ]},
-    {"id":"why","h2":"4 · Why spreading credit is faster","blocks":[
-      {"t":"para","html":"The reason is direct: <strong>eligibility traces collapse time.</strong> A reward at the end of a 10-step path, with one-step updates, has to bounce backward one step per iteration—like a signal climbing back up a long chain. With traces, you mark every step as it happens, so when the reward lands, you already have a record of the entire path. You can send credit to every step right away, weighted by recency. The far-off steps learn sooner because you did not wait for the reward to climb back to them; you had already noted down that they happened."},
-      {"t":"para","html":"This matters deeply for learning speed. In a game or maze, most of the steps are neutral—they do not directly cause the win or loss. But some critical steps, often early in the sequence, set up the winning path. If learning is slow to reach those early steps, it will take many episodes to discover them and many more to strengthen them. Eligibility traces pull the learning signal backward to all steps immediately, so critical early decisions get shaped as soon as the reward lands."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — traces add a memory and a tuning knob","blocks":[
-      {"t":"para","html":"The catch is that eligibility traces add complexity. You need to maintain a trace for each state or state-action pair—a list of recent visits with fading weights. That uses memory. And you have to tune the decay rate, often written as a number between 0 and 1 that controls how fast the memory fades. Set it too high, and credit spreads to steps too far in the past, so you credit irrelevant actions and confusion rises. Set it too low, and credit vanishes too quickly, so only the last few steps learn and you lose the benefit of spreading. It is a dial between two bad outcomes: either blame innocent moves or fail to learn from important distant ones."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — credit assignment is THE core problem of learning over time","blocks":[
-      {"t":"para","html":"Credit assignment looks like a small detail, but it is the heart of nearly every learning problem involving sequences or delay. It is why sparse-reward tasks (where you only get feedback at the end) are so hard. It is why discounting—giving less credit to future rewards than immediate ones—exists in reinforcement learning: it is a way to fight credit assignment by only assigning credit a short distance back. It reappears in <a href=\"actor_critic-deep.html\">actor-critic methods</a>, where a running value estimate serves as a baseline to isolate the surprise and sharpen credit. Most crucially, it reappears in reasoning. A language model generating a long chain of thought to solve a math problem faces the exact same problem: the final grade (right or wrong answer) comes at the end, but which token in the middle of the reasoning actually mattered? The same intuition—keep a trace, spread credit backward—underpins methods like <a href=\"reasoning_traces-deep.html\">reasoning traces</a> and <a href=\"rl_for_llms-deep.html\">RL for language models</a>, where you want to teach a model which steps of its reasoning were wise and which were wasted. Credit assignment is not a side problem; it is the central difficulty of learning from experience over long horizons."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why spreading credit is faster"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["q_learning-deep.html","Q-learning"],["policy_gradient-deep.html","policy gradient"],["actor_critic-deep.html","actor-critic methods"],["reward-deep.html","reward shaping"],["reasoning_traces-deep.html","reasoning traces"],["rl_for_llms-deep.html","RL for language models"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — a reward at the end says nothing about the steps before it",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "In most learning tasks, you take many steps before you find out how well you did. In a maze, you wander around, make turns, go up and down corridors, and only at the end do you find the exit and get a reward. In a game, you make a move, your opponent responds, you respond again—dozens of turns pass—and then the game ends and you score. The problem is simple: <strong>a reward that arrives after many steps only says 'the end result was good', but it does not say which of your earlier moves were wise and which were wasted or harmful.</strong>"
+        },
+        {
+          "t": "para",
+          "html": "One possibility is to give the same credit to every step: if you won, every move must have helped equally. But that is clearly wrong — some moves were genius, others were desperate luck or even mistakes that almost ruined you. The reward is real, but the path to it had both winners and losers. So how does the model know which steps to strengthen?"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — give each step a fading memory of what came before",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The key insight: you do not have to wait for the end. Instead, as you take each step, write it down in a fading memory — an eligibility trace. Each step you take gets marked as 'recently visited'; as you take more steps, those old marks fade. Then, when a reward finally arrives, instead of giving all the credit to the last step alone, you spread it backward to all the steps in your memory, weighted by how recently you visited them."
+        },
+        {
+          "t": "para",
+          "html": "Concretely, a trail you leave behind you. Each time you enter a room, you drop a marker. As you wander further, those markers fade. When you finally reach the goal and get a reward, you send the credit back along your trail — stronger credit to the most recent rooms, weaker to the distant ones. Every room gets some credit, but the fading weight means the steps closest to the reward get more learning pressure than the ones far back. The result is <strong>eligibility traces: a simple way to let each step in a long chain share in the credit without waiting to see the end.</strong>"
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — credit propagates to the start 3 times faster with traces",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We built a small 6-by-6 gridworld maze with a goal at one corner and a starting point at the other. The optimal path takes 10 steps. We trained an agent two ways. In the first, after each episode we only updated the last step (one-step credit); in the second, we used eligibility traces (spread credit along the whole path). The question: how many episodes does it take for the reward signal to propagate backward and reach the very first step?"
+        },
+        {
+          "t": "bars",
+          "caption": "Episodes until the far-off reward signal reaches the start state (median of 9 runs). Numbers are the run's output.",
+          "rows": [
+            [
+              "one-step credit (traces off)",
+              0.75,
+              "6 episodes"
+            ],
+            [
+              "eligibility traces (spread credit along path)",
+              0.25,
+              "2 episodes"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: with one-step credit it takes 6 episodes for the reward at the goal to influence the very first move; with eligibility traces, it takes only 2 episodes.</strong> The reward reaches the start 3 times as fast. Why? Because one-step credit moves the reward's influence backward one step per episode — the reward lands at step 10, then step 9, then 8, and so on, reaching step 1 after 9 episodes of waiting. With traces, the reward immediately sends credit to all 10 steps at once (weighted by recency), so learning at the start happens in episode 2."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why spreading credit is faster",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason is direct: <strong>eligibility traces collapse time.</strong> A reward at the end of a 10-step path, with one-step updates, has to bounce backward one step per iteration—like a signal climbing back up a long chain. With traces, you mark every step as it happens, so when the reward lands, you already have a record of the entire path. You can send credit to every step right away, weighted by recency. The far-off steps learn sooner because you did not wait for the reward to climb back to them; you had already noted down that they happened."
+        },
+        {
+          "t": "para",
+          "html": "This matters deeply for learning speed. In a game or maze, most of the steps are neutral—they do not directly cause the win or loss. But some critical steps, often early in the sequence, set up the winning path. If learning is slow to reach those early steps, it will take many episodes to discover them and many more to strengthen them. Eligibility traces pull the learning signal backward to all steps immediately, so critical early decisions get shaped as soon as the reward lands."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — traces add a memory and a tuning knob",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The catch is that eligibility traces add complexity. You need to maintain a trace for each state or state-action pair—a list of recent visits with fading weights. That uses memory. And you have to tune the decay rate, often written as a number between 0 and 1 that controls how fast the memory fades. Set it too high, and credit spreads to steps too far in the past, so you credit irrelevant actions and confusion rises. Set it too low, and credit vanishes too quickly, so only the last few steps learn and you lose the benefit of spreading. It is a dial between two bad outcomes: either blame innocent moves or fail to learn from important distant ones."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — credit assignment is THE core problem of learning over time",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Credit assignment looks like a small detail, but it is the heart of nearly every learning problem involving sequences or delay. It is why sparse-reward tasks (where you only get feedback at the end) are so hard. It is why discounting—giving less credit to future rewards than immediate ones—exists in reinforcement learning: it is a way to fight credit assignment by only assigning credit a short distance back. It reappears in <a href=\"actor_critic-deep.html\">actor-critic methods</a>, where a running value estimate serves as a baseline to isolate the surprise and sharpen credit. Most crucially, it reappears in reasoning. A language model generating a long chain of thought to solve a math problem faces the exact same problem: the final grade (right or wrong answer) comes at the end, but which token in the middle of the reasoning actually mattered? The same intuition—keep a trace, spread credit backward—underpins methods like <a href=\"reasoning_traces-deep.html\">reasoning traces</a> and <a href=\"rl_for_llms-deep.html\">RL for language models</a>, where you want to teach a model which steps of its reasoning were wise and which were wasted. Credit assignment is not a side problem; it is the central difficulty of learning from experience over long horizons."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — figuring out which past decisions led to success when the reward comes late",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Chess engines learn which opening moves were wise by playing to the end of the game, getting a win/loss signal, then tracing credit backward through all the moves. Roboticists train robots to navigate mazes or reach goals by running the robot, getting a final reward at the goal, then working backward to figure out which early steps mattered. Language models trained on step-by-step reasoning need to learn which reasoning steps were helpful in reaching the right answer, even though the grade comes only after all steps are complete."
+        },
+        {
+          "t": "para",
+          "html": "One way is to mark each decision with a fading trace as you make it. When the final reward arrives, you send credit backward along the trace, giving more credit to recent decisions (which are fresher) and less to distant ones. This is faster than waiting for the reward signal to bounce backward one step per episode. The trace is a running record of your journey; the reward lands and credit is immediately available to all visited states, weighted by how fresh each visit was."
+        },
+        {
+          "t": "insight",
+          "html": "Spreading credit along the entire path backward at once, rather than bouncing it one step per iteration, solves the biggest bottleneck in learning from delayed rewards: how do you know which early decisions to strengthen?"
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "q_learning-deep.html",
+      "Q-learning"
+    ],
+    [
+      "policy_gradient-deep.html",
+      "policy gradient"
+    ],
+    [
+      "actor_critic-deep.html",
+      "actor-critic methods"
+    ],
+    [
+      "reward-deep.html",
+      "reward shaping"
+    ],
+    [
+      "reasoning_traces-deep.html",
+      "reasoning traces"
+    ],
+    [
+      "rl_for_llms-deep.html",
+      "RL for language models"
+    ]
+  ],
   "recipe": {
     "summary": "Train an agent on a 6x6 gridworld maze (goal at opposite corner, optimal path 10 steps, -1 penalty per step, +10 reward at goal). Run two training regimes: (1) one-step credit (update only the visited state or state-action pair when reward arrives), and (2) eligibility traces (mark each step with a fading weight as visited; when reward arrives, credit all recent steps proportional to their trace). Measure episodes until the first step receives a nonzero value update. Median across 9 independent runs.",
     "eq": "eligibility_trace(s) = trace(s) * lambda + 1  (when s visited)\nvalue_update = alpha * (reward + discounted_next_value - value) * trace(s)\ntrace(s) decays toward zero over steps  (typical lambda = 0.9 to 0.99)",

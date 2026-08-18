@@ -4,33 +4,189 @@
   "kick": "large language models · first principles · how a model learns to read broken words",
   "title": "Tokenization — the unglamorous first step that shapes everything",
   "lede": "Before a language model sees your words, they are chopped into pieces. Not by meaning — by frequency. The word 'cat' might be one piece because it appears often; 'unbelievable' is also one piece; but 'antidisestablishmentarianism' gets split into five. A model works on a fixed list of symbols — it cannot add a new slot for every word that has ever existed or might be invented — so instead it builds a vocabulary of frequent sub-word pieces and learns to spell any word, even a brand-new one, as a sequence of those pieces. This is tokenization. Here is the problem it solves, the reframe that enables it, numbers from running the real GPT-2 showing how it breaks words, why this strategy works, the one quiet cost it hides, and why this unglamorous first step shapes which tasks an AI will be good or bad at.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why pieces beat whole words"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — language never stops inventing new words","blocks":[
-      {"t":"para","html":"A language model must choose its answer from a list of symbols. A list is finite. English, at any given moment, has maybe 170,000 'real' words in active use — but that is just what humans have written down so far. People invent new words constantly: 'bingeable', 'cryptocurrency', 'ChatGPT'. Slang appears overnight. Text includes names you have never seen before, typos, abbreviations, languages mixing together, made-up words in fiction. You cannot build a slot in your model's vocabulary for every word that might ever appear in human text — the list would be infinite, or close to it. So the need is: <strong>how can a model work on a fixed, finite list of symbols and still handle any word, including ones it has never encountered?</strong>"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — words are built from frequent pieces","blocks":[
-      {"t":"para","html":"Here is the move. Instead of making the vocabulary list be whole words, make it be frequent <em>sub-word pieces</em>. Count which sequences of characters appear most often in a large pile of text — the letters 'th', the syllable 'ing', common words like 'the' and 'and'. Keep the most frequent pieces and discard the rest. Now every word, even a rare or brand-new one, can be spelled as a sequence of known pieces. The common words land in one piece (efficient, fast). Rare words are a short sequence (a few pieces). No word is truly unknown — you can always spell it, piece by piece. The model learns to work with this sequence of pieces, called <em>tokens</em>, instead of single characters or whole words. That is <strong>tokenization</strong>: chopping text into this reusable vocabulary of pieces."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — the vocabulary pieces language together","blocks":[
-      {"t":"para","html":"We ran the actual GPT-2, a widely-used language model with 124 million learned numbers, and asked: how many pieces does the real vocabulary contain? And when it sees rare words, how does it break them up? We looked at six example words and counted how many pieces GPT-2 splits each into."},
-      {"t":"table","headers":["word","token count","breakdown (if more than 1)"],"rows":[["cat","1","—"],["running","1","—"],["unbelievable","1","—"],["tokenization","2","—"],["antidisestablishmentarianism","5","ant / idis / establishment / arian / ism"]],"caption":"Real token counts from GPT-2's vocabulary of 50,257 pieces. Common words stay whole; rare words are split into a sequence."},
-      {"t":"insight","html":"<strong>The discovered fact: GPT-2 has a vocabulary of 50,257 reusable pieces.</strong> Common words like 'cat', 'running', and 'unbelievable' each fit in a single piece — they are frequent enough that the tokenizer learned them whole. But 'antidisestablishmentarianism', a rare word, breaks into five pieces: 'ant' / 'idis' / 'establishment' / 'arian' / 'ism'. The word 'tokenization' itself, less common than 'cat' but more common than the long word, lands in two pieces. Every word, no matter how obscure, is spelled out of known pieces."}
-    ]},
-    {"id":"why","h2":"4 · Why pieces beat whole words","blocks":[
-      {"t":"para","html":"This strategy has three strengths. First, a fixed 50,257-piece vocabulary can represent any word that has ever been written or will be written — even a typo, a name, a word in another language — because you can always spell it piece by piece. A whole-word vocabulary cannot; sooner or later you hit a word not on the list. Second, common words stay efficient at one piece, so the model does not waste its context on breaking up 'the' or 'cat' into fragments. Third, the learner gets to work with a manageable list — 50,257 slots instead of infinite, or instead of one slot per character (which would make every word dozens of steps)."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — the split is by frequency, not meaning","blocks":[
-      {"t":"para","html":"The catch is that the tokenizer is not smart. It chops by how often pieces appear in the training text, not by what those pieces mean. A word like 'strawberry' might split in a way that fragments the meaning — maybe the first letter goes in one piece and the rest in others. The model then has to learn that these pieces spell a real, unified concept, which costs extra work. For rare scripts and languages, tokenization is wasteful because the frequent pieces come from English text, and the rare script might need many more pieces for the same thought. And the split can actively mislead the model on tasks like counting the letter 'r' in 'strawberry' or doing digit-by-digit arithmetic — the model must learn to work backward from the tokenization to the original characters, a layer of indirection that slows it down."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — this choice silently shapes everything","blocks":[
-      {"t":"para","html":"Tokenization seems like a dull engineering choice — just a preprocessing step before the interesting math begins. But it is not. The token boundaries you draw alter how the model learns. The number of tokens you have left determines how far back you can look (your context length). The split of words into pieces is a constant source of subtle errors; the 'how many r's in strawberry' mistake that made headlines is partly a tokenization failure, not a reasoning failure. Some tasks are easy for a model trained on English tokens but hard for one trained on a language that splits differently. Which languages do well or poorly in an AI system, which benchmarks reveal a model's real ability or just its tokenization, whether an arithmetic task is genuinely hard or just hard to express in tokens — all of this ripples from the tokenizer. This unglamorous first step before any attention, before any layers, before any thinking, is one of the quiet shapers of which problems language models will excel at and which they will stumble on."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why pieces beat whole words"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["embeddings-deep.html","embeddings"],["attention-deep.html","attention"],["pretraining-deep.html","pretraining"],["transformer_block-deep.html","the transformer block"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — language never stops inventing new words",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A language model must choose its answer from a list of symbols. A list is finite. English, at any given moment, has maybe 170,000 'real' words in active use — but that is just what humans have written down so far. People invent new words constantly: 'bingeable', 'cryptocurrency', 'ChatGPT'. Slang appears overnight. Text includes names you have never seen before, typos, abbreviations, languages mixing together, made-up words in fiction. You cannot build a slot in your model's vocabulary for every word that might ever appear in human text — the list would be infinite, or close to it. So the need is: <strong>how can a model work on a fixed, finite list of symbols and still handle any word, including ones it has never encountered?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — words are built from frequent pieces",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The move. Instead of making the vocabulary list be whole words, make it be frequent <em>sub-word pieces</em>. Count which sequences of characters appear most often in a large pile of text — the letters 'th', the syllable 'ing', common words like 'the' and 'and'. Keep the most frequent pieces and discard the rest. Now every word, even a rare or brand-new one, can be spelled as a sequence of known pieces. The common words land in one piece (efficient, fast). Rare words are a short sequence (a few pieces). No word is truly unknown — you can always spell it, piece by piece. The model learns to work with this sequence of pieces, called <em>tokens</em>, instead of single characters or whole words. That is <strong>tokenization</strong>: chopping text into this reusable vocabulary of pieces."
+        },
+        {
+          "t": "para",
+          "html": "The hidden quantity is how often each character pair appears in the text — the most frequent pairs are merged into single tokens first, so common words become one token and rare ones fragment into several."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the vocabulary pieces language together",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran the actual GPT-2, a widely-used language model with 124 million learned numbers, and asked: how many pieces does the real vocabulary contain? And when it sees rare words, how does it break them up? We looked at six example words and counted how many pieces GPT-2 splits each into."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "word",
+            "token count",
+            "breakdown (if more than 1)"
+          ],
+          "rows": [
+            [
+              "cat",
+              "1",
+              "—"
+            ],
+            [
+              "running",
+              "1",
+              "—"
+            ],
+            [
+              "unbelievable",
+              "1",
+              "—"
+            ],
+            [
+              "tokenization",
+              "2",
+              "—"
+            ],
+            [
+              "antidisestablishmentarianism",
+              "5",
+              "ant / idis / establishment / arian / ism"
+            ]
+          ],
+          "caption": "Real token counts from GPT-2's vocabulary of 50,257 pieces. Common words stay whole; rare words are split into a sequence."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: GPT-2 has a vocabulary of 50,257 reusable pieces.</strong> Common words like 'cat', 'running', and 'unbelievable' each fit in a single piece — they are frequent enough that the tokenizer learned them whole. But 'antidisestablishmentarianism', a rare word, breaks into five pieces: 'ant' / 'idis' / 'establishment' / 'arian' / 'ism'. The word 'tokenization' itself, less common than 'cat' but more common than the long word, lands in two pieces. Every word, no matter how obscure, is spelled out of known pieces."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why pieces beat whole words",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This strategy has three strengths. First, a fixed 50,257-piece vocabulary can represent any word that has ever been written or will be written — even a typo, a name, a word in another language — because you can always spell it piece by piece. A whole-word vocabulary cannot; sooner or later you hit a word not on the list. Second, common words stay efficient at one piece, so the model does not waste its context on breaking up 'the' or 'cat' into fragments. Third, the learner gets to work with a manageable list — 50,257 slots instead of infinite, or instead of one slot per character (which would make every word dozens of steps)."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — the split is by frequency, not meaning",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The catch is that the tokenizer is not smart. It chops by how often pieces appear in the training text, not by what those pieces mean. A word like 'strawberry' might split in a way that fragments the meaning — maybe the first letter goes in one piece and the rest in others. The model then has to learn that these pieces spell a real, unified concept, which costs extra work. For rare scripts and languages, tokenization is wasteful because the frequent pieces come from English text, and the rare script might need many more pieces for the same thought. And the split can actively mislead the model on tasks like counting the letter 'r' in 'strawberry' or doing digit-by-digit arithmetic — the model must learn to work backward from the tokenization to the original characters, a layer of indirection that slows it down."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this choice silently shapes everything",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Tokenization seems like a dull engineering choice — just a preprocessing step before the interesting math begins. But it is not. The token boundaries you draw alter how the model learns. The number of tokens you have left determines how far back you can look (your context length). The split of words into pieces is a constant source of subtle errors; the 'how many r's in strawberry' mistake that made headlines is partly a tokenization failure, not a reasoning failure. Some tasks are easy for a model trained on English tokens but hard for one trained on a language that splits differently. Which languages do well or poorly in an AI system, which benchmarks reveal a model's real ability or just its tokenization, whether an arithmetic task is genuinely hard or just hard to express in tokens — all of this ripples from the tokenizer. This unglamorous first step before any attention, before any layers, before any thinking, is one of the quiet shapers of which problems language models will excel at and which they will stumble on."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Break text into reusable pieces before processing",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Every large language model uses tokenization as its first step: ChatGPT, Claude, Qwen, and other systems all break input text into subword tokens before feeding it to the neural network. Vision language models tokenize both text and patch descriptions using variants of the same approach. Specialized domains like medical text or code tokenize using vocabularies optimized for their specific syntax and terminology."
+        },
+        {
+          "t": "para",
+          "html": "A vocabulary of frequent subword pieces is created from large text corpora by counting which character sequences appear most often. Common words stay as single tokens, rare words are split into a sequence of pieces. At inference, incoming text is broken into this fixed vocabulary—looking up which pieces appear in the text and replacing each word or fragment with its token index. The model then works with sequences of these integers rather than raw characters."
+        },
+        {
+          "t": "insight",
+          "html": "Tokenization boundary decisions shape which tasks a model will find easy or hard: a model may struggle with counting or arithmetic because tokenization obscures the individual digits or letter positions in ways that force the model to work around its own preprocessing."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "embeddings-deep.html",
+      "embeddings"
+    ],
+    [
+      "attention-deep.html",
+      "attention"
+    ],
+    [
+      "pretraining-deep.html",
+      "pretraining"
+    ],
+    [
+      "transformer_block-deep.html",
+      "the transformer block"
+    ]
+  ],
   "recipe": {
     "summary": "Run the real pretrained GPT-2 (124M) on a small set of example words (common and rare). Use the tokenizer to encode each word and count how many pieces result; optionally print the token IDs to see the pieces directly. Report the total vocabulary size and the token counts for each example.",
     "eq": "tokenization: text -> sequence of integers, each in [0, 50256]\nvocab_size = 50,257\ntoken_count(word) = len(tokenizer.encode(word))\nexample: encode('antidisestablishmentarianism') -> 5 tokens",
     "note": "Full script: scripts/experiments/stanford_gpt2.py (exp_tokenization), the actual GPT-2 tokenizer and weights. Numbers are the run's output verbatim. Vocabulary size 50,257 and token splits are confirmed from the real model."
-  }
+  },
+  "connects": [
+    {
+      "course": "cs329a",
+      "id": "reasoning-traces",
+      "label": "reasoning traces",
+      "note": "Tokenization sets the grain of thought; a reasoning trace is written in exactly those tokens."
+    }
+  ]
 }

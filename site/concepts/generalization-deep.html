@@ -30,7 +30,7 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
 <div class="kick">large language models · first principles · learning the rules, not the strings</div>
 <h1>Generalization — why a model that learned something new handles things it never saw</h1>
 <p class="lede">A model could ace every sentence in its training data by pure memorization and still fail on anything new. Generalization is the opposite: a model that truly learned language grasps the underlying rules well enough to handle new sentences it never saw before. Here is the problem it solves, why a single experiment proves it matters, where it breaks down, and why understanding this gap between memorization and learning drives almost everything in modern machine learning.</p>
-<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the gap is the whole game</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="generalization.html">Atlas card</a></div>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the gap is the whole game</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="generalization.html">Atlas card</a></div>
 
     <section class="fp" id="problem">
       <h2>1 · The problem — memorizing strings is not enough</h2>
@@ -68,6 +68,14 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
       <h2>6 · The surprise — this gap is the whole foundation of machine learning</h2>
       <div class="essay">
       <p>Understanding train-versus-test loss — the gap between performance on data the model saw and data it did not — is the central concern of machine learning. It drives <a href="pretraining-deep.html">pretraining</a> (why we train on oceans of text, to let the model discover generalizable patterns), <a href="scaling_laws-deep.html">scaling laws</a> (bigger models generalize better), <a href="fine_tuning-deep.html">fine-tuning</a> (tuning a model that already generalized, rather than starting from scratch), and the entire field of regularization (techniques like dropout and weight decay that deliberately constrain a model to prevent memorization and force it to find the general rule). The same gap appears in every domain: vision models on new images, recommender systems on new users, drug discovery on new molecules. When people say 'the model learned,' what they mean is 'it generalized' — the thing that makes the model useful for anything beyond the training set. Measure the gap, and you know whether you have learned anything at all.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — learning rules, not memorizing strings</h2>
+      <div class="essay">
+      <p>A language model that has truly learned grammar and syntax should handle novel sentences it never saw during training. A vision model that has learned shape recognition should identify objects in new angles and lighting it never encountered. A recommendation system that learned user preferences should rank new items it has never seen before. A machine translation model should translate new word combinations even though the exact phrase never appeared in its training text.</p>
+      <p>To test whether a model learned or merely memorized, you measure how well it handles held-out data—information it never saw during training. You feed it two kinds of novel input: meaningful text that follows the rules it learned, and gibberish that has no structure. If the model learned the rules, the meaningful input should look natural (low loss) and the gibberish should look bewildering (high loss). A large gap between the two shows the model captured generalizable patterns, not just stored strings.</p>
+      <div class="insight">Models that memorize training data are useless the moment they encounter anything new; models that generalize keep working on the world outside their training set.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="pretraining-deep.html">pretraining</a> · <a href="scaling_laws-deep.html">scaling laws</a> · <a href="fine_tuning-deep.html">fine-tuning</a> · <a href="transformer_block-deep.html">transformer block</a></p></section>

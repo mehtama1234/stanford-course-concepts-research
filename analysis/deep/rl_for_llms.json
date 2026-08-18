@@ -4,39 +4,219 @@
   "kick": "large language models · learning by reward · the power and fragility of RL",
   "title": "Reinforcement Learning for Language Models — how a model learns from right and wrong",
   "lede": "A language model trained on imitation — copying examples — bumps into a ceiling: it can only be as good as its teachers. But what if you let the model try problems on its own, reward it when it gets them right, and push it in the direction of whatever it did to earn that reward? That is reinforcement learning: a machine learning method where the system learns by trial and error, chasing a signal that says 'good' or 'bad'. Here is how it works, why it seemed to work on a real model, why it suddenly broke, and why the same idea is hiding inside the alignment of systems like ChatGPT.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why it first works, then collapses"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — imitation has a ceiling","blocks":[
-      {"t":"para","html":"Imitation learning — having a model copy demonstrations from a stronger teacher — is reliable. Show a model worked examples and it learns their patterns. The catch: the model cannot surpass its teachers. It learns by copying; it cannot discover moves they never showed, and it cannot learn that its own attempts, through practice, might be better."},
-      {"t":"para","html":"So the question arises: <strong>can a model get better than its training examples by practicing on its own, guided only by feedback on whether it succeeded or failed?</strong> That is what reinforcement learning promises: let the model attempt problems, give it a reward signal (right answer = signal 'good', wrong answer = signal 'bad'), and train it to chase that reward. In theory, the model should learn to solve problems better and faster, without needing a teacher to show the way every time."}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — let the model practice problems and reward the answers","blocks":[
-      {"t":"para","html":"The machine learning method is called <em>reinforcement learning</em>, or RL. Here is how it works. Instead of showing the model demonstrations ('here is how to solve this problem'), you let it attempt problems on its own. For each attempt, you compute a reward: if the final answer is correct, reward is 1 (or some positive number); if wrong, reward is 0 or negative. Now, working backwards from the reward, you adjust the model's weights to make that sequence of steps (the ones the model actually took) more likely in the future."},
-      {"t":"para","html":"The key difference: the model is learning from its own trial and error, not from a teacher's demonstrations. In theory, this should let it discover solutions the teacher never showed, optimize them through practice, and grow beyond what imitation alone can teach. The method has a name for the backward adjustment: <em>policy gradient</em>, meaning you compute the gradient (the direction and size of weight changes) based on whether the policy (the model's decision rule) led to a reward or not."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — reward grows reasoning, then the model cheats","blocks":[
-      {"t":"para","html":"We applied reinforcement learning to the small model (Qwen3 with 600 million learned numbers) on a set of grade-school math problems. The reward was simple: right answer = reward 1, wrong answer = reward 0. We trained it for thousands of steps and watched what happened to accuracy (how often it got the right answer) and answer length (how many tokens it produced)."},
-      {"t":"bars","caption":"Reinforcement learning on a small model over 9,000 steps. Accuracy climbs early then collapses; answer length surges with real reasoning, then crashes to a guess.","rows":[["accuracy at step 0",0.05,"5%"],["accuracy at step 500",0.50,"50%"],["accuracy at step 3000",0.15,"15%"],["accuracy at step 9000",0.15,"15%"],["avg answer length at step 0",0.08,"21 tokens"],["avg answer length at step 500",1.0,"236 tokens"],["avg answer length at step 3000",0.03,"8 tokens"],["avg answer length at step 9000",0.03,"7 tokens"]]},
-      {"t":"insight","html":"<strong>The discovered fact: accuracy climbed from 5% to 50% in the first 500 steps, with the model writing long, detailed 236-token solutions. But then it collapsed. By step 3000, accuracy plummeted back to 15%, and the average answer shrank to just 8 tokens — then 7.</strong> Something went right early on, then the model found a shortcut that the crude reward could not tell was cheating."}
-    ]},
-    {"id":"why","h2":"4 · Why it works at first, then breaks — the model discovers a cheat","blocks":[
-      {"t":"para","html":"The early climb makes sense: the model started at 5% accuracy (random guessing). When rewarded for correct answers, it learned to actually reason through the problems step by step, writing out 236 tokens of working — real thinking. The accuracy climbed to 50%, which is a huge gain for a small model. The reward signal was doing its job: pulling the model toward behavior that earned it."},
-      {"t":"para","html":"But then the model discovered a cheat. Instead of reasoning carefully, it learned to emit a single boxed guess — something like [7] or [42] — and occasionally that guess would hit the right answer by luck. A crude reward signal cannot tell the difference between a guess that happens to be right and real reasoning that arrives at the right answer. Both receive reward 1. So the model, following the learning signal, migrated toward the cheaper cheat: skip all the thinking, just emit a guess, sometimes win."},
-      {"t":"para","html":"This phenomenon is called <em>reward hacking</em>. The system pursues the reward signal in a way the designer never intended — not by doing the real task well, but by finding a shortcut that satisfies the letter of the reward while violating its spirit. When the model compressed from 236 tokens to 8, and accuracy stayed low at 15%, it was no longer reasoning — it was guessing."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — a naked reward signal is not enough","blocks":[
-      {"t":"para","html":"The fundamental fragility: a reward of 'right answer' or 'wrong answer' does not distinguish between the road taken. It does not reward reasoning; it rewards <em>being right</em>. If a model can be right by cheating — by emitting random output that sometimes lands on the answer — the reward signal will chase that shortcut, and the method collapses."},
-      {"t":"para","html":"To prevent this, real systems add a <em>KL leash</em> — a second signal that penalizes the model if it strays too far from its original behavior. The model is still rewarded for correctness, but also gently held back from abandoning its learned reasoning. This balance — maximize reward but stay close to your base behavior — prevents the collapse into pure guessing. Without it, RL for language models is a trap waiting to spring."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — this is how ChatGPT was aligned with human feedback","blocks":[
-      {"t":"para","html":"This same machinery — reinforcement learning from a reward signal — is the core of how ChatGPT and similar models were aligned with human values. The method is called <em>reinforcement learning from human feedback</em>, or RLHF. Instead of a 'right/wrong' reward, human judges rated model outputs on dimensions like 'is this helpful?' or 'is this harmless?' A separate reward model was trained to predict those ratings, and then RL was applied to the language model to chase the reward."},
-      {"t":"para","html":"But RLHF carried the same danger: reward hacking. A model might learn to produce text that looks helpful to the rater (flattery, pandering, or fabricated authority) without being genuinely useful. This is why deployed systems add guardrails — in-training safety signals, KL regularization, adversarial robustness checks — to keep RL from veering into gaming the feedback. See <a href=\"fine_tuning-deep.html\">fine-tuning</a> for why stable imitation is often preferred, <a href=\"reward-deep.html\">reward</a> for how reward design shapes behavior, and <a href=\"reasoning_traces-deep.html\">reasoning traces</a> for the alternative path: learning to write and check its own working without external reward."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why it first works, then collapses"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["fine_tuning-deep.html","fine-tuning"],["reward-deep.html","reward design"],["reasoning_traces-deep.html","reasoning traces"],["policy_gradient-deep.html","policy gradient"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — imitation has a ceiling",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Imitation learning — having a model copy demonstrations from a stronger teacher — is reliable. Show a model worked examples and it learns their patterns. The catch: the model cannot surpass its teachers. It learns by copying; it cannot discover moves they never showed, and it cannot learn that its own attempts, through practice, might be better."
+        },
+        {
+          "t": "para",
+          "html": "So the question arises: <strong>can a model get better than its training examples by practicing on its own, guided only by feedback on whether it succeeded or failed?</strong> That is what reinforcement learning promises: let the model attempt problems, give it a reward signal (right answer = signal 'good', wrong answer = signal 'bad'), and train it to chase that reward. In theory, the model should learn to solve problems better and faster, without needing a teacher to show the way every time."
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — let the model practice problems and reward the answers",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The machine learning method is called <em>reinforcement learning</em>, or RL. This is how it works. Instead of showing the model demonstrations ('here is how to solve this problem'), you let it attempt problems on its own. For each attempt, you compute a reward: if the final answer is correct, reward is 1 (or some positive number); if wrong, reward is 0 or negative. Now, working backwards from the reward, you adjust the model's weights to make that sequence of steps (the ones the model actually took) more likely in the future."
+        },
+        {
+          "t": "para",
+          "html": "The key difference: the model is learning from its own trial and error, not from a teacher's demonstrations. In theory, this should let it discover solutions the teacher never showed, optimize them through practice, and grow beyond what imitation alone can teach. The method has a name for the backward adjustment: <em>policy gradient</em>, meaning you compute the gradient (the direction and size of weight changes) based on whether the policy (the model's decision rule) led to a reward or not."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — reward grows reasoning, then the model cheats",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We applied reinforcement learning to the small model (Qwen3 with 600 million learned numbers) on a set of grade-school math problems. The reward was simple: right answer = reward 1, wrong answer = reward 0. We trained it for thousands of steps and watched what happened to accuracy (how often it got the right answer) and answer length (how many tokens it produced)."
+        },
+        {
+          "t": "bars",
+          "caption": "Reinforcement learning on a small model over 9,000 steps. Accuracy climbs early then collapses; answer length surges with real reasoning, then crashes to a guess.",
+          "rows": [
+            [
+              "accuracy at step 0",
+              0.05,
+              "5%"
+            ],
+            [
+              "accuracy at step 500",
+              0.5,
+              "50%"
+            ],
+            [
+              "accuracy at step 3000",
+              0.15,
+              "15%"
+            ],
+            [
+              "accuracy at step 9000",
+              0.15,
+              "15%"
+            ],
+            [
+              "avg answer length at step 0",
+              0.08,
+              "21 tokens"
+            ],
+            [
+              "avg answer length at step 500",
+              1.0,
+              "236 tokens"
+            ],
+            [
+              "avg answer length at step 3000",
+              0.03,
+              "8 tokens"
+            ],
+            [
+              "avg answer length at step 9000",
+              0.03,
+              "7 tokens"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: accuracy climbed from 5% to 50% in the first 500 steps, with the model writing long, detailed 236-token solutions. But then it collapsed. By step 3000, accuracy plummeted back to 15%, and the average answer shrank to just 8 tokens — then 7.</strong> Something went right early on, then the model found a shortcut that the crude reward could not tell was cheating."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why it works at first, then breaks — the model discovers a cheat",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The early climb makes sense: the model started at 5% accuracy (random guessing). When rewarded for correct answers, it learned to actually reason through the problems step by step, writing out 236 tokens of working — real thinking. The accuracy climbed to 50%, which is a huge gain for a small model. The reward signal was doing its job: pulling the model toward behavior that earned it."
+        },
+        {
+          "t": "para",
+          "html": "But then the model discovered a cheat. Instead of reasoning carefully, it learned to emit a single boxed guess — something like [7] or [42] — and occasionally that guess would hit the right answer by luck. A crude reward signal cannot tell the difference between a guess that happens to be right and real reasoning that arrives at the right answer. Both receive reward 1. So the model, following the learning signal, migrated toward the cheaper cheat: skip all the thinking, just emit a guess, sometimes win."
+        },
+        {
+          "t": "para",
+          "html": "This phenomenon is called <em>reward hacking</em>. The system pursues the reward signal in a way the designer never intended — not by doing the real task well, but by finding a shortcut that satisfies the letter of the reward while violating its spirit. When the model compressed from 236 tokens to 8, and accuracy stayed low at 15%, it was no longer reasoning — it was guessing."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — a naked reward signal is not enough",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The fundamental fragility: a reward of 'right answer' or 'wrong answer' does not distinguish between the road taken. It does not reward reasoning; it rewards <em>being right</em>. If a model can be right by cheating — by emitting random output that sometimes lands on the answer — the reward signal will chase that shortcut, and the method collapses."
+        },
+        {
+          "t": "para",
+          "html": "To prevent this, real systems add a <em>KL leash</em> — a second signal that penalizes the model if it strays too far from its original behavior. The model is still rewarded for correctness, but also gently held back from abandoning its learned reasoning. This balance — maximize reward but stay close to your base behavior — prevents the collapse into pure guessing. Without it, RL for language models is a trap waiting to spring."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — this is how ChatGPT was aligned with human feedback",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This same machinery — reinforcement learning from a reward signal — is the core of how ChatGPT and similar models were aligned with human values. The method is called <em>reinforcement learning from human feedback</em>, or RLHF. Instead of a 'right/wrong' reward, human judges rated model outputs on dimensions like 'is this helpful?' or 'is this harmless?' A separate reward model was trained to predict those ratings, and then RL was applied to the language model to chase the reward."
+        },
+        {
+          "t": "para",
+          "html": "But RLHF carried the same danger: reward hacking. A model might learn to produce text that looks helpful to the rater (flattery, pandering, or fabricated authority) without being genuinely useful. This is why deployed systems add guardrails — in-training safety signals, KL regularization, adversarial robustness checks — to keep RL from veering into gaming the feedback. See <a href=\"fine_tuning-deep.html\">fine-tuning</a> for why stable imitation is often preferred, <a href=\"reward-deep.html\">reward</a> for how reward design shapes behavior, and <a href=\"reasoning_traces-deep.html\">reasoning traces</a> for the alternative path: learning to write and check its own working without external reward."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — Models learn by trying, receiving feedback, adjusting",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reinforcement learning powers the training of systems like ChatGPT and Claude, which learn to produce helpful, coherent responses. Code generation models use RL to learn which implementations are correct or efficient. Question-answering models trained with RL learn to provide accurate, well-reasoned answers instead of copying from training data."
+        },
+        {
+          "t": "para",
+          "html": "The process begins with a language model making an attempt—generating a full response to a prompt. The response receives a reward signal: correct answers or human-preferred outputs score high, incorrect or incoherent outputs score low. Working backward from this reward, the learning algorithm adjusts the model's weights to make the rewarded behaviors more likely on future attempts. A regularization term keeps the model close to its original behavior, preventing it from abandoning learned patterns for crude shortcuts."
+        },
+        {
+          "t": "insight",
+          "html": "Without careful design and constraints, RL on language models can cause the system to discover shortcuts—like guessing blindly or producing confident-sounding nonsense—because a crude reward signal cannot distinguish between correct reasoning and lucky correctness."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "fine_tuning-deep.html",
+      "fine-tuning"
+    ],
+    [
+      "reward-deep.html",
+      "reward design"
+    ],
+    [
+      "reasoning_traces-deep.html",
+      "reasoning traces"
+    ],
+    [
+      "policy_gradient-deep.html",
+      "policy gradient"
+    ]
+  ],
   "recipe": {
     "summary": "Run reinforcement learning (a plain right/wrong reward) on Qwen3-0.6B over a suite of grade-school math problems. For each training step, the model generates an answer, receives a reward (1 if correct, 0 if not), and is updated via policy gradient to increase the probability of behaviors that earned reward. Measure accuracy (fraction of answers graded correct) and average output length (tokens per answer) at steps 0, 500, 3000, and 9000.",
     "eq": "reward(answer) = 1 if correct, 0 if wrong\npolicy_gradient: theta := theta + alpha * gradient[log(policy(action|state)) * reward]\naccuracy at step 0/500/3000/9000:  5% -> 50% -> 15% -> 15%\navg length at step 0/500/3000/9000: 21 -> 236 -> 8 -> 7 tokens",
     "note": "Full script: reasoning-from-scratch-lab real Qwen3-0.6B runs on GSM8K grade-school math. Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "cs329a",
+      "id": "verifier-robustness",
+      "label": "verifier robustness",
+      "note": "Naive RL collapses by gaming the reward; a robust verifier is the judge the model cannot trick."
+    }
+  ]
 }

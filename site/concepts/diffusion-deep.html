@@ -30,7 +30,7 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
 <div class="kick">generative models · first principles · how to create new realistic data from scratch</div>
 <h1>Diffusion — learning to reverse noise to create new data</h1>
 <p class="lede">To generate a brand-new, realistic image or shape, you need to produce something the model has never seen before. The space of all possible images is astronomically large — how do you learn which ones are good? Diffusion is a radical reframing: instead of learning to build good samples from scratch, destroy a real image with noise step by step until it is pure random static, then learn to undo that process. Train a network to take one small step backward through noise, then run it in reverse from pure noise to create. Here is the idea, a measurement on a real toy showing it works, why undoing small steps is cleverer than building whole samples at once, where it stumbles, and how this idea powers the image generators behind every modern AI art tool.</p>
-<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why denoising creates new data</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="diffusion.html">Atlas card</a></div>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why denoising creates new data</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="diffusion.html">Atlas card</a></div>
 
     <section class="fp" id="problem">
       <h2>1 · The problem — generating new realistic data is astronomically hard</h2>
@@ -42,9 +42,9 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
     <section class="fp" id="reframe">
       <h2>2 · The reframe — destroy structure, then learn to restore it</h2>
       <div class="essay">
-      <p>Here is the radical move. Take a real image or shape. Add noise to it — a little random static sprinkled across it. Then add more noise. Keep going until after 50 steps or 1,000 steps, all the structure is gone: it is pure random garbage, indistinguishable from static. That forward process — adding noise step by step — is trivial. Anybody can do it. It requires no learning.</p>
+      <p>The radical move. Take a real image or shape. Add noise to it — a little random static sprinkled across it. Then add more noise. Keep going until after 50 steps or 1,000 steps, all the structure is gone: it is pure random garbage, indistinguishable from static. That forward process — adding noise step by step — is trivial. Anybody can do it. It requires no learning.</p>
       <p>Now flip it. Train a neural network to do the reverse: given a noisy image partway through that noise-adding process, predict what noise was just added, and <em>subtract</em> it. If the network learns this one-step backwards move well, you can run it in reverse from the end: start with pure noise, have the network remove one step of noise, then remove one more step, and so on. After 50 iterations, pure random static has been shaped into a realistic sample. The hard problem of 'make a good image from scratch' becomes a chain of tiny, tractable steps: 'guess and remove the noise I just added.'</p>
-      <p>That is <strong>diffusion</strong>. The magic is that each small step is easy to learn — predicting noise added in one step is within reach of a neural network. Chaining many of them together accomplishes something that looked impossible: creating brand-new, realistic data from pure randomness.</p>
+      <p>That is <strong>diffusion</strong>. The key is that each small step is easy to learn — predicting noise added in one step is within reach of a neural network. Chaining many of them together accomplishes something that looked impossible: creating brand-new, realistic data from pure randomness.</p>
       </div>
     </section>
     <section class="fp" id="run">
@@ -72,6 +72,14 @@ th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font
       <h2>6 · The surprise — this powers image generators used by millions</h2>
       <div class="essay">
       <p>This simple idea — destroy structure, learn to restore it — when scaled to millions of images and billions of learned numbers, becomes the engine of Stable Diffusion, DALL-E, and every modern AI image generator. The same logic applies to audio and video: you can corrupt a sound with noise, learn to denoise it, and sample new audio by running the reverse process. The trick of breaking a hard problem into many easy steps, stacked in sequence, is now central to generative AI. Cousin ideas like <a href="score_matching-deep.html">score matching</a> (learn the direction toward data) and <a href="flow_matching-deep.html">flow matching</a> (learn a smooth path) refine the strategy. And <a href="guidance-deep.html">guidance</a> adds a steering mechanism: nudge the denoising toward a specific class or description. This single reframing — that generation is denoising — made AI art possible.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — creating realistic images, videos, and audio by learning to reverse noise</h2>
+      <div class="essay">
+      <p>Image generators like Stable Diffusion, DALL-E, and similar tools create new images by starting with pure noise and gradually removing it. Video generation systems use the same approach to create new video frames. Audio synthesis systems (music generation, voice synthesis) create sound by reversing a process that corrupts clean audio with noise. All of these systems share the same core: they learn to undo destruction, then run the reverse process to create.</p>
+      <p>During training, the model takes real data (an image, audio, video) and adds noise step by step until it is pure random. Then it trains a network to predict and subtract the noise that was just added, reversing one step at a time. At generation time, the model starts with pure noise and runs the learned denoising many times in a row. Each step removes a little noise and adds a little structure, and by the end the accumulated steps have shaped random into something realistic.</p>
+      <div class="insight">Breaking the impossible problem of generating good data from scratch into many tiny tractable steps (reverse one layer of noise) is why diffusion models can generate diverse, realistic outputs that other approaches could not.</div>
       </div>
     </section>
     <section class="fp"><p class="muted">Related: <a href="score_matching-deep.html">score matching</a> · <a href="flow_matching-deep.html">flow matching</a> · <a href="guidance-deep.html">guidance</a> · <a href="latent_space-deep.html">latent space</a></p></section>

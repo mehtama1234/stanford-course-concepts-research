@@ -4,32 +4,166 @@
   "kick": "generative models · diffusion family · learning to flow noise straight to data",
   "title": "Flow Matching — a smooth current from chaos to structure",
   "lede": "Generating images, text, or molecules usually relies on a noisy, winding path: start with pure random noise and spend dozens of small steps slowly undoing the noise to reveal the picture. But there is a faster way. Imagine a smooth current that carries each noisy point directly to a real piece of data along the simplest possible path — a straight line. Learning to follow that current is flow matching, and it is so efficient that even four steps can produce decent output. Here is the idea, a real measurement showing how few steps suffice, why straight paths need so little work, where the approach still stumbles, and why this concept has become the engine of modern fast generation.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why straight paths need few steps"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — beautiful generation costs many slow steps","blocks":[
-      {"t":"para","html":"Diffusion models generate beautifully. Start with pure noise and spend 50 or 100 steps carefully peeling away the noise, and out comes a sharp, detailed image or molecule. The drawback is plain: it is slow. Each step requires running a neural network, and 50 steps means 50 runs. In real applications — a user clicking 'generate' and waiting for the answer — that adds up. You need a faster path from chaos to structure, but without giving up the quality."},
-      {"t":"para","html":"So the need is sharp: <strong>can we generate data that is just as good, but using far fewer denoising steps?</strong>"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — learn a velocity field, not a denoising sequence","blocks":[
-      {"t":"para","html":"Here is the move. Instead of imagining noise gradually morphing into data over many wiggly, uncertain steps, imagine something simpler: a smooth current — a velocity field — that carries each noise point along a straight-line path directly to some real data point. Learning that current is learning which way to point each tiny arrow that sits on the space between noise and data. To generate, you do not denoise bit by bit; you simply follow the arrows. Pick a random starting point (noise), read off the current at that location, jump in the direction it points, and repeat. Because the path is straight and the current is smooth, you need only a handful of jumps."},
-      {"t":"para","html":"That operation is <strong>flow matching</strong>. The current is a velocity field (a function the model learns), and the idea reframes generation from 'undo noise' to 'follow a flow'. No denoising network; no corruption process being reversed; just a learned map of how to move."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — few steps suffice, straight paths are fast","blocks":[
-      {"t":"para","html":"We trained a flow matching model to learn a velocity field over a toy target: eight Gaussian bumps arranged in a ring. After learning, we sampled from pure noise and followed the learned current for different numbers of steps. The question: how many jumps does it take to land on the target?"},
-      {"t":"bars","caption":"Number of steps to land on the target shape (8-blob ring). Flow matching lands 84% of samples on the target in just 10 steps, and even 4 steps lands 65%. Numbers are the run's output.","rows":[["10 steps","0.84","84%"],["4 steps","0.65","65%"]]},
-      {"t":"insight","html":"<strong>The discovered fact: after learning the velocity field, integrating it in just 10 steps lands 84 percent of samples on the target.</strong> Even with only 4 steps, 65 percent land on the target. Compare this to diffusion, which needs 50 steps to reach 97 percent — flow matching gets most of the way there with one-tenth the overhead. The straight-line path and smooth current are so efficient that a small handful of steps pays off."}
-    ]},
-    {"id":"why","h2":"4 · Why straight paths need few steps","blocks":[
-      {"t":"para","html":"The reason is geometric. When you follow diffusion's reverse process, the path from noise to data is not straight — it wiggles and curves, forced to undo the specific corruption that was applied. Each point on that path is a tiny fraction closer to the target, so you need many steps to cross the whole distance. A straight line, by contrast, is the shortest route between two points. And because flow matching learns a smooth, roughly constant-velocity field, the steps are large and consistent — no tiny nudges; directional jumps that cover distance fast. The result: a straight trip from noise to data in a handful of leaps covers what diffusion does in dozens of slow backtracks."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — not all paths are truly straight","blocks":[
-      {"t":"para","html":"The catch is geometry. Flow matching assumes that each noise point can be paired with a real data point, and that a straight path between them passes through regions the model has learned to handle. In reality, especially with complex data like photos or text, the space is not that simple. Some straight-line paths may wander through low-density regions where the velocity field is poorly learned, or there is no good one-to-one pairing between noise and data. This is why flow matching at 4 steps lands only 65 percent on target, while 10 steps land 84 percent — there is a speed-versus-quality trade-off. The ultra-few-step regime still suffers; training and design choices must be made carefully to learn paths that are learnable and smooth."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — fast generation powers modern image and protein design","blocks":[
-      {"t":"para","html":"Flow matching did not stay a toy; it has become the backbone of state-of-the-art fast generative models. Models like Flux for images and OmegaFold for protein structures now use flow-based approaches because they beat diffusion on speed and quality alike. The idea also connects to deep mathematical machinery — the classical theory of optimal transport, which asks how to move one distribution to another with minimum cost, and differential equations, which describe how systems evolve over time. By reframing generation as flowing along a learned current, the field linked generative modeling to a century of mathematics. This one insight — learn the direction, not the backward process — spans from rendering a meme to designing proteins to understanding how systems evolve."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why straight paths need few steps"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["diffusion-deep.html","diffusion"],["score_matching-deep.html","score matching"],["guidance-deep.html","guidance"],["latent_space-deep.html","latent space"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — beautiful generation costs many slow steps",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Diffusion models generate beautifully. Start with pure noise and spend 50 or 100 steps carefully peeling away the noise, and out comes a sharp, detailed image or molecule. The drawback is plain: it is slow. Each step requires running a neural network, and 50 steps means 50 runs. In real applications — a user clicking 'generate' and waiting for the answer — that adds up. You need a faster path from chaos to structure, but without giving up the quality."
+        },
+        {
+          "t": "para",
+          "html": "So the need is sharp: <strong>can we generate data that is just as good, but using far fewer denoising steps?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — learn a velocity field, not a denoising sequence",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The move. Instead of imagining noise gradually morphing into data over many wiggly, uncertain steps, consider something simpler: a smooth current — a velocity field — that carries each noise point along a straight-line path directly to some real data point. Learning that current is learning which way to point each tiny arrow that sits on the space between noise and data. To generate, you do not denoise bit by bit; you simply follow the arrows. Pick a random starting point (noise), read off the current at that location, jump in the direction it points, and repeat. Because the path is straight and the current is smooth, you need only a handful of jumps."
+        },
+        {
+          "t": "para",
+          "html": "That operation is <strong>flow matching</strong>. The current is a velocity field (a function the model learns), and the idea reframes generation from 'undo noise' to 'follow a flow'. No denoising network; no corruption process being reversed; just a learned map of how to move."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — few steps suffice, straight paths are fast",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We trained a flow matching model to learn a velocity field over a toy target: eight Gaussian bumps arranged in a ring. After learning, we sampled from pure noise and followed the learned current for different numbers of steps. The question: how many jumps does it take to land on the target?"
+        },
+        {
+          "t": "bars",
+          "caption": "Number of steps to land on the target shape (8-blob ring). Flow matching lands 84% of samples on the target in just 10 steps, and even 4 steps lands 65%. Numbers are the run's output.",
+          "rows": [
+            [
+              "10 steps",
+              "0.84",
+              "84%"
+            ],
+            [
+              "4 steps",
+              "0.65",
+              "65%"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: after learning the velocity field, integrating it in just 10 steps lands 84 percent of samples on the target.</strong> Even with only 4 steps, 65 percent land on the target. Compare this to diffusion, which needs 50 steps to reach 97 percent — flow matching gets most of the way there with one-tenth the overhead. The straight-line path and smooth current are so efficient that a small handful of steps pays off."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why straight paths need few steps",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason is geometric. When you follow diffusion's reverse process, the path from noise to data is not straight — it wiggles and curves, forced to undo the specific corruption that was applied. Each point on that path is a tiny fraction closer to the target, so you need many steps to cross the whole distance. A straight line, by contrast, is the shortest route between two points. And because flow matching learns a smooth, roughly constant-velocity field, the steps are large and consistent — no tiny nudges; directional jumps that cover distance fast. The result: a straight trip from noise to data in a handful of leaps covers what diffusion does in dozens of slow backtracks."
+        },
+        {
+          "t": "para",
+          "html": "In the recipe, the step size is simply how far you move along the arrow at each small step — smaller steps trace the path more faithfully but take more of them."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — not all paths are truly straight",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The catch is geometry. Flow matching assumes that each noise point can be paired with a real data point, and that a straight path between them passes through regions the model has learned to handle. In reality, especially with complex data like photos or text, the space is not that simple. Some straight-line paths may wander through low-density regions where the velocity field is poorly learned, or there is no good one-to-one pairing between noise and data. This is why flow matching at 4 steps lands only 65 percent on target, while 10 steps land 84 percent — there is a speed-versus-quality trade-off. The ultra-few-step regime still suffers; training and design choices must be made carefully to learn paths that are learnable and smooth."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — fast generation powers modern image and protein design",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Flow matching did not stay a toy; it has become the backbone of state-of-the-art fast generative models. Models like Flux for images and OmegaFold for protein structures now use flow-based approaches because they beat diffusion on speed and quality alike. The idea also connects to deep mathematical machinery — the classical theory of optimal transport, which asks how to move one distribution to another with minimum cost, and differential equations, which describe how systems evolve over time. By reframing generation as flowing along a learned current, the field linked generative modeling to a century of mathematics. This one insight — learn the direction, not the backward process — spans from rendering a meme to designing proteins to understanding how systems evolve."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — straight paths learn faster than curves",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Image generators like Flux learn to create pictures by following a direct current from noise to photorealistic images in just a handful of steps. Molecular design tools generate novel drug candidates by flowing noise toward valid chemistry. Video generation systems synthesize motion by learning to nudge frames along a smooth path. Text-to-3D generators produce shapes by steering point clouds from random initialization along learned trajectories."
+        },
+        {
+          "t": "para",
+          "html": "The system learns a velocity field—a direction to move at each point in the space between randomness and structure. To generate, it starts with pure noise and reads the velocity at that location, stepping in the direction it points. Each step moves directly toward the target along the shortest path; no backtracking, no undoing applied corruption, just forward motion along the learned current."
+        },
+        {
+          "t": "insight",
+          "html": "Straight-line paths need far fewer steps than the winding denoising sequences that older diffusion methods require."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "diffusion-deep.html",
+      "diffusion"
+    ],
+    [
+      "score_matching-deep.html",
+      "score matching"
+    ],
+    [
+      "guidance-deep.html",
+      "guidance"
+    ],
+    [
+      "latent_space-deep.html",
+      "latent space"
+    ]
+  ],
   "recipe": {
     "summary": "Train a neural network to predict a velocity field (current) that maps a noise point to a real data point along straight-line paths. Use the target: eight Gaussians on a ring. Sample from the learned field by starting at random noise and integrating (following the arrows) for N steps. Measure the fraction of samples that land within a small radius of one of the eight modes.",
     "eq": "velocity field: v(x, t) = model learns this\ntrajectory: x(t+1) = x(t) + step_size * v(x(t), t)\nintegrate for N steps (10 or 4); measure fraction landing on target",

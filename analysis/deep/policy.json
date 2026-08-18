@@ -4,35 +4,174 @@
   "kick": "reinforcement learning · first principles · the decision rule the agent learns",
   "title": "Policy — the decision rule that maps a situation to an action",
   "lede": "Every moment, an agent must choose what to do. A robot in a room has to decide whether to go left, right, or straight. A chess player must pick a move from hundreds. A language model must choose the next word from tens of thousands. The thing being learned in reinforcement learning is not a table of values or a count of rewards — it is the rule itself: the mapping from 'where am I right now' to 'what action should I take'. That rule is called a policy. Here is what a policy is, why it is the real target of learning, how we measure whether one policy is better than another, what happens when a policy fails to explore, and how policies live hidden inside everything from game-playing to language generation.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why the policy is what you actually learn"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — at each moment the agent must act","blocks":[
-      {"t":"para","html":"An agent is always in some state — a room, a board position, a conversation history. At that moment, it has a choice: several actions are available, but only one can be taken. The choice it makes right then will shape what states it lands in later and what rewards it receives. The problem is: there is no oracle telling it which action is right. Every action it has not tried yet is a mystery. So the design challenge becomes clear: <strong>how can we describe and learn a rule that tells an agent, for any state it might encounter, which action to choose?</strong>"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — the policy is the decision rule itself","blocks":[
-      {"t":"para","html":"A <em>policy</em> is a function, or a table, or a rule the agent uses to pick an action given its current state. It can be written as π (the Greek letter for policy) and read as: at state s, choose action a with some probability. In the simplest case, it is deterministic — for each state, there is exactly one action that is best, and the policy always picks that one. In the more general case, it is stochastic, or random — for each state, the policy assigns a probability to each action, and the agent samples an action from that distribution."},
-      {"t":"para","html":"The key insight: <strong>the policy is the thing the agent will use to act in the world.</strong> When you train an agent using reinforcement learning, you are not computing something abstract to be thrown away. You are learning the policy — the mapping from state to action — because that is what you will run, deploy, and execute when the training is done. Everything else — the value function, the reward signal, the critic — exists to help you find a good policy."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — a random policy wanders, a good policy finds the goal","blocks":[
-      {"t":"para","html":"We trained an agent on a 6 by 6 gridworld: a maze where the agent starts in the corner and must reach a goal square. Each step it takes costs -1 (a penalty for dawdling). Reaching the goal earns +10. The shortest path is exactly 10 steps, so a perfect policy would collect a return of 10 minus 10 penalties, for a net of +1."},
-      {"t":"para","html":"We compared two policies. First, a policy that picks actions at random: at each step, the agent looks in all directions and flips a mental coin. Second, a policy trained after learning which moves lead toward the goal: one that picks the goal-ward direction whenever it can. The question: does the policy — the rule itself, not the world — make a difference?"},
-      {"t":"bars","caption":"A random policy vs. a learned good policy on the same 6x6 gridworld. Higher is better. Numbers are the run's output.","rows":[["random policy (picks directions by coin flip)","-122/127","−122"],["good learned policy (picks goal-ward moves)","+1/127","+1"]]},
-      {"t":"insight","html":"<strong>The discovered fact: the random policy averages a return of -122, while the good policy achieves +1 — the best possible.</strong> Same world. Same goal. Same starting position. The only difference is the rule the agent follows. A random policy is so inefficient it takes the agent more than 100 steps to stumble to the goal, racking up penalties the whole way. A good policy knows where to go and gets there in the minimum, collecting almost all of the available reward."}
-    ]},
-    {"id":"why","h2":"4 · Why the policy is what you actually learn","blocks":[
-      {"t":"para","html":"The reason the policy is the real target becomes clear when you think about deployment. When training is over, the agent goes into the world and has to act. At that moment, there is no access to a value table, no ability to think for a long time. The agent sees its state and must output an action, right now. That is exactly what the policy does: state in, action out. Values and rewards are scaffolding during training; the policy is the finished product you ship."},
-      {"t":"para","html":"Moreover, two agents that look identical from the outside differ only in their policies. They inhabit the same world. They face the same rewards. But if one follows a policy that says 'go toward danger' and the other says 'go toward food', their behaviors are completely different. The policy is the agent's strategy, its character, its way of responding to the world."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — a purely greedy policy forgets to explore","blocks":[
-      {"t":"para","html":"There is a hard trade-off hidden in the policy idea. A policy that always picks the action it believes is best — a purely greedy policy — can trap itself. If, early on, an action looked bad because the agent tried it once, received a small penalty, and never tried it again, the policy locks in: it stops exploring that direction forever. But that one bad sample might have been luck. The unseen actions often hide better paths."},
-      {"t":"para","html":"The solution requires the policy to be not purely greedy but stochastic: to keep some probability of taking random actions, or of picking actions it has not fully tested yet. This is called exploration. A policy that explores a little — trying unexpected moves now and then — will eventually stumble on better strategies and improve. But it has to be balanced: too much exploration means wasting time on actions that are truly bad; too little and you settle into a local trap. The policy alone does not solve this; the training process must build it in."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — policies are everywhere you learn","blocks":[
-      {"t":"para","html":"The policy idea does not live only in robot control or game-playing. When a language model generates text, it is running a policy: a learned rule that maps the text history (the state) to a distribution over the next token (the action). The model learns this policy using a method called language modeling (predict the next token) or reinforcement learning (maximize a reward signal, like human preference). When you fine-tune a large language model to follow instructions, you are reshaping its policy — changing the rule it uses to choose the next word given the prompt. When a large language model uses tools — calling a calculator or searching the web — it is running a learned policy about when and which tool to pick."},
-      {"t":"para","html":"The family of methods for learning policies is huge. Some methods — <a href=\"q_learning-deep.html\">Q-learning</a>, <a href=\"policy_gradient-deep.html\">policy gradient</a>, <a href=\"actor_critic-deep.html\">actor-critic</a> — are the classic routes. They differ in how they use rewards and values. Some learn the values first and extract a policy from them; some push the policy directly toward high-reward actions; some use a critic to sharpen the learning signal. But they all converge on the same goal: find a policy π that, from any state, chooses actions likely to accumulate high reward. The policy is the destination every reinforcement learning algorithm is chasing."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why the policy is what you actually learn"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["q_learning-deep.html","Q-learning"],["policy_gradient-deep.html","policy gradient"],["actor_critic-deep.html","actor-critic"],["exploration-deep.html","exploration"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — at each moment the agent must act",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "An agent is always in some state — a room, a board position, a conversation history. At that moment, it has a choice: several actions are available, but only one can be taken. The choice it makes right then will shape what states it lands in later and what rewards it receives. The problem is: there is no oracle telling it which action is right. Every action it has not tried yet is a mystery. So the design challenge becomes clear: <strong>how can we describe and learn a rule that tells an agent, for any state it might encounter, which action to choose?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — the policy is the decision rule itself",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A <em>policy</em> is a function, or a table, or a rule the agent uses to pick an action given its current state. It can be written as π (the Greek letter for policy) and read as: at state s, choose action a with some probability. In the simplest case, it is deterministic — for each state, there is exactly one action that is best, and the policy always picks that one. In the more general case, it is stochastic, or random — for each state, the policy assigns a probability to each action, and the agent samples an action from that distribution."
+        },
+        {
+          "t": "para",
+          "html": "The key insight: <strong>the policy is the thing the agent will use to act in the world.</strong> When you train an agent using reinforcement learning, you are not computing something abstract to be thrown away. You are learning the policy — the mapping from state to action — because that is what you will run, deploy, and execute when the training is done. Everything else — the value function, the reward signal, the critic — exists to help you find a good policy."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — a random policy wanders, a good policy finds the goal",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We trained an agent on a 6 by 6 gridworld: a maze where the agent starts in the corner and must reach a goal square. Each step it takes costs -1 (a penalty for dawdling). Reaching the goal earns +10. The shortest path is exactly 10 steps, so a perfect policy would collect a return of 10 minus 10 penalties, for a net of +1."
+        },
+        {
+          "t": "para",
+          "html": "We compared two policies. First, a policy that picks actions at random: at each step, the agent looks in all directions and flips a mental coin. Second, a policy trained after learning which moves lead toward the goal: one that picks the goal-ward direction whenever it can. The question: does the policy — the rule itself, not the world — make a difference?"
+        },
+        {
+          "t": "bars",
+          "caption": "A random policy vs. a learned good policy on the same 6x6 gridworld. Higher is better. Numbers are the run's output.",
+          "rows": [
+            [
+              "random policy (picks directions by coin flip)",
+              "-122/127",
+              "−122"
+            ],
+            [
+              "good learned policy (picks goal-ward moves)",
+              "+1/127",
+              "+1"
+            ]
+          ]
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the random policy averages a return of -122, while the good policy achieves +1 — the best possible.</strong> Same world. Same goal. Same starting position. The only difference is the rule the agent follows. A random policy is so inefficient it takes the agent more than 100 steps to stumble to the goal, racking up penalties the whole way. A good policy knows where to go and gets there in the minimum, collecting almost all of the available reward."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why the policy is what you actually learn",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The reason the policy is the real target becomes clear when you think about deployment. When training is over, the agent goes into the world and has to act. At that moment, there is no access to a value table, no ability to think for a long time. The agent sees its state and must output an action, right now. That is exactly what the policy does: state in, action out. Values and rewards are scaffolding during training; the policy is the finished product you ship."
+        },
+        {
+          "t": "para",
+          "html": "Moreover, two agents that look identical from the outside differ only in their policies. They inhabit the same world. They face the same rewards. But if one follows a policy that says 'go toward danger' and the other says 'go toward food', their behaviors are completely different. The policy is the agent's strategy, its character, its way of responding to the world."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — a purely greedy policy forgets to explore",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "There is a hard trade-off hidden in the policy idea. A policy that always picks the action it believes is best — a purely greedy policy — can trap itself. If, early on, an action looked bad because the agent tried it once, received a small penalty, and never tried it again, the policy locks in: it stops exploring that direction forever. But that one bad sample might have been luck. The unseen actions often hide better paths."
+        },
+        {
+          "t": "para",
+          "html": "The solution requires the policy to be not purely greedy but stochastic: to keep some probability of taking random actions, or of picking actions it has not fully tested yet. This is called exploration. A policy that explores a little — trying unexpected moves now and then — will eventually stumble on better strategies and improve. But it has to be balanced: too much exploration means wasting time on actions that are truly bad; too little and you settle into a local trap. The policy alone does not solve this; the training process must build it in."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — policies are everywhere you learn",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The policy idea does not live only in robot control or game-playing. When a language model generates text, it is running a policy: a learned rule that maps the text history (the state) to a distribution over the next token (the action). The model learns this policy using a method called language modeling (predict the next token) or reinforcement learning (maximize a reward signal, like human preference). When you fine-tune a large language model to follow instructions, you are reshaping its policy — changing the rule it uses to choose the next word given the prompt. When a large language model uses tools — calling a calculator or searching the web — it is running a learned policy about when and which tool to pick."
+        },
+        {
+          "t": "para",
+          "html": "The family of methods for learning policies is huge. Some methods — <a href=\"q_learning-deep.html\">Q-learning</a>, <a href=\"policy_gradient-deep.html\">policy gradient</a>, <a href=\"actor_critic-deep.html\">actor-critic</a> — are the classic routes. They differ in how they use rewards and values. Some learn the values first and extract a policy from them; some push the policy directly toward high-reward actions; some use a critic to sharpen the learning signal. But they all converge on the same goal: find a policy π that, from any state, chooses actions likely to accumulate high reward. The policy is the destination every reinforcement learning algorithm is chasing."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — The decision rule that maps state to action",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "A policy lives in every system that chooses: robots deciding which direction to move in a cluttered room, game-playing agents picking moves from hundreds of options, and large language models selecting the next token from thousands. A language model running in production is executing a learned policy every time it generates text — a rule that takes the conversation history as input and produces a probability distribution over possible next words."
+        },
+        {
+          "t": "para",
+          "html": "The policy is what the agent actually uses in the world. During training, the system learns by observing rewards for different actions, but what ships is the policy itself — the decision rule. In robotics, the policy might be a neural network that takes sensor readings and outputs motor commands. In language models, the policy is the model's probability distribution over tokens given the context. Data and rewards during training are only scaffolding; the policy is the finished product."
+        },
+        {
+          "t": "insight",
+          "html": "Two agents in the same world with the same rewards will behave completely differently if their policies differ, because the policy is the strategy itself."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "q_learning-deep.html",
+      "Q-learning"
+    ],
+    [
+      "policy_gradient-deep.html",
+      "policy gradient"
+    ],
+    [
+      "actor_critic-deep.html",
+      "actor-critic"
+    ],
+    [
+      "exploration-deep.html",
+      "exploration"
+    ]
+  ],
   "recipe": {
     "summary": "On a 6x6 gridworld (−1 per step, +10 at goal, optimal path 10 steps), run two policies: a random policy that picks directions by coin flip, and a learned policy trained to recognize goal-ward moves. Measure the cumulative return (reward minus penalties) for each over many episodes until convergence.",
     "eq": "policy π(a|s) = probability of choosing action a in state s\nreturn = sum of (reward_t - step_penalty) over the episode\nrandom policy return = -122  (averages >100 steps to stumble to goal)\ngood policy return   = +1   (10-step optimal path)\nscaling: reward=10, penalty per step=-1",

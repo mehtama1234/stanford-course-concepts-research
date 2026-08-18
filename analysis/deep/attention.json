@@ -4,34 +4,174 @@
   "kick": "large language models · first principles · the model that decides what to read",
   "title": "Attention — how a model picks the few words that matter",
   "lede": "To understand a sentence, you cannot treat every word as equally important. In 'the trophy did not fit in the suitcase because it was too big', figuring out what 'it' means depends on a couple of specific earlier words, not on all of them evenly. Attention is the mechanism that lets a model do this: for each word, look back over the others and decide, on the spot, which ones to lean on. Here is the idea, a measurement on the real GPT-2 showing it concentrates rather than averages, why that matters, where it strains, and how this one operation became the engine of modern AI.",
-  "arc": [["problem","The problem"],["reframe","The reframe"],["run","Seen on a real run"],["why","Why concentrating beats averaging"],["weakness","The one real weakness"],["surprise","The surprise"]],
-  "sections": [
-    {"id":"problem","h2":"1 · The problem — not every word counts equally","blocks":[
-      {"t":"para","html":"Reading is not a flat average. When you process a word, some earlier words are highly relevant to it and most are nearly irrelevant, and <em>which</em> ones matter changes from word to word and sentence to sentence. A rule like 'always look at the previous word' or 'average everything together' throws that away — it cannot tell that, for the word 'it', the important words might be several places back and different every time."},
-      {"t":"para","html":"So the need is sharp: <strong>for each word, how can a model decide — based on the actual content, not a fixed rule — which other words to pay attention to right now?</strong>"}
-    ]},
-    {"id":"reframe","h2":"2 · The reframe — let every word ask a question and score the answers","blocks":[
-      {"t":"para","html":"Here is the move. Give each word three roles it plays, each just a short list of numbers the model learns to produce. First, a <em>query</em>: what am I, this word, looking for? Second, a <em>key</em>: what do I, each other word, have to offer? Third, a <em>value</em>: the actual information I'll hand over if chosen. Now, for the word doing the looking, compare its query against every word's key to get a match score, turn those scores into weights that add up to one (big weight for a strong match, near zero for a weak one), and blend the values by those weights. The result is a custom summary, built fresh for that word, of exactly the other words it found relevant. That operation is <strong>attention</strong>. Crucially, nobody writes the rule for what matches what — the model learns it."}
-    ]},
-    {"id":"run","h2":"3 · Seen on a real run — the model concentrates, it does not average","blocks":[
-      {"t":"para","html":"We ran the actual GPT-2, a widely-used language model with 124 million learned numbers, on a 13-word sentence and read out its attention weights directly. The question: does attention really single out a few words, or does it smear its focus evenly? We compared what we measured to what a flat, everything-counts-equally average would give."},
-      {"t":"table","headers":["measure","flat average would give","GPT-2 actually gives"],"rows":[["weight on the single most-attended word","0.077 (one thirteenth)","0.73"],["spread of the attention (its entropy)","2.56","0.84"]],"caption":"Across a 13-word sentence, averaged over all of GPT-2's attention. Higher 'weight on one word' and lower 'spread' both mean sharper focus. Numbers are the run's output."},
-      {"t":"insight","html":"<strong>The discovered fact: the single most-attended word receives 0.73 of the weight — nearly three quarters — where a flat average would give it only 0.077.</strong> And the spread of the attention is 0.84, far below the 2.56 a smeared-out focus would show. The real model does not average its context; it concentrates hard on a few words and largely ignores the rest, exactly as the design intended."}
-    ]},
-    {"id":"why","h2":"4 · Why concentrating beats averaging","blocks":[
-      {"t":"para","html":"The power is that the focus is chosen by content and changes every time. For 'it', the model can lean on 'trophy' and 'suitcase' and skip the filler; for a verb, it can look back to its subject. A fixed rule cannot do this — it would blend in irrelevant words and drown the signal. Because attention scores every pair of words directly, a word at the start of a passage can be pulled in as easily as its neighbour, so long-range connections survive. And because it is all learned, the model discovers for itself which relationships to track."}
-    ]},
-    {"id":"weakness","h2":"5 · The one real weakness — everyone looks at everyone, and that gets expensive","blocks":[
-      {"t":"para","html":"The catch is cost. Attention compares every word with every other word, so doubling the length of the text roughly quadruples the work and the memory. For a short sentence this is nothing, but for a long document, a book, or an hour of transcript it becomes the main bottleneck — which is why long inputs are slow and expensive, and why a whole research industry exists to approximate attention more cheaply without losing its selectiveness."}
-    ]},
-    {"id":"surprise","h2":"6 · The surprise — one operation runs almost all of modern AI","blocks":[
-      {"t":"para","html":"This single 'ask a question, score the answers, blend the winners' step, stacked in <a href=\"transformer_block-deep.html\">layers</a>, is the entire engine of the transformer — the architecture behind essentially every large language model. The words it blends are <a href=\"embeddings-deep.html\">embeddings</a>, meaning turned into geometry; the order it needs is supplied by <a href=\"positional_encoding-deep.html\">positional encoding</a>. The exact same attention, applied to patches of an image instead of words, powers <a href=\"vision_transformers-deep.html\">vision transformers</a>. Learn this one operation — decide what to read, then read it — and you have the core idea that reshaped the whole field."}
-    ]}
+  "arc": [
+    [
+      "problem",
+      "The problem"
+    ],
+    [
+      "reframe",
+      "The reframe"
+    ],
+    [
+      "run",
+      "Seen on a real run"
+    ],
+    [
+      "why",
+      "Why concentrating beats averaging"
+    ],
+    [
+      "weakness",
+      "The one real weakness"
+    ],
+    [
+      "surprise",
+      "The surprise"
+    ],
+    [
+      "practice",
+      "In practice"
+    ]
   ],
-  "related": [["transformer_block-deep.html","the transformer block"],["embeddings-deep.html","embeddings"],["positional_encoding-deep.html","positional encoding"],["vision_transformers-deep.html","vision transformers"]],
+  "sections": [
+    {
+      "id": "problem",
+      "h2": "1 · The problem — not every word counts equally",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Reading is not a flat average. When you process a word, some earlier words are highly relevant to it and most are nearly irrelevant, and <em>which</em> ones matter changes from word to word and sentence to sentence. A rule like 'always look at the previous word' or 'average everything together' throws that away — it cannot tell that, for the word 'it', the important words might be several places back and different every time."
+        },
+        {
+          "t": "para",
+          "html": "So the need is sharp: <strong>for each word, how can a model decide — based on the actual content, not a fixed rule — which other words to pay attention to right now?</strong>"
+        }
+      ]
+    },
+    {
+      "id": "reframe",
+      "h2": "2 · The reframe — let every word ask a question and score the answers",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The move. Give each word three roles it plays, each just a short list of numbers the model learns to produce. First, a <em>query</em>: what am I, this word, looking for? Second, a <em>key</em>: what do I, each other word, have to offer? Third, a <em>value</em>: the actual information I'll hand over if chosen. Now, for the word doing the looking, compare its query against every word's key to get a match score, turn those scores into weights that add up to one (big weight for a strong match, near zero for a weak one), and blend the values by those weights. The result is a custom summary, built fresh for that word, of exactly the other words it found relevant. That operation is <strong>attention</strong>. Crucially, nobody writes the rule for what matches what — the model learns it."
+        }
+      ]
+    },
+    {
+      "id": "run",
+      "h2": "3 · Seen on a real run — the model concentrates, it does not average",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "We ran the actual GPT-2, a widely-used language model with 124 million learned numbers, on a 13-word sentence and read out its attention weights directly. The question: does attention really single out a few words, or does it smear its focus evenly? We compared what we measured to what a flat, everything-counts-equally average would give."
+        },
+        {
+          "t": "table",
+          "headers": [
+            "measure",
+            "flat average would give",
+            "GPT-2 actually gives"
+          ],
+          "rows": [
+            [
+              "weight on the single most-attended word",
+              "0.077 (one thirteenth)",
+              "0.73"
+            ],
+            [
+              "spread of the attention (its entropy)",
+              "2.56",
+              "0.84"
+            ]
+          ],
+          "caption": "Across a 13-word sentence, averaged over all of GPT-2's attention. Higher 'weight on one word' and lower 'spread' both mean sharper focus. Numbers are the run's output."
+        },
+        {
+          "t": "insight",
+          "html": "<strong>The discovered fact: the single most-attended word receives 0.73 of the weight — nearly three quarters — where a flat average would give it only 0.077.</strong> And the spread of the attention is 0.84, far below the 2.56 a smeared-out focus would show. The real model does not average its context; it concentrates hard on a few words and largely ignores the rest, exactly as the design intended."
+        }
+      ]
+    },
+    {
+      "id": "why",
+      "h2": "4 · Why concentrating beats averaging",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The power is that the focus is chosen by content and changes every time. For 'it', the model can lean on 'trophy' and 'suitcase' and skip the filler; for a verb, it can look back to its subject. A fixed rule cannot do this — it would blend in irrelevant words and drown the signal. Because attention scores every pair of words directly, a word at the start of a passage can be pulled in as easily as its neighbour, so long-range connections survive. And because it is all learned, the model discovers for itself which relationships to track."
+        }
+      ]
+    },
+    {
+      "id": "weakness",
+      "h2": "5 · The one real weakness — everyone looks at everyone, and that gets expensive",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "The catch is cost. Attention compares every word with every other word, so doubling the length of the text roughly quadruples the work and the memory. For a short sentence this is nothing, but for a long document, a book, or an hour of transcript it becomes the main bottleneck — which is why long inputs are slow and expensive, and why a whole research industry exists to approximate attention more cheaply without losing its selectiveness."
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "h2": "6 · The surprise — one operation runs almost all of modern AI",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "This single 'ask a question, score the answers, blend the winners' step, stacked in <a href=\"transformer_block-deep.html\">layers</a>, is the entire engine of the transformer — the architecture behind essentially every large language model. The words it blends are <a href=\"embeddings-deep.html\">embeddings</a>, meaning turned into geometry; the order it needs is supplied by <a href=\"positional_encoding-deep.html\">positional encoding</a>. The exact same attention, applied to patches of an image instead of words, powers <a href=\"vision_transformers-deep.html\">vision transformers</a>. Learn this one operation — decide what to read, then read it — and you have the core idea that reshaped the whole field."
+        }
+      ]
+    },
+    {
+      "id": "practice",
+      "h2": "7 · Where it is used in practice — focusing on the few words that matter when reading",
+      "blocks": [
+        {
+          "t": "para",
+          "html": "Language models like ChatGPT and Claude use attention to decide which earlier words matter when predicting the next one. Image models process photos by computing attention over patches of pixels, focusing on the relevant regions for the task at hand. Search engines rank documents by computing attention-like scores: which parts of your query match this document best? Recommendation systems decide which past items a user interacted with are most relevant to their current query."
+        },
+        {
+          "t": "para",
+          "html": "For each word (or patch, or query), the model assigns a key and value to every other word and computes a score measuring how much the current position should pay attention to each. The score is normalized so they sum to one, and values are blended using those weights. This is computed from learned parameters, so the model discovers which relationships to track. A word like 'it' learns to look hard at noun candidates; a verb learns to look at its subject."
+        },
+        {
+          "t": "insight",
+          "html": "Concentrating on the few relevant items rather than averaging everything is how models avoid drowning weak signals in noise, which is why nearly every modern AI system relies on this one operation."
+        }
+      ]
+    }
+  ],
+  "related": [
+    [
+      "transformer_block-deep.html",
+      "the transformer block"
+    ],
+    [
+      "embeddings-deep.html",
+      "embeddings"
+    ],
+    [
+      "positional_encoding-deep.html",
+      "positional encoding"
+    ],
+    [
+      "vision_transformers-deep.html",
+      "vision transformers"
+    ]
+  ],
   "recipe": {
     "summary": "Run the real pretrained GPT-2 (124M) on a 13-word sentence with attention outputs on. For every layer, head, and query position, take the attention weights (which sum to 1 over the words looked at) and measure (a) the largest single weight and (b) the entropy; average across all of them. Compare to a uniform 1/13 average.",
     "eq": "attention(word) = sum over other words of  weight(word, other) * value(other)\nweight = softmax( query(word) . key(other) / sqrt(d) )   # weights sum to 1\nmeasured mean top-1 weight = 0.73  vs uniform 1/13 = 0.077\nmeasured mean entropy      = 0.84  vs uniform log(13) = 2.56",
     "note": "Full script: scripts/experiments/stanford_gpt2.py (exp_attention), the actual GPT-2 weights. Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "cs329a",
+      "id": "reasoning-traces",
+      "label": "reasoning traces",
+      "note": "Attention learns which tokens matter inside a single pass; a reasoning trace externalises that focus as written steps the model can extend."
+    }
+  ]
 }
