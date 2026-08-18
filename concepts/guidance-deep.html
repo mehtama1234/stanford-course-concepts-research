@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guidance (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="guidance.html">This concept</a></nav></header>
+<main>
+<div class="kick">diffusion and generative models · first principles · asking a generator to obey your request</div>
+<h1>Guidance — steering a sampler toward what you asked for</h1>
+<p class="lede">A generator can make realistic images, but it makes any realistic image — it does not obey requests. You ask for 'a dog' and it gives you a dog-shaped animal, or a field, or noise that is plausibly dog-like. The core problem is that an unrestricted generator learns to produce anything the training data contains with equal probability. Guidance is the trick that makes it listen: run the generator two ways at once — once told what you want, once told nothing — and push the samples along the difference, the 'what makes this the thing you asked for' direction. Here is how it turns a coin flip into a yes, why the difference direction steers, what breaks if you push too hard, and where this knob is hiding inside every text-to-image model that follows a prompt.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the difference vector steers</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="guidance.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — the generator obeys the data, not your request</h2>
+      <div class="essay">
+      <p>A generative model trained on, say, images of dogs and cats learns to produce images that look like dogs and cats. But when you ask it for 'a dog', it samples randomly from its learned distribution — it might land on a dog, or a cat, or something in between, because both are plausible to it. The problem is stark: <strong>the generator has no mechanism to say 'yes, I will give you dogs and skip the cats' — it treats all of its training data equally.</strong> For a conditional generator, one that was taught to make images when given a class label or text description, the situation is better but still soft: it has learned what 'dog-ness' looks like, but its sampler still explores the full distribution, so asking for dogs still draws from a fuzzy cloud centered on dog-like outputs, not a sharp choice that is always dogs and never cats.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — run it two ways and push along the difference</h2>
+      <div class="essay">
+      <p>The move. Instead of running the generative sampler only once, run it twice on the same noise, in parallel. The first run: tell the model your request ('dog-class', or 'a dog wearing a hat'). The second run: tell the model nothing — drop the request and sample from the unrestricted model. Now, at each step of the generation, you have two predictions: one that heard the request and one that heard nothing. Subtract: prediction-with-request minus prediction-without-request. This difference is a direction in the space of possible next steps, and it points toward 'what the model changes when it obeys your request.' Now, add this direction to the first prediction, scaled by a strength. The result is a sample that steers harder toward the requested thing — the model amplifies what makes the output obey you. This is <strong>classifier-free guidance</strong>: no extra classifier needed, just the request and the absence of it, and the difference between them.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the difference vector turns a coin flip into certainty</h2>
+      <div class="essay">
+      <p>We trained a simple generator on eight overlapping Gaussian blobs arranged on a ring — two classes, left and right, slightly overlapping. The question: can guidance push samples toward a specific class instead of letting them scatter randomly? We sampled 100 times with no guidance, asking for the right class but ignoring the request. We sampled 100 times with guidance, using the conditional-minus-unconditional direction.</p>
+      <figure><div class="barrow"><span class="lab">no guidance (ignore the request)</span><div class="bar" style="width:76px"></div><span class="val">51% on target</span></div><div class="barrow"><span class="lab">add guidance direction</span><div class="bar" style="width:150px"></div><span class="val">100% on target</span></div><figcaption>Without guidance vs. with the guidance direction. Left: percentage of samples landing on the requested class. Right: mean distance from the center of the requested class.</figcaption></figure>
+      <p>More precisely: no guidance — 51% of samples landed on the right class (a coin flip) at mean distance 2.30 from the class center. Add the guidance direction — 100% landed on the right class at mean distance 0.73 from the center.</p>
+      <div class="insight"><strong>The discovered fact: guidance transforms a coin flip into certainty. Without it, asking for the right class has a 51% success rate; with the guidance direction added, it reaches 100%, and the samples cluster 3.15 times tighter around the target.</strong></div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why the difference vector steers</h2>
+      <div class="essay">
+      <p>The power is that the difference between 'conditioned on the request' and 'conditioned on nothing' captures exactly what the label contributes. When the model sees 'right class', it adjusts its prediction to favour right-class-ness. When it sees nothing, it sits at the average. The difference isolates the 'right-class-ness direction' — it points exactly toward the thing you asked for. Pushing along that direction means amplifying that adjustment: instead of a small nudge toward the request, the sample gets a strong shove. Because the direction is computed from the model's own learned understanding of what the label means, it is adaptive — it works for any label, any text prompt, any request the model has learned. The direction changes every step of the generation, so the steering stays aligned with where the sample currently is.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — more guidance trades variety for fidelity</h2>
+      <div class="essay">
+      <p>The catch is the strength knob. Guidance is a dial: turn it up and samples get more faithfully on-target, more certain, more aligned with your request. But crank it too high and the output becomes repetitive, unnatural, and lacks diversity — the model is pushed so hard toward your request that it ignores all the other details it learned. It is a classic fidelity-versus-variety trade-off. A guidance strength of zero means 'ignore the request entirely' (coin flip). A strength of one means 'use the model's normal conditional prediction.' A strength of two, three, or higher means 'exaggerate the request,' pushing harder toward the target class but risking artificiality. The user must dial it in: strong enough to obey the request reliably, but not so strong that the output becomes a repetitive, boring stereotype.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the knob behind prompt adherence in every text-to-image model</h2>
+      <div class="essay">
+      <p>Classifier-free guidance is not a neat theoretical idea — it is the mechanism that makes text-to-image models actually follow prompts. In Stable Diffusion, DALL-E, and Midjourney, the prompt adherence you experience — the fact that asking for 'a red car under a blue sky' gives you a red car, not a random vehicle — comes from running two forward passes, computing the difference, and pushing along it. The same conditional-versus-unconditional trick also appears in <a href="diffusion-deep.html">diffusion</a>, where it is called classifier guidance (using an actual trained classifier instead), and in <a href="flow_matching-deep.html">flow matching</a>, where it steers the learned velocity field. The difference vector is so general that it works across generative models — anywhere you can run the model two ways, you can extract the direction of a request and amplify it. This is why it is the de facto standard for steering modern generative AI: it is simple, works out of the box, and requires no retraining.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — steer a generator toward your request</h2>
+      <div class="essay">
+      <p>Text-to-image models like Stable Diffusion and DALL-E use guidance to make the prompt actually control the output—without it, asking for a red car just produces a car-shaped thing that might be any color. Diffusion-based audio synthesis steers toward a specific voice or mood by comparing conditional and unconditional samples. Video generation systems use guidance to honor temporal constraints that a user specifies. Molecule generation tools guide the search toward properties (toxicity, binding affinity) that matter for the task.</p>
+      <p>The system runs the generator twice on the same noise: once while being told the request (class label, text prompt, constraint), and once without any conditioning. It computes the difference between the two predictions—that difference vector points in the direction 'what changes when I obey you.' Adding that direction back to the first prediction, scaled up, steers the output harder toward the request.</p>
+      <div class="insight">Without guidance, generators treat all outputs equally; with it, the request becomes the dominant signal.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="diffusion-deep.html">diffusion</a> · <a href="score_matching-deep.html">score matching</a> · <a href="flow_matching-deep.html">flow matching</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Train a simple generator on eight Gaussians on a ring (two-class blobs, left and right). Sample 100 times with no guidance (unconditional, ignore class label) and 100 times with guidance (conditional prediction minus unconditional prediction, added with scaling factor 1.0). Measure the fraction of samples landing within a small radius of the requested class center and their mean distance from it.</p>
+      <div class="eq">guidance_sample = model(z, class=request) + scale * (model(z, class=request) - model(z, class=None))
+                  = (1 + scale) * model(z, class=request) - scale * model(z, class=None)
+no guidance: 51% hit rate, mean distance 2.30
+with guidance: 100% hit rate, mean distance 0.73</div>
+      <p class="muted">Full script: scripts/experiments/stanford_diffusion.py (exp_guidance), the 2D toy target. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Guidance deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

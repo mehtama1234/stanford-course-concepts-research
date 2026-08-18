@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fine-tuning (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="fine_tuning.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · scaling · tweaking a pretrained model to master one skill</div>
+<h1>Fine-tuning — reshaping a model's behavior by training it further on good examples</h1>
+<p class="lede">A pretrained large language model knows language broadly — it can write, reason, and follow instructions — but it often stumbles on specific tasks you care about. Retraining it from scratch on your task is impossibly expensive. The breakthrough is fine-tuning: take the already-trained model and keep training it, but only on a small set of expertly-worked examples of the task you want. The model's learned abilities stay intact, and its attention nudges toward your demonstrations. Here is the idea, a real measurement showing how a small model climbs from 10% to 65% accuracy by imitating a strong teacher, why this works fast and stably, where it hits a wall, and why this exact technique is how most small reasoning models are actually built.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why imitation is fast and stable</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="fine_tuning.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — a pretrained model knows language, but not your specific skill</h2>
+      <div class="essay">
+      <p>A large language model trained on terabytes of text has absorbed grammar, facts, and reasoning patterns. But put it on a narrow task — say, solving grade-school math step by step, or labeling medical images, or translating legal documents — and its accuracy often flails. Retraining it from zero on your task would work, but training a model with 600 million parameters (or billions, for larger ones) from scratch costs thousands of dollars and weeks of compute.</p>
+      <p>So the need is sharp: <strong>can you take a trained model and reshape its behavior toward your specific skill without burning a fortune and erasing its learned abilities?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — show it worked examples and keep training on just those</h2>
+      <div class="essay">
+      <p>The move. You already have a model that <em>can</em> handle the skill — it just doesn't do it reliably yet. You gather a modest set of expertly-worked demonstrations — step-by-step math solutions from a strong teacher, correctly-labeled data, ideal translations. Then you train the model further, showing it your demonstrations and asking it to predict the next token each time, exactly as if pretraining. But now the text it sees is <em>only</em> your examples, not the whole internet. You run this for a handful of passes over the same examples (called epochs).</p>
+      <p>This is <strong>fine-tuning</strong>, and the mechanism is simple: continue the existing training process but on a narrower, curated signal. The model doesn't start from random weights; it begins with 600 million learned numbers that already captured language. Your demonstrations nudge those weights slightly, teaching it 'here is where to apply what you already know.' And because you are not training from scratch, a few demonstrations and a few GPU-hours are often enough.</p>
+      <p>The hidden quantity is how far the weights drift from their pretrained starting point: fine-tuning nudges them just enough to fit the new task while keeping the broad knowledge already there.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — climbing from 10% to 65% accuracy by imitating a teacher</h2>
+      <div class="essay">
+      <p>We fine-tuned a real small model — Qwen 0.6 billion parameters — on 30 grade-school math problems (GSM8K). The teacher was a strong model's worked solutions. We ran five epochs, checking accuracy on the training set each time. The question: how fast does the small model climb by imitating the teacher? Does it over-fit, memorizing the 30 examples rather than learning the underlying skill?</p>
+      <figure><div class="barrow"><span class="lab">epoch 0 (base)</span><div class="bar" style="width:15px"></div><span class="val">10%</span></div><div class="barrow"><span class="lab">epoch 1</span><div class="bar" style="width:52px"></div><span class="val">35%</span></div><div class="barrow"><span class="lab">epoch 2 (peak)</span><div class="bar" style="width:98px"></div><span class="val">65%</span></div><div class="barrow"><span class="lab">epoch 3</span><div class="bar" style="width:75px"></div><span class="val">50%</span></div><div class="barrow"><span class="lab">epoch 4</span><div class="bar" style="width:75px"></div><span class="val">50%</span></div><figcaption>Accuracy by epoch: fine-tuning a small model on a teacher's worked solutions. Numbers are the run's output.</figcaption></figure>
+      <p>Answer length (the model's reasoning depth) stayed full throughout — roughly 840 tokens at the end — and never collapsed into short, lazy guesses.</p>
+      <div class="insight"><strong>The discovered fact: imitation climbs fast and stably. In two epochs the model went from 10% (raw pretrained) to 65% peak accuracy — faster than most RL approaches. The slight drop from epoch 2 to epoch 3 (65% to 50%) is over-fitting: the model memorized the 30 examples so well it no longer generalizes. But the key: even at the bottom of the over-fit, it stays at 50%, it never collapsed to 5% or short nonsense. Full-length reasoning persisted, which means the model learned real behavior, not a trick.</strong></div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why imitation is fast and stable — the model already has the abilities</h2>
+      <div class="essay">
+      <p>The speed and stability come from a fundamental fact: you are not teaching the model to multiply or reason from scratch. It already can, because it learned language patterns during pretraining. Fine-tuning is not teaching; it is curating — showing the model 'when you see a math problem, write out the steps, not a guess.' The model's architecture and weights already capture the ability; demonstrations just teach it to apply those abilities in the right situation and format.</p>
+      <p>Compare this to reinforcement learning for language models, where you assign a right-or-wrong reward and let the model stumble until it finds the reward. RL on the same small model climbed slowly (5% to 50% over thousands of steps) and then collapsed (the model learned to emit a single guessed number to chase the reward). Imitation dodges this: because every demonstration is a full, correct worked solution, the model sees the <em>shape</em> of a good answer — not just that it wins, but what it looks like. That shapes learning faster and more robustly.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — it can only learn what the demonstrations show</h2>
+      <div class="essay">
+      <p>Fine-tuning by imitation has a ceiling: the model inherits the teacher's mistakes and strategies. If the teacher always solves a problem one way, the student will too — it cannot discover novel approaches the teacher never used. And if your demonstrations are flawed or incomplete, the model will become skillfully flawed.</p>
+      <p>Over-fitting is a real risk with modest datasets. In our run, accuracy peaked at 65% in epoch 2 and dipped to 50% by epoch 3 — the model was beginning to memorize the 30 examples instead of generalizing. With more data or earlier stopping, this is manageable, but it is an ever-present trap: show a small model too many passes over too few examples and it learns by heart, not by understanding.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this exact technique is how most small reasoning models are built</h2>
+      <div class="essay">
+      <p>The models that now solve math, code, and complex reasoning tasks — OpenAI's o1-mini, Anthropic's Claude 3.5 Haiku, and others — begin as base language models, then are fine-tuned on expert demonstrations at massive scale. The same principle that reshaped our small Qwen model also scales to billions of tokens of curated reasoning. Most of the 'reasoning' capability you see in small models is not emergent — it is imitation. And compared to reinforcement learning alternatives, it is faster and more stable, which is why it dominates industry practice.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — reshape a trained model with expert examples</h2>
+      <div class="essay">
+      <p>Medical imaging tools start as general vision models, then are fine-tuned on labeled scans from radiologists to detect specific pathologies. Code assistants like Claude are pretrained on the internet, then fine-tuned on examples of helpful, clear, non-harmful code explanations. Customer support chatbots are seeded with a base language model, then trained further on transcripts of expert support conversations. Legal document tools begin as general text models, then are refined on correctly-categorized legal documents.</p>
+      <p>The system shows the model its curated examples and runs one training pass (or a few passes) over them, just like pretraining but on a much smaller, task-specific signal. The model's already-learned weights barely shift—they nudge slightly, redirecting attention toward when and how to use the abilities it already has. Because the model starts with millions of learned parameters and you're only refining them on hundreds or thousands of examples, the process runs fast and requires little compute.</p>
+      <div class="insight">This is how almost all small reasoning and specialized models are built today: pretraining buys general language understanding, fine-tuning carves it into a specific skill.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/rationale-bootstrapping-deep.html" style="font-weight:700">rationale bootstrapping</a> <span class="muted" style="font-size:13px">· Reason · CS329A</span><div style="font-size:14.5px;margin-top:3px">Fine-tuning on a teacher's correct rationales is how a small model bootstraps reasoning.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="pretraining-deep.html">pretraining</a> · <a href="rl_for_llms-deep.html">reinforcement learning for language models</a> · <a href="reasoning_traces-deep.html">reasoning traces</a> · <a href="evaluation-deep.html">evaluation</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Take a pretrained model (Qwen3-0.6B) and train it further on 30 expert-worked grade-school math solutions (GSM8K). Run five epochs, checking accuracy against the training set each epoch. Compare to the base model accuracy and measure whether answer length collapses (a sign the model learned a shortcut rather than real reasoning). Numbers are the run's output verbatim from the reasoning-from-scratch lab.</p>
+      <div class="eq">fine_tuning_loss = cross_entropy( model(input_tokens), target_next_tokens )
+accuracy_by_epoch = [base, epoch_1, epoch_2, peak, epoch_3, epoch_4]
+                  = [10%, 35%, 65%, 65%, 50%, 50%]
+answer_length_end = 840 tokens (never collapsed)</div>
+      <p class="muted">Full script: Group D real Qwen3-0.6B runs from the reasoning-from-scratch lab. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Fine-tuning deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

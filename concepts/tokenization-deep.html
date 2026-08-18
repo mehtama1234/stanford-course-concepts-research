@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tokenization (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="tokenization.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · how a model learns to read broken words</div>
+<h1>Tokenization — the unglamorous first step that shapes everything</h1>
+<p class="lede">Before a language model sees your words, they are chopped into pieces. Not by meaning — by frequency. The word 'cat' might be one piece because it appears often; 'unbelievable' is also one piece; but 'antidisestablishmentarianism' gets split into five. A model works on a fixed list of symbols — it cannot add a new slot for every word that has ever existed or might be invented — so instead it builds a vocabulary of frequent sub-word pieces and learns to spell any word, even a brand-new one, as a sequence of those pieces. This is tokenization. Here is the problem it solves, the reframe that enables it, numbers from running the real GPT-2 showing how it breaks words, why this strategy works, the one quiet cost it hides, and why this unglamorous first step shapes which tasks an AI will be good or bad at.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why pieces beat whole words</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="tokenization.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — language never stops inventing new words</h2>
+      <div class="essay">
+      <p>A language model must choose its answer from a list of symbols. A list is finite. English, at any given moment, has maybe 170,000 'real' words in active use — but that is just what humans have written down so far. People invent new words constantly: 'bingeable', 'cryptocurrency', 'ChatGPT'. Slang appears overnight. Text includes names you have never seen before, typos, abbreviations, languages mixing together, made-up words in fiction. You cannot build a slot in your model's vocabulary for every word that might ever appear in human text — the list would be infinite, or close to it. So the need is: <strong>how can a model work on a fixed, finite list of symbols and still handle any word, including ones it has never encountered?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — words are built from frequent pieces</h2>
+      <div class="essay">
+      <p>The move. Instead of making the vocabulary list be whole words, make it be frequent <em>sub-word pieces</em>. Count which sequences of characters appear most often in a large pile of text — the letters 'th', the syllable 'ing', common words like 'the' and 'and'. Keep the most frequent pieces and discard the rest. Now every word, even a rare or brand-new one, can be spelled as a sequence of known pieces. The common words land in one piece (efficient, fast). Rare words are a short sequence (a few pieces). No word is truly unknown — you can always spell it, piece by piece. The model learns to work with this sequence of pieces, called <em>tokens</em>, instead of single characters or whole words. That is <strong>tokenization</strong>: chopping text into this reusable vocabulary of pieces.</p>
+      <p>The hidden quantity is how often each character pair appears in the text — the most frequent pairs are merged into single tokens first, so common words become one token and rare ones fragment into several.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the vocabulary pieces language together</h2>
+      <div class="essay">
+      <p>We ran the actual GPT-2, a widely-used language model with 124 million learned numbers, and asked: how many pieces does the real vocabulary contain? And when it sees rare words, how does it break them up? We looked at six example words and counted how many pieces GPT-2 splits each into.</p>
+      <div class="tw"><table><tr><th>word</th><th>token count</th><th>breakdown (if more than 1)</th></tr><tr><td>cat</td><td>1</td><td>—</td></tr><tr><td>running</td><td>1</td><td>—</td></tr><tr><td>unbelievable</td><td>1</td><td>—</td></tr><tr><td>tokenization</td><td>2</td><td>—</td></tr><tr><td>antidisestablishmentarianism</td><td>5</td><td>ant / idis / establishment / arian / ism</td></tr></table></div><figcaption>Real token counts from GPT-2's vocabulary of 50,257 pieces. Common words stay whole; rare words are split into a sequence.</figcaption>
+      <div class="insight"><strong>The discovered fact: GPT-2 has a vocabulary of 50,257 reusable pieces.</strong> Common words like 'cat', 'running', and 'unbelievable' each fit in a single piece — they are frequent enough that the tokenizer learned them whole. But 'antidisestablishmentarianism', a rare word, breaks into five pieces: 'ant' / 'idis' / 'establishment' / 'arian' / 'ism'. The word 'tokenization' itself, less common than 'cat' but more common than the long word, lands in two pieces. Every word, no matter how obscure, is spelled out of known pieces.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why pieces beat whole words</h2>
+      <div class="essay">
+      <p>This strategy has three strengths. First, a fixed 50,257-piece vocabulary can represent any word that has ever been written or will be written — even a typo, a name, a word in another language — because you can always spell it piece by piece. A whole-word vocabulary cannot; sooner or later you hit a word not on the list. Second, common words stay efficient at one piece, so the model does not waste its context on breaking up 'the' or 'cat' into fragments. Third, the learner gets to work with a manageable list — 50,257 slots instead of infinite, or instead of one slot per character (which would make every word dozens of steps).</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — the split is by frequency, not meaning</h2>
+      <div class="essay">
+      <p>The catch is that the tokenizer is not smart. It chops by how often pieces appear in the training text, not by what those pieces mean. A word like 'strawberry' might split in a way that fragments the meaning — maybe the first letter goes in one piece and the rest in others. The model then has to learn that these pieces spell a real, unified concept, which costs extra work. For rare scripts and languages, tokenization is wasteful because the frequent pieces come from English text, and the rare script might need many more pieces for the same thought. And the split can actively mislead the model on tasks like counting the letter 'r' in 'strawberry' or doing digit-by-digit arithmetic — the model must learn to work backward from the tokenization to the original characters, a layer of indirection that slows it down.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this choice silently shapes everything</h2>
+      <div class="essay">
+      <p>Tokenization seems like a dull engineering choice — just a preprocessing step before the interesting math begins. But it is not. The token boundaries you draw alter how the model learns. The number of tokens you have left determines how far back you can look (your context length). The split of words into pieces is a constant source of subtle errors; the 'how many r's in strawberry' mistake that made headlines is partly a tokenization failure, not a reasoning failure. Some tasks are easy for a model trained on English tokens but hard for one trained on a language that splits differently. Which languages do well or poorly in an AI system, which benchmarks reveal a model's real ability or just its tokenization, whether an arithmetic task is genuinely hard or just hard to express in tokens — all of this ripples from the tokenizer. This unglamorous first step before any attention, before any layers, before any thinking, is one of the quiet shapers of which problems language models will excel at and which they will stumble on.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Break text into reusable pieces before processing</h2>
+      <div class="essay">
+      <p>Every large language model uses tokenization as its first step: ChatGPT, Claude, Qwen, and other systems all break input text into subword tokens before feeding it to the neural network. Vision language models tokenize both text and patch descriptions using variants of the same approach. Specialized domains like medical text or code tokenize using vocabularies optimized for their specific syntax and terminology.</p>
+      <p>A vocabulary of frequent subword pieces is created from large text corpora by counting which character sequences appear most often. Common words stay as single tokens, rare words are split into a sequence of pieces. At inference, incoming text is broken into this fixed vocabulary—looking up which pieces appear in the text and replacing each word or fragment with its token index. The model then works with sequences of these integers rather than raw characters.</p>
+      <div class="insight">Tokenization boundary decisions shape which tasks a model will find easy or hard: a model may struggle with counting or arithmetic because tokenization obscures the individual digits or letter positions in ways that force the model to work around its own preprocessing.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/reasoning-traces-deep.html" style="font-weight:700">reasoning traces</a> <span class="muted" style="font-size:13px">· Reason · CS329A</span><div style="font-size:14.5px;margin-top:3px">Tokenization sets the grain of thought; a reasoning trace is written in exactly those tokens.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="embeddings-deep.html">embeddings</a> · <a href="attention-deep.html">attention</a> · <a href="pretraining-deep.html">pretraining</a> · <a href="transformer_block-deep.html">the transformer block</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run the real pretrained GPT-2 (124M) on a small set of example words (common and rare). Use the tokenizer to encode each word and count how many pieces result; optionally print the token IDs to see the pieces directly. Report the total vocabulary size and the token counts for each example.</p>
+      <div class="eq">tokenization: text -&gt; sequence of integers, each in [0, 50256]
+vocab_size = 50,257
+token_count(word) = len(tokenizer.encode(word))
+example: encode('antidisestablishmentarianism') -&gt; 5 tokens</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_tokenization), the actual GPT-2 tokenizer and weights. Numbers are the run's output verbatim. Vocabulary size 50,257 and token splits are confirmed from the real model.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Tokenization deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

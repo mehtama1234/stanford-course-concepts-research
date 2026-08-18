@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scaling Laws (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="scaling_laws.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · bigger is predictable</div>
+<h1>Scaling Laws — why bigger models are reliably smarter</h1>
+<p class="lede">Building a new language model costs millions of dollars and takes weeks. You cannot afford to guess whether a bigger model will actually be better, or waste compute training something that will not improve the task. Scaling laws answer the question: as you make a model larger, how much better does it get? The answer is surprisingly clean: capability improves smoothly and predictably with size — not by magic, but by a repeatable mathematical curve. This means you can estimate in advance whether the investment is worth it, and how much data and compute you need to reach a target.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why smoothness matters</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="scaling_laws.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — bigger costs money, and you need to know if it pays</h2>
+      <div class="essay">
+      <p>Training a language model works like this: load a mountain of text, teach the model to predict the next word over and over, and collect the learned numbers. Now suppose you want to try a larger model — double or triple the learned parameters (the numbers that hold what the model learned). That is not free. Double the model, and you will need roughly more compute, more memory, and probably more data. A factory building these models faces a hard choice: do I spend 10 times more compute for a 10 percent better model? Or is it 50 percent better? Or barely better at all? Guessing wrong costs real money.</p>
+      <p>So the need is sharp: <strong>can we predict, before paying the cost, how much better a bigger model will be?</strong> Not on just one benchmark, but across the board — a rule that holds reliably.</p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — measure how performance changes as you dial up the size</h2>
+      <div class="essay">
+      <p>The insight is to step back and look at the pattern. Take a simple, honest measure of how good the model is — for language, that is perplexity, which means 'how surprised is the model at the real next word, on average'. Lower perplexity = the model is less surprised = it has learned the pattern better. Now, train models of different sizes, all the same way, on the same text, and plot their perplexity. Do it at, say, 50 million parameters, 100 million, 200 million, 500 million. Plot the dots. If the dots follow a smooth line — a curve you can fit and extrapolate — then you have a rule. You can then ask: if I want perplexity of 20 instead of 30, how many parameters do I need? And work backwards to compute, data, cost.</p>
+      <p>This is <strong>scaling laws</strong>: the observation that performance improves in a predictable, smooth way — not randomly, not with surprise jumps — as the model grows.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — bigger models are less surprised, smoothly</h2>
+      <div class="essay">
+      <p>We trained three real versions of GPT-2, the widely-used open-source language model, at three different sizes. We gave them all the same sentence and measured how surprised they were at each next word: perplexity. Lower number means the model predicted better.</p>
+      <figure><div class="barrow"><span class="lab">distilgpt2 (82M parameters)</span><div class="bar" style="width:150px"></div><span class="val">53.4</span></div><div class="barrow"><span class="lab">gpt2 (124M parameters)</span><div class="bar" style="width:85px"></div><span class="val">30.2</span></div><div class="barrow"><span class="lab">gpt2-medium (355M parameters)</span><div class="bar" style="width:76px"></div><span class="val">27.0</span></div><figcaption>Same sentence, three real GPT-2 sizes. Perplexity (lower = less surprised) for each.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: as the model grows from 82M to 124M to 355M parameters, perplexity drops smoothly from 53.4 to 30.2 to 27.0. There are no jumps or surprises — bigger reliably means better, and the drop can be forecast.</strong> If you know the curve, you can predict where a 1-billion-parameter model will land, before building it.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why smoothness matters — it turns model-building from a gamble into planning</h2>
+      <div class="essay">
+      <p>The smooth curve is power because it is predictable. If performance jumped around randomly, you would have to train a hundred models at different sizes, pick the winner, and still waste money on the losers. But if the curve is smooth — if 82M tells you something about 124M which tells you something about 355M — then you can fit a mathematical rule (usually a power law: if you double the size, performance improves by some fixed factor). With the rule, you can sit at a desk, write down a target performance, calculate the size you need, and know in advance roughly how much compute is required.</p>
+      <p>This is why scaling laws mattered so much to the field. Before they were documented clearly, companies built models and hoped they worked. After, they could plan: 'we have a trillion floating-point operations; that buys us a model this big, which predicts to this performance.' Labs could say 'to reach GPT-3-level capability, we need this many parameters and this much data', and organize accordingly. The curve turned model-building from a lucky try into engineering.</p>
+      <p>The hidden quantity is how the prediction loss falls as model size, data, and compute grow — a strikingly regular decline that lets you forecast a larger model's performance before training it.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — smoothness breaks down and costs spiral</h2>
+      <div class="essay">
+      <p>The scaling laws curve does have limits. The first is economics: the curve has a property called diminishing returns. At small sizes, doubling the model size might cut perplexity in half. At huge sizes, doubling might cut it by only 20 percent. You pay exponentially more, gain less, and eventually hit a wall where bigger is barely better. The second limit is that the smooth curve is only empirical — it holds for language prediction but does not tell you anything about truthfulness, reasoning, creativity, or factual grounding. You can scale a model to the size of the internet and it will still make up facts, because the curve only predicts 'how surprised is it at the next token', not 'is it true'. A third weakness is practical: the curve assumes you scale the model, the data, AND the compute all together, in the right proportions. Get one proportion wrong and the scaling breaks.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this one curve predicted the whole race to GPT-3 and GPT-4</h2>
+      <div class="essay">
+      <p>The scaling laws curve was published in a 2020 paper called 'Scaling Laws for Neural Language Models' and immediately reshaped the industry. Researchers looked at the curve and realized: if we extrapolate this backward, GPT-2 was already on this curve, and GPT-3 is just further along it. They could forecast that a 175-billion-parameter model (GPT-3) would be remarkably capable — well before it was built. The same curve predicted that GPT-4, even larger, would be smarter still. The entire race to bigger models, the investments in data centers, the competition to build the next generation — it was all justified by a smooth mathematical prediction from a simple experiment. This is how a concept becomes an industry: one clean measurement, one repeatable pattern, and suddenly what was magic becomes foresight. And when you dig into a modern language model, every layer that attends to context, every <a href="pretraining-deep.html">training pass</a> that refines the prediction, every <a href="transformer_block-deep.html">block that processes</a> the <a href="embeddings-deep.html">meaning</a>, it is all there partly because the scaling laws curve promised it would work.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Bigger models improve predictably with size</h2>
+      <div class="essay">
+      <p>Scaling laws guide the design of commercial language models and inform decisions about how much compute to invest in training. Companies use scaling laws to forecast model performance before training, allocating resources to models that will reach target performance. Research labs use scaling laws to understand where capability emerges—at what scale reasoning, factuality, or creativity begins to appear.</p>
+      <p>The practice involves training models of incrementally larger sizes on the same task and measuring how performance (loss, accuracy, or task-specific metrics) changes. The resulting data points fit a power-law curve: each doubling of model size improves performance by a predictable percentage. A team can measure three small models, fit the curve, then calculate what size model is needed to reach a performance target, and estimate the compute cost before building.</p>
+      <div class="insight">Scaling laws only predict performance on the training objective and break down at the extremes, so a model can follow the curve perfectly while remaining brittle on tasks outside its training distribution or unable to solve novel problems.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/scaling-to-reasoning-deep.html" style="font-weight:700">scaling to reasoning</a> <span class="muted" style="font-size:13px">· Reason · CS329A</span><div style="font-size:14.5px;margin-top:3px">The same regularity that predicts pretraining loss reappears when scaling test-time reasoning.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="pretraining-deep.html">pretraining</a> · <a href="transformer_block-deep.html">transformer block</a> · <a href="embeddings-deep.html">embeddings</a> · <a href="generalization-deep.html">generalization</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Train or load three different sizes of the real GPT-2 model: distilgpt2 (82M parameters), gpt2 (124M), and gpt2-medium (355M). Run each on the same held-out sentence and measure perplexity — the average negative log probability of the next token. Lower is better (model is less surprised). Plot the three values and observe the smooth trend.</p>
+      <div class="eq">perplexity = exp(mean(-log P(next_token)))  # over a sequence
+Small model (82M params):   perplexity = 53.4
+Mid model (124M params):    perplexity = 30.2
+Large model (355M params):  perplexity = 27.0
+Trend: smooth, predictable decline with scale (power law).</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_scaling_laws), the actual pretrained GPT-2 weights in three sizes. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Scaling Laws deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

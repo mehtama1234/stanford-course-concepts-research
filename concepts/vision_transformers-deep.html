@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vision Transformers (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="vision_transformers.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · the same attention that reads words can see images</div>
+<h1>Vision Transformers — how cutting an image into patches lets attention see</h1>
+<p class="lede">A transformer built for text reads by moving its attention over a sequence of words — asking 'which words matter most right now?' and blending them together. But an image is not a sentence; it is a grid of pixels. How can the same machinery that conquered language see a picture? The answer is simple: chop the image into small rectangular patches, flatten each patch into a vector, and treat the sequence of patches exactly like a sentence of words. Here is the idea, a real measurement showing it works, why grouping patches like words is so powerful, where it struggles, and how this one unification became a foundation for models that read and see together.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why patches work like words</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="vision_transformers.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — transformers conquered language but images are not sequences</h2>
+      <div class="essay">
+      <p>A transformer works by attending: for each word, it looks back at all the earlier words, decides which ones matter, and blends them together to build a richer understanding. This 'read selectively' mechanism is powerful — it is the entire engine of large language models. But language is already a sequence of symbols called words. An image, by contrast, is a grid of numbers — pixels arranged in rows and columns, with no obvious order to move through them.</p>
+      <p>So the question is direct: <strong>can a transformer see an image at all? Or does it need a completely different architecture designed for grids?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — cut the image into patches and read them like words</h2>
+      <div class="essay">
+      <p>The move. Take the image and slice it up into a grid of small square patches — say, a picture of a cat split into, say, 16 small rectangles, each roughly the size of a cat's nose or ear. Flatten each patch into a single vector (a row of numbers), just as a word is a vector. Now you have a sequence of patches in a fixed order, exactly like a sentence of words. Feed that sequence into a transformer — the same attention and stacking you use for language — and let it learn. That is a <strong>vision transformer</strong> (ViT for short). One machine, language and vision both, by treating a picture as a <em>sentence of patches</em>.</p>
+      <p>The hidden quantity is which patches of the image attend to which others — the same learned focus used for words, now deciding which regions of a picture should inform each other.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — patches of the same object attend to each other</h2>
+      <div class="essay">
+      <p>We cut a 32-by-32-pixel image into 16 equal patches (a four-by-four grid of rectangles) and marked which patches contained the object. Then we ran one pass of self-attention — the mechanism that decides what to look at — and measured: when an object patch looks back over all 16 patches, how much of its attention weight goes to the other object patches?</p>
+      <figure><div class="barrow"><span class="lab">Random (4 targets out of 16)</span><div class="bar" style="width:38px"></div><span class="val">0.25</span></div><div class="barrow"><span class="lab">Untrained patch attention, observed</span><div class="bar" style="width:69px"></div><span class="val">0.46</span></div><figcaption>Attention flow from an object patch to other patches (32×32 image, 16 patches, 4 patches hold the object). If attention were random, an object patch would send 0.25 of its weight to the other 3 object patches (blind chance). Real untrained patch attention sends 0.46.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: an object patch sends 0.46 of its attention to the other object patches, where blind random chance would send 0.25 — the model doubles the chance.</strong> Even without any training, the attention mechanism has a built-in bias toward binding together patches that are nearby and similar in value — like with like. With a trained vision transformer, this grouping becomes far sharper.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why patches work like words — attention groups related parts regardless of layout</h2>
+      <div class="essay">
+      <p>The power lies in attention's core idea: 'ask what you are looking for and match against what each other element has to offer.' For words in a sentence, this finds the ones related by meaning or role. For patches in an image, this finds the ones with similar pixels or that sit together spatially — or later, after the model learns, patches that make up the same object, the same texture, the same feature, whether they sit next to each other or not. Patches of a dog's ear, tail, and paw can be scattered around the image, but attention can bind them together into a concept of 'dog-ness' — the same way attention binds 'the', 'cat', and 'sat' into an idea of a sentence. Because the operation is learned and not hand-coded, the model discovers which spatial and visual relationships matter. Because attention reaches across the entire grid at once, a dog's head and back can connect even if they are far apart — the layout does not force a local, myopic view. And because patches preserve some spatial structure (a nearby patch is likelier to be part of the same object), the mechanism has an inductive bias that helps it along.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — patches lose detail and need mountains of data</h2>
+      <div class="essay">
+      <p>The cost is that patches are lossy. A 16-by-16-pixel patch, or even a 32-by-32-pixel one, throws away fine detail — a subtle texture, a thin edge, a small object. Older convolutional networks process every pixel individually and can capture crisp local features; patches, by design, trade that resolution for speed. A trained vision transformer needs far more data to learn well than a convolutional network does — it lacks the built-in inductive bias that convolutions encode (the idea that nearby pixels are related). Our untrained patch-attention demo shows only the mechanism, not a trained ViT; a real trained one learns much sharper groupings, but only after seeing millions of images. For small datasets, convolutions still win.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — one architecture sees text, images, audio, and video</h2>
+      <div class="essay">
+      <p>The unity is profound. The same transformer block — the 'attend then blend' step — stacked into layers, works on any sequence. Words are sequences in time; image patches are sequences in space; audio spectrograms are sequences in time and frequency; video is a sequence of frames, each a sequence of patches. By treating each as a flat sequence of tokens, one architecture handles them all. This is why the big models today are <em>multimodal</em>: they embed text and images into the same space using variants of <a href="attention-deep.html">attention</a>, so a model can reason about both a photo and a caption at once. <a href="embeddings-deep.html">Embeddings</a> turn meaning into geometry, and <a href="positional_encoding-deep.html">positional encoding</a> supplies the order; both apply to patches just as they do to words. The result is a single machine for sensing and reasoning across modalities — a consequence of realizing that vision and language are both just pattern-finding in sequences, and attention is the universal pattern-finder.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Treat image patches as word tokens for unified vision and language</h2>
+      <div class="essay">
+      <p>Vision transformers are used in image classification, object detection, and visual question answering systems across industry and research. Multimodal models like those that process both images and text use vision transformers to encode images, allowing a single architecture to reason about vision and language together. Medical imaging systems use vision transformers for disease detection and diagnostic support.</p>
+      <p>An image is divided into a grid of small square patches—for example, a photograph might be cut into a grid of rectangular regions. Each patch is converted to a vector (a sequence of numbers) and treated exactly like a word token in a language model. The same transformer blocks that process word sequences process patch sequences: attention allows each patch to see and relate to all other patches in the image, regardless of distance. Early blocks learn to identify textures and edges; later blocks recognize parts and objects.</p>
+      <div class="insight">Patches sacrifice fine detail for computational efficiency and the ability to use the same architecture for images and text, but they require much more training data than convolutional networks because they lack the built-in spatial inductive bias that convolution provides.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="attention-deep.html">attention</a> · <a href="embeddings-deep.html">embeddings</a> · <a href="positional_encoding-deep.html">positional encoding</a> · <a href="transformer_block-deep.html">transformer block</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Cut a 32-by-32-pixel image into 16 equal square patches (a four-by-four grid). Label which patches contain the object (4 patches in this case). Run one untrained self-attention pass: for each object patch, measure the fraction of attention weight it sends to the other object patches. Compare to the baseline: if attention were random, that fraction would be 0.25 (3 targets out of 16 total patches).</p>
+      <div class="eq">attention_weight_to_target = sum of attention weights from object_patch to other_object_patches
+random_baseline = (num_object_patches - 1) / total_patches = 3/16 = 0.25
+measured = 0.46
+measured / random_baseline = 0.46 / 0.25 = 1.84 times chance</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_vision_transformers). The demo uses untrained patch attention to show the mechanism (not a trained ViT model); a trained vision transformer learns far sharper object-binding. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Vision Transformers deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

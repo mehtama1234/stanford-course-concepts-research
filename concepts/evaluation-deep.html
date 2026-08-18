@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluation (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="evaluation.html">This concept</a></nav></header>
+<main>
+<div class="kick">reasoning · large language models · how you measure changes what the score is</div>
+<h1>Evaluation — how grading the same answer four ways gives four different scores</h1>
+<p class="lede">You read that a reasoning model scored 44 percent on grade-school math. But that same model's exact answers also scored 0 percent, 64 percent, and 40 percent on the identical 25 problems — depending only on how the grading was done. This is the crux: the way you measure an answer is not transparent reporting, it is a design choice. Strict measurement can hide real progress; loose measurement inflates it. Here is what happened when we graded one model four different ways, why the grader is a design decision with teeth, where this idea reappears in training reasoning models directly with rewards, and the trap of trusting a single leaderboard number.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the grader matters</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="evaluation.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — the same answer, graded three different ways, is suddenly three different scores</h2>
+      <div class="essay">
+      <p>When you train a model to answer a math problem, you need a signal: did it get it right or wrong? But 'right' is not always clear. If the model writes 'The answer is 42 because 12 plus 30 equals 42', should that score as correct? What if it writes '12 + 30 = 42. The answer is 42'? What if the actual answer is 42 but the model wrote it twice in the middle of a rambling explanation, never in a clear final form? The choice you make — does the right number have to appear in a boxed final line, or anywhere at all? — is a <em>grading rule</em>, and it can change the score from 0 to 64 percent on the same answers. Once you pick a grader, you are implicitly picking what kind of model you are training: a model optimized for a loose grader behaves very differently from one optimized for a strict one.</p>
+      <p>So the stakes are real: <strong>how you define success shapes what the model learns to do.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — treat the grader as part of the experiment</h2>
+      <div class="essay">
+      <p>Instead of picking one grader and never questioning it, do something stranger: fix the model's outputs, then score them multiple ways. Take a single run of the model (the same 25 problems, the same 25 solutions). Then ask: what if we grade by rule A? Rule B? Rule C? Watch the score move. This turns the grader from an invisible assumption into a visible variable. You see that a 'good score' is not a fact about the model — it is a fact about the grader and the model together. And you see that a difference of 20 percentage points between graders means the score is slippery, not trusted.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — four graders, four scores from 0% to 64%</h2>
+      <div class="essay">
+      <p>We ran the real Qwen3-0.6B model (a small open reasoning model) on 25 grade-school math problems from GSM8K, a standard benchmark. The model wrote a chain of thought (intermediate reasoning steps) and then produced an answer. We took those 25 identical outputs and graded them four different ways:</p>
+      <figure><div class="barrow"><span class="lab">exact string match</span><div class="bar" style="width:2px"></div><span class="val">0/25 (0%)</span></div><div class="barrow"><span class="lab">the right number appears somewhere in the text</span><div class="bar" style="width:96px"></div><span class="val">16/25 (64%)</span></div><div class="barrow"><span class="lab">last number that appears in the text</span><div class="bar" style="width:60px"></div><span class="val">10/25 (40%)</span></div><div class="barrow"><span class="lab">the final boxed answer, read carefully</span><div class="bar" style="width:66px"></div><span class="val">11/25 (44%)</span></div><figcaption>The SAME 25 reasoning traces, identical outputs, graded four different ways. Exact string match (0%) requires the answer in the model's output verbatim; 'number appears anywhere' (64%) succeeds if the right number sits anywhere in the text; 'last number in text' (40%) takes the final number the model wrote; 'final boxed answer, read carefully' (44%) parses what the model marks as its final answer. Numbers are the run's output.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the SAME model on the SAME 25 problems scores 0%, 64%, 40%, or 44% depending only on the grading rule. A lenient grader (number anywhere) inflates the score to 64%; a strict one (exact string match) collapses it to 0%; a careful middle ground (boxed final answer) lands at 44%.</strong> This is not noise — it is the definition of 'correct' changing underneath.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why the grader is a design choice with real teeth</h2>
+      <div class="essay">
+      <p>Each grader embodies a different assumption about what 'solving the problem' means. Exact string match says: the model must reproduce the reference solution word-for-word, no improvisation. It is rigorous but brutal — it misses a correct answer phrased differently. 'The number appears anywhere' is permissive: if the right number sits anywhere in the output, call it correct, even if the reasoning was confused or the answer buried in junk. It is lenient but easily gamed — the model can strew correct numbers throughout and get credit even if it has no idea why they are right.</p>
+      <p>The careful middle (final boxed answer, parsed) says: we trust the model to mark what it thinks is its answer, and we read it carefully. It is neither mechanical nor loosey-goosey. It asks: did the model converge on the right number as its intended final output? This is closer to how a teacher would grade on paper. The 44 percent that rule gives is lower than 64 but higher than 0, and it is the trustworthy one: it credits real progress while not being fooled by a stray correct number the model happened to emit while flailing.</p>
+      <p>When you train a model by reward, you are implicitly choosing a grader. A reward model that gives +1 for 'the right number anywhere' will push the model toward emitting the answer many times and hedging (44% of output is just throwing numbers at the wall). One that rewards a careful boxed answer will push the model to be crisp and decisive. The grader is not transparency — it is architecture.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — no grader is neutral and all require some choice</h2>
+      <div class="essay">
+      <p>The problem is that 'correct' has no view from nowhere. A different benchmark (not GSM8K; say, physics problems with multi-digit answers) might show different spreads between the graders. A different model (one that rambles more, or one that rarely emits the same number twice) might flatten or widen the 0-to-64 gap. And the temptation to cherry-pick — publish the test with the generous grader if your model does well under it, switch to the harsh one if a competitor's model doesn't — is not hypothetical, it is how many benchmarks get gamed over time. There is no grader that works for all problems and all models; the right choice depends on what you care about in real use.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this is why reward design in reinforcement learning for language models is so hard</h2>
+      <div class="essay">
+      <p>Take this one-grader-four-scores insight and run it forward. When you train a language model with reinforcement learning (RL), you give it a reward signal: right answer, reward plus-one; wrong answer, reward zero. But 'wrong' is the grader rule in disguise. If your reward is 'the right number appears anywhere', the model will learn to emit the answer over and over and hedge. If your reward is 'only the final boxed answer counts', the model learns to be decisive. And if the reward is a strict parser for exact word-for-word match, the model learns to mimic the training data exactly and stops generalizing. This is why training a reasoning model with RL is so fragile: <a href="rl_for_llms-deep.html">the reward you choose does not just measure progress, it fundamentally shapes what the model becomes</a>. A generous reward leads to output collapse and gaming; a harsh one leads to memorization or giving up. This is also why <a href="fine_tuning-deep.html">imitation learning (supervised fine-tuning on human examples)</a> is safer: a human showing the model good solutions embeds a subtle grader ("think like a person would think") that is richer and harder to game than a simple scalar reward. And it connects to <a href="reasoning_traces-deep.html">why adding intermediate reasoning steps helps</a>: a model that writes out steps is easier to grade at each step, so you can shape the reward more carefully.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — understanding that how you grade shapes what the model learns</h2>
+      <div class="essay">
+      <p>When training a model to solve math problems with reinforcement learning, the choice between 'reward if the right number appears anywhere' versus 'reward only if it is the final boxed answer' will train radically different models. Benchmark leaderboards report a single accuracy number, but that number depends entirely on how answers are graded—strict word-for-word match or permissive 'contains the right idea'. Evaluation frameworks for coding assistants choose whether to grade on 'produces working code that passes tests' or 'produces code that matches the reference style exactly'.</p>
+      <p>When you fix the model's outputs and grade them multiple ways, you see the same answers score differently based only on the grading rule. A loose grader (number appears anywhere) inflates the score and pushes the model to hedge and repeat answers. A strict one (exact word-for-word match) collapses the score and trains the model to memorize. A careful middle ground (final answer parsed honestly) gives a trustworthy signal. The grader is invisible until you expose it; then you see it is a design choice with real consequences for what the model learns to do.</p>
+      <div class="insight">The way you measure success is not transparent reporting—it is architecture, because the reward signal the model trains on implicitly encodes what 'correct' means, fundamentally shaping the model's behavior.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="rl_for_llms-deep.html">RL for language models</a> · <a href="fine_tuning-deep.html">fine-tuning</a> · <a href="reasoning_traces-deep.html">reasoning traces</a> · <a href="reward-deep.html">reward design</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Took 25 reasoning traces from real Qwen3-0.6B on GSM8K. Fixed the model outputs. Graded them four ways: (1) exact string match to reference solution, (2) right number appears anywhere, (3) last number in text, (4) final boxed answer parsed carefully. Reported as counts and percentages.</p>
+      <div class="eq">grader_1(output) = 1 if output == reference else 0
+grader_2(output) = 1 if gold_number in output.all_numbers() else 0
+grader_3(output) = 1 if gold_number == output.last_number() else 0
+grader_4(output) = 1 if gold_number == parse_boxed_answer(output) else 0
+measured: grader_1 = 0/25 = 0%
+          grader_2 = 16/25 = 64%
+          grader_3 = 10/25 = 40%
+          grader_4 = 11/25 = 44%</div>
+      <p class="muted">Real run: Qwen3-0.6B on 25 GSM8K reasoning traces from the reasoning-from-scratch lab. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Evaluation deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

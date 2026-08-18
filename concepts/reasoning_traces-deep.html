@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reasoning Traces (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="reasoning_traces.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · inference · thinking out loud</div>
+<h1>Reasoning traces — how letting a model write its working gets harder problems right</h1>
+<p class="lede">When you ask a person a hard question — how many rooms in a house with 3 floors, each with 4 rooms, plus an attic — they often work through it step by step on paper. They write out the intermediate steps and build toward the answer. If you force them to blurt the answer instantly without writing anything down, they make more mistakes. Language models face the same problem. When asked a multi-step math question, a small model forced to answer immediately often blurts a wrong guess. But if you let it write out its working first — what we call a chain of thought, or reasoning trace — before giving the final answer, it does better. Here is the idea, a real run showing it rescued some problems but not all, why writing helps, where it breaks down, and why this single pattern became the foundation for reasoning models like OpenAI's o1 and DeepSeek-R1.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why writing the work helps</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="reasoning_traces.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — small models blurt and guess wrong</h2>
+      <div class="essay">
+      <p>Answering a hard question takes more than one step. For 'Alice has 3 apples. Bob has twice as many. How many do they have together?', the model must find Bob's count (6), then add (3 + 6 = 9). If the model is small and made to give a number immediately, it often skips the work and takes a guess — maybe it blurts 8 or 15. It has no room to reason; every token it produces eats into its budget, and a small model is already pushing its limits.</p>
+      <p>So the need is clear: <strong>how can a model on a hard problem get a chance to show its working before it commits to the final answer?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — let it write a chain of thought first, then the answer</h2>
+      <div class="essay">
+      <p>The move is simple and astonishing. Instead of asking 'What is the answer?' ask the model two things in sequence. First: 'Think through this step by step — what is happening at each point?' Let the model write out a chain of thought, as many tokens as it needs. Only after it has finished can you ask 'Given what you just wrote, what is the final answer?' The model now has the first attempt — the chain of thought — sitting there on the page. When it writes the final line, it can lean on what it already worked out. No retraining needed. Same model. The only change is the prompt: give it room to think first. This technique is called <strong>reasoning traces</strong> (or chain of thought when it is written all at once, or step-by-step thinking when you make it explicit). It reframes the problem from 'guess the answer now' to 'show your work, then answer'.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — 4 more problems solved, but 12 ramble to the end</h2>
+      <div class="essay">
+      <p>We ran the real Qwen3-0.6B model — a small model with 600 million learned numbers — on 30 grade-school math problems from GSM8K (a benchmark of problems like 'Jenny has 5 crayons. Her friend gives her 2 more. How many does Jenny have now?'). We graded each answer as right or wrong. We measured it two ways: first, asking it to answer directly; second, asking it to write a chain of thought first, then the answer.</p>
+      <figure><div class="barrow"><span class="lab">answering directly</span><div class="bar" style="width:70px"></div><span class="val">14 out of 30</span></div><div class="barrow"><span class="lab">writing chain of thought first</span><div class="bar" style="width:90px"></div><span class="val">18 out of 30</span></div><figcaption>Direct answer vs chain of thought: how many of 30 problems the model got right.</figcaption></figure>
+      <p>The model went from 14 right to 18 right — it rescued 4 problems. None broke (it did not lose any it had gotten right). But there is a cost.</p>
+      <div class="tw"><table><tr><th>measure</th><th>direct answer</th><th>with chain of thought</th></tr><tr><td>average tokens per answer</td><td>226</td><td>1449</td></tr><tr><td>number of traces hitting 2048-token limit</td><td>0 of 30</td><td>12 of 30</td></tr></table></div><figcaption>Token budgets. When asked to think, the model writes much longer; for 12 of the 30 traces, it ran out of tokens before it settled on an answer.</figcaption>
+      <div class="insight"><strong>The discovered fact: writing out the work brought 14 out of 30 correct up to 18 out of 30 — a gain of 4 solved problems with 0 broken. But the thinking is expensive: average length ballooned from 226 tokens to 1449, and 12 of the 30 reasoning traces hit the 2048-token limit without settling.</strong></div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why writing the work helps</h2>
+      <div class="essay">
+      <p>The core reason is computation in paper. When the model writes a chain of thought, each written token becomes something the model can look back at. Instead of the hard leap — 'I must figure out this entire multi-step problem in one jump' — the model breaks it into easier pieces: 'I have the first step written down; now figure out the second.' Each step is a smaller problem. More writing means more scaffolding — more places to lean.</p>
+      <p>A second reason is honesty. If a model is going to guess wrong anyway, having it write its reasoning first makes the wrong answer visible. When it writes 'Bob has 6' and then 'so together we have 8', anyone reading can spot where it went wrong (it should have said 9). This transparency does not directly fix the wrong answer, but it makes errors trackable — and humans can correct them or route problems that need accuracy to a tool.</p>
+      <p>A third reason: a chain of thought often contains partial credit. Even if the final boxed answer is wrong, the model might have gotten three of four steps right. A careful grader can see this; the single final number alone never shows it.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — it rambles on hard problems and still misses them</h2>
+      <div class="essay">
+      <p>The model is not magic. On the 12 hardest problems, even when given room to think, it rambled all the way to 2048 tokens and did not settle on an answer. That is a failure mode: it had the room to think and used it, but still did not solve the problem. It filled the space with more thinking without getting closer to the truth.</p>
+      <p>And even with the chain of thought, the model still got 12 out of 30 wrong. That is 40% failure on grade-school math. A human would do far better. The problem is that a small model (600 million numbers) is still a small model; reasoning traces help it use its capacity better, but they do not make it smarter than it is. On the truly hard ones, the model is simply not powerful enough — more writing does not unlock knowledge it does not have.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this one pattern became the foundation of reasoning models</h2>
+      <div class="essay">
+      <p>Reasoning traces sound like a tiny change — just ask the model to think first. But the field noticed: it works, it is cheap (no retraining), and it is reproducible. OpenAI took this pattern and wrapped it into <a href="rl_for_llms-deep.html">reinforcement learning</a>, training models to write longer, better reasoning. DeepSeek-R1 pushed it further with process reward (grading each reasoning step, not just the final answer). These models — the new 'reasoning models' that can 'think' for seconds or minutes before answering — all rest on this foundation: external computation in tokens. Writing out the work externalizes what the model cannot do in its head.</p>
+      <p>The same pattern appears in <a href="fine_tuning-deep.html">fine-tuning</a> (when a teacher writes out worked solutions, a student learns faster) and in <a href="agents_and_tools-deep.html">agents and tools</a> (when a model can call out to exact calculations, it bypasses its own arithmetic mistakes). The common thread: give the model — or the system using the model — room to break hard problems into steps and write each step down.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Thinking out loud before answering</h2>
+      <div class="essay">
+      <p>Reasoning traces appear in modern language models like DeepSeek-R1 and OpenAI's o1, which let models write out working steps before committing to a final answer. They are used in tutoring systems where worked solutions help students learn better than bare answers. They appear in coding assistants where letting the model explain the problem before writing code improves code quality. Every application uses the same pattern: breaking a hard problem into steps visible on the page.</p>
+      <p>Instead of asking the model 'what is the answer' directly, the system first asks 'show your working step by step.' The model emits tokens representing intermediate reasoning, and those tokens sit in the context. Only after writing out the work does the model produce the final answer. Prompts and tokens play the roles of workspace; writing externalizes hard thinking that the model cannot do internally. No retraining is needed — the same model simply uses more of its output budget to show reasoning before answering.</p>
+      <div class="insight">Writing helps rescue some problems but not all, and on problems too hard for the model's actual capacity, longer reasoning just means more verbose failure.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/reasoning-traces-deep.html" style="font-weight:700">reasoning traces</a> <span class="muted" style="font-size:13px">· Reason · CS329A</span><div style="font-size:14.5px;margin-top:3px">The build course introduces reasoning traces; CS329A studies how to make them reliable and cheap.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="rl_for_llms-deep.html">reinforcement learning for language models</a> · <a href="fine_tuning-deep.html">fine-tuning</a> · <a href="agents_and_tools-deep.html">agents and tools</a> · <a href="evaluation-deep.html">evaluation</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run the real Qwen3-0.6B model (from reasoning-from-scratch lab, Colab T4 GPU) on 30 real GSM8K problems. First, prompt the model to answer directly and grade (right/wrong). Second, prompt it to write 'Let me think through this step by step' first, then answer, and grade. Count successes and measure token length for each trace.</p>
+      <div class="eq">chain_of_thought_accuracy = 18 / 30  (vs direct 14 / 30)
+average_tokens_with_thinking = 1449  (vs direct 226)
+thinking_traces_hitting_limit = 12 / 30  at 2048-token cap</div>
+      <p class="muted">Full script: reasoning-from-scratch-lab session S2 (CoT over 30 GSM8K), REAL Qwen3-0.6B runs on COLAB T4. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Reasoning Traces deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pretraining (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="pretraining.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · one simple goal, run over oceans of text</div>
+<h1>Pretraining — how predicting the next word teaches a model everything</h1>
+<p class="lede">To teach a model to understand language, you could try hiring people to label every sentence as 'good' or 'bad' — but labelling the whole internet is impossible. Instead, there is a trick: use language itself as the teacher. Hide the next word in a sentence and ask the model to predict it. Every sentence ever written becomes free training data. This one deceptively simple goal, scaled across billions of words, is enough to teach grammar, facts, historical events, reasoning, and style. Here is how it works, what it actually learns (measured on a held-out sentence), why next-word prediction forces such broad knowledge, what it misses, and why this foundation became the engine behind all modern language models.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why next-word prediction teaches everything</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="pretraining.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — no labelled dataset of good understanding</h2>
+      <div class="essay">
+      <p>If you want to teach a model what correct language understanding looks like, you face an immediate wall. You could ask humans to label sentences — mark which ones make sense, which ones are true, which ones are well-written — but the volume is crushing. Millions of sentences? You cannot hire enough people. Billions? Impossible. You need a training signal that is built in to the data itself, not added by hand.</p>
+      <p>So the need is sharp: <strong>how can you turn a massive pile of text — without any human labels — into a teaching signal?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — every sentence teaches itself</h2>
+      <div class="essay">
+      <p>The move. For any sentence, hide the last word. The rest is input; the hidden word is the target. Now the model's job is simple: given everything up to that point, guess what comes next. If it is right, it learns. If it is wrong, the error tells it how to adjust. Now scale this to every sentence in every book, every article, every webpage that exists — that is the training signal. Every single word in your data becomes both a training example and its own label. The phrase for this process is <strong>pretraining</strong>: training on raw, unlabelled text to learn a base understanding of language before any downstream task ever enters the picture.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — it learns to name the exact next word 30% of the time</h2>
+      <div class="essay">
+      <p>We ran the actual GPT-2, a widely-used language model with 124 million learned numbers, on sentences it had never seen before. For each sentence, we hid the final word and asked: how well does it predict? We measured three things: the average surprise (called loss, lower is better, where a guess at random words would be high); the perplexity (another way to measure surprise, easier to interpret: if perplexity is 29, the model is as uncertain as if it were choosing uniformly from 29 equally-likely options); and how often it names the exact right word on the first try.</p>
+      <div class="tw"><table><tr><th>measure</th><th>GPT-2 result</th></tr><tr><td>average surprise (loss)</td><td>3.38</td></tr><tr><td>perplexity (how many equally-likely options?)</td><td>29.3</td></tr><tr><td>exact next word predicted (out of 50,257 choices)</td><td>30%</td></tr></table></div><figcaption>On held-out sentences never seen during training. Numbers are the run's output.</figcaption>
+      <div class="insight"><strong>The discovered fact: on a sentence the model has never explicitly learned, it names the exact next word 30% of the time out of 50,257 possible tokens.</strong> That is many thousands of times better than random guessing (which would be right just 0.002% of the time). The model's average surprise is 3.38 and its perplexity is 29.3 — saying that after all the context, it is genuinely surprised but not lost. A model starting from scratch, trained on no text at all, would have no sense of what might come next; this one does.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why next-word prediction forces deep knowledge</h2>
+      <div class="essay">
+      <p>The secret is that to guess the next word well, you cannot memorize. You have to build an implicit model of the world. Consider 'the trophy did not fit in the suitcase because it was too'. What comes next? If you track pronouns, you know 'it' refers back to 'trophy'. If you know physics, you know that objects have size and fit is about relative dimensions. You have to understand grammar (that 'was' precedes an adjective), semantics (what 'fit' means), and reasoning (if something is too big to fit, it stays outside). No rule tells you this. But if the model is forced to predict the next token millions of times across billions of sentences, it learns implicitly: words that describe similar ideas cluster together (so it can generalize); word order and structure leave traces in how the network activates; facts and relationships sit as patterns in the learned numbers.</p>
+      <p>The process is ruthlessly efficient. The model cares only about one thing: given this context, what is the next token? But to do that one thing well, it must absorb grammar, facts, relationships, style, and how to reason through multi-step problems. Broad knowledge becomes a side effect of the narrow goal.</p>
+      <p>The hidden quantity is how well the model predicts the next token — a single falling loss that quietly forces the weights to absorb grammar, facts, and relationships in order to keep guessing better.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — it learns what is common, not what is true</h2>
+      <div class="essay">
+      <p>The catch is deep. The model is optimizing to predict the next token, not to be truthful or helpful. If the internet contains a false claim repeated often, the model learns it well — because it is common. If a fact is true but rare, the model learns it poorly. Biases in the training data become biases in the model: if historical texts contained stereotypes, the model will have absorbed them. And the objective — predicting the most likely next token — does not care about reasoning at all. A model can be very good at predicting plausible-sounding tokens while being terrible at logic or arithmetic or admitting uncertainty.</p>
+      <p>This is why a raw pretrained model often gives confidently-wrong answers. The goal was never to be right; the goal was to be predictable. This is also why pretraining is only the first step. Afterward, the model is refined through <a href="fine_tuning-deep.html">fine-tuning</a> and <a href="rl_for_llms-deep.html">reinforcement learning</a> to shift it toward helpfulness, honesty, and reasoning — a second teaching phase that steers it toward what humans actually want.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — this idea became the foundation of the entire field</h2>
+      <div class="essay">
+      <p>What is remarkable is how far this one simple idea carries. Every large language model in use today — from the models that power search engines to dialogue agents to code generators — began with exactly this pretraining step: hide the next token, predict it, learn from millions of examples. The reason is brutal empiricism: it works. When you scale this objective to enormous models (billions or trillions of parameters) and enormous datasets (petabytes of text), you get surprising emergent abilities: the model does not just predict tokens, it reasons, translates, summarizes, and writes code. The capabilities were never explicitly taught; they emerged from the pressure of one goal applied at scale. Pretraining is the foundation that <a href="scaling_laws-deep.html">scaling laws</a> describe, the reason <a href="attention-deep.html">attention</a> and <a href="transformer_block-deep.html">transformer blocks</a> were built, and the starting point that <a href="fine_tuning-deep.html">fine-tuning</a> and <a href="rl_for_llms-deep.html">reinforcement learning</a> refine. Master this one concept — use the data as its own teacher — and you understand the root of modern AI.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — One goal, run over oceans of text</h2>
+      <div class="essay">
+      <p>Pretraining is the foundation of every large language model in use today — from search engines that use language models to rank and understand queries, to dialogue agents like ChatGPT that power customer support, to code generation tools that autocomplete programming. The same basic pattern appears everywhere: predict the next word on raw internet-scale text with no human labels, and this one objective scaled to massive models and datasets produces reasoning, factual knowledge, and coding ability.</p>
+      <p>The training process hides the next word in every sentence and asks the model to predict it. Every sentence in the entire training corpus becomes both input and label; the text teaches itself. The model learns by minimizing the gap between its guess and the true next word, accumulated over billions of examples. The data is both the teacher and the curriculum; no separate annotation is needed. Tokens and text are the learning signal.</p>
+      <div class="insight">The cost is deep: the model learns what is common in the training data, not what is true, so false claims repeated often become convincing fabrications until later refinement steps correct them.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/scaling-to-reasoning-deep.html" style="font-weight:700">scaling to reasoning</a> <span class="muted" style="font-size:13px">· Reason · CS329A</span><div style="font-size:14.5px;margin-top:3px">Pretraining loss falls smoothly with scale; reasoning ability shows a similar threshold as test-time compute grows.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="fine_tuning-deep.html">fine-tuning</a> · <a href="rl_for_llms-deep.html">reinforcement learning for language models</a> · <a href="scaling_laws-deep.html">scaling laws</a> · <a href="attention-deep.html">attention</a> · <a href="transformer_block-deep.html">transformer blocks</a> · <a href="tokenization-deep.html">tokenization</a> · <a href="generalization-deep.html">generalization</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run the real pretrained GPT-2 (124M) on held-out sentences it never saw during training. For each sentence, hide the final token and measure: (a) the average loss (surprise), (b) the perplexity (geometric mean of inverse probabilities), and (c) the fraction of times the model's top-1 prediction is exactly correct. The tokens include the entire 50,257-token vocabulary.</p>
+      <div class="eq">loss = -log P(next_token | context)
+perplexity = exp(loss)
+accuracy = fraction where argmax(logits) == true_token
+measured loss = 3.38
+measured perplexity = 29.3
+measured exact-match accuracy = 30%</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_pretraining). The actual GPT-2 (124M) weights. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Pretraining deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

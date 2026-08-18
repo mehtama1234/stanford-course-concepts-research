@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Actor-Critic (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="actor_critic.html">This concept</a></nav></header>
+<main>
+<div class="kick">reinforcement learning · first principles · two learners that sharpen each other</div>
+<h1>Actor-Critic — how a critic baseline makes policy learning nearly noise-free</h1>
+<p class="lede">A policy gradient agent learns by trial and error: take an action, see how well it worked, nudge the policy in that direction. The problem is noise. One big reward or one unlucky episode swings the learning signal wildly and can stall the agent. Actor-Critic solves this by running two learners in tandem: an 'actor' (the policy that picks moves) and a 'critic' (a running estimate of the reward you'd expect from each situation). Instead of learning from the raw outcome, the actor learns only from the surprise — how much better or worse than expected — which is far quieter. Here is the idea, measurements on a real gridworld run showing the sharp jump in performance, why subtracting an expectation cleans the signal, where this setup strains, and how it became the foundation of modern deep reinforcement learning.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why the baseline sharpens learning</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="actor_critic.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — raw rewards are noisy, one big event swings everything</h2>
+      <div class="essay">
+      <p>Policy gradient learning works: nudge the policy toward moves that led to good outcomes and away from moves that led to bad ones. But the signal is brutal. Suppose on one trial the agent gets a reward of 50 and on another it gets 10. The learning step sized by the raw difference is huge and unstable — a single lucky episode or single disaster can swing the update wildly and undo progress. The agent can stall for many episodes because normal randomness in rewards drowns the true direction of improvement. <strong>The need is real: how can you learn from outcomes without being thrown off by every noise spike?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — learn from the surprise, not the raw score</h2>
+      <div class="essay">
+      <p>The key insight is to separate the size of the reward from whether it was surprising. Instead of learning from the raw outcome, learn only from the gap: how much better or worse than expected? The move. Run a second learner called the <em>critic</em> — a function that watches the state and predicts: 'in this situation, what reward would I expect to get?' This is a running estimate, called the <em>value</em>, that the critic itself learns from experience. Now, when the agent gets an actual outcome, compute the <em>temporal-difference error</em> (the fancy term for surprise): reward actually received minus the value the critic predicted. This error, call it <em>delta</em>, becomes the learning signal. If the agent got what it expected, delta is near zero and the policy barely budges — no signal in a typical outcome. If the agent did much better than expected, delta is big and positive and the move gets a strong push. If it did much worse, the move gets pushed away. The <em>actor</em> is the policy using these delta signals; the <em>critic</em> is the value function that computes the baseline. <strong>The breakthrough: delta is far quieter than raw rewards because it removes the constant 'everything rewards around N' noise, leaving only the true signal of which moves beat expectations.</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — critic baseline pushes from good to optimal</h2>
+      <div class="essay">
+      <p>We ran the same policy-gradient learning algorithm twice on a 4 by 4 gridworld (robot needs to reach a goal in roughly 4 steps; each step costs -1, the goal gives +5): once without a critic, once with a critic baseline. Both ran the same policy gradient method for the same number of episodes and we took the median of 7 runs to smooth out randomness. The measure: what fraction of probability mass ended up on the two goal-ward moves, and what was the final average return per episode?</p>
+      <figure><div class="barrow"><span class="lab">plain policy gradient: goal-ward probability</span><div class="bar" style="width:129px"></div><span class="val">86%</span></div><div class="barrow"><span class="lab">plain policy gradient: final return</span><div class="bar" style="width:2px"></div><span class="val">-8 (far from optimal +5)</span></div><div class="barrow"><span class="lab">actor-critic: goal-ward probability</span><div class="bar" style="width:150px"></div><span class="val">100%</span></div><div class="barrow"><span class="lab">actor-critic: final return (optimal)</span><div class="bar" style="width:150px"></div><span class="val">+5</span></div><figcaption>Policy gradient with and without a critic baseline, 4x4 gridworld, median of 7 runs.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: plain policy gradient reaches goal-ward probability 0.86 and final return -8; adding a critic reaches goal-ward probability 1.00 and final return +5, which is optimal.</strong> The critic subtracts the expected value so the learning signal becomes pure surprise. Where raw policy gradient found a decent direction but stalled, actor-critic descended all the way to the optimal path.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why the baseline sharpens learning</h2>
+      <div class="essay">
+      <p>The reason is signal clarity. With raw rewards, every update is scaled by the actual outcome: get 100 and the move gets a large bump, get 10 and it gets a small one, even if both are equally good relative to what you expected. Adding a baseline subtracts the 'always getting something around N' part of every reward, leaving only the part that varies: 'this time I beat expectations, this time I missed.' The critic is a learnable baseline — it finds the expected value and the actor uses only the deviation from that prediction as the learning signal. This is called the <em>temporal-difference</em> or <em>TD</em> advantage: the surprise. Surprise signals are sparse and clean. A typical, expected outcome gives a surprise near zero, so the policy barely moves — no wasted updates. An outcome that beats expectations gives positive surprise and a clear push. An outcome worse than expected gives negative surprise and a clear push away. The noise from 'how much does this outcome reward in absolute terms' is gone. Only the pattern of 'was this better or worse than typical' survives. That is why, in the run, the critic version steers directly to optimal while the plain version wanders.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — now you must train two things, and a bad critic hurts</h2>
+      <div class="essay">
+      <p>The cost is complexity. With plain policy gradient, you tune one learner and one learning rate. With actor-critic, you now train both a policy and a value function, which means two separate learning rates, two separate architectures, and two sources of instability. A critic that is poorly trained gives a misleading baseline — if the critic over-estimates value, the agent thinks it is doing worse than it is and stops improving; if it under-estimates, the learning signal gets inflated and the agent thrashes. Balancing the speed at which the actor and critic learn is finicky: if the critic learns much faster than the actor, the baseline chases the actual rewards and the surprise signal vanishes; if the actor learns much faster, the critic falls behind and its predictions are always stale. In simple toy problems like the gridworld, these trade-offs are barely visible. In high-dimensional problems with sparse rewards, tuning both learners is a major burden and a common source of training failures.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — actor-critic methods are the workhorses of modern deep RL</h2>
+      <div class="essay">
+      <p>This simple idea — an actor guided by a critic's baseline estimate — became the engine of practical deep reinforcement learning. Variants appear everywhere: A2C (synchronous version of Asynchronous Advantage Actor-Critic, run on many parallel actors at once); PPO (Proximal Policy Optimization, adds a safety constraint so the policy does not shift too far); SAC (Soft Actor-Critic, adds entropy to encourage exploration). These methods power robot learning, game-playing agents, and the reward models that grade language model outputs in RLHF (reinforcement learning from human feedback) — the training method behind modern aligned large language models. The one-sentence lesson: when you want a policy to learn from experience, do not feed it raw rewards — give it the surprise relative to expectations. Learn the expectations separately and use the gap as the signal. That single move is why modern deep RL works at all.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — training robots and game-playing agents in the real world</h2>
+      <div class="essay">
+      <p>Actor-critic methods power reinforcement learning in systems where an agent learns by trial and error. Game-playing agents in video games use actor-critic to learn policies that beat human players. Robotic arms learn manipulation tasks (picking, placing, pushing) by taking actions, observing results, and refining their policy based on feedback. In language models, RLHF (reinforcement learning from human feedback) uses a critic-like reward model to grade the actor's generated text, letting the model improve its answers through iterative learning from human preference.</p>
+      <p>The actor is the learned policy (what move to take in each situation), and the critic is a value function that predicts the expected reward coming up. When the agent takes an action and gets feedback, it computes the surprise: did the action perform better or worse than the critic predicted? The actor uses this surprise to update its policy, while the critic learns to predict the true expected reward more accurately. This separation lets both learners sharpen each other without getting derailed by noise in individual rewards.</p>
+      <div class="insight">The biggest payoff is that agents learn far faster with a baseline estimate of what to expect, turning raw rewards into stable learning signals that scale to complex real-world tasks.</div>
+      </div>
+    </section>
+    <section class="fp"><p class="muted">Related: <a href="policy_gradient-deep.html">policy gradient</a> · <a href="policy-deep.html">policy</a> · <a href="q_learning-deep.html">Q-learning</a> · <a href="credit_assignment-deep.html">credit assignment</a> · <a href="rl_for_llms-deep.html">RL for language models</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run policy gradient on a 4x4 gridworld (-1 per step, +5 at goal) twice: once with plain policy gradient, once with a value-function baseline (critic). Train for 1000 episodes each, median over 7 independent runs. Measure: the fraction of probability on the two goal-ward moves, and the final average return per episode.</p>
+      <div class="eq">advantage (temporal-difference error) = reward + gamma * V(next_state) - V(state)
+policy_update = policy + alpha * log(pi(action|state)) * advantage
+critic_update = value + beta * (reward + gamma * V(next_state) - V(state))
+measured 4x4 gridworld: plain PG reaches goal prob 0.86, return -8; with critic reaches 1.00, return +5</div>
+      <p class="muted">Full script: scripts/experiments/stanford_rl.py (actor_critic method), 4x4 gridworld, 7 runs median. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · Actor-Critic deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Transformer Block (deep) · Stanford AI Concept Lab</title>
+<link rel="stylesheet" href="../assets/styles.css">
+<style>
+.arc{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.arc a{font-size:12.5px;color:var(--accent);text-decoration:none;border:1px solid var(--line,#dcdcdc);border-radius:20px;padding:3px 10px;background:#fff}
+.fp{border-top:1px solid var(--line,#dcdcdc);padding:22px 0 4px;margin-top:10px}
+.fp h2{margin:6px 0 10px}
+.kick{font-size:12px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin:6px 0}
+.lede{font-size:20px;color:#2c2c2c;max-width:820px}
+.essay p{max-width:74ch;font-size:16.5px;margin:11px 0;color:#232323}
+.barrow{display:flex;align-items:center;gap:10px;margin:5px 0;font-size:13px}
+.barrow .lab{width:160px;font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#5a5a5a;text-align:right}
+.bar{height:16px;border-radius:3px;background:var(--accent);min-width:2px}.bar.alt{background:var(--accent-2,#7a3f2a)}
+.barrow .val{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.eq{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;background:#eef3f7;border:1px solid var(--line,#dcdcdc);border-radius:6px;padding:12px 14px;margin:12px 0;overflow-x:auto;white-space:pre-wrap}
+.insight{border-left:4px solid var(--accent);background:#eef3f7;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0;font-size:16px}
+details.math{border:1px solid var(--line,#dcdcdc);border-radius:8px;background:#fff;margin:14px 0}
+details.math summary{cursor:pointer;padding:10px 13px;color:var(--accent);font-weight:750}
+details.math > div{border-top:1px solid var(--line,#dcdcdc);padding:4px 14px 12px}
+figure{margin:16px 0}figcaption{font-size:13px;color:#5a5a5a;margin-top:6px}
+table{border-collapse:collapse;width:100%;background:#fff;border:1px solid var(--line,#dcdcdc)}
+th,td{border:1px solid var(--line,#dcdcdc);padding:8px 11px;text-align:left;font-size:14.5px}th{background:#eef3f7}
+.tw{overflow-x:auto}
+</style></head><body>
+<header class="topbar"><a class="brand" href="../index.html">Stanford AI Concept Lab</a>
+<nav><a href="../index.html">Overview</a><a href="../concepts.html">Concepts</a><a class="active" href="../deep-track.html">Deep Track</a><a href="transformer_block.html">This concept</a></nav></header>
+<main>
+<div class="kick">large language models · first principles · the repeated unit that refines the answer</div>
+<h1>The Transformer Block — how layers sharpen a guess, one step at a time</h1>
+<p class="lede">A single pass of attention mixes information once, but reading a word in context means going back and forth, fitting it into the whole picture, updating your guess as you learn more. The transformer solves this by stacking a tiny unit — attention to gather information, then a small feed-forward step to process each word — over and over, a dozen times or more. Each repetition refines the guess. We show this on a real run: the token the model will finally choose starts buried deep in the ranking of 50,257 words, and climbs toward the top as it passes through the layers, until by the end it is the clear winner. Here is the core idea of every large language model, the way depth and iteration are engineered together, and why layering actually works.</p>
+<div class="arc"><a href="#problem">The problem</a><a href="#reframe">The reframe</a><a href="#run">Seen on a real run</a><a href="#why">Why layering sharpens the guess</a><a href="#weakness">The one real weakness</a><a href="#surprise">The surprise</a><a href="#practice">In practice</a><a href="transformer_block.html">Atlas card</a></div>
+
+    <section class="fp" id="problem">
+      <h2>1 · The problem — one pass is not enough</h2>
+      <div class="essay">
+      <p>A single round of attention can gather information. But understanding a sentence is not a one-pass job. Consider 'Alice met Bob at the bank near the river because it was on her way.' The word 'it' needs to refer back to 'bank', but only after the word 'river' (which could also be the antecedent) appears and is ruled out by context — the 'bank' we mean is not beside a river, it is a financial institution. Resolving this takes multiple rounds of thought: look, combine, notice new constraints, look again, refine the guess.</p>
+      <p>So the core need is: <strong>how can a model revisit and refine its understanding over multiple rounds instead of making one bet at the start?</strong></p>
+      </div>
+    </section>
+    <section class="fp" id="reframe">
+      <h2>2 · The reframe — stack the block, repeat it, let each layer build on the last</h2>
+      <div class="essay">
+      <p>The trick is to build a small unit — call it a block — that does one round of <em>understand better</em> work, then stack it over and over. Each block has two parts. First, <em>attention</em>: gather information by looking back at other words and deciding which ones matter for this word right now. Second, a <em>feed-forward step</em>: a tiny neural network, applied separately to each word, that has room to digest and process what this word has learned so far. The block takes a set of word representations, runs them through attention (mixing information across the sequence), then through the feed-forward layer (processing each word's updated knowledge), and outputs refined representations.</p>
+      <p>Now stack a dozen of these blocks, one after another. The first block makes a rough guess; the second refines it with a second look; the third refines the refinement. Each block inherits what the previous one learned, treats it as a fresh starting point, and adds another layer of depth. <strong>Depth</strong> — stacking these blocks — is the transformer's way of engineering multiple rounds of reasoning into a single forward pass through the model.</p>
+      <p>The hidden quantity is the running summary each token carries — every block reads that summary, mixes in a little context and computation, and writes it back, so meaning accumulates layer by layer.</p>
+      </div>
+    </section>
+    <section class="fp" id="run">
+      <h2>3 · Seen on a real run — the rank climbs as layers refine</h2>
+      <div class="essay">
+      <p>We ran the actual GPT-2 (a real pretrained model with 124 million learned numbers) on a sentence and tracked a single question: where does the token the model will finally choose sit in the ranking of all 50,257 possible words after each of the 12 layers? This is called the <em>logit lens</em> — it lets us watch the model's guess sharpen layer by layer.</p>
+      <figure><div class="barrow"><span class="lab">after layer 0 (raw input)</span><div class="bar" style="width:114px"></div><span class="val">rank 32,406 (buried)</span></div><div class="barrow"><span class="lab">after layer 6 (halfway)</span><div class="bar" style="width:90px"></div><span class="val">rank 2 (nearly sure)</span></div><div class="barrow"><span class="lab">after layer 12 (final output)</span><div class="bar" style="width:150px"></div><span class="val">rank 1 (the winner)</span></div><figcaption>Rank of the correct next token across layers (lower rank = closer to winning). Numbers are the run's output.</figcaption></figure>
+      <div class="insight"><strong>The discovered fact: the correct token starts at rank 32,406 — deeply buried among 50,257 possible words — after the first layer. By layer 6 it has climbed to rank 2. By layer 12, the final layer, it is ranked 1, the clear winner.</strong> This is not a flat convergence; the model gets progressively more confident, and each layer does real work sharpening the guess.</div>
+      </div>
+    </section>
+    <section class="fp" id="why">
+      <h2>4 · Why layering sharpens the guess — surface patterns before deep meaning</h2>
+      <div class="essay">
+      <p>The insight is that early layers and later layers work on different kinds of problems. The first layers can extract simple features: this word rhymes with that one, this word often follows that one, this is a noun. Later layers have access to all that extracted information and can compose it into higher meanings: given that it is a noun, and given that this other token is a verb describing it, what is the full concept? Early layers handle the surface; later layers assemble meaning.</p>
+      <p>Each layer refines because it inherits all the information the previous layer extracted — the attention patterns, the refined word representations — and adds one more pass of looking and thinking. The guess climbs from rank 32,406 to rank 1 because each layer does one more pass of gathering (attention) and processing (feed-forward), each one ruling out more wrong options and promoting the right one. The layering is not redundant; it is how the model converges to the right answer through iteration.</p>
+      </div>
+    </section>
+    <section class="fp" id="weakness">
+      <h2>5 · The one real weakness — depth costs compute and can be hard to train</h2>
+      <div class="essay">
+      <p>More layers mean more computation — twelve layers means twelve passes over the sequence, which is why a 12-layer model costs roughly twice as much as a 6-layer one. Even more problematic, deep networks can be unstable during training: gradients can shrink or explode as they flow backward through many layers, and the signal can get lost. This is why all real transformer models use <em>residual connections</em> (each layer adds to what came before instead of replacing it) and <em>normalization</em> (stabilizing the numerical scale between layers) — these tricks exist specifically to keep deep stacks trainable. And even with these tricks, adding layers gives diminishing returns: going from 12 to 24 layers helps less than going from 1 to 12.</p>
+      </div>
+    </section>
+    <section class="fp" id="surprise">
+      <h2>6 · The surprise — the same block, repeated and scaled, is almost all of modern AI</h2>
+      <div class="essay">
+      <p>This one block — attention plus a small feed-forward step — repeated a dozen times (or 96 times in the case of much larger models like GPT-4), with careful <em>residual connections</em> and <em>normalization</em> to keep it stable, is the entire internal design of the transformer. The same architecture, unchanged, powers <a href="attention-deep.html">attention</a>, which does the information gathering. The block takes <a href="embeddings-deep.html">embeddings</a> as input (words turned into vectors). Position information comes from <a href="positional_encoding-deep.html">positional encoding</a>. Swap the word tokens for image patches, and the same block is the core of <a href="vision_transformers-deep.html">vision transformers</a>, which process images. Scale it from 124 million numbers to billions and train it on <a href="pretraining-deep.html">pretraining</a>, and you get a state-of-the-art language model. This single, repeated, stacked unit is the foundation of nearly every large model reshaping AI in the last five years — learn how it works and you have learned the shape of the whole field.</p>
+      </div>
+    </section>
+    <section class="fp" id="practice">
+      <h2>7 · Where it is used in practice — Stack tiny units to refine understanding through layers</h2>
+      <div class="essay">
+      <p>The transformer block is the core repeated unit in nearly all large language models and vision systems, including GPT models, Gemini, Claude, and ViT-based image classifiers. Chat assistants use stacked blocks to process and refine token representations. Image understanding models stack the same block architecture, treating image patches as sequences just as they treat word tokens.</p>
+      <p>Each block performs two operations in sequence: first, attention gathers information by allowing each token to look back at all other tokens and decide which ones are relevant, mixing their information together. Second, a small feed-forward neural network processes the mixed information separately for each token. Multiple blocks are stacked—often a dozen or more—so that early blocks extract simple patterns and later blocks combine those patterns into higher-level meaning. Each block inherits the refined representations from the block before it, allowing iterative refinement.</p>
+      <div class="insight">Depth provides expressive power but also computational cost: a model with twice as many blocks needs roughly twice the computation, so practitioners must balance how much refinement is worth the added expense.</div>
+      </div>
+    </section>
+    <section class="fp" id="connects"><h2>Where this connects — build &rarr; reason &rarr; align</h2><p class="muted">This concept is one stage of a larger machine: build a language model, make it reason, then align it with reinforcement learning. These links open the connected stage.</p><ul style="list-style:none;padding:14px 16px;margin:12px 0;border:1px solid var(--line,#d7ddd9);border-radius:10px;background:#fff"><li style="margin:9px 0;padding-left:14px;border-left:3px solid #5b45c7"><a href="https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/test-time-compute-deep.html" style="font-weight:700">test-time compute</a> <span class="muted" style="font-size:13px">· Reason · CS329A</span><div style="font-size:14.5px;margin-top:3px">Depth is fixed inside the block at training time; test-time compute adds flexible depth at inference by sampling and verifying.</div></li></ul></section>
+    <section class="fp"><p class="muted">Related: <a href="attention-deep.html">attention</a> · <a href="embeddings-deep.html">embeddings</a> · <a href="positional_encoding-deep.html">positional encoding</a> · <a href="vision_transformers-deep.html">vision transformers</a> · <a href="pretraining-deep.html">pretraining</a></p></section>
+    <details class="math"><summary>the run recipe — reproduce every number above</summary><div>
+      <p class="muted">Run the real pretrained GPT-2 (124M) on a sentence and extract the logit lens: for each of the 12 layers, measure the rank of the correct next token among all 50,257 word embeddings. Start from the raw embedding (layer 0), track the rank through the middle layers, and record the final rank at the output.</p>
+      <div class="eq">logit_lens(layer) = rank of argmax(logits(layer)) among all 50257 tokens
+logits(layer) = last_token_representation(layer) @ all_token_embeddings.T
+measured rank progression:
+  layer 0:  32,406
+  layer 6:  2
+  layer 12: 1</div>
+      <p class="muted">Full script: scripts/experiments/stanford_gpt2.py (exp_transformer_block), the actual GPT-2 weights. Numbers are the run's output verbatim.</p>
+    </div></details>
+<footer style="color:#5a5a5a;font-size:13px;border-top:1px solid var(--line,#dcdcdc);padding:22px 0 60px;margin-top:24px">Stanford AI Concept Lab · The Transformer Block deep dive · every quantity here is computed. Experiments in scripts/experiments/ (real GPT-2, gridworld RL, 2D diffusion).</footer>
+</main></body></html>
