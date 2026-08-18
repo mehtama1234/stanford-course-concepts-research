@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "site" / "machine.html"
-CS_BASE = "http://localhost:8016/concepts/"   # swap to public Pages URL at deploy
+CS_BASE = "https://mehtama1234.github.io/stanford-cs329a-self-improving-ai-agents-concepts-research/concepts/"   # swap to public Pages URL at deploy
 
 def e(s): return html.escape(str(s), quote=True)
 def sc(cid, label): return f'<a href="concepts/{cid}-deep.html">{e(label)}</a>'   # underscore ids
