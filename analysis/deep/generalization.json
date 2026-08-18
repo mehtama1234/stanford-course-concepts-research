@@ -156,5 +156,13 @@
     "summary": "Run the real pretrained GPT-2 (124M) on two held-out sentences it never saw in training: one grammatically correct and novel, one a random string of tokens. For each, measure the average loss (per-token surprise) across the entire sequence. A generalized model shows far higher loss on noise than on meaningful text.",
     "eq": "loss_per_token = -log P(token | previous_tokens)\nnovel_grammatical_sentence: mean loss = 6.24\nrandom_tokens: mean loss = 13.71\nratio = 13.71 / 6.24 = 2.19× higher on noise",
     "note": "Full script: scripts/experiments/stanford_gpt2.py (exp_generalization), the actual GPT-2 weights. Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "llm-lab",
+      "id": "08-training",
+      "label": "Build it: training & grokking",
+      "note": "See memorization flip to generalization (grokking) in the lab."
+    }
+  ]
 }

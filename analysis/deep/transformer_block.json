@@ -188,6 +188,12 @@
       "id": "test-time-compute",
       "label": "test-time compute",
       "note": "Depth is fixed inside the block at training time; test-time compute adds flexible depth at inference by sampling and verifying."
+    },
+    {
+      "course": "llm-lab",
+      "id": "06-block",
+      "label": "Build it: the transformer block",
+      "note": "Assemble the full block — attention, feed-forward, residuals — in the lab."
     }
   ]
 }

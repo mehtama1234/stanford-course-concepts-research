@@ -197,6 +197,12 @@
       "id": "scaling-to-reasoning",
       "label": "scaling to reasoning",
       "note": "Pretraining loss falls smoothly with scale; reasoning ability shows a similar threshold as test-time compute grows."
+    },
+    {
+      "course": "llm-lab",
+      "id": "08-training",
+      "label": "Build it: training",
+      "note": "Watch the model actually train in the lab."
     }
   ]
 }

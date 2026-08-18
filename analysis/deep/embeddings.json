@@ -198,5 +198,13 @@
     "summary": "Run the real pretrained GPT-2 (124M) and extract its embedding matrix (50,257 tokens × 768 dimensions). For five word pairs (king/queen, king/man, dog/cat, king/bicycle, Monday/Tuesday), compute the cosine similarity between their embedding vectors. The cosine is the dot product of the two vectors divided by their lengths, yielding a number from 0 to 1.",
     "eq": "embedding(word) = vector in R^768,  learned during training\ncosine(u, v) = (u · v) / (||u|| × ||v||)   # dot product, normalized by lengths\nmeasured cosines:\n  king/queen    = 0.66\n  king/man      = 0.37\n  dog/cat       = 0.55\n  king/bicycle  = 0.22\n  Monday/Tuesday = 0.89",
     "note": "Full script: scripts/experiments/stanford_gpt2.py (exp_embeddings), the actual GPT-2 weights (50257 tokens, 768 dimensions). Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "llm-lab",
+      "id": "02-embeddings",
+      "label": "Build it: embeddings",
+      "note": "Watch random vectors learn to encode meaning in the lab."
+    }
+  ]
 }

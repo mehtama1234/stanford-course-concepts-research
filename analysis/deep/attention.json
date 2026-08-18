@@ -172,6 +172,12 @@
       "id": "reasoning-traces",
       "label": "reasoning traces",
       "note": "Attention learns which tokens matter inside a single pass; a reasoning trace externalises that focus as written steps the model can extend."
+    },
+    {
+      "course": "llm-lab",
+      "id": "04-attention",
+      "label": "Build it: attention",
+      "note": "Watch attention pick the few tokens that matter, on a real model, in the lab."
     }
   ]
 }

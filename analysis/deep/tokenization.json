@@ -187,6 +187,12 @@
       "id": "reasoning-traces",
       "label": "reasoning traces",
       "note": "Tokenization sets the grain of thought; a reasoning trace is written in exactly those tokens."
+    },
+    {
+      "course": "llm-lab",
+      "id": "01-tokenization",
+      "label": "Build it: tokenization",
+      "note": "See byte-pair merges run on real text in the LLM-from-scratch lab."
     }
   ]
 }

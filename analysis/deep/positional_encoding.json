@@ -164,5 +164,13 @@
     "summary": "Run the real pretrained GPT-2 (124M) on a test set. Measure loss (cross-entropy, lower = less surprised) for a ten-word sentence in true order, then for the same ten words shuffled randomly. Also measure cosine similarity between GPT-2's learned position vectors for neighbouring positions (e.g., position 1 and 2) and for distant positions (e.g., position 1 and 50).",
     "eq": "positional_encoding: position_vector(pos) is learned\nword_with_position = embedding(word) + position_vector(pos)\nloss_ordered = 3.98\nloss_shuffled = 8.00\ncosine(pos[i], pos[i+1]) ≈ 1.00  (neighbours)\ncosine(pos[i], pos[i+k_distant]) ≈ 0.39  (far)",
     "note": "Full script: scripts/experiments/stanford_gpt2.py (exp_positional_encoding), the actual GPT-2 weights. Numbers are the run's output verbatim."
-  }
+  },
+  "connects": [
+    {
+      "course": "llm-lab",
+      "id": "03-positional",
+      "label": "Build it: positional encoding",
+      "note": "See order injected into the model in the lab."
+    }
+  ]
 }
